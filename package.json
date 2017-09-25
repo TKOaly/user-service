@@ -1,0 +1,18 @@
+{
+    "name": "Auth",
+    "description": "Authorization service for TKO-aly",
+    "authors": "Hugo H.",
+    "version": "1.0.0",
+    "main": "pathToMain",
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "dotenv": "^4.0.0",
+        "express": "4.15.3",
+        "knex": "^0.13.0",
+        "mysql2": "1.3.6",
+        "sha1": "^1.1.1"
+    },
+    "scripts": {
+        "start": "node app.js"
+    }
+}
