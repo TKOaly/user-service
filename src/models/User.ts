@@ -1,4 +1,4 @@
-export default class User {
+export class User {
   id: number;
   username: string;
   name: string;
@@ -38,6 +38,15 @@ export default class User {
   removeSensitiveInformation() {
     delete this.salt;
     delete this.hashedPassword;
+    return this;
+  }
+
+  removeNonRequestedData(dataRequest: number) {
+    Object.keys(this.removeSensitiveInformation()).forEach((key, i) => {
+      let val = Math.pow(2, i);
+      if (val == null || (val & dataRequest) != val)
+        delete this[key];
+    });
     return this;
   }
 }

@@ -1,7 +1,7 @@
 import * as sha1 from 'sha1';
 import * as Knex from 'knex';
 import * as jwt from 'jsonwebtoken';
-import User from '../models/User';
+import { User } from '../models/User';
 import ServiceError from '../utils/ServiceError';
 
 export default class AuthenticationService {

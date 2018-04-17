@@ -3,5 +3,3 @@ export default class ServiceError extends Error {
     super(message);
   }
 }
-
-module.exports = ServiceError;

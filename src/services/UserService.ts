@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
 import ServiceError from '../utils/ServiceError';
 import AuthenticationService from './AuthenticationService';
-import User from '../models/User';
+import { User } from '../models/User';
 
 export default class UserService {
   constructor(private knex: Knex) {

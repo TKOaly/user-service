@@ -24,36 +24,30 @@ Example of response:
 ```json
 {
     "message": "ok",
+    "ok": true,
+    "message": "Success",
     "body": {
-        "value": "aaaaaaaaabbbbbbbbbbbbbccccccccccccc",
-        "expiresAt": "2018-02-24T11:56:27.017Z",
-        "ownerId": "userID"
+        "token": "aaaaaaaaabbbbbbbbbbbbbccccccccccccc"
     }
 }
 ```
 
-##### `GET /api/users/me`
+##### `GET /api/users/me?dataRequest={data request bitfield}`
+
+The `dataRequest` query parameter is required. It is a bitfield which values are 2 ^ the [/src/models/User.ts](User) model's attribute index.
+
+If I wan't to get the id, name and email of a user, I do `Math.pow(2, 0) | Math.pow(2, 2) | Math.pow(2, 4)`, then insert that value into the dataRequest query. It would return:
 
 Example response:
 
 ```json
 {
-    "message": "ok",
-    "body": {
-        "id": "userId",
-        "username": "hugeli",
-        "name": "Hugo Holmqvist",
-        "screenName": "Paska jäbä",
-        "email": "hugeli@spam.com",
-        "residence": "Helsinki",
-        "phone": "58493508",
-        "isHYYMember": true,
-        "membership": "member",
-        "role": "yllapitaja",
-        "createdAt": "2018-02-24T11:56:27.017Z",
-        "modifiedAt": "2018-02-24T11:56:27.017Z",
-        "isTKTL": true,
-        "isDeleted": false
+    "ok": true,
+    "message": "Success",
+    "payload": {
+        "id": 420,
+        "name": "Bob John",
+        "email": "asd@asd.com"
     }
 }
 ```
