@@ -34,7 +34,7 @@ Example of response:
 
 ##### `GET /api/users/me?dataRequest={data request bitfield}`
 
-The `dataRequest` query parameter is required. It is a bitfield which values are 2 ^ the [/src/models/User.ts](User) model's attribute index.
+The `dataRequest` query parameter is required. It is a bitfield which values are 2 ^ the [User](/src/models/User.ts) model's attribute index.
 
 If I wan't to get the id, name and email of a user, I do `Math.pow(2, 0) | Math.pow(2, 2) | Math.pow(2, 4)`, then insert that value into the dataRequest query. It would return:
 
