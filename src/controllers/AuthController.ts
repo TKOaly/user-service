@@ -1,5 +1,5 @@
 import * as express from 'express';
-import AuthenticationService from "../services/AuthenticationService";
+import { AuthenticationService } from "../services/AuthenticationService";
 import ServiceResponse from '../utils/ServiceResponse';
 
 /**

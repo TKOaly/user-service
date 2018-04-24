@@ -1,7 +1,7 @@
 import * as Knex from 'knex';
 import ServiceError from '../utils/ServiceError';
-import AuthenticationService from './AuthenticationService';
-import { User } from '../models/User';
+import { AuthenticationService } from './AuthenticationService';
+import User from '../models/User';
 
 export default class UserService {
   constructor(private knex: Knex) {
@@ -9,7 +9,10 @@ export default class UserService {
   }
 
   async fetchUser(userId: number) {
-    let result = await this.knex.select('*').from('users').where({ id: userId }).limit(1);
+    let result = await this.knex.select('*')
+      .from('users')
+      .where({ id: userId })
+      .limit(1);
     if (!result.length) {
       throw new ServiceError(404, 'Not found');
     }

@@ -54,5 +54,5 @@ Example response:
 
 # Future improvements
 
-- Use OAuth2 
+- Use OAuth2
 

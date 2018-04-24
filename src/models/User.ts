@@ -1,4 +1,4 @@
-export class User {
+export default class User {
   id: number;
   username: string;
   name: string;
@@ -41,7 +41,7 @@ export class User {
     return this;
   }
 
-  removeNonRequestedData(dataRequest: number) {
+  removeNonRequestedData(dataRequest: number) { 
     Object.keys(this.removeSensitiveInformation()).forEach((key, i) => {
       let val = Math.pow(2, i);
       if (val == null || (val & dataRequest) != val)

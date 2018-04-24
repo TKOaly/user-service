@@ -1,13 +1,15 @@
 import * as express from 'express';
 import UserService from "../services/UserService";
-import AuthenticationService from "../services/AuthenticationService";
+import { AuthenticationService } from "../services/AuthenticationService";
 import ServiceResponse from '../utils/ServiceResponse';
-import {} from '../models/User';
+import User from '../models/User';
+import { authorize } from '../utils/Authorize';
+import { IController } from './IController';
 
 /**
  * @param {UserService} userService
  */
-export default class UserController {
+export default class UserController implements IController {
   route: express.Router;
 
   constructor(
@@ -16,20 +18,14 @@ export default class UserController {
       this.route = express.Router();
     }
 
-    async getMe(req: express.Request, res: express.Response) {
-      let token = req.headers['authorization'];
-      if (!token || !token.toString().startsWith('Bearer ')) {
-        return res.status(401).json(new ServiceResponse(null, 'Unauthorized'));
-      }
-
+    async getMe(req: any, res: express.Response) {
       if (!req.query.dataRequest) {
         return res.status(400).json(new ServiceResponse(null, 'Missing data request query'));
       }
 
       let dataRequest: number = Number(req.query.dataRequest)
       try {
-        let tokenPayload = this.authenticationService.verifyToken(token.toString().substring(7));
-        let user = await this.userService.fetchUser(tokenPayload.userId);
+        let user = await this.userService.fetchUser(req.authorization.userId);
         res.status(200).json(new ServiceResponse(user.removeNonRequestedData(dataRequest)));
       } catch(e) {
         res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
@@ -37,8 +33,18 @@ export default class UserController {
       
     }
 
+    async modifyMe(req: express.Request, res: express.Response) {
+
+    }
+
+    async createUser(req: express.Request, res: express.Response) {
+
+    }
+
     createRoutes() {
-      this.route.get('/me', this.getMe.bind(this));
+      this.route.get('/me', authorize, this.getMe.bind(this));
+      this.route.patch('/me', authorize, this.modifyMe.bind(this));
+      this.route.post('/', this.createUser.bind(this));
       return this.route;
     }
 }
