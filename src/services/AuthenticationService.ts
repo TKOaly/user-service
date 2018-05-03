@@ -15,7 +15,7 @@ export class AuthenticationService {
    * @param {string} password
    * @returns {Promise<Token>} 
    */
-  async fetchToken(username, password): Promise<string> {
+  async fetchTokenWithUsernameAndPassword(username, password): Promise<string> {
     let userArray = await this.knex.select('users.*')
       .from('users')
       .where({ username })
@@ -27,12 +27,22 @@ export class AuthenticationService {
     let user = new User(userArray[0]);
     let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
     if (hashedPassword === user.hashedPassword) {
-      return jwt.sign({
-        userId: user.id,
-        createdAt: Date.now()
-      }, process.env.AUTHSERVICE_JWT_SECRET);
+      return this.createToken(user.id, 0);
     } else throw new ServiceError(403, 'Password or username doesn\'t match');
   }
+
+  createToken(userId: number, permissionVal: number): string {
+    try {
+      return jwt.sign({
+        userId,
+        permissionVal,
+        createdAt: Date.now()
+      }, process.env.AUTHSERVICE_JWT_SECRET);
+    } catch (e) {
+      throw e;
+    }
+  }
+
 };
 
 /**
