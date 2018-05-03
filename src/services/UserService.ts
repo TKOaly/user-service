@@ -1,6 +1,6 @@
 import * as Knex from 'knex';
 import ServiceError from '../utils/ServiceError';
-import { AuthenticationService } from './AuthenticationService';
+import { verifyToken, generateHashWithPasswordAndSalt } from './AuthenticationService';
 import User from '../models/User';
 
 export default class UserService {
@@ -19,5 +19,29 @@ export default class UserService {
 
     let user = new User(result[0]);
     return user;
+  }
+
+  async getUserWithUsernameAndPassword(username, password): Promise<User> {
+    let userArray = await this.knex.select('users.*')
+      .from('users')
+      .where({ username })
+      .limit(1);
+    if (!userArray.length) {
+      throw new ServiceError(404, 'User not found');
+    }
+
+    let user = new User(userArray[0]);
+    let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
+    if (hashedPassword === user.hashedPassword) {
+      return user;
+    }
+    return null;
+  }
+
+  verifyToken(token: string): {
+    userId: number,
+    createdAt: Date
+  } {
+    return verifyToken(token);
   }
 }

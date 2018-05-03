@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    title= Käyttöoikeuspyyntö
+    link(rel='stylesheet', href='/styles/gdpr.css')
+  body
+    #container
+      #menubar
+        img.img(src='/svg/tkoaly.svg')
+        div#title Käyttöoikeuspyyntö
+      #content
+        p <b class='service'>#{serviceName}</b> pyytää sinulta oikeutta käyttää alla lueteltuja henkilötietojasi.
+        #personaldata
+          ul
+            each info in personalInformation
+              li #{info.name}: <b>#{info.value}</b>
+        p Palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä. Muussa tapauksessa palvelu ohjaa sinut takaisin TKO-äly ry:n etusivulle.
+        p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
+      #confirmation
+        form(action='/auth/vanillaAuthenticate', method='POST')
+          input.cancel(type='submit', name='cancel', value='Hylkää')
+        form(action='/auth/vanillaAuthenticate', method='POST')
+          input(type='hidden', name='permission', value='yes')
+          input(type='hidden', name='permissionVal', value='2147483647')
+          input(type='hidden', name='redirectTo', value='https://calendar.tko-aly.fi')
+          input.accept(type='submit', name='accept', value='Hyväksy')

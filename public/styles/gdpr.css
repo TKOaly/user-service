@@ -1,0 +1,107 @@
+body,
+html {
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial;
+}
+
+#container {
+  background-color: white;
+  width: 40%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+#img {
+  height: 50px;
+  width: 50px;
+  background-color: black;
+  display: inline-block;
+}
+
+#menubar {
+  position: relative;
+  width: 98%;
+  border-bottom: 1px solid #c9c9c9;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#content {
+  width: 98%;
+  border-bottom: 1px solid #c9c9c9;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  padding: 20px;
+}
+
+#title {
+  font-size: 2.6vw;
+  margin-right: 20px;
+  color: orange;
+}
+
+#personaldata {
+  margin: 15px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 2px dashed black;
+  width: 70%;
+}
+
+#confirmation {
+  width: 98%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+form {
+  display: inline-block;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+input {
+  width: 40%;
+  height: 70%;
+  font-size: 1.4vw;
+}
+
+.cancel {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+}
+
+.accept {
+  background-color: green;
+  color: white;
+  border: 2px solid green;
+}
+
+b.service {
+  font-size: 1.4vw;
+}
+
+img.img {
+  position: absolute;
+  height: 190px;
+  top: -90px;
+  left: -60px;
+}

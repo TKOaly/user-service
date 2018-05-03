@@ -33,13 +33,6 @@ export class AuthenticationService {
       }, process.env.AUTHSERVICE_JWT_SECRET);
     } else throw new ServiceError(403, 'Password or username doesn\'t match');
   }
-
-  verifyToken(token: string): {
-    userId: number,
-    createdAt: Date
-  } {
-    return verifyToken(token);
-  }
 };
 
 /**
@@ -47,7 +40,7 @@ export class AuthenticationService {
  * @param {string} salt
  * @returns {string}
  */
-function generateHashWithPasswordAndSalt(password, salt) {
+export function generateHashWithPasswordAndSalt(password, salt) {
   return sha1(`${salt}kekbUr${password}`);
 }
 
