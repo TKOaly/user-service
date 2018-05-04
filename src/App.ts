@@ -9,16 +9,19 @@ import UserService from "./services/UserService";
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
 
-app.use(express.static('./public'));
-app.set('views', './public/views');
-app.set('view engine', 'pug');
-
+app.use(express.static("./public"));
+app.set("views", "./public/views");
+app.set("view engine", "pug");
 
 const knexfile = require("./../knexfile");
 
-const knex = Knex(knexfile[process.env.NODE_ENV || 'staging']);
+const knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
 
 let authService = new AuthenticationService(knex);
 let userService = new UserService(knex);

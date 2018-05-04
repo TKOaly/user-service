@@ -1,0 +1,23 @@
+doctype html
+html(lang="en")
+  head
+    title= Käyttöoikeuspyyntö
+  body
+    #container
+      form(action='/api/auth/authenticate', method='POST')
+        table
+          tr
+            td
+              input(type='text', name='username', placeholder='Username')
+          tr
+            td
+              input(type='password', name='password', placeholder='Password')
+          tr
+            td
+              input(type='text', name='permissionVal', placeholder='Permissions')
+          tr
+            td
+              input(type='text', name='redirectTo', placeholder='Redirect url')
+          tr
+            td
+              input.accept(type='submit', name='accept', value='Kirjaudu')
