@@ -32,5 +32,8 @@ let userController = new UserController(userService, authService);
 
 app.use("/api/auth", authController.createRoutes());
 app.use("/api/users", userController.createRoutes());
+app.get("/", (req, res) => {
+  return res.render("login");
+});
 
 app.listen(3000);

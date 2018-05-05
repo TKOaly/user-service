@@ -17,10 +17,40 @@ html(lang="en")
         p Palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä. Muussa tapauksessa palvelu ohjaa sinut takaisin TKO-äly ry:n etusivulle.
         p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
       #confirmation
-        form(action='/auth/vanillaAuthenticate', method='POST')
+        form(id='formSubmitReject', action='/api/auth/vanillaAuthenticate', method='POST')
           input.cancel(type='submit', name='cancel', value='Hylkää')
-        form(action='/auth/vanillaAuthenticate', method='POST')
+        form(id='formSubmitAccept', action='/api/auth/vanillaAuthenticate', method='POST')
           input(type='hidden', name='permission', value='yes')
-          input(type='hidden', name='permissionVal', value='2147483647')
-          input(type='hidden', name='redirectTo', value='https://calendar.tko-aly.fi')
+          input(type='hidden', name='userId', value=userId)
+          input(type='hidden', name='permissionVal', value=permissionVal)
+          input(type='hidden', name='redirectTo', value=redirectTo)
           input.accept(type='submit', name='accept', value='Hyväksy')
+script.
+  document.addEventListener("DOMContentLoaded", function(event) { 
+    var rejectForm = document.getElementById('formSubmitReject');
+    rejectForm.addEventListener('onsubmit', () => {});
+    var acceptForm = document.getElementById('formSubmitAccept')
+    acceptForm.onsubmit = function(event) {
+      event.preventDefault();
+      var json = JSON.stringify({
+        permission: event.target.children[0].value,
+        userId: Number(event.target.children[1].value),
+        permissionVal: Number(event.target.children[2].value),
+        redirectTo: event.target.children[3].value
+      });
+      fetch(location.origin + '/api/auth/authenticate', {
+        method: 'POST',
+        body: json,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(r => r.json())
+        .then(response => {
+          if (response.ok) {
+            window.localStorage.setItem('token', response.payload.token);
+            location.href = response.payload.redirectTo;
+          } 
+        });
+    };
+  });
