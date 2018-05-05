@@ -6,12 +6,21 @@ Microservice for authenticating users of members.tko-aly.fi.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Installation instructions](#installation-instructions)
 - [Endpoints](#endpoints)
   - [`POST /api/auth`](#post-apiauth)
   - [`GET /api/users/me?dataRequest={data request bitfield}`](#get-apiusersmedatarequestdata-request-bitfield)
 - [Future improvements](#future-improvements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Installation instructions
+
+1. Clone the repo
+2. Run `yarn install`
+3. Copy `.env.example` to `.env` and set environment variables
+4. Run `yarn test`to run tests
+5. Run `yarn start` or `yarn watch``
 
 ## Endpoints
 
