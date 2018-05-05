@@ -60,3 +60,5 @@ process.on("SIGINT", () => {
   console.log("Caught interrupt signal, server stopped");
   process.exit();
 });
+
+export default app;

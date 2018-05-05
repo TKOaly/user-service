@@ -2,5 +2,7 @@
 .vscode
 node_modules
 .dist
-dev.sqlite3
+*.sqlite3
 dist
+coverage
+.nyc_output
