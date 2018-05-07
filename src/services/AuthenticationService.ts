@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import User from '../models/User';
 import ServiceError from '../utils/ServiceError';
 import Service from '../models/Service';
+import { ServiceToken, stringToServiceToken } from '../token/Token';
 
 export class AuthenticationService {
   constructor(private knex: Knex) {
@@ -28,7 +29,7 @@ export class AuthenticationService {
     let user = new User(userArray[0]);
     let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
     if (hashedPassword === user.hashedPassword) {
-      return this.createToken(user.id, 0);
+      return this.createToken(user.id, user.role, []);
     } else throw new ServiceError(403, 'Password or username doesn\'t match');
   }
 
@@ -44,18 +45,31 @@ export class AuthenticationService {
     return new Service(serviceArray[0]);
   }
 
-  createToken(userId: number, permissionVal: number): string {
+  appendNewServiceAuthenticationToToken(oldToken: string | any, newServiceName: string): string {
+    let token: ServiceToken;
+    if (typeof oldToken == 'string')
+      token = stringToServiceToken(oldToken);
+    else
+      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.userRole, oldToken.createdAt);
+    if (token.authenticatedTo) {
+      token.authenticatedTo.push(newServiceName);
+    } else {
+      token.authenticatedTo = [newServiceName];
+    }
     try {
-      return jwt.sign({
-        userId,
-        permissionVal,
-        createdAt: Date.now()
-      }, process.env.AUTHSERVICE_JWT_SECRET);
-    } catch (e) {
+      return token.toString();
+    } catch(e) {
       throw e;
     }
   }
 
+  createToken(userId: number, userRole: string, authenticatedTo: string[]): string {
+    try {
+      return new ServiceToken(userId, authenticatedTo, userRole, new Date()).toString();
+    } catch (e) {
+      throw e;
+    }
+  }
 };
 
 /**
@@ -65,16 +79,4 @@ export class AuthenticationService {
  */
 export function generateHashWithPasswordAndSalt(password, salt) {
   return sha1(`${salt}kekbUr${password}`);
-}
-
-
-export function verifyToken(token: string): {
-  userId: number;
-  createdAt: Date
-} {
-  let parsedToken: any = jwt.verify(token, process.env.AUTHSERVICE_JWT_SECRET);
-  return {
-    userId: parsedToken.userId,
-    createdAt: new Date(parsedToken.createdAt)
-  };
 }

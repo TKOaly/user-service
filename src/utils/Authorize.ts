@@ -1,11 +1,9 @@
 import * as express from 'express';
 import ServiceResponse from './ServiceResponse';
-import { verifyToken } from '../services/AuthenticationService';
+import { stringToServiceToken, ServiceToken } from '../token/Token';
 
 interface IASRequest extends express.Request {
-  authorization: {
-    userId: number
-  }
+  authorization: ServiceToken;
 }
 
 
@@ -15,9 +13,7 @@ export function authorize(req: IASRequest, res: express.Response, next: express.
     return res.status(401).json(new ServiceResponse(null, 'Unauthorized'));
   } else {
     try {
-      req.authorization = {
-        userId: verifyToken(token.slice(7).toString()).userId
-      }
+      req.authorization = stringToServiceToken(token.slice(7).toString())
       return next();
     } catch(e) {
       return res.status(500).json(new ServiceResponse(null, e.message));

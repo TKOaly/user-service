@@ -1,6 +1,6 @@
 import * as Knex from 'knex';
 import ServiceError from '../utils/ServiceError';
-import { verifyToken, generateHashWithPasswordAndSalt } from './AuthenticationService';
+import { generateHashWithPasswordAndSalt } from './AuthenticationService';
 import User from '../models/User';
 
 export default class UserService {
@@ -36,12 +36,5 @@ export default class UserService {
       return user;
     }
     return null;
-  }
-
-  verifyToken(token: string): {
-    userId: number,
-    createdAt: Date
-  } {
-    return verifyToken(token);
   }
 }
