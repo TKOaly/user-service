@@ -3,6 +3,7 @@ import * as Knex from 'knex';
 import * as jwt from 'jsonwebtoken';
 import User from '../models/User';
 import ServiceError from '../utils/ServiceError';
+import Service from '../models/Service';
 
 export class AuthenticationService {
   constructor(private knex: Knex) {
@@ -29,6 +30,18 @@ export class AuthenticationService {
     if (hashedPassword === user.hashedPassword) {
       return this.createToken(user.id, 0);
     } else throw new ServiceError(403, 'Password or username doesn\'t match');
+  }
+
+  async getService(serviceName: string): Promise<Service> {
+    let serviceArray = await this.knex.select()
+      .from('services')
+      .where({ service_name: serviceName })
+      .limit(1);
+    if (!serviceArray.length) {
+      throw new ServiceError(404, 'Sevice not found');
+    }
+
+    return new Service(serviceArray[0]);
   }
 
   createToken(userId: number, permissionVal: number): string {

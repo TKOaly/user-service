@@ -4,6 +4,7 @@ import ServiceResponse from '../utils/ServiceResponse';
 import User from '../models/User';
 import UserService from '../services/UserService';
 import { URL } from 'url';
+import Service from "../models/Service";
 
 /**
  * @param {AuthenticatioService} authenticationService
@@ -18,18 +19,19 @@ export default class AuthController {
   }
 
   async authenticate(req: express.Request, res: express.Response) {
-    let body: { 
-      permissionVal: number, 
+    let body: {
+      serviceName: string,
       redirectTo: string,
       permission: string,
-      userId: number } = req.body;
-    if (!body.permissionVal || !body.redirectTo || !body.permission || !body.userId) {
+      userId: number
+    } = req.body;
+    if (!body.serviceName || !body.redirectTo || !body.permission || !body.userId) {
       return res.status(400).json(new ServiceResponse(null, 'Invalid POST params'));
     }
     let token: string;
     try {
-      token = this.authService.createToken(body.userId, body.permissionVal);
-    } catch(e) {
+      token = this.authService.createToken(body.userId, 1);
+    } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
     return res.status(200).json(new ServiceResponse({ token, redirectTo: body.redirectTo }, 'Success'));
@@ -42,7 +44,7 @@ export default class AuthController {
     let token: string;
     try {
       token = this.authService.createToken(req.body.userId, req.body.permissionVal);
-    } catch(e) {
+    } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
     res.cookie('token', token, {
@@ -57,7 +59,7 @@ export default class AuthController {
 
   async requestPermissions(req: express.Request, res: express.Response) {
     if (
-      !req.body.permissionVal ||
+      !req.body.serviceName ||
       !req.body.redirectTo ||
       !req.body.username ||
       !req.body.password
@@ -67,18 +69,29 @@ export default class AuthController {
         .json(new ServiceResponse(null, "Invalid POST params"));
     }
     let keys = [];
-    let user = await this.userService.getUserWithUsernameAndPassword(
-      req.body.username,
-      req.body.password
-    );
-    if (!user) {
+    let user: User;
+    try {
+      user = await this.userService.getUserWithUsernameAndPassword(
+        req.body.username,
+        req.body.password
+      );
+    } catch (e) {
       return res
-        .status(404)
-        .json(new ServiceResponse(null, "Invalid username or password."));
+        .status(e.httpErrorCode)
+        .json(new ServiceResponse(null, e.message));
+    }
+
+    let service: Service;
+    try {
+      service = await this.authService.getService(req.body.serviceName);
+    } catch(e) {
+      return res
+      .status(e.httpErrorCode)
+      .json(new ServiceResponse(null, e.message));
     }
 
     Object.keys(user).forEach((key, idx) => {
-      if ((Math.pow(2, idx) & req.body.permissionVal) == Math.pow(2, idx)) {
+      if ((Math.pow(2, idx) & service.dataPermissions) == Math.pow(2, idx)) {
         keys.push({
           name: key,
           value: user[key]
@@ -89,9 +102,8 @@ export default class AuthController {
     res.render('gdpr', {
       userId: user.id,
       personalInformation: keys,
-      serviceName: req.get('referer'),
-      redirectTo: req.body.redirectTo || '',
-      permissionVal: req.body.permissionVal || ''
+      serviceName: service.serviceName,
+      redirectTo: req.body.redirectTo || ''
     });
   }
 
