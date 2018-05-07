@@ -1,5 +1,5 @@
-exports.up = function(knex, Promise) {
-  return knex.schema.createTableIfNotExists("users", function(table) {
+exports.up = function (knex, Promise) {
+  return knex.schema.createTableIfNotExists("users", function (table) {
     table.increments("id");
     table.string("username", 20);
     table.string("name", 255);
@@ -11,13 +11,13 @@ exports.up = function(knex, Promise) {
     table.string("membership", 20);
     table.datetime("created");
     table.datetime("modified");
-    table.char("hashed_password", 40);
+    table.string("hashed_password", 40);
     table.string("salt", 20);
     table.integer("tktl", 1);
     table.integer("deleted", 1);
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return knex.schema.dropTableIfExists("users");
 };
