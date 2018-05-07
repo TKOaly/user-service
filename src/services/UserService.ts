@@ -8,8 +8,8 @@ export default class UserService {
     this.knex = knex;
   }
 
-  async fetchUser(userId: number) {
-    let result = await this.knex.select('*')
+  async fetchUser(userId: number, dataToFetch: string = null) {
+    let result = await this.knex.select(dataToFetch ? dataToFetch : '*')
       .from('users')
       .where({ id: userId })
       .limit(1);
@@ -21,8 +21,8 @@ export default class UserService {
     return user;
   }
 
-  async getUserWithUsernameAndPassword(username, password): Promise<User> {
-    let userArray = await this.knex.select('users.*')
+  async getUserWithUsernameAndPassword(username, password, dataToFetch: string = null): Promise<User> {
+    let userArray = await this.knex.select(dataToFetch ? dataToFetch : '*')
       .from('users')
       .where({ username })
       .limit(1);

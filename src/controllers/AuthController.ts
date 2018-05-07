@@ -35,7 +35,7 @@ export default class AuthController implements IController {
 
     let user: User;
     try {
-      user = await this.userService.getUserWithUsernameAndPassword(body.username, body.password);
+      user = await this.userService.getUserWithUsernameAndPassword(body.username, body.password, 'role');
     } catch(e) {
       return res
         .status(e.httpErrorCode)
@@ -73,7 +73,7 @@ export default class AuthController implements IController {
 
     let user: User;
     try {
-      user = await this.userService.getUserWithUsernameAndPassword(body.username, body.password);
+      user = await this.userService.getUserWithUsernameAndPassword(body.username, body.password, 'role');
     } catch(e) {
       return res
         .status(e.httpErrorCode)
