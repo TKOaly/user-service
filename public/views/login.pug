@@ -1,23 +1,18 @@
 doctype html
 html(lang="en")
   head
-    title= Käyttöoikeuspyyntö
+    title= "Login"
+    link(rel='stylesheet', href='/styles/login.css')
   body
     #container
-      form(action='/api/auth/requestPermissions', method='POST')
-        table
-          tr
-            - let str = `Login to <b>${service.displayName}</b>`
-            td!=str
-          tr
-            td
-              input(type='text', name='username', placeholder='Username')
-          tr
-            td
-              input(type='password', name='password', placeholder='Password')
-              tr
-            td
-              input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
-          tr
-            td
-              input.accept(type='submit', name='accept', value='Kirjaudu')
+      #menubar
+        img.img(src='/svg/tkoaly.svg')
+        div#title Login
+      #content
+        form(action='/api/auth/requestPermissions', method='POST')
+          label(for='username')="Username"
+          input(type='text', name='username', id='username' placeholder='Username')
+          label(for='password')="Password"
+          input(type='password', name='password', id='password' placeholder='Password')
+          input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
+          input.accept(type='submit', name='accept', value='Login')

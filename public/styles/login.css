@@ -44,43 +44,45 @@ html {
   flex-direction: column;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  align-items: center;
+  justify-content: space-around;
   padding: 20px;
 }
 
 #title {
-  font-size: 2vw;
+  font-size: 1.8vw;
   margin-right: 20px;
   color: orange;
 }
 
-#personaldata {
-  margin: 15px;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  border: 2px dashed black;
-  width: 70%;
-}
-
-#confirmation {
-  width: 98%;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
 form {
-  display: inline-block;
-  width: 50%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  flex-direction: column;
 }
 
-input {
-  width: 40%;
-  height: 70%;
-  font-size: 1.4vw;
+input,
+button {
+  width: 60%;
+  height: 30px;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 1.1vw;
+}
+
+input[type="submit"] {
+  margin-top: 25px;
+  width: 30%;
+  height: 40px;
+}
+
+label {
+  width: 60%;
+  display: block;
+  text-align: left;
 }
 
 .cancel {
