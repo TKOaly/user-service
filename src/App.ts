@@ -9,6 +9,7 @@ import UserController from "./controllers/UserController";
 import UserService from "./services/UserService";
 import * as session from "express-session";
 import * as cookieParser from "cookie-parser";
+import Service from "./models/Service";
 
 const app = express();
 
@@ -57,8 +58,18 @@ app.use("/api/users", userController.createRoutes());
 
 // Test login page
 app.get("/", async (req, res) => {
-  const services = await authService.getServices();
-  return res.render("login", { services });
+  if (!req.query.serviceIdentifier) {
+    return res.status(400).send("Service identifier missing");
+  }
+
+  try {
+    const service: Service = await authService.getServiceWithIdentifier(
+      req.query.serviceIdentifier
+    );
+    return res.render("login", { service });
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
 });
 
 // Start server

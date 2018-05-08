@@ -7,17 +7,17 @@ html(lang="en")
       form(action='/api/auth/requestPermissions', method='POST')
         table
           tr
+            - let str = `Login to <b>${service.displayName}</b>`
+            td!=str
+          tr
             td
               input(type='text', name='username', placeholder='Username')
           tr
             td
               input(type='password', name='password', placeholder='Password')
-          tr
+              tr
             td
-              select(name='serviceIdentifier')
-                each service in services
-                  option(value=service.serviceIdentifier)
-                    label=service.displayName
+              input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           tr
             td
               input.accept(type='submit', name='accept', value='Kirjaudu')

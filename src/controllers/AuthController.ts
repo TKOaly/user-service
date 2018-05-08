@@ -84,7 +84,7 @@ export default class AuthController implements IController {
     ) {
       return res
         .status(400)
-        .json(new ServiceResponse(null, "Invalid POST params"));
+        .json(new ServiceResponse(null, "Invalid request params"));
     }
 
     let service: Service;
