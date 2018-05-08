@@ -33,6 +33,19 @@ export default class UserController implements IController {
       
     }
 
+    async getAllUsers(req: any, res: express.Response) {
+      if (req.authorization.userRole != 'yllapitaja') {
+        return res.status(403).json(new ServiceResponse(null, 'Forbidden'));
+      }
+
+      try {
+        let users = await this.userService.fetchAllUsers();
+        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())))
+      } catch(e) {
+        res.status(500).json(new ServiceResponse(null, e.message));
+      }
+    }
+
     async modifyMe(req: express.Request, res: express.Response) {
 
     }
@@ -43,6 +56,7 @@ export default class UserController implements IController {
 
     createRoutes() {
       this.route.get('/me', authorize, this.getMe.bind(this));
+      this.route.get('/', authorize, this.getAllUsers.bind(this));
       this.route.patch('/me', authorize, this.modifyMe.bind(this));
       this.route.post('/', this.createUser.bind(this));
       return this.route;

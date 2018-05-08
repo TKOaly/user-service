@@ -21,6 +21,11 @@ export default class UserService {
     return user;
   }
 
+  async fetchAllUsers(): Promise<User[]> {
+    let results = await this.knex.select().from('users');
+    return results.map(dbObj => new User(dbObj));
+  }
+
   async getUserWithUsernameAndPassword(username, password): Promise<User> {
     let userArray = await this.knex.select()
       .from('users')
