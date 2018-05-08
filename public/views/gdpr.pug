@@ -24,33 +24,6 @@ html(lang="en")
           input(type='hidden', name='userId', value=userId)
           input(type='hidden', name='serviceName', value=serviceName)
           input(type='hidden', name='redirectTo', value=redirectTo)
+          input(type='hidden', name='username', value=username)
+          input(type='hidden', name='password', value=password)
           input.accept(type='submit', name='accept', value='Hyväksy')
-script.
-  document.addEventListener("DOMContentLoaded", function(event) { 
-    var rejectForm = document.getElementById('formSubmitReject');
-    rejectForm.addEventListener('onsubmit', () => {});
-    var acceptForm = document.getElementById('formSubmitAccept')
-    acceptForm.onsubmit = function(event) {
-      event.preventDefault();
-      var json = JSON.stringify({
-        permission: event.target.children[0].value,
-        userId: Number(event.target.children[1].value),
-        serviceName: Number(event.target.children[2].value),
-        redirectTo: event.target.children[3].value
-      });
-      fetch(location.origin + '/api/auth/authenticate', {
-        method: 'POST',
-        body: json,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(r => r.json())
-        .then(response => {
-          if (response.ok) {
-            window.localStorage.setItem('token', response.payload.token);
-            location.href = response.payload.redirectTo;
-          } 
-        });
-    };
-  });
