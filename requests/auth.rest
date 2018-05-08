@@ -1,0 +1,9 @@
+POST http://localhost:5002/api/auth/requestPermissions HTTP/1.1
+content-type: application/json
+
+{
+    "username": "test_user",
+    "password": "test_user",
+    "serviceName": "event_calendar",
+    "redirectTo": "https://www.google.com"
+}

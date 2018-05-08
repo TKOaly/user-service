@@ -14,10 +14,10 @@ html(lang="en")
               input(type='password', name='password', placeholder='Password')
           tr
             td
-              input(type='text', name='serviceName', placeholder='Service Name')
-          tr
-            td
-              input(type='text', name='redirectTo', placeholder='Redirect url')
+              select(name='serviceIdentifier')
+                each service in services
+                  option(value=service.serviceIdentifier)
+                    label=service.displayName
           tr
             td
               input.accept(type='submit', name='accept', value='Kirjaudu')

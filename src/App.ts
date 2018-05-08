@@ -7,6 +7,8 @@ import AuthController from "./controllers/AuthController";
 import { AuthenticationService } from "./services/AuthenticationService";
 import UserController from "./controllers/UserController";
 import UserService from "./services/UserService";
+import * as session from "express-session";
+import * as cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -15,6 +17,16 @@ app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
     extended: true
+  })
+);
+app.use(cookieParser());
+app.set("trust proxy", 1); // trust first proxy
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: "auto", maxAge: 60000 }
   })
 );
 
@@ -44,8 +56,9 @@ app.use("/api/auth", authController.createRoutes());
 app.use("/api/users", userController.createRoutes());
 
 // Test login page
-app.get("/", (req, res) => {
-  return res.render("login");
+app.get("/", async (req, res) => {
+  const services = await authService.getServices();
+  return res.render("login", { services });
 });
 
 // Start server

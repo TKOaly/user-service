@@ -1,7 +1,7 @@
-import * as Knex from 'knex';
-import ServiceError from '../utils/ServiceError';
-import { generateHashWithPasswordAndSalt } from './AuthenticationService';
-import User from '../models/User';
+import * as Knex from "knex";
+import ServiceError from "../utils/ServiceError";
+import { generateHashWithPasswordAndSalt } from "./AuthenticationService";
+import User from "../models/User";
 
 export default class UserService {
   constructor(private knex: Knex) {
@@ -9,12 +9,13 @@ export default class UserService {
   }
 
   async fetchUser(userId: number) {
-    let result = await this.knex.select()
-      .from('users')
+    let result = await this.knex
+      .select()
+      .from("users")
       .where({ id: userId })
       .limit(1);
     if (!result.length) {
-      throw new ServiceError(404, 'Not found');
+      throw new ServiceError(404, "Not found");
     }
 
     let user = new User(result[0]);
@@ -22,24 +23,25 @@ export default class UserService {
   }
 
   async fetchAllUsers(): Promise<User[]> {
-    let results = await this.knex.select().from('users');
+    let results = await this.knex.select().from("users");
     return results.map(dbObj => new User(dbObj));
   }
 
   async getUserWithUsernameAndPassword(username, password): Promise<User> {
-    let userArray = await this.knex.select()
-      .from('users')
+    const dbUser = await this.knex
+      .select()
+      .from("users")
       .where({ username })
-      .limit(1);
-    if (!userArray.length) {
-      throw new ServiceError(404, 'User not found');
+      .first();
+    if (!dbUser) {
+      throw new ServiceError(404, "User not found");
     }
 
-    let user = new User(userArray[0]);
-    let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
+    const user = new User(dbUser);
+    const hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
     if (hashedPassword === user.hashedPassword) {
       return user;
     }
-    return null;
+    throw new ServiceError(400, "Passwords do not match");
   }
 }

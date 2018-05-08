@@ -1,12 +1,13 @@
 import * as express from "express";
 import { AuthenticationService } from "../services/AuthenticationService";
-import ServiceResponse from '../utils/ServiceResponse';
-import User from '../models/User';
-import UserService from '../services/UserService';
-import { URL } from 'url';
+import ServiceResponse from "../utils/ServiceResponse";
+import User from "../models/User";
+import UserService from "../services/UserService";
+import { URL } from "url";
 import Service from "../models/Service";
 import { IController } from "./IController";
 import { loadToken } from "../utils/Authorize";
+import bcrypt from "bcrypt";
 
 /**
  * @param {AuthenticatioService} authenticationService
@@ -22,26 +23,22 @@ export default class AuthController implements IController {
 
   async vanillaAuthenticate(req: any, res: express.Response) {
     let body: {
-      serviceName: string,
-      redirectTo: string,
-      permission: string,
-      userId: number,
-      username: string,
-      password: string
-    } = req.body;
-
-    if (!body.serviceName || !body.redirectTo || !body.permission || !body.userId || !body.username || !body.password) {
-      return res.status(400).json(new ServiceResponse(null, 'Invalid POST params'));
-    }
+      permission: string;
+    } =
+      req.body;
 
     if (!body.permission) {
-      res.redirect('https://members.tko-aly.fi');
+      return res.redirect("https://members.tko-aly.fi");
     }
 
     let user: User;
     try {
-      user = await this.userService.getUserWithUsernameAndPassword(body.username, new Buffer(body.password, 'base64').toString());
-    } catch(e) {
+      user = await this.userService.getUserWithUsernameAndPassword(
+        req.session.user.username,
+        req.session.user.password
+      );
+      // SHA1 to BCrypt conversion
+    } catch (e) {
       return res
         .status(e.httpErrorCode)
         .json(new ServiceResponse(null, e.message));
@@ -51,28 +48,37 @@ export default class AuthController implements IController {
 
     try {
       if (req.authorization) {
-        token = this.authService.appendNewServiceAuthenticationToToken(req.authorization, body.serviceName)
+        token = this.authService.appendNewServiceAuthenticationToToken(
+          req.authorization,
+          req.session.user.serviceIdentifier
+        );
       } else {
-        token = this.authService.createToken(body.userId, user.role, [body.serviceName]);
+        token = this.authService.createToken(
+          req.session.user.userId,
+          user.role,
+          [req.session.user.serviceIdentifier]
+        );
       }
     } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
 
-    res.cookie('token', token, {
+    let redirectTo = req.session.user.redirectTo;
+    req.session.user = null;
+
+    res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: 'localhost'
+      domain: "localhost"
     });
 
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Credentials', 'true');
-    res.redirect(req.body.redirectTo);
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Credentials", "true");
+    res.redirect(redirectTo);
   }
 
   async requestPermissions(req: any, res: express.Response) {
     if (
-      !req.body.serviceName ||
-      !req.body.redirectTo ||
+      !req.body.serviceIdentifier ||
       !req.body.username ||
       !req.body.password
     ) {
@@ -81,9 +87,24 @@ export default class AuthController implements IController {
         .json(new ServiceResponse(null, "Invalid POST params"));
     }
 
+    let service: Service;
+    try {
+      service = await this.authService.getServiceWithIdentifier(
+        req.body.serviceIdentifier
+      );
+    } catch (e) {
+      return res
+        .status(e.httpErrorCode)
+        .json(new ServiceResponse(null, e.message));
+    }
+
     if (req.authorization) {
-      if (req.authorization.authenticatedTo.indexOf(req.body.serviceName) > -1) {
-        return res.redirect(req.body.redirectTo);
+      console.log(req.authorization);
+      if (
+        req.authorization.authenticatedTo.indexOf(req.body.serviceIdentifier) >
+        -1
+      ) {
+        return res.redirect(service.redirectUrl);
       }
     }
 
@@ -100,33 +121,31 @@ export default class AuthController implements IController {
         .json(new ServiceResponse(null, e.message));
     }
 
-    let service: Service;
-
-    try {
-      service = await this.authService.getService(req.body.serviceName);
-    } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
-    }
-
     Object.keys(user).forEach((key, idx) => {
       // We always need the users role so that's why we include 1024
-      if ((Math.pow(2, idx) & (service.dataPermissions | 512)) == Math.pow(2, idx)) {
+      if (
+        (Math.pow(2, idx) & (service.dataPermissions | 512)) ==
+        Math.pow(2, idx)
+      ) {
         keys.push({
           name: key,
           value: user[key]
         });
       }
     });
-
-      res.render('gdpr', {
+    console.log(keys);
+    // Set session
+    req.session.user = {
       userId: user.id,
-      personalInformation: keys,
-      serviceName: service.serviceName,
-      redirectTo: req.body.redirectTo || '',
       username: req.body.username,
-      password: new Buffer(req.body.password).toString('base64')
+      password: req.body.password,
+      serviceIdentifier: service.serviceIdentifier,
+      redirectTo: service.redirectUrl
+    };
+
+    res.render("gdpr", {
+      personalInformation: keys,
+      serviceDisplayName: service.displayName
     });
   }
 
@@ -137,9 +156,10 @@ export default class AuthController implements IController {
       this.vanillaAuthenticate.bind(this)
     );
     this.route.post(
-      "/requestPermissions", 
-      loadToken, 
-      this.requestPermissions.bind(this));
+      "/requestPermissions",
+      loadToken,
+      this.requestPermissions.bind(this)
+    );
     return this.route;
   }
 }

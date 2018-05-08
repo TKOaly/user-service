@@ -9,7 +9,7 @@ html(lang="en")
         img.img(src='/svg/tkoaly.svg')
         div#title Käyttöoikeuspyyntö
       #content
-        p <b class='service'>#{serviceName}</b> pyytää sinulta oikeutta käyttää alla lueteltuja henkilötietojasi.
+        p <b class='service'>#{serviceDisplayName}</b> pyytää sinulta oikeutta käyttää alla lueteltuja henkilötietojasi.
         #personaldata
           ul
             each info in personalInformation
@@ -21,9 +21,4 @@ html(lang="en")
           input.cancel(type='submit', name='cancel', value='Hylkää')
         form(id='formSubmitAccept', action='/api/auth/vanillaAuthenticate', method='POST')
           input(type='hidden', name='permission', value='yes')
-          input(type='hidden', name='userId', value=userId)
-          input(type='hidden', name='serviceName', value=serviceName)
-          input(type='hidden', name='redirectTo', value=redirectTo)
-          input(type='hidden', name='username', value=username)
-          input(type='hidden', name='password', value=password)
           input.accept(type='submit', name='accept', value='Hyväksy')
