@@ -99,7 +99,6 @@ export default class AuthController implements IController {
     }
 
     if (req.authorization) {
-      console.log(req.authorization);
       if (
         req.authorization.authenticatedTo.indexOf(req.body.serviceIdentifier) >
         -1
@@ -133,7 +132,7 @@ export default class AuthController implements IController {
         });
       }
     });
-    console.log(keys);
+
     // Set session
     req.session.user = {
       userId: user.id,
