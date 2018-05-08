@@ -19,14 +19,18 @@ export default class UserController implements IController {
     }
 
     async getMe(req: any, res: express.Response) {
-      if (!req.query.dataRequest) {
-        return res.status(400).json(new ServiceResponse(null, 'Missing data request query'));
+      if (!req.header('service')) {
+        return res.status(400).json(new ServiceResponse(null, 'No service defined'));
       }
 
-      let dataRequest: number = Number(req.query.dataRequest)
+      if (req.authorization.authenticatedTo.indexOf(req.header('service')) < 0) {
+        return res.status(403).json(new ServiceResponse(null, 'User not authorized to service'));
+      }
+
+      let serviceDataPermissions = (await this.authenticationService.getService(req.header('service'))).dataPermissions;
       try {
         let user = await this.userService.fetchUser(req.authorization.userId);
-        res.status(200).json(new ServiceResponse(user.removeNonRequestedData(dataRequest)));
+        res.status(200).json(new ServiceResponse(user.removeNonRequestedData(serviceDataPermissions)));
       } catch(e) {
         res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
       }
