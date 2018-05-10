@@ -27,6 +27,21 @@ export default class UserService {
     return results.map(dbObj => new User(dbObj));
   }
 
+  async searchUsers(searchTerm: string): Promise<User[]> {
+    let results = await this.knex
+      .select()
+      .from('users')
+      .where('username', 'like', `%${searchTerm}%`)
+      .orWhere('name', 'like', `%${searchTerm}%`)
+      .orWhere('screen_name', 'like', `%${searchTerm}%`)
+      .orWhere('email', 'like', `%${searchTerm}%`);
+    if (!results.length) {
+      throw new ServiceError(404, 'No results returned');
+    }
+
+    return results.map(res => new User(res));
+  }
+
   async getUserWithUsernameAndPassword(username, password): Promise<User> {
     const dbUser = await this.knex
       .select()

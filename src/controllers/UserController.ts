@@ -42,6 +42,17 @@ export default class UserController implements IController {
         return res.status(403).json(new ServiceResponse(null, 'Forbidden'));
       }
 
+      // Request is a search
+      if (req.query.searchTerm) {
+        try {
+          let users = await this.userService.searchUsers(req.query.searchTerm);
+          return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())))
+        } catch(e) {
+          res.status(500).json(new ServiceResponse(null, e.message));
+        }
+        return;
+      }
+
       try {
         let users = await this.userService.fetchAllUsers();
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())))
