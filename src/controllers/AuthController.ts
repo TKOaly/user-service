@@ -6,7 +6,6 @@ import UserService from "../services/UserService";
 import { URL } from "url";
 import Service from "../models/Service";
 import { IController } from "./IController";
-import bcrypt from "bcrypt";
 import AuthrizaMiddleware from "../utils/AuthorizeMiddleware";
 
 /**

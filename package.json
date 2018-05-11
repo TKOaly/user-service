@@ -30,6 +30,7 @@
     "create-uuid": "node_modules/.bin/ts-node src/create_uuid.ts"
   },
   "devDependencies": {
+    "@types/bcrypt": "^2.0.0",
     "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.11.1",
     "@types/express-session": "^1.15.8",

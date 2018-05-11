@@ -59,4 +59,13 @@ export default class UserService {
     }
     throw new ServiceError(400, "Passwords do not match");
   }
+
+  /**
+   * Checks if usernae is available.
+   * @param username 
+   */
+  async checkUsernameAvailability(username: string): Promise<boolean> {
+    let result: any = this.knex('users').count('users');
+    return result.users === 0;
+  }
 }
