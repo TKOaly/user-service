@@ -10,6 +10,7 @@ import UserService from "./services/UserService";
 import * as session from "express-session";
 import * as cookieParser from "cookie-parser";
 import Service from "./models/Service";
+import LoginController from "./controllers/LoginController";
 
 const app = express();
 
@@ -51,26 +52,12 @@ const userService = new UserService(knex);
 // Routes
 const authController = new AuthController(authService, userService);
 const userController = new UserController(userService, authService);
+const loginController = new LoginController(authService);
 
 // API routes
 app.use("/api/auth", authController.createRoutes());
 app.use("/api/users", userController.createRoutes());
-
-// Test login page
-app.get("/", async (req, res) => {
-  if (!req.query.serviceIdentifier) {
-    return res.status(400).send("Service identifier missing");
-  }
-
-  try {
-    const service: Service = await authService.getServiceWithIdentifier(
-      req.query.serviceIdentifier
-    );
-    return res.render("login", { service });
-  } catch (err) {
-    return res.status(400).send(err.message);
-  }
-});
+app.use('/', loginController.createRoutes());
 
 // Start server
 app.listen(process.env.USERSERVICE_PORT || 3000, () => {
