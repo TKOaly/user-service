@@ -23,5 +23,6 @@ const mysql = {
 module.exports = {
   development: mysql,
   staging: mysql,
-  production: mysql
+  production: mysql,
+  test: mysql
 };

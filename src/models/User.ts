@@ -16,7 +16,7 @@ export default class User {
   isTKTL: boolean;
   isDeleted: boolean;
 
-  constructor(userDatabaseObject: any) {
+  constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;
     this.name = userDatabaseObject.name;
@@ -25,7 +25,7 @@ export default class User {
     this.residence = userDatabaseObject.residence;
     this.phone = userDatabaseObject.phone;
     this.isHYYMember = userDatabaseObject.hyy_member == 1 ? true : false;
-    this.membership = userDatabaseObject.memership;
+    this.membership = userDatabaseObject.membership;
     this.role = userDatabaseObject.role;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
@@ -41,12 +41,30 @@ export default class User {
     return this;
   }
 
-  removeNonRequestedData(dataRequest: number) { 
+  removeNonRequestedData(dataRequest: number) {
     Object.keys(this.removeSensitiveInformation()).forEach((key, i) => {
       let val = Math.pow(2, i);
-      if (val == null || (val & dataRequest) != val)
-        delete this[key];
+      if (val == null || (val & dataRequest) != val) delete this[key];
     });
     return this;
   }
+}
+
+interface UserDatabaseObject {
+  id?: number;
+  username?: string;
+  name?: string;
+  screen_name?: string;
+  email?: string;
+  residence?: string;
+  phone?: string;
+  hyy_member?: number;
+  membership?: string;
+  role?: string;
+  salt?: string;
+  hashed_password?: string;
+  created?: Date;
+  modified?: Date;
+  tktl?: number;
+  deleted?: number;
 }
