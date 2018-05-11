@@ -122,18 +122,7 @@ export default class AuthController implements IController {
         .json(new ServiceResponse(null, e.message));
     }
 
-    Object.keys(user.removeSensitiveInformation()).forEach((key, idx) => {
-      // We always need the users role so that's why we include 1024
-      if (
-        (Math.pow(2, idx) & (service.dataPermissions | 512)) ==
-        Math.pow(2, idx)
-      ) {
-        keys.push({
-          name: key,
-          value: user[key]
-        });
-      }
-    });
+    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512)).map(key => ({ name: key, value: user[key] }));
 
     // Set session
     req.session.user = {
