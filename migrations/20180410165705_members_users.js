@@ -9,15 +9,15 @@ exports.up = function(knex, Promise) {
         table.string("email", 255);
         table.string("residence", 255);
         table.string("phone", 255);
-        table.integer("hyy_member", 1);
+        table.specificType('hyy_member', 'tinyint(1) DEFAULT NULL');
         table.string("membership", 20);
         table.datetime("created");
         table.datetime("modified");
-        table.string("hashed_password", 40);
+        table.specificType('hashed_password', 'char(40) DEFAULT NULL');
         table.string("salt", 20);
         table.string("role", 40);
-        table.integer("tktl", 1);
-        table.integer("deleted", 1);
+        table.specificType('tktl', 'tinyint(1) DEFAULT NULL');
+        table.specificType('deleted', 'tinyint(1) DEFAULT NULL');
       });
     }
   });
