@@ -6,7 +6,7 @@ export default class Service {
   redirectUrl: string;
   dataPermissions: number;
 
-  constructor(databaseObject: any) {
+  constructor(databaseObject: ServiceDatabaseObject) {
     this.id = databaseObject.id;
     this.serviceName = databaseObject.service_name;
     this.displayName = databaseObject.display_name;
@@ -14,4 +14,13 @@ export default class Service {
     this.serviceIdentifier = databaseObject.service_identifier;
     this.dataPermissions = databaseObject.data_permissions;
   }
+}
+
+interface ServiceDatabaseObject {
+  id?: number;
+  service_name?: string;
+  display_name?: string;
+  redirect_url?: string;
+  service_identifier?: string;
+  data_permissions?: number;
 }
