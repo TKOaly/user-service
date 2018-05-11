@@ -30,7 +30,7 @@ export class AuthenticationService {
     let user = new User(userArray[0]);
     let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
     if (hashedPassword === user.hashedPassword) {
-      return this.createToken(user.id, user.role, []);
+      return this.createToken(user.id, []);
     } else throw new ServiceError(403, "Password or username doesn't match");
   }
 
@@ -78,7 +78,6 @@ export class AuthenticationService {
       token = new ServiceToken(
         oldToken.userId,
         oldToken.authenticatedTo,
-        oldToken.userRole,
         oldToken.createdAt
       );
     if (token.authenticatedTo) {
@@ -95,14 +94,12 @@ export class AuthenticationService {
 
   createToken(
     userId: number,
-    userRole: string,
     authenticatedTo: string[]
   ): string {
     try {
       return new ServiceToken(
         userId,
         authenticatedTo,
-        userRole,
         new Date()
       ).toString();
     } catch (e) {

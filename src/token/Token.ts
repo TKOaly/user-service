@@ -4,7 +4,6 @@ export class ServiceToken {
   constructor(
     public userId: number,
     public authenticatedTo: string[],
-    public userRole: string,
     public createdAt: Date
   ) { }
 
@@ -13,7 +12,6 @@ export class ServiceToken {
       return JWT.sign({
         userId: this.userId,
         authenticatedTo: this.authenticatedTo.join(','),
-        userRole: this.userRole,
         createdAt: this.createdAt
       }, process.env.AUTHSERVICE_JWT_SECRET);
     } catch (e) {
@@ -29,5 +27,5 @@ export function stringToServiceToken(token: string): ServiceToken {
   } catch(e) {
     throw e;
   }
-  return new ServiceToken(parsedToken.userId, parsedToken.authenticatedTo.split(','), parsedToken.userRole, parsedToken.createdAt);
+  return new ServiceToken(parsedToken.userId, parsedToken.authenticatedTo.split(','), parsedToken.createdAt);
 }

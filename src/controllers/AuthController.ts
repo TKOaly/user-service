@@ -6,19 +6,22 @@ import UserService from "../services/UserService";
 import { URL } from "url";
 import Service from "../models/Service";
 import { IController } from "./IController";
-import { loadToken } from "../utils/Authorize";
 import bcrypt from "bcrypt";
+import AuthrizaMiddleware from "../utils/AuthorizeMiddleware";
 
 /**
  * @param {AuthenticatioService} authenticationService
  */
 export default class AuthController implements IController {
   route: express.Router;
+  authorizeMiddleware: AuthrizaMiddleware;
+
   constructor(
     private authService: AuthenticationService,
     private userService: UserService
   ) {
     this.route = express.Router();
+    this.authorizeMiddleware = new AuthrizaMiddleware(this.userService);
   }
 
   async vanillaAuthenticate(req: any, res: express.Response) {
@@ -49,13 +52,12 @@ export default class AuthController implements IController {
     try {
       if (req.authorization) {
         token = this.authService.appendNewServiceAuthenticationToToken(
-          req.authorization,
+          req.authorization.token,
           req.session.user.serviceIdentifier
         );
       } else {
         token = this.authService.createToken(
           req.session.user.userId,
-          user.role,
           [req.session.user.serviceIdentifier]
         );
       }
@@ -100,7 +102,7 @@ export default class AuthController implements IController {
 
     if (req.authorization) {
       if (
-        req.authorization.authenticatedTo.indexOf(req.body.serviceIdentifier) >
+        req.authorization.token.authenticatedTo.indexOf(req.body.serviceIdentifier) >
         -1
       ) {
         return res.redirect(service.redirectUrl);
@@ -152,12 +154,12 @@ export default class AuthController implements IController {
   createRoutes() {
     this.route.post(
       "/vanillaAuthenticate",
-      loadToken,
+      this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
       this.vanillaAuthenticate.bind(this)
     );
     this.route.post(
       "/requestPermissions",
-      loadToken,
+      this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
       this.requestPermissions.bind(this)
     );
     return this.route;
