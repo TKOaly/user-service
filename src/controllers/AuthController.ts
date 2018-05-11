@@ -144,7 +144,8 @@ export default class AuthController implements IController {
 
     res.render("gdpr", {
       personalInformation: keys,
-      serviceDisplayName: service.displayName
+      serviceDisplayName: service.displayName,
+      redirectTo: service.redirectUrl
     });
   }
 

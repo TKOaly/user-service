@@ -30,6 +30,9 @@ Shows the user a login form, that authenticates to a service identified by the s
 
 If the user is already authenticated to the service, the form will redirect the user to the service specified.
 
+![Login page](doc/login_page.png)
+![Permission page](doc/permission.png)
+
 ### `POST /api/auth/requestPermissions`
 
 Authenticates a user with username, password and a service identifier. It returns a authorization token which can be used to fetch user information.

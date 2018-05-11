@@ -6,16 +6,20 @@ html(lang="en")
   body
     #container
       #menubar
-        img.img(src='/svg/tkoaly.svg')
-        div#title Käyttöoikeuspyyntö
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title Käyttöoikeuspyyntö
       #content
-        p <b class='service'>#{serviceDisplayName}</b> pyytää sinulta oikeutta käyttää alla lueteltuja henkilötietojasi.
+        p <b class='service'>#{serviceDisplayName}</b>-palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä.
+        p Palvelu haluaa luvan käyttää alla lueteltuja henkilötietoja.
         #personaldata
           ul
             each info in personalInformation
               li #{info.name}: <b>#{info.value}</b>
-        p Palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä. Muussa tapauksessa palvelu ohjaa sinut takaisin TKO-äly ry:n etusivulle.
+        p Sinut uudelleenohjataan hyväksymisen jälkeen osoitteeseen <b>#{redirectTo}</b>
         p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
+
       #confirmation
         form(id='formSubmitReject', action='/api/auth/vanillaAuthenticate', method='POST')
           input.cancel(type='submit', name='cancel', value='Hylkää')

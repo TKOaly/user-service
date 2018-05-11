@@ -6,8 +6,10 @@ html(lang="en")
   body
     #container
       #menubar
-        img.img(src='/svg/tkoaly.svg')
-        div#title Login
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title Login
       #content
         form(action='/api/auth/requestPermissions', method='POST')
           label(for='username')="Username"
