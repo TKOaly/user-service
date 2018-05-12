@@ -107,3 +107,35 @@ label {
 b.service {
   font-size: 1.4vw;
 }
+
+@media only screen and (max-width: 900px) {
+  #container {
+    background-color: white;
+    width: 100%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+
+  #content {
+    width: 100%;
+    border-bottom: 1px solid #c9c9c9;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  #logo-container {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #title {
+    font-size: 50px;
+    color: black;
+  }
+}
