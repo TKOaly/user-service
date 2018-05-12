@@ -4,7 +4,7 @@ import Dao from "./Dao";
 import * as Promise from "bluebird";
 
 /**
- * ServideDao.
+ * ServiceDao.
  */
 export default class ServiceDao implements Dao<Service> {
   constructor(private readonly knex: Knex) {}
