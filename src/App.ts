@@ -57,7 +57,7 @@ const userService = new UserService(new UserDao(knex));
 // Routes
 const authController = new AuthController(authService, userService);
 const userController = new UserController(userService, authService);
-const loginController = new LoginController(authService);
+const loginController = new LoginController(authService, userService);
 
 // API routes
 app.use("/api/auth", authController.createRoutes());
