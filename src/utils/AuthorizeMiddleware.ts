@@ -4,16 +4,56 @@ import { stringToServiceToken, ServiceToken } from "../token/Token";
 import UserService from "../services/UserService";
 import User from "../models/User";
 
+/**
+ * IASRequest interface.
+ *
+ * @interface IASRequest
+ * @extends {express.Request}
+ */
 interface IASRequest extends express.Request {
+  /**
+   * Authorization data.
+   * @memberof IASRequest
+   */
   authorization: {
-    user: User,
-    token: ServiceToken
-  }
+    /**
+     * User
+     *
+     * @type {User}
+     */
+    user: User;
+    /**
+     * Service token
+     *
+     * @type {ServiceToken}
+     */
+    token: ServiceToken;
+  };
 }
 
+/**
+ * Authorize middleware.
+ *
+ * @export
+ * @class AuthorizeMiddleware
+ */
 export default class AuthorizeMiddleware {
+  /**
+   * Creates an instance of AuthorizeMiddleware.
+   * @param {UserService} userService
+   * @memberof AuthorizeMiddleware
+   */
   constructor(private userService: UserService) {}
 
+  /**
+   * Authorizes the user.
+   *
+   * @param {IASRequest} req
+   * @param {express.Response} res
+   * @param {express.NextFunction} next
+   * @returns
+   * @memberof AuthorizeMiddleware
+   */
   async authorize(
     req: IASRequest,
     res: express.Response,
@@ -29,14 +69,25 @@ export default class AuthorizeMiddleware {
         req.authorization = {
           user,
           token: parsedToken
-        }
+        };
         return next();
       } catch (e) {
-        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+        return res
+          .status(e.httpStatusCode || 500)
+          .json(new ServiceResponse(null, e.message));
       }
     }
-  } 
+  }
 
+  /**
+   * Loads the token.
+   *
+   * @param {IASRequest} req
+   * @param {express.Response} res
+   * @param {express.NextFunction} next
+   * @returns
+   * @memberof AuthorizeMiddleware
+   */
   async loadToken(
     req: IASRequest,
     res: express.Response,
@@ -50,13 +101,15 @@ export default class AuthorizeMiddleware {
         req.authorization = {
           user,
           token: parsedToken
-        }
+        };
         return next();
       } catch (e) {
-        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+        return res
+          .status(e.httpStatusCode || 500)
+          .json(new ServiceResponse(null, e.message));
       }
     }
-  
+
     if (req.cookies.token) {
       try {
         let parsedToken = stringToServiceToken(req.cookies.token);
@@ -64,10 +117,12 @@ export default class AuthorizeMiddleware {
         req.authorization = {
           user,
           token: parsedToken
-        }
+        };
         return next();
       } catch (e) {
-        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+        return res
+          .status(e.httpStatusCode || 500)
+          .json(new ServiceResponse(null, e.message));
       }
     }
     return next();

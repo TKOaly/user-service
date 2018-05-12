@@ -3,11 +3,28 @@ import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
 import User from "../models/User";
 import UserDao from "../dao/UserDao";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 
+/**
+ * User service.
+ * 
+ * @export
+ * @class UserService
+ */
 export default class UserService {
+  /**
+   * Creates an instance of UserService.
+   * @param {UserDao} userDao
+   * @memberof UserService
+   */
   constructor(private readonly userDao: UserDao) {}
-
+  /**
+   * Returns a single user from the database.
+   *
+   * @param {number} userId
+   * @returns
+   * @memberof UserService
+   */
   async fetchUser(userId: number) {
     let result = await this.userDao.findOne(userId);
     if (!result) {
@@ -38,7 +55,11 @@ export default class UserService {
     }
 
     const user = new User(dbUser);
-    let isPasswordCorrect = await validatePassword(password, user.salt, user.hashedPassword);
+    let isPasswordCorrect = await validatePassword(
+      password,
+      user.salt,
+      user.hashedPassword
+    );
     if (isPasswordCorrect) {
       return user;
     }

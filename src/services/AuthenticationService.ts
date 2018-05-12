@@ -7,9 +7,21 @@ import Service from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
 import UserDao from "../dao/UserDao";
 import ServiceDao from "../dao/ServiceDao";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 
+/**
+ * Authentication service.
+ *
+ * @export
+ * @class AuthenticationService
+ */
 export class AuthenticationService {
+  /**
+   * Creates an instance of AuthenticationService.
+   * @param {UserDao} userDao UserDao
+   * @param {ServiceDao} serviceDao ServiceDao
+   * @memberof AuthenticationService
+   */
   constructor(
     private readonly userDao: UserDao,
     private readonly serviceDao: ServiceDao
@@ -21,19 +33,33 @@ export class AuthenticationService {
    * @param {string} password
    * @returns {Promise<Token>}
    */
-  async fetchTokenWithUsernameAndPassword(username, password): Promise<string> {
+  async fetchTokenWithUsernameAndPassword(
+    username: string,
+    password: string
+  ): Promise<string> {
     const dbUser = await this.userDao.findByUsername(username);
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
 
     const user = new User(dbUser);
-    let isPasswordCorrect = await validatePassword(password, user.salt, user.hashedPassword);
+    let isPasswordCorrect = await validatePassword(
+      password,
+      user.salt,
+      user.hashedPassword
+    );
     if (isPasswordCorrect) {
       return this.createToken(user.id, []);
     } else throw new ServiceError(403, "Password or username doesn't match");
   }
 
+  /**
+   * Returns a single service by its name.
+   *
+   * @param {string} serviceName
+   * @returns {Promise<Service>}
+   * @memberof AuthenticationService
+   */
   async getService(serviceName: string): Promise<Service> {
     const service = await this.serviceDao.findByName(serviceName);
     if (!service) {
@@ -42,6 +68,13 @@ export class AuthenticationService {
     return new Service(service);
   }
 
+  /**
+   * Returns a single service by its identifier.
+   *
+   * @param {string} service_identifier
+   * @returns {Promise<Service>}
+   * @memberof AuthenticationService
+   */
   async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
     const service = await this.serviceDao.findByIdentifier(service_identifier);
     if (!service) {
@@ -50,24 +83,40 @@ export class AuthenticationService {
     return new Service(service);
   }
 
+  /**
+   * Returns all services.
+   *
+   * @returns {Promise<Service[]>}
+   * @memberof AuthenticationService
+   */
   async getServices(): Promise<Service[]> {
     const services = await this.serviceDao.findAll();
 
     return services.map(service => new Service(service));
   }
 
+  /**
+   * Appends a new service to the authentication token.
+   *
+   * @param {(string | any)} oldToken
+   * @param {string} newServiceName
+   * @returns {string}
+   * @memberof AuthenticationService
+   */
   appendNewServiceAuthenticationToToken(
     oldToken: string | any,
     newServiceName: string
   ): string {
     let token: ServiceToken;
-    if (typeof oldToken == "string") token = stringToServiceToken(oldToken);
-    else
+    if (typeof oldToken == "string") {
+      token = stringToServiceToken(oldToken);
+    } else {
       token = new ServiceToken(
         oldToken.userId,
         oldToken.authenticatedTo,
         oldToken.createdAt
       );
+    }
     if (token.authenticatedTo) {
       token.authenticatedTo.push(newServiceName);
     } else {
@@ -80,6 +129,14 @@ export class AuthenticationService {
     }
   }
 
+  /**
+   * Creates token.
+   *
+   * @param {number} userId
+   * @param {string[]} authenticatedTo
+   * @returns {string}
+   * @memberof AuthenticationService
+   */
   createToken(userId: number, authenticatedTo: string[]): string {
     try {
       return new ServiceToken(userId, authenticatedTo, new Date()).toString();
@@ -90,12 +147,22 @@ export class AuthenticationService {
 }
 
 /**
+ * Validates password.
+ *
+ * @export
  * @param {string} password
  * @param {string} salt
- * @returns {string}
+ * @param {string} hashedPassword
+ * @returns {Promise<boolean>}
  */
-export async function validatePassword(password, salt, hashedPassword): Promise<boolean> {
+export async function validatePassword(
+  password: string,
+  salt: string,
+  hashedPassword: string
+): Promise<boolean> {
   if (salt == null && hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
-  } else return sha1(`${salt}kekbUr${password}`) === hashedPassword;
+  } else {
+    return sha1(`${salt}kekbUr${password}`) === hashedPassword;
+  }
 }

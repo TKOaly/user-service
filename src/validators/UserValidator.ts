@@ -4,15 +4,56 @@ import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 import * as validator from "validator";
 
+/**
+ * Additional user data.
+ *
+ * @interface AdditionalUserData
+ */
 interface AdditionalUserData {
+  /**
+   * Password.
+   *
+   * @type {string} Password
+   * @memberof AdditionalUserData
+   */
   password1: string;
+  /**
+   * Password (typed again).
+   *
+   * @type {string} Password
+   * @memberof AdditionalUserData
+   */
   password2: string;
+  /**
+   * Is the user deleted or not.
+   *
+   * @type {boolean}
+   * @memberof AdditionalUserData
+   */
   deleted: boolean;
 }
 
+/**
+ * User validator.
+ *
+ * @export
+ * @class UserValidator
+ * @implements {IValidator<User>}
+ */
 export default class UserValidator implements IValidator<User> {
+  /**
+   * Creates an instance of UserValidator.
+   * @param {UserService} userService
+   * @memberof UserValidator
+   */
   constructor(private userService: UserService) {}
 
+  /**
+   * Validates user creation.
+   *
+   * @param {(User & AdditionalUserData)} newUser
+   * @memberof UserValidator
+   */
   async validateCreate(newUser: User & AdditionalUserData) {
     // Discard user id
     delete newUser.id;
@@ -59,5 +100,12 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
+  /**
+   * Validates user update.
+   *
+   * @param {number} userId
+   * @param {User} newData
+   * @memberof UserValidator
+   */
   async validateUpdate(userId: number, newData: User) {}
 }

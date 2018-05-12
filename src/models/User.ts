@@ -1,21 +1,128 @@
+/**
+ * User object.
+ *
+ * @export
+ * @class User
+ */
 export default class User {
+  /**
+   * User id
+   *
+   * @type {number}
+   * @memberof User
+   */
   id: number;
+  /**
+   * Username
+   *
+   * @type {string}
+   * @memberof User
+   */
   username: string;
+  /**
+   * Name
+   *
+   * @type {string}
+   * @memberof User
+   */
   name: string;
+  /**
+   * Screen name
+   *
+   * @type {string}
+   * @memberof User
+   */
   screenName: string;
+  /**
+   * Email
+   *
+   * @type {string}
+   * @memberof User
+   */
   email: string;
+  /**
+   * Residence
+   *
+   * @type {string}
+   * @memberof User
+   */
   residence: string;
+  /**
+   * Phone
+   *
+   * @type {string}
+   * @memberof User
+   */
   phone: string;
+  /**
+   * Is the user a HYY member or not
+   *
+   * @type {boolean}
+   * @memberof User
+   */
   isHYYMember: boolean;
+  /**
+   * Membership status
+   *
+   * @type {string}
+   * @memberof User
+   */
   membership: string;
+  /**
+   * Role
+   *
+   * @type {string}
+   * @memberof User
+   */
   role: string;
+  /**
+   * Salt
+   *
+   * @type {string}
+   * @memberof User
+   */
   salt: string;
+  /**
+   * Password hash (sha1 or BCrypt)
+   *
+   * @type {string}
+   * @memberof User
+   */
   hashedPassword: string;
+  /**
+   * Date when the user was created at.
+   *
+   * @type {Date}
+   * @memberof User
+   */
   createdAt: Date;
+  /**
+   * Date when the user was last modified.
+   *
+   * @type {Date}
+   * @memberof User
+   */
   modifiedAt: Date;
+  /**
+   * Is the user a TKTL member or not.
+   *
+   * @type {boolean}
+   * @memberof User
+   */
   isTKTL: boolean;
+  /**
+   * Is the user deleted or not.
+   *
+   * @type {boolean}
+   * @memberof User
+   */
   isDeleted: boolean;
 
+  /**
+   * Creates an instance of User.
+   * @param {UserDatabaseObject} userDatabaseObject User database object
+   * @memberof User
+   */
   constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;
@@ -35,12 +142,25 @@ export default class User {
     this.isDeleted = userDatabaseObject.deleted == 1 ? true : false;
   }
 
+  /**
+   * Removes sensitive information from a user.
+   *
+   * @returns User object with sensitive information removed
+   * @memberof User
+   */
   removeSensitiveInformation() {
     delete this.salt;
     delete this.hashedPassword;
     return this;
   }
 
+  /**
+   * Removes non-requested user data.
+   *
+   * @param {number} dataRequest Data request number
+   * @returns
+   * @memberof User User with non-requested data removed
+   */
   removeNonRequestedData(dataRequest: number) {
     Object.keys(this.removeSensitiveInformation()).forEach((key, i) => {
       let val = Math.pow(2, i);
@@ -49,7 +169,13 @@ export default class User {
     return this;
   }
 
-  getDatabaseObject() {
+  /**
+   * Returns a database object.
+   *
+   * @returns {UserDatabaseObject} User database object
+   * @memberof User
+   */
+  getDatabaseObject(): UserDatabaseObject {
     return {
       id: this.id,
       username: this.username,
@@ -66,10 +192,15 @@ export default class User {
       created: this.createdAt || new Date(),
       modified: new Date(),
       deleted: this.isDeleted
-    }
+    };
   }
 }
 
+/**
+ * User database object.
+ *
+ * @interface UserDatabaseObject
+ */
 interface UserDatabaseObject {
   id?: number;
   username?: string;
@@ -78,13 +209,13 @@ interface UserDatabaseObject {
   email?: string;
   residence?: string;
   phone?: string;
-  hyy_member?: number;
+  hyy_member?: number | boolean;
   membership?: string;
   role?: string;
   salt?: string;
   hashed_password?: string;
   created?: Date;
   modified?: Date;
-  tktl?: number;
-  deleted?: number;
+  tktl?: number | boolean;
+  deleted?: number | boolean;
 }

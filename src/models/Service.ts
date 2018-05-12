@@ -1,11 +1,58 @@
+/**
+ * Service object.
+ *
+ * @export
+ * @class Service
+ */
 export default class Service {
+  /**
+   * Service id.
+   *
+   * @type {number}
+   * @memberof Service
+   */
   id: number;
+  /**
+   * Service name.
+   *
+   * @type {string}
+   * @memberof Service
+   */
   serviceName: string;
+  /**
+   * Service identifier.
+   *
+   * @type {string}
+   * @memberof Service
+   */
   serviceIdentifier: string;
+  /**
+   * Display name.
+   *
+   * @type {string}
+   * @memberof Service
+   */
   displayName: string;
+  /**
+   * Redirect url.
+   *
+   * @type {string}
+   * @memberof Service
+   */
   redirectUrl: string;
+  /**
+   * Data permissions.
+   *
+   * @type {number}
+   * @memberof Service
+   */
   dataPermissions: number;
 
+  /**
+   * Creates an instance of Service.
+   * @param {ServiceDatabaseObject} databaseObject
+   * @memberof Service
+   */
   constructor(databaseObject: ServiceDatabaseObject) {
     this.id = databaseObject.id;
     this.serviceName = databaseObject.service_name;
@@ -16,6 +63,11 @@ export default class Service {
   }
 }
 
+/**
+ * Service database object.
+ *
+ * @interface ServiceDatabaseObject
+ */
 interface ServiceDatabaseObject {
   id?: number;
   service_name?: string;

@@ -4,15 +4,20 @@ import Dao from "./Dao";
 import * as Promise from "bluebird";
 
 /**
- * UserDao.
+ * User dao.
+ *
+ * @export
+ * @class UserDao
+ * @implements {Dao<User>}
  */
 export default class UserDao implements Dao<User> {
+  /**
+   * Creates an instance of UserDao.
+   * @param {Knex} knex
+   * @memberof UserDao
+   */
   constructor(private readonly knex: Knex) {}
 
-  /**
-   * Finds a single user.
-   * @param id User id
-   */
   findOne(id: number): Promise<User> {
     return this.knex("users")
       .select()
@@ -21,8 +26,11 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Finds a user by its username.
-   * @param username Username
+   * Returns a user by its username
+   *
+   * @param {string} username Username
+   * @returns {Promise<User>} User
+   * @memberof UserDao
    */
   findByUsername(username: string): Promise<User> {
     return this.knex("users")
@@ -31,16 +39,16 @@ export default class UserDao implements Dao<User> {
       .first();
   }
 
-  /**
-   * Finds all users.
-   */
   findAll(): Promise<User[]> {
     return this.knex("users").select();
   }
 
   /**
    * Search the user table with the specified search term.
-   * @param searchTerm Search term
+   *
+   * @param {any} searchTerm Search term
+   * @returns {Promise<User[]>} User
+   * @memberof UserDao
    */
   findWhere(searchTerm): Promise<User[]> {
     return this.knex
@@ -52,29 +60,18 @@ export default class UserDao implements Dao<User> {
       .orWhere("email", "like", `%${searchTerm}%`);
   }
 
-  /**
-   * Removes a user.
-   */
   remove(id: number): Promise<boolean> {
     return this.knex("users")
       .delete()
       .where({ id });
   }
 
-  /**
-   * Updates a user.
-   * @param entity User
-   */
   update(entity: User): Promise<boolean> {
     return this.knex("users")
       .update(entity)
       .where({ id: entity.id });
   }
 
-  /**
-   * Saves a user.
-   * @param entity User
-   */
   save(entity: User): Promise<number[]> {
     return this.knex("users").insert(entity.getDatabaseObject());
   }
