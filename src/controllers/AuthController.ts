@@ -6,21 +6,21 @@ import UserService from "../services/UserService";
 import { URL } from "url";
 import Service from "../models/Service";
 import { IController } from "./IController";
-import AuthrizaMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 
 /**
  * @param {AuthenticatioService} authenticationService
  */
 export default class AuthController implements IController {
   route: express.Router;
-  authorizeMiddleware: AuthrizaMiddleware;
+  authorizeMiddleware: AuthorizeMiddleware;
 
   constructor(
     private authService: AuthenticationService,
     private userService: UserService
   ) {
     this.route = express.Router();
-    this.authorizeMiddleware = new AuthrizaMiddleware(this.userService);
+    this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
   async vanillaAuthenticate(req: any, res: express.Response) {

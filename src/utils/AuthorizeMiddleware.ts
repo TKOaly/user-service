@@ -11,7 +11,7 @@ interface IASRequest extends express.Request {
   }
 }
 
-export default class AuthrizaMiddleware {
+export default class AuthorizeMiddleware {
   constructor(private userService: UserService) {}
 
   async authorize(

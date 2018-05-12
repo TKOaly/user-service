@@ -3,17 +3,17 @@ import { Response, Router } from 'express';
 import { AuthenticationService } from "../services/AuthenticationService";
 import Service from "../models/Service";
 import UserService from "../services/UserService";
-import AuthrizaMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 
 export default class LoginController implements IController {
   route: Router;
-  authorizationMiddleware: AuthrizaMiddleware;
+  authorizationMiddleware: AuthorizeMiddleware;
 
   constructor(
     private authService: AuthenticationService, 
     private userService: UserService) {
     this.route = Router();
-    this.authorizationMiddleware = new AuthrizaMiddleware(this.userService);
+    this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
   async getLoginView(req: any, res: Response) {

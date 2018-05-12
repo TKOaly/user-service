@@ -4,7 +4,7 @@ import { AuthenticationService } from "../services/AuthenticationService";
 import ServiceResponse from "../utils/ServiceResponse";
 import User from "../models/User";
 import { IController } from "./IController";
-import AuthrizaMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import UserValidator from "../validators/UserValidator";
 
 /**
@@ -12,7 +12,7 @@ import UserValidator from "../validators/UserValidator";
  */
 export default class UserController implements IController {
   route: express.Router;
-  authorizeMiddleware: AuthrizaMiddleware;
+  authorizeMiddleware: AuthorizeMiddleware;
   userValidator: UserValidator;
 
   constructor(
@@ -20,7 +20,7 @@ export default class UserController implements IController {
     private authenticationService: AuthenticationService
   ) {
     this.route = express.Router();
-    this.authorizeMiddleware = new AuthrizaMiddleware(this.userService);
+    this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
     this.userValidator = new UserValidator(this.userService);
   }
 
