@@ -1,8 +1,9 @@
 import * as Knex from "knex";
 import ServiceError from "../utils/ServiceError";
-import { generateHashWithPasswordAndSalt } from "./AuthenticationService";
+import { validatePassword } from "./AuthenticationService";
 import User from "../models/User";
 import UserDao from "../dao/UserDao";
+import * as bcrypt from 'bcrypt';
 
 export default class UserService {
   constructor(private readonly userDao: UserDao) {}
@@ -37,8 +38,8 @@ export default class UserService {
     }
 
     const user = new User(dbUser);
-    const hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
-    if (hashedPassword === user.hashedPassword) {
+    let isPasswordCorrect = await validatePassword(password, user.salt, user.hashedPassword);
+    if (isPasswordCorrect) {
       return user;
     }
     throw new ServiceError(400, "Passwords do not match");
@@ -50,5 +51,12 @@ export default class UserService {
    */
   async checkUsernameAvailability(username: string): Promise<boolean> {
     return this.userDao.findByUsername(username).then(res => !res);
+  }
+
+  async createUser(user: User, password: string) {
+    user.hashedPassword = await bcrypt.hash(password, 13);
+    let newUser = new User({});
+    newUser = Object.assign(newUser, user);
+    await this.userDao.save(newUser);
   }
 }

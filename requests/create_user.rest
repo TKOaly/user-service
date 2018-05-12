@@ -8,6 +8,6 @@ content-type: application/json
     "screenName": "testuser2",
     "residence": "Helsinki",
     "phone": "12345",
-    "password1": "testuser1",
+    "password1": "testuser2",
     "password2": "testuser2"
 }

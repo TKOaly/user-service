@@ -33,19 +33,6 @@ export default class AuthController implements IController {
       return res.redirect("https://members.tko-aly.fi");
     }
 
-    let user: User;
-    try {
-      user = await this.userService.getUserWithUsernameAndPassword(
-        req.session.user.username,
-        req.session.user.password
-      );
-      // SHA1 to BCrypt conversion
-    } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
-    }
-
     let token: string;
 
     try {

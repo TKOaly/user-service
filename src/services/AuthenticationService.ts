@@ -7,6 +7,7 @@ import Service from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
 import UserDao from "../dao/UserDao";
 import ServiceDao from "../dao/ServiceDao";
+import * as bcrypt from 'bcrypt';
 
 export class AuthenticationService {
   constructor(
@@ -27,8 +28,8 @@ export class AuthenticationService {
     }
 
     const user = new User(dbUser);
-    let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
-    if (hashedPassword === user.hashedPassword) {
+    let isPasswordCorrect = await validatePassword(password, user.salt, user.hashedPassword);
+    if (isPasswordCorrect) {
       return this.createToken(user.id, []);
     } else throw new ServiceError(403, "Password or username doesn't match");
   }
@@ -93,6 +94,8 @@ export class AuthenticationService {
  * @param {string} salt
  * @returns {string}
  */
-export function generateHashWithPasswordAndSalt(password, salt) {
-  return sha1(`${salt}kekbUr${password}`);
+export async function validatePassword(password, salt, hashedPassword): Promise<boolean> {
+  if (salt == null && hashedPassword) {
+    return await bcrypt.compare(password, hashedPassword);
+  } else return sha1(`${salt}kekbUr${password}`) === hashedPassword;
 }

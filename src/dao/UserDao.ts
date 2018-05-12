@@ -76,6 +76,6 @@ export default class UserDao implements Dao<User> {
    * @param entity User
    */
   save(entity: User): Promise<number[]> {
-    return this.knex("users").insert(entity);
+    return this.knex("users").insert(entity.getDatabaseObject());
   }
 }

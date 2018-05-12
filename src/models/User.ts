@@ -48,6 +48,26 @@ export default class User {
     });
     return this;
   }
+
+  getDatabaseObject() {
+    return {
+      id: this.id,
+      username: this.username,
+      name: this.name,
+      screen_name: this.screenName,
+      email: this.email,
+      residence: this.residence,
+      phone: this.phone,
+      hyy_member: this.isHYYMember,
+      membership: this.membership,
+      role: this.role,
+      salt: this.salt,
+      hashed_password: this.hashedPassword,
+      created: this.createdAt || new Date(),
+      modified: new Date(),
+      deleted: this.isDeleted
+    }
+  }
 }
 
 interface UserDatabaseObject {

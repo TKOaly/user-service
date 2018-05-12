@@ -93,10 +93,10 @@ export default class UserController implements IController {
   async createUser(req: express.Request, res: express.Response) {
     try {
       await this.userValidator.validateCreate(req.body);
+      await this.userService.createUser(req.body, req.body.password1);
       return res.status(200).json(req.body);
     } catch (err) {
-      console.log(err);
-      return res.status(err.httpErrorCode).json(new ServiceResponse(null, err.message));
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
