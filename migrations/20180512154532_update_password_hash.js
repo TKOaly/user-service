@@ -1,14 +1,19 @@
-
 exports.up = function(knex, Promise) {
-  return knex.schema.table("users", t => {
-    t.string("hashed_password").notNullable();
-    t.string("salt").nullable();
+  return knex.schema.alterTable("users", t => {
+    t
+      .string("hashed_password")
+      .notNullable()
+      .alter();
+    t.string("salt", 20).alter();
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.table("users", t => {
-    t.dropColumn("hashed_password");
-    t.dropColumn("salt");
+  return knex.schema.alterTable("users", t => {
+    t.specificType("hashed_password", "char(40) DEFAULT NULL").alter();
+    t
+      .string("salt", 20)
+      .nullable()
+      .alter();
   });
 };
