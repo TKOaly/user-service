@@ -13,13 +13,12 @@ exports.up = function(knex, Promise) {
         table.string("membership", 20);
         table.datetime("created");
         table.datetime("modified");
-        table.string('hashed_password').notNullable();
-        table.string("salt", 20).nullable();
+        table.specificType('hashed_password', 'char(40) DEFAULT NULL');
+        table.string("salt", 20);
         table.string("role", 40);
         table.specificType('tktl', 'tinyint(1) DEFAULT NULL');
         table.specificType('deleted', 'tinyint(1) DEFAULT NULL');
       });
-      
     }
   });
 };
