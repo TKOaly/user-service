@@ -77,7 +77,6 @@ button {
   text-align: center;
   margin-top: 5px;
   margin-bottom: 5px;
-  font-size: 1.1vw;
 }
 
 input[type="submit"] {
@@ -102,10 +101,6 @@ label {
   background-color: green;
   color: white;
   border: 2px solid green;
-}
-
-b.service {
-  font-size: 1.4vw;
 }
 
 @media only screen and (max-width: 900px) {

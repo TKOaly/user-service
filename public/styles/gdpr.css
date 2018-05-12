@@ -3,7 +3,6 @@ html {
   height: 100%;
   width: 100%;
   font-family: Arial;
-  font-size: 10pt;
 }
 
 #container {
@@ -89,7 +88,6 @@ form {
 input {
   width: 40%;
   height: 70%;
-  font-size: 1.4vw;
 }
 
 .cancel {
@@ -104,6 +102,8 @@ input {
   border: 2px solid green;
 }
 
-b.service {
-  font-size: 1.4vw;
+@media only screen and (max-width: 900px) {
+  #container {
+    width: 100%;
+  }
 }
