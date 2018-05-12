@@ -5,11 +5,14 @@ import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 import Service from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
+import UserDao from "../dao/UserDao";
+import ServiceDao from "../dao/ServiceDao";
 
 export class AuthenticationService {
-  constructor(private knex: Knex) {
-    this.knex = knex;
-  }
+  constructor(
+    private readonly userDao: UserDao,
+    private readonly serviceDao: ServiceDao
+  ) {}
 
   /**
    * Excanges username and password to access token
@@ -18,16 +21,12 @@ export class AuthenticationService {
    * @returns {Promise<Token>}
    */
   async fetchTokenWithUsernameAndPassword(username, password): Promise<string> {
-    let userArray = await this.knex
-      .select("users.*")
-      .from("users")
-      .where({ username })
-      .limit(1);
-    if (!userArray.length) {
+    const dbUser = await this.userDao.findByUsername(username);
+    if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
 
-    let user = new User(userArray[0]);
+    const user = new User(dbUser);
     let hashedPassword = generateHashWithPasswordAndSalt(password, user.salt);
     if (hashedPassword === user.hashedPassword) {
       return this.createToken(user.id, []);
@@ -35,35 +34,23 @@ export class AuthenticationService {
   }
 
   async getService(serviceName: string): Promise<Service> {
-    const service = await this.knex
-      .select()
-      .from("services")
-      .where({ service_name: serviceName })
-      .first();
-
+    const service = await this.serviceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
-
     return new Service(service);
   }
 
   async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
-    const service = await this.knex
-      .select()
-      .from("services")
-      .where({ service_identifier })
-      .first();
-
+    const service = await this.serviceDao.findByIdentifier(service_identifier);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
-
     return new Service(service);
   }
 
   async getServices(): Promise<Service[]> {
-    const services = await this.knex.select().from("services");
+    const services = await this.serviceDao.findAll();
 
     return services.map(service => new Service(service));
   }
@@ -92,16 +79,9 @@ export class AuthenticationService {
     }
   }
 
-  createToken(
-    userId: number,
-    authenticatedTo: string[]
-  ): string {
+  createToken(userId: number, authenticatedTo: string[]): string {
     try {
-      return new ServiceToken(
-        userId,
-        authenticatedTo,
-        new Date()
-      ).toString();
+      return new ServiceToken(userId, authenticatedTo, new Date()).toString();
     } catch (e) {
       throw e;
     }

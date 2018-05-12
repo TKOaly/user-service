@@ -11,6 +11,8 @@ import * as session from "express-session";
 import * as cookieParser from "cookie-parser";
 import Service from "./models/Service";
 import LoginController from "./controllers/LoginController";
+import UserDao from "./dao/UserDao";
+import ServiceDao from "./dao/ServiceDao";
 
 const app = express();
 
@@ -46,8 +48,11 @@ const knexfile = require("./../knexfile");
 const knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
 
 // Auth & user service
-const authService = new AuthenticationService(knex);
-const userService = new UserService(knex);
+const authService = new AuthenticationService(
+  new UserDao(knex),
+  new ServiceDao(knex)
+);
+const userService = new UserService(new UserDao(knex));
 
 // Routes
 const authController = new AuthController(authService, userService);
@@ -57,7 +62,7 @@ const loginController = new LoginController(authService);
 // API routes
 app.use("/api/auth", authController.createRoutes());
 app.use("/api/users", userController.createRoutes());
-app.use('/', loginController.createRoutes());
+app.use("/", loginController.createRoutes());
 
 // Start server
 app.listen(process.env.USERSERVICE_PORT || 3000, () => {

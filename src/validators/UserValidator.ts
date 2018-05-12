@@ -4,10 +4,16 @@ import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 import * as validator from "validator";
 
+interface AdditionalUserData {
+  password1: string;
+  password2: string;
+  deleted: boolean;
+}
+
 export default class UserValidator implements IValidator<User> {
   constructor(private userService: UserService) {}
 
-  async validateCreate(newUser: any) {
+  async validateCreate(newUser: User & AdditionalUserData) {
     // Discard user id
     delete newUser.id;
 
@@ -15,6 +21,7 @@ export default class UserValidator implements IValidator<User> {
       !newUser.username ||
       !newUser.name ||
       !newUser.screenName ||
+      !newUser.email ||
       !newUser.residence ||
       !newUser.phone ||
       !newUser.password1 ||
@@ -24,7 +31,10 @@ export default class UserValidator implements IValidator<User> {
     }
 
     // Test username
-    if (!(await this.userService.checkUsernameAvailability(newUser.username))) {
+    const usernameAvailable = await this.userService.checkUsernameAvailability(
+      newUser.username
+    );
+    if (!usernameAvailable) {
       throw new ServiceError(400, "Username already taken");
     }
 
