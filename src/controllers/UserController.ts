@@ -68,7 +68,7 @@ export default class UserController implements IController {
     }
 
     async createUser(req: express.Request, res: express.Response) {
-
+      return res.status(200).json(req.body);
     }
 
     createRoutes() {
