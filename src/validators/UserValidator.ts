@@ -42,7 +42,7 @@ const allowedSelfEdit = [
 
 // Colums allowed to be edited by jäsenvirkailija
 const allowedJVEdit = [...allowedSelfEdit];
-allowedJVEdit.push("name", "usernmae", "membership");
+allowedJVEdit.push("name", "username", "membership");
 
 // Colums allowed to be edited by admin
 const allowedAdminEdit = [...allowedJVEdit];

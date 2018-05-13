@@ -80,4 +80,14 @@ export default class UserService {
     newUser = Object.assign(newUser, user);
     await this.userDao.save(newUser);
   }
+
+  async updateUser(userId: number, udpatedUser: User, password?: string) {
+    // re-crypt password
+    if (password) {
+      udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
+    }
+    let newUser = new User({});
+    newUser = Object.assign(newUser, udpatedUser);
+    await this.userDao.update(userId, newUser);
+  }
 }

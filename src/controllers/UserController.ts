@@ -93,6 +93,7 @@ export default class UserController implements IController {
       // Edit me
       try {
         await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
+        await this.userService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
         return res.status(200).json(req.body);
       } catch (err) {
         return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
@@ -100,6 +101,7 @@ export default class UserController implements IController {
     } else {
       try {
         await this.userValidator.validateUpdate(req.params.id, req.body, req.authorization.user);
+        await this.userService.updateUser(req.params.id, req.body, req.body.password1 || null);
         return res.status(200).json(req.body);
       } catch (err) {
         return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
