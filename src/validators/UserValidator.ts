@@ -33,6 +33,20 @@ interface AdditionalUserData {
   deleted: boolean;
 }
 
+// Colums allowed to be self-edited
+const allowedSelfEdit = [
+  "screenName", "email", "residence",
+  "phone", "isHYYMember", "isTKTL",
+  "password1", "password2"];
+
+
+// Colums allowed to be edited by jäsenvirkailija
+const allowedJVEdit = [...allowedSelfEdit];
+allowedJVEdit.push("name", "usernmae", "membership");
+
+// Colums allowed to be edited by admin
+const allowedAdminEdit = [...allowedJVEdit];
+allowedAdminEdit.push("role", "createdAt");
 /**
  * User validator.
  *
@@ -46,7 +60,7 @@ export default class UserValidator implements IValidator<User> {
    * @param {UserService} userService
    * @memberof UserValidator
    */
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   /**
    * Validates user creation.
@@ -104,8 +118,60 @@ export default class UserValidator implements IValidator<User> {
    * Validates user update.
    *
    * @param {number} userId
-   * @param {User} newData
+   * @param {User} newUser
    * @memberof UserValidator
    */
-  async validateUpdate(userId: number, newData: User) {}
+  async validateUpdate(userId: number, newUser: User & AdditionalUserData, modifier: User) {
+    // Self-edit
+    if (userId === modifier.id) {
+      Object.keys(newUser).forEach(key => {
+        if (allowedSelfEdit.indexOf(key) < 0) {
+          throw new ServiceError(403, "Forbidden modify action");
+        }
+      });
+    } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
+      Object.keys(newUser).forEach(key => {
+        if (allowedJVEdit.indexOf(key) < 0) {
+          throw new ServiceError(403, "Forbidden modify action");
+        }
+      });
+    } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
+      Object.keys(newUser).forEach(key => {
+        if (allowedAdminEdit.indexOf(key) < 0) {
+          throw new ServiceError(403, "Forbidden modify action");
+        }
+      });
+    } else {
+      throw new ServiceError(403, "Forbidden modify action");
+    }
+
+    if (newUser.username) {
+      // Test username
+      const usernameAvailable = await this.userService.checkUsernameAvailability(
+        newUser.username
+      );
+      if (!usernameAvailable) {
+        throw new ServiceError(400, "Username already taken");
+      }
+    }
+
+    // Test email
+    if (newUser.email) {
+      if (
+        !validator.isEmail(newUser.email) ||
+        !validator.isLength(newUser.email, {
+          min: 1,
+          max: 255
+        })
+      ) {
+        throw new ServiceError(400, "Malformed email");
+      }
+    }
+
+    if (newUser.password1 && newUser.password2) {
+      if (!validator.equals(newUser.password1, newUser.password2)) {
+        throw new ServiceError(400, "Passwords do not match");
+      }
+    }
+  }
 }

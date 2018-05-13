@@ -88,7 +88,24 @@ export default class UserController implements IController {
     }
   }
 
-  async modifyMe(req: express.Request, res: express.Response) {}
+  async modifyMe(req: any, res: express.Response) {
+    if (req.params.id === 'me') {
+      // Edit me
+      try {
+        await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
+        return res.status(200).json(req.body);
+      } catch (err) {
+        return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      }
+    } else {
+      try {
+        await this.userValidator.validateUpdate(req.params.id, req.body, req.authorization.user);
+        return res.status(200).json(req.body);
+      } catch (err) {
+        return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      }
+    }
+  }
 
   async createUser(req: express.Request, res: express.Response) {
     try {
@@ -112,7 +129,7 @@ export default class UserController implements IController {
       this.getAllUsers.bind(this)
     );
     this.route.patch(
-      "/me",
+      "/:id",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );

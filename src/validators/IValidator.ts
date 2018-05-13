@@ -1,3 +1,5 @@
+import User from "../models/User";
+
 /**
  * IValidator interface.
  *
@@ -20,5 +22,5 @@ export default interface IValidator<T> {
    * @param {T} newData New data
    * @memberof IValidator
    */
-  validateUpdate(dataId: number, newData: T);
+  validateUpdate(dataId: number, newData: T, validator: User);
 }
