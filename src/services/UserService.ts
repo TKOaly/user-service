@@ -61,6 +61,12 @@ export default class UserService {
       user.hashedPassword
     );
     if (isPasswordCorrect) {
+      // Recrypt password to bcrypt
+      if (user.salt !== '0') {
+        await this.updateUser(user.id, new User({
+          salt: '0'
+        }), password);
+      }
       return user;
     }
     throw new ServiceError(400, "Passwords do not match");

@@ -28,32 +28,6 @@ export class AuthenticationService {
   ) {}
 
   /**
-   * Excanges username and password to access token
-   * @param {string} username
-   * @param {string} password
-   * @returns {Promise<Token>}
-   */
-  async fetchTokenWithUsernameAndPassword(
-    username: string,
-    password: string
-  ): Promise<string> {
-    const dbUser = await this.userDao.findByUsername(username);
-    if (!dbUser) {
-      throw new ServiceError(404, "User not found");
-    }
-
-    const user = new User(dbUser);
-    let isPasswordCorrect = await validatePassword(
-      password,
-      user.salt,
-      user.hashedPassword
-    );
-    if (isPasswordCorrect) {
-      return this.createToken(user.id, []);
-    } else throw new ServiceError(403, "Password or username doesn't match");
-  }
-
-  /**
    * Returns a single service by its name.
    *
    * @param {string} serviceName
@@ -160,7 +134,7 @@ export async function validatePassword(
   salt: string,
   hashedPassword: string
 ): Promise<boolean> {
-  if (salt == null && hashedPassword) {
+  if (salt === '0' && hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
   } else {
     return sha1(`${salt}kekbUr${password}`) === hashedPassword;
