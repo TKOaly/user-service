@@ -24,31 +24,45 @@ export default class UserController implements IController {
     this.userValidator = new UserValidator(this.userService);
   }
 
-  async getMe(req: any, res: express.Response) {
-    if (!req.header("service")) {
-      return res
-        .status(400)
-        .json(new ServiceResponse(null, "No service defined"));
+  async getUser(req: any, res: express.Response) {
+    if (req.params.id === 'me') {
+      req.params.id = req.authorization.user.id;
+    } else {
+      if (req.authorization.user.role !== 'yllapitaja') {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, "Forbidden"));
+      }
     }
+    if (req.params.id === 'me') {
+      if (!req.header("service")) {
+        return res
+          .status(400)
+          .json(new ServiceResponse(null, "No service defined"));
+      }
 
-    if (
-      req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0
-    ) {
-      return res
-        .status(403)
-        .json(new ServiceResponse(null, "User not authorized to service"));
+      if (
+        req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0
+      ) {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, "User not authorized to service"));
+      }
     }
 
     try {
-      let serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
-        req.header("service")
-      )).dataPermissions;
-      let user = await this.userService.fetchUser(req.authorization.user.id);
+      let serviceDataPermissions = null;
+      if (req.params.id === 'me') {
+        serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
+          req.header("service")
+        )).dataPermissions;
+      }
+      let user = await this.userService.fetchUser(req.params.id);
       res
         .status(200)
         .json(
           new ServiceResponse(
-            user.removeNonRequestedData(serviceDataPermissions)
+            serviceDataPermissions ? user.removeNonRequestedData(serviceDataPermissions) : user
           )
         );
     } catch (e) {
@@ -121,9 +135,9 @@ export default class UserController implements IController {
 
   createRoutes() {
     this.route.get(
-      "/me",
+      "/:id",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
-      this.getMe.bind(this)
+      this.getUser.bind(this)
     );
     this.route.get(
       "/",

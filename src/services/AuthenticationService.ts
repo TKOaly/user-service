@@ -134,7 +134,7 @@ export async function validatePassword(
   salt: string,
   hashedPassword: string
 ): Promise<boolean> {
-  if (salt === '0' && hashedPassword) {
+  if ((salt === '0' || !salt) && hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
   } else {
     return sha1(`${salt}kekbUr${password}`) === hashedPassword;
