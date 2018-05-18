@@ -39,6 +39,39 @@ export default class UserDao implements Dao<User> {
       .first();
   }
 
+  /**
+   * Returns a user by its username
+   *
+   * @param {string} username Username
+   * @returns {Promise<User>} User
+   * @memberof UserDao
+   */
+  findByUnpaidPayment(id: number): Promise<User> {
+    return this.knex("users")
+      .select(
+        "users.id",
+        "users.username",
+        "users.name",
+        "users.name",
+        "users.screen_name",
+        "users.email",
+        "users.residence",
+        "users.phone",
+        "users.hyy_member",
+        "users.membership",
+        "users.role",
+        "users.salt",
+        "users.hashed_password",
+        "users.created",
+        "users.modified",
+        "users.deleted"
+      )
+      .innerJoin("payments", "users.id", "payments.payer_id")
+      .where("users.id", "=", id)
+      .andWhere("payments.paid", null)
+      .first();
+  }
+
   findAll(): Promise<User[]> {
     return this.knex("users").select();
   }
