@@ -64,7 +64,7 @@ export default class AuthController implements IController {
     res.redirect(redirectTo);
   }
 
-  async requestPermissions(req: any, res: express.Response) {
+  async requestPermissions(req: express.Request & IASRequest, res: express.Response) {
     if (
       !req.body.serviceIdentifier ||
       !req.body.username ||
@@ -102,6 +102,14 @@ export default class AuthController implements IController {
         req.body.username,
         req.body.password
       );
+
+      if (req.authorization && req.authorization.user) {
+        if (user.id !== req.authorization.user.id) {
+          return res
+            .status(403)
+            .json(new ServiceResponse(null, 'Credentials not matching already authorized user'));
+        }
+      }
     } catch (e) {
       return res
         .status(e.httpErrorCode)

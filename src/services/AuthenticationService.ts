@@ -25,7 +25,7 @@ export class AuthenticationService {
   constructor(
     private readonly userDao: UserDao,
     private readonly serviceDao: ServiceDao
-  ) {}
+  ) { }
 
   /**
    * Returns a single service by its name.
@@ -96,6 +96,42 @@ export class AuthenticationService {
     } else {
       token.authenticatedTo = [newServiceName];
     }
+    try {
+      return token.toString();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Remove a service from the authentication token.
+   *
+   * @param {(string | any)} oldToken
+   * @param {string} serviceToRemove
+   * @returns {string}
+   * @memberof AuthenticationService
+   */
+  removeServiceAuthenticationToToken(
+    oldToken: string | any,
+    serviceToRemove: string
+  ): string {
+    let token: ServiceToken;
+    if (typeof oldToken == "string") {
+      token = stringToServiceToken(oldToken);
+    } else {
+      token = new ServiceToken(
+        oldToken.userId,
+        oldToken.authenticatedTo,
+        oldToken.createdAt
+      );
+    }
+    let newServiceList: string[] = [];
+    token.authenticatedTo.forEach(s => {
+      if (s != serviceToRemove) {
+        newServiceList.push(s);
+      }
+    });
+    token.authenticatedTo = newServiceList;
     try {
       return token.toString();
     } catch (e) {

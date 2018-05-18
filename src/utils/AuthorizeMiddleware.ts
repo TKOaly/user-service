@@ -60,9 +60,7 @@ export default class AuthorizeMiddleware {
     next: express.NextFunction
   ) {
     let token = req.headers["authorization"];
-    if (!token || !token.toString().startsWith("Bearer ")) {
-      return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
-    } else {
+    if (token && token.toString().startsWith("Bearer ")) {
       try {
         let parsedToken = stringToServiceToken(token.slice(7).toString());
         let user = await this.userService.fetchUser(parsedToken.userId);
@@ -76,6 +74,22 @@ export default class AuthorizeMiddleware {
           .status(e.httpStatusCode || 500)
           .json(new ServiceResponse(null, e.message));
       }
+    } else if (req.cookies.token) {
+      try {
+        let parsedToken = stringToServiceToken(req.cookies.token);
+        let user = await this.userService.fetchUser(parsedToken.userId);
+        req.authorization = {
+          user,
+          token: parsedToken
+        };
+        return next();
+      } catch (e) {
+        return res
+          .status(e.httpStatusCode || 500)
+          .json(new ServiceResponse(null, e.message));
+      }
+    } else {
+      return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
     }
   }
 
