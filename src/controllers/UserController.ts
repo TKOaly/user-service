@@ -28,7 +28,7 @@ export default class UserController implements IController {
     if (req.params.id === 'me') {
       req.params.id = req.authorization.user.id;
     } else {
-      if (req.authorization.user.role !== 'yllapitaja') {
+      if (req.authorization.user.role === 'kayttaja') {
         return res
           .status(403)
           .json(new ServiceResponse(null, "Forbidden"));

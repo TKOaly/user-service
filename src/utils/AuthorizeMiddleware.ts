@@ -10,7 +10,7 @@ import User from "../models/User";
  * @interface IASRequest
  * @extends {express.Request}
  */
-interface IASRequest extends express.Request {
+export interface IASRequest extends express.Request {
   /**
    * Authorization data.
    * @memberof IASRequest
