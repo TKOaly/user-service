@@ -40,9 +40,9 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Returns a user by its username
+   * Returns a single user who hasn't paid his/her bill.
    *
-   * @param {string} username Username
+   * @param {number} id User id
    * @returns {Promise<User>} User
    * @memberof UserDao
    */
@@ -73,10 +73,9 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Returns a user by its username
+   * Returns all users who have not paid their bill.
    *
-   * @param {string} username Username
-   * @returns {Promise<User>} User
+   * @returns {Promise<User[]>} List of users
    * @memberof UserDao
    */
   findAllByUnpaidPayment(): Promise<User[]> {
