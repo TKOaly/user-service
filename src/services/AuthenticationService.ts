@@ -25,33 +25,7 @@ export class AuthenticationService {
   constructor(
     private readonly userDao: UserDao,
     private readonly serviceDao: ServiceDao
-  ) {}
-
-  /**
-   * Excanges username and password to access token
-   * @param {string} username
-   * @param {string} password
-   * @returns {Promise<Token>}
-   */
-  async fetchTokenWithUsernameAndPassword(
-    username: string,
-    password: string
-  ): Promise<string> {
-    const dbUser = await this.userDao.findByUsername(username);
-    if (!dbUser) {
-      throw new ServiceError(404, "User not found");
-    }
-
-    const user = new User(dbUser);
-    let isPasswordCorrect = await validatePassword(
-      password,
-      user.salt,
-      user.hashedPassword
-    );
-    if (isPasswordCorrect) {
-      return this.createToken(user.id, []);
-    } else throw new ServiceError(403, "Password or username doesn't match");
-  }
+  ) { }
 
   /**
    * Returns a single service by its name.
@@ -130,6 +104,42 @@ export class AuthenticationService {
   }
 
   /**
+   * Remove a service from the authentication token.
+   *
+   * @param {(string | any)} oldToken
+   * @param {string} serviceToRemove
+   * @returns {string}
+   * @memberof AuthenticationService
+   */
+  removeServiceAuthenticationToToken(
+    oldToken: string | any,
+    serviceToRemove: string
+  ): string {
+    let token: ServiceToken;
+    if (typeof oldToken == "string") {
+      token = stringToServiceToken(oldToken);
+    } else {
+      token = new ServiceToken(
+        oldToken.userId,
+        oldToken.authenticatedTo,
+        oldToken.createdAt
+      );
+    }
+    let newServiceList: string[] = [];
+    token.authenticatedTo.forEach(s => {
+      if (s != serviceToRemove) {
+        newServiceList.push(s);
+      }
+    });
+    token.authenticatedTo = newServiceList;
+    try {
+      return token.toString();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
    * Creates token.
    *
    * @param {number} userId
@@ -160,7 +170,7 @@ export async function validatePassword(
   salt: string,
   hashedPassword: string
 ): Promise<boolean> {
-  if (salt == null && hashedPassword) {
+  if ((salt === '0' || !salt) && hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
   } else {
     return sha1(`${salt}kekbUr${password}`) === hashedPassword;

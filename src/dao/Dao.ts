@@ -38,7 +38,7 @@ export default interface Dao<T> {
    * @returns {Promise<boolean>} Did the update complete or not
    * @memberof Dao
    */
-  update(entity: T): Promise<boolean>;
+  update(entityId: any, entity: T): Promise<boolean>;
   /**
    * Saves an entity.
    *

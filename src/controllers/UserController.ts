@@ -24,31 +24,45 @@ export default class UserController implements IController {
     this.userValidator = new UserValidator(this.userService);
   }
 
-  async getMe(req: any, res: express.Response) {
-    if (!req.header("service")) {
-      return res
-        .status(400)
-        .json(new ServiceResponse(null, "No service defined"));
+  async getUser(req: any, res: express.Response) {
+    if (req.params.id === 'me') {
+      req.params.id = req.authorization.user.id;
+    } else {
+      if (req.authorization.user.role === 'kayttaja') {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, "Forbidden"));
+      }
     }
+    if (req.params.id === 'me') {
+      if (!req.header("service")) {
+        return res
+          .status(400)
+          .json(new ServiceResponse(null, "No service defined"));
+      }
 
-    if (
-      req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0
-    ) {
-      return res
-        .status(403)
-        .json(new ServiceResponse(null, "User not authorized to service"));
+      if (
+        req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0
+      ) {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, "User not authorized to service"));
+      }
     }
 
     try {
-      let serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
-        req.header("service")
-      )).dataPermissions;
-      let user = await this.userService.fetchUser(req.authorization.user.id);
+      let serviceDataPermissions = null;
+      if (req.params.id === 'me') {
+        serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
+          req.header("service")
+        )).dataPermissions;
+      }
+      let user = await this.userService.fetchUser(req.params.id);
       res
         .status(200)
         .json(
           new ServiceResponse(
-            user.removeNonRequestedData(serviceDataPermissions)
+            serviceDataPermissions ? user.removeNonRequestedData(serviceDataPermissions) : user
           )
         );
     } catch (e) {
@@ -105,7 +119,26 @@ export default class UserController implements IController {
     }
   }
 
-  async modifyMe(req: express.Request, res: express.Response) {}
+  async modifyMe(req: any, res: express.Response) {
+    if (req.params.id === 'me') {
+      // Edit me
+      try {
+        await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
+        await this.userService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
+        return res.status(200).json(req.body);
+      } catch (err) {
+        return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      }
+    } else {
+      try {
+        await this.userValidator.validateUpdate(req.params.id, req.body, req.authorization.user);
+        await this.userService.updateUser(req.params.id, req.body, req.body.password1 || null);
+        return res.status(200).json(req.body);
+      } catch (err) {
+        return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      }
+    }
+  }
 
   async createUser(req: express.Request, res: express.Response) {
     try {
@@ -121,9 +154,9 @@ export default class UserController implements IController {
 
   createRoutes() {
     this.route.get(
-      "/me",
+      "/:id",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
-      this.getMe.bind(this)
+      this.getUser.bind(this)
     );
     this.route.get(
       "/",
@@ -136,7 +169,7 @@ export default class UserController implements IController {
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
-      "/me",
+      "/:id",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );

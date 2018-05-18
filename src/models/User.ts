@@ -131,15 +131,15 @@ export default class User {
     this.email = userDatabaseObject.email;
     this.residence = userDatabaseObject.residence;
     this.phone = userDatabaseObject.phone;
-    this.isHYYMember = userDatabaseObject.hyy_member == 1 ? true : false;
+    this.isHYYMember = userDatabaseObject.hyy_member == null ? undefined : Boolean(userDatabaseObject.hyy_member);
     this.membership = userDatabaseObject.membership;
     this.role = userDatabaseObject.role;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
     this.createdAt = userDatabaseObject.created;
     this.modifiedAt = userDatabaseObject.modified;
-    this.isTKTL = userDatabaseObject.tktl == 1 ? true : false;
-    this.isDeleted = userDatabaseObject.deleted == 1 ? true : false;
+    this.isTKTL = userDatabaseObject.tktl == null ? undefined : Boolean(userDatabaseObject.tktl);
+    this.isDeleted = userDatabaseObject.deleted == null ? undefined : Boolean(userDatabaseObject.deleted);
   }
 
   /**

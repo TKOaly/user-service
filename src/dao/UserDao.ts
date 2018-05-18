@@ -130,10 +130,10 @@ export default class UserDao implements Dao<User> {
       .where({ id });
   }
 
-  update(entity: User): Promise<boolean> {
+  update(entityId: any, entity: User): Promise<boolean> {
     return this.knex("users")
-      .update(entity)
-      .where({ id: entity.id });
+      .update(entity.getDatabaseObject())
+      .where({ id: entityId});
   }
 
   save(entity: User): Promise<number[]> {

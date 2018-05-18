@@ -3,7 +3,10 @@ import { Response, Router } from 'express';
 import { AuthenticationService } from "../services/AuthenticationService";
 import Service from "../models/Service";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import * as express from 'express';
+import ServiceError from "../utils/ServiceError";
+import ServiceResponse from "../utils/ServiceResponse";
 
 export default class LoginController implements IController {
   route: Router;
@@ -41,11 +44,43 @@ export default class LoginController implements IController {
     }
   }
 
+  async logOut(req: express.Request & IASRequest, res: express.Response) {
+    if (!req.query.serviceIdentifier) {
+      return res
+        .status(400)
+        .json(new ServiceError(null, 'No service identifier'));
+    }
+
+    let service: Service;
+    try {
+      service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier)
+    } catch(e) {
+      return res
+        .status(e.httpStatusCode || 500)
+        .json(new ServiceResponse(null, e.message));
+    }
+
+    const token = this.authService.removeServiceAuthenticationToToken(req.authorization.token, service.serviceIdentifier);
+    res.cookie("token", token, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: "localhost"
+    });
+
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Credentials", "true");
+    res.render('logout', { serviceName: service.displayName });
+  }
+
   createRoutes() {
-    this.route = this.route.get(
+    this.route.get(
       '/', 
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware), 
       this.getLoginView.bind(this));
+    this.route.get(
+      '/logout',
+      this.authorizationMiddleware.authorize.bind(this.authorizationMiddleware),
+      this.logOut.bind(this)
+    );
     return this.route;
   }
 }

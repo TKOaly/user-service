@@ -66,6 +66,12 @@ export default class UserService {
       user.hashedPassword
     );
     if (isPasswordCorrect) {
+      // Recrypt password to bcrypt
+      if (user.salt !== '0') {
+        await this.updateUser(user.id, new User({
+          salt: '0'
+        }), password);
+      }
       return user;
     }
     throw new ServiceError(400, "Passwords do not match");
@@ -84,5 +90,15 @@ export default class UserService {
     let newUser = new User({});
     newUser = Object.assign(newUser, user);
     await this.userDao.save(newUser);
+  }
+
+  async updateUser(userId: number, udpatedUser: User, password?: string) {
+    // re-crypt password
+    if (password) {
+      udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
+    }
+    let newUser = new User({});
+    newUser = Object.assign(newUser, udpatedUser);
+    await this.userDao.update(userId, newUser);
   }
 }

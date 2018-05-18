@@ -6,7 +6,7 @@ import UserService from "../services/UserService";
 import { URL } from "url";
 import Service from "../models/Service";
 import { IController } from "./IController";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 
 /**
  * @param {AuthenticatioService} authenticationService
@@ -64,7 +64,7 @@ export default class AuthController implements IController {
     res.redirect(redirectTo);
   }
 
-  async requestPermissions(req: any, res: express.Response) {
+  async requestPermissions(req: express.Request & IASRequest, res: express.Response) {
     if (
       !req.body.serviceIdentifier ||
       !req.body.username ||
@@ -102,6 +102,14 @@ export default class AuthController implements IController {
         req.body.username,
         req.body.password
       );
+
+      if (req.authorization && req.authorization.user) {
+        if (user.id !== req.authorization.user.id) {
+          return res
+            .status(403)
+            .json(new ServiceResponse(null, 'Credentials not matching already authorized user'));
+        }
+      }
     } catch (e) {
       return res
         .status(e.httpErrorCode)
@@ -126,6 +134,29 @@ export default class AuthController implements IController {
     });
   }
 
+  /**
+   * Used to check authorization to a specified service
+   * @param req 
+   * @param res 
+   */
+  async check(req: express.Request & IASRequest, res: express.Response) {
+    if (!req.get('service')) {
+      return res
+        .status(400)
+        .json(new ServiceResponse(null, 'No service defined'));
+    }
+
+    if (req.authorization.token.authenticatedTo.indexOf(req.get('service')) > -1) {
+      return res
+        .status(200)
+        .json(new ServiceResponse(null, 'Success'));
+    } else {
+      return res
+        .status(404)
+        .json(new ServiceResponse(null, 'Not authroized to service'));
+    }
+  }
+
   createRoutes() {
     this.route.post(
       "/vanillaAuthenticate",
@@ -136,6 +167,11 @@ export default class AuthController implements IController {
       "/requestPermissions",
       this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
       this.requestPermissions.bind(this)
+    );
+    this.route.get(
+      '/check',
+      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.check.bind(this)
     );
     return this.route;
   }
