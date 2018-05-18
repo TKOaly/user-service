@@ -88,6 +88,23 @@ export default class UserController implements IController {
     }
   }
 
+  async getAllUnpaidUsers(req: any, res: express.Response) {
+    if (req.authorization.user.role != "yllapitaja") {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+
+    try {
+      let users = await this.userService.fetchAllUnpaidUsers();
+      return res
+        .status(200)
+        .json(
+          new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+        );
+    } catch (e) {
+      res.status(500).json(new ServiceResponse(null, e.message));
+    }
+  }
+
   async modifyMe(req: express.Request, res: express.Response) {}
 
   async createUser(req: express.Request, res: express.Response) {
@@ -96,7 +113,9 @@ export default class UserController implements IController {
       await this.userService.createUser(req.body, req.body.password1);
       return res.status(200).json(req.body);
     } catch (err) {
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
     }
   }
 
@@ -110,6 +129,11 @@ export default class UserController implements IController {
       "/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getAllUsers.bind(this)
+    );
+    this.route.get(
+      "/unpaid",
+      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
       "/me",

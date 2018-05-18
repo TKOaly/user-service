@@ -39,6 +39,11 @@ export default class UserService {
     return results.map(dbObj => new User(dbObj));
   }
 
+  async fetchAllUnpaidUsers(): Promise<User[]> {
+    const results = await this.userDao.findAllByUnpaidPayment();
+    return results.map(dbObj => new User(dbObj));
+  }
+
   async searchUsers(searchTerm: string): Promise<User[]> {
     let results = await this.userDao.findWhere(searchTerm);
     if (!results.length) {
