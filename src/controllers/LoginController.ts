@@ -38,7 +38,11 @@ export default class LoginController implements IController {
         }
       }
 
-      return res.render("login", { service });
+      return res.render("login", { 
+        service,
+        loggedUser: req.authorization ? req.authorization.user.username : null,
+        redirect: '/?serviceIdentifier=' + service.serviceIdentifier
+      });
     } catch (err) {
       return res.status(400).send(err.message);
     }
@@ -49,6 +53,11 @@ export default class LoginController implements IController {
       return res
         .status(400)
         .json(new ServiceError(null, 'No service identifier'));
+    }
+
+    if (req.query.serviceIdentifier === '*' && req.query.redirect) {
+      res.clearCookie('token');
+      return res.redirect(req.query.redirect);
     }
 
     let service: Service;
