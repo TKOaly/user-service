@@ -126,8 +126,9 @@ export default class UserController implements IController {
   async createUser(req: express.Request, res: express.Response) {
     try {
       await this.userValidator.validateCreate(req.body);
-      await this.userService.createUser(req.body, req.body.password1);
-      return res.status(200).json(new ServiceResponse(req.body, 'Success'));
+      const userIds = await this.userService.createUser(req.body, req.body.password1);
+      const user = await this.userService.fetchUser(userIds[0]);
+      return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), 'Success'));
     } catch (err) {
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
