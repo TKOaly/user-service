@@ -12,10 +12,16 @@ html(lang="en")
         #title-container
           div#title Login
       #content
+        if (loggedUser && redirect)
+          h5='You are logged in as ' + loggedUser
+          - let link = `/logout?serviceIdentifier=*&redirect=${redirect}`
+          a(href=link fsty)='Destroy session'
+        h4='Login to ' + service.displayName
         form(action='/api/auth/requestPermissions', method='POST')
           label(for='username')="Username"
-          input(type='text', name='username', id='username' placeholder='Username')
+          - let unameVal = loggedUser || '';
+          input(required type='text', value=unameVal name='username', id='username' placeholder='Username')
           label(for='password')="Password"
-          input(type='password', name='password', id='password' placeholder='Password')
+          input(required type='password', name='password', id='password' placeholder='Password')
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           input.accept(type='submit', name='accept', value='Login')

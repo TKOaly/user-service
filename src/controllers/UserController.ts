@@ -144,7 +144,7 @@ export default class UserController implements IController {
     try {
       await this.userValidator.validateCreate(req.body);
       await this.userService.createUser(req.body, req.body.password1);
-      return res.status(200).json(req.body);
+      return res.status(200).json(new ServiceResponse(req.body, 'Success'));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
