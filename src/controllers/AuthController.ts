@@ -116,9 +116,17 @@ export default class AuthController implements IController {
         .json(new ServiceResponse(null, e.message));
     }
 
-    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512)).map(key => ({ name: key, value: user[key] }));
+    // Removes data that are not needed when making a request
+    // We require user id and role every time, regardless of permissions in services
+    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map(key => ({ name: key, value: user[key] }));
 
     // Set session
+    if(!user.id) {
+      return res
+      .status(500)
+      .send("Authentication failure: User ID is undefined.")
+    }
+
     req.session.user = {
       userId: user.id,
       username: req.body.username,
