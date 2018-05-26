@@ -124,6 +124,7 @@ export default class UserValidator implements IValidator<User> {
   async validateUpdate(userId: number, newUser: User & AdditionalUserData, modifier: User) {
     // Self-edit
     if (userId === modifier.id) {
+      newUser.id = userId;
       Object.keys(newUser).forEach(key => {
         if (allowedSelfEdit.indexOf(key) < 0 && key !== 'id') {
           throw new ServiceError(403, "Forbidden modify action");
