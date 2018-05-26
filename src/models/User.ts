@@ -219,3 +219,29 @@ interface UserDatabaseObject {
   tktl?: number | boolean;
   deleted?: number | boolean;
 }
+
+export function compareRoles(a: string, b: string) {
+  const roleNumbers = {
+    'kayttaja': 1,
+    'virkailija': 2,
+    'tenttiarkistovirkailija': 2,
+    'jasenvirkailija': 3,
+    'yllapitaja': 4
+  }
+
+  let aN = 0;
+  let bN = 0;
+
+  if (roleNumbers[a])
+    aN = roleNumbers[a];
+
+  if (roleNumbers[b])
+    bN = roleNumbers[b];
+
+  if (aN < bN)
+    return -1;
+  else if (aN > bN)
+    return 1;
+  else
+    return 0;
+}
