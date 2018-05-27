@@ -37,18 +37,3 @@ export function apiHeaderMiddleware(apiVersion?: string) {
     next();
   };
 }
-
-/**
- * API route middleware.
- *
- * @export
- * @param {string} endpointName Endpoint name
- * @param {string} [apiVersion] API version
- * @returns
- */
-export function apiRouteMiddleware(endpointName: string, apiVersion?: string) {
-  return [
-    generateApiRoute(endpointName, apiVersion),
-    apiHeaderMiddleware(apiVersion)
-  ];
-}
