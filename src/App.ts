@@ -13,7 +13,7 @@ import Service from "./models/Service";
 import LoginController from "./controllers/LoginController";
 import UserDao from "./dao/UserDao";
 import ServiceDao from "./dao/ServiceDao";
-import { apiRoute } from "./utils/ApiRoute";
+import { generateApiRoute } from "./utils/ApiRoute";
 
 const app = express();
 
@@ -61,8 +61,8 @@ const userController = new UserController(userService, authService);
 const loginController = new LoginController(authService, userService);
 
 // API routes
-app.use(apiRoute("auth"), authController.createRoutes());
-app.use(apiRoute("users"), userController.createRoutes());
+app.use(generateApiRoute("auth"), authController.createRoutes());
+app.use(generateApiRoute("users"), userController.createRoutes());
 app.use("/", loginController.createRoutes());
 
 // Start server
