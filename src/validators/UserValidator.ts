@@ -124,26 +124,36 @@ export default class UserValidator implements IValidator<User> {
   async validateUpdate(userId: number, newUser: User & AdditionalUserData, modifier: User) {
     // Self-edit
     if (userId === modifier.id) {
+      newUser.id = userId;
       Object.keys(newUser).forEach(key => {
-        if (allowedSelfEdit.indexOf(key) < 0) {
+        if (allowedSelfEdit.indexOf(key) < 0 && key !== 'id') {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
     } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
       Object.keys(newUser).forEach(key => {
-        if (allowedJVEdit.indexOf(key) < 0) {
+        if (allowedJVEdit.indexOf(key) < 0 && key !== 'id') {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
     } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
       Object.keys(newUser).forEach(key => {
-        if (allowedAdminEdit.indexOf(key) < 0) {
+        if (allowedAdminEdit.indexOf(key) < 0 && key !== 'id') {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
     } else {
       throw new ServiceError(403, "Forbidden modify action");
     }
+
+
+    // Remove information that hasn't changed
+    const oldUser = await this.userService.fetchUser(userId);
+    Object.keys(newUser).forEach(k => {
+      if (oldUser[k] == newUser[k]) {
+        delete newUser[k];
+      }
+    });
 
     if (newUser.username) {
       // Test username

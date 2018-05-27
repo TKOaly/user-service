@@ -85,11 +85,11 @@ export default class UserService {
     return this.userDao.findByUsername(username).then(res => !res);
   }
 
-  async createUser(user: User, password: string) {
+  async createUser(user: User, password: string): Promise<number[]> {
     user.hashedPassword = await bcrypt.hash(password, 13);
     let newUser = new User({});
     newUser = Object.assign(newUser, user);
-    await this.userDao.save(newUser);
+    return await this.userDao.save(newUser);
   }
 
   async updateUser(userId: number, udpatedUser: User, password?: string) {

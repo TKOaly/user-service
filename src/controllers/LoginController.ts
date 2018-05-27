@@ -41,7 +41,8 @@ export default class LoginController implements IController {
       return res.render("login", { 
         service,
         loggedUser: req.authorization ? req.authorization.user.username : null,
-        redirect: '/?serviceIdentifier=' + service.serviceIdentifier
+        logoutRedirect: '/?serviceIdentifier=' + service.serviceIdentifier,
+        loginRedirect: req.query.loginRedirect || undefined
       });
     } catch (err) {
       return res.status(400).send(err.message);

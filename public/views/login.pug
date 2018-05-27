@@ -12,9 +12,9 @@ html(lang="en")
         #title-container
           div#title Login
       #content
-        if (loggedUser && redirect)
+        if (loggedUser && logoutRedirect)
           h5='You are logged in as ' + loggedUser
-          - let link = `/logout?serviceIdentifier=*&redirect=${redirect}`
+          - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`
           a(href=link fsty)='Destroy session'
         h4='Login to ' + service.displayName
         form(action='/api/auth/requestPermissions', method='POST')
@@ -24,4 +24,5 @@ html(lang="en")
           label(for='password')="Password"
           input(required type='password', name='password', id='password' placeholder='Password')
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
+          input(type='hidden', name='loginRedirect', value=loginRedirect)
           input.accept(type='submit', name='accept', value='Login')
