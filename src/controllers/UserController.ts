@@ -25,9 +25,7 @@ export default class UserController implements IController {
   }
 
   async getUser(req: any, res: express.Response) {
-    if (req.params.id === 'me') {
-      req.params.id = req.authorization.user.id;
-    } else {
+    if (req.params.id !== 'me') {
       if (compareRoles(req.authorization.user.role, 'kayttaja') <= 0) {
         return res
           .status(403)
@@ -56,6 +54,7 @@ export default class UserController implements IController {
         serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
           req.header("service")
         )).dataPermissions;
+        req.params.id = req.authorization.user.id;
       }
       let user = await this.userService.fetchUser(req.params.id);
       res
