@@ -109,6 +109,8 @@ export default class AuthController implements IController {
             .status(403)
             .json(new ServiceResponse(null, 'Credentials not matching already authorized user'));
         }
+      } else {
+        // Something is missing here..?
       }
     } catch (e) {
       return res
@@ -162,7 +164,7 @@ export default class AuthController implements IController {
     } else {
       return res
         .status(404)
-        .json(new ServiceResponse(null, 'Not authroized to service'));
+        .json(new ServiceResponse(null, 'Not authorized to service'));
     }
   }
 

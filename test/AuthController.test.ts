@@ -15,15 +15,19 @@ const should = chai.should();
 const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 
-const authUrl = "/api/v1/authenticate";
+const authUrl = "/api/auth";
 const correctCreds = {
-  email: "testuser@email.com",
-  password: "testuser"
+  username: "test_user",
+  password: "test_user",
+  serviceIdentifier: "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7"
 };
 const incorrectCreds = {
-  email: "wronguser@email.com",
-  password: "wrongpassword"
+  username: "test_user",
+  password: "testuser",
+  serviceIdentifier: "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7"
 };
+
+const serviceName: string = "kjyr";
 
 describe("AuthController", () => {
   // Roll back
@@ -45,30 +49,36 @@ describe("AuthController", () => {
   });
 
   it("Authenticates with correct credentials", done => {
-    /*chai
+    chai
       .request(app)
-      .post(authUrl)
+      .post(authUrl + "/requestPermissions")
       .send(correctCreds)
       .end((err, res) => {
+        console.log(res.body);
         should.not.exist(err);
         res.status.should.equal(200);
-        should.exist(res.body.token);
+        should.exist(res.body.payload);
+        should.exist(res.body.payload.token);
+        should.exist(res.body.ok);
+        res.body.ok.should.equal(true);
         done();
-      });*/
-    done();
+      });
   });
 
   it("Does not authenticate with incorrect credentials", done => {
-    /*chai
+    chai
       .request(app)
-      .post(authUrl)
+      .post(authUrl + "/requestPermissions")
       .send(incorrectCreds)
       .end((err, res) => {
-        should.exist(res.body.error);
+        should.exist(res.body.ok);
+        should.exist(res.body.message);
         should.not.exist(res.body.token);
         res.status.should.equal(400);
+        res.body.ok.should.equal(false);
+        res.body.payload.should.equal(null);
+        res.body.message.should.equal("Passwords do not match");
         done();
-      });*/
-    done();
+      });
   });
 });

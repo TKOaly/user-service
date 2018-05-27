@@ -73,9 +73,4 @@ app.listen(process.env.USERSERVICE_PORT || 3000, () => {
   );
 });
 
-process.on("SIGINT", () => {
-  console.log("Caught interrupt signal, server stopped");
-  process.exit();
-});
-
 export default app;
