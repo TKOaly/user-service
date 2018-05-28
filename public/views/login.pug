@@ -17,7 +17,7 @@ html(lang="en")
           - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`
           a(href=link fsty)='Destroy session'
         h4='Login to ' + service.displayName
-        form(action='/api/auth/requestPermissions', method='POST')
+        form(action='/login', method='POST')
           label(for='username')="Username"
           - let unameVal = loggedUser || '';
           input(required type='text', value=unameVal name='username', id='username' placeholder='Username')

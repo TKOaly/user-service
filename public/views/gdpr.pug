@@ -22,8 +22,8 @@ html(lang="en")
         p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
 
       #confirmation
-        form(id='formSubmitReject', action='/api/auth/vanillaAuthenticate', method='POST')
+        form(id='formSubmitReject', action='/login_confirm', method='POST')
           input.cancel(type='submit', name='cancel', value='Hylkää')
-        form(id='formSubmitAccept', action='/api/auth/vanillaAuthenticate', method='POST')
+        form(id='formSubmitAccept', action='/login_confirm', method='POST')
           input(type='hidden', name='permission', value='yes')
           input.accept(type='submit', name='accept', value='Hyväksy')

@@ -1,20 +1,22 @@
 import { IController } from "./IController";
-import { Response, Router } from 'express';
+import { Response, Router } from "express";
 import { AuthenticationService } from "../services/AuthenticationService";
 import Service from "../models/Service";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import * as express from 'express';
+import * as express from "express";
 import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
+import User from "../models/User";
 
 export default class LoginController implements IController {
   route: Router;
   authorizationMiddleware: AuthorizeMiddleware;
 
   constructor(
-    private authService: AuthenticationService, 
-    private userService: UserService) {
+    private authService: AuthenticationService,
+    private userService: UserService
+  ) {
     this.route = Router();
     this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
   }
@@ -23,7 +25,7 @@ export default class LoginController implements IController {
     if (!req.query.serviceIdentifier) {
       return res.status(400).send("Service identifier missing");
     }
-  
+
     try {
       const service: Service = await this.authService.getServiceWithIdentifier(
         req.query.serviceIdentifier
@@ -31,17 +33,18 @@ export default class LoginController implements IController {
 
       if (req.authorization) {
         if (
-          req.authorization.token.authenticatedTo.indexOf(service.serviceIdentifier) >
-          -1
+          req.authorization.token.authenticatedTo.indexOf(
+            service.serviceIdentifier
+          ) > -1
         ) {
           return res.redirect(service.redirectUrl);
         }
       }
 
-      return res.render("login", { 
+      return res.render("login", {
         service,
         loggedUser: req.authorization ? req.authorization.user.username : null,
-        logoutRedirect: '/?serviceIdentifier=' + service.serviceIdentifier,
+        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined
       });
     } catch (err) {
@@ -53,24 +56,29 @@ export default class LoginController implements IController {
     if (!req.query.serviceIdentifier) {
       return res
         .status(400)
-        .json(new ServiceError(null, 'No service identifier'));
+        .json(new ServiceError(null, "No service identifier"));
     }
 
-    if (req.query.serviceIdentifier === '*' && req.query.redirect) {
-      res.clearCookie('token');
+    if (req.query.serviceIdentifier === "*" && req.query.redirect) {
+      res.clearCookie("token");
       return res.redirect(req.query.redirect);
     }
 
     let service: Service;
     try {
-      service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier)
-    } catch(e) {
+      service = await this.authService.getServiceWithIdentifier(
+        req.query.serviceIdentifier
+      );
+    } catch (e) {
       return res
         .status(e.httpStatusCode || 500)
         .json(new ServiceResponse(null, e.message));
     }
 
-    const token = this.authService.removeServiceAuthenticationToToken(req.authorization.token, service.serviceIdentifier);
+    const token = this.authService.removeServiceAuthenticationToToken(
+      req.authorization.token,
+      service.serviceIdentifier
+    );
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       domain: "localhost"
@@ -78,16 +86,160 @@ export default class LoginController implements IController {
 
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");
-    res.render('logout', { serviceName: service.displayName });
+    res.render("logout", { serviceName: service.displayName });
+  }
+
+  async login(req: express.Request & IASRequest, res: express.Response) {
+    if (
+      !req.body.serviceIdentifier ||
+      !req.body.username ||
+      !req.body.password
+    ) {
+      return res
+        .status(400)
+        .json(new ServiceResponse(null, "Invalid request params"));
+    }
+
+    let service: Service;
+    try {
+      service = await this.authService.getServiceWithIdentifier(
+        req.body.serviceIdentifier
+      );
+    } catch (e) {
+      return res
+        .status(e.httpErrorCode)
+        .json(new ServiceResponse(null, e.message));
+    }
+
+    if (req.authorization) {
+      if (
+        req.authorization.token.authenticatedTo.indexOf(
+          req.body.serviceIdentifier
+        ) > -1
+      ) {
+        return res.redirect(service.redirectUrl);
+      }
+    }
+
+    let keys = [];
+    let user: User;
+    try {
+      user = await this.userService.getUserWithUsernameAndPassword(
+        req.body.username,
+        req.body.password
+      );
+
+      if (req.authorization && req.authorization.user) {
+        if (user.id !== req.authorization.user.id) {
+          return res
+            .status(403)
+            .json(
+              new ServiceResponse(
+                null,
+                "Credentials not matching already authorized user"
+              )
+            );
+        }
+      } else {
+        // Something is missing here..?
+      }
+    } catch (e) {
+      return res
+        .status(e.httpErrorCode)
+        .json(new ServiceResponse(null, e.message));
+    }
+
+    // Removes data that are not needed when making a request
+    // We require user id and role every time, regardless of permissions in services
+    keys = Object.keys(
+      user.removeNonRequestedData(service.dataPermissions | 512 | 1)
+    ).map(key => ({ name: key, value: user[key] }));
+
+    // Set session
+    if (!user.id) {
+      return res
+        .status(500)
+        .send("Authentication failure: User ID is undefined.");
+    }
+
+    req.session.user = {
+      userId: user.id,
+      username: req.body.username,
+      password: req.body.password,
+      serviceIdentifier: service.serviceIdentifier,
+      // Check for custom redirection url
+      redirectTo: req.body.loginRedirect
+        ? req.body.loginRedirect
+        : service.redirectUrl
+    };
+
+    res.render("gdpr", {
+      personalInformation: keys,
+      serviceDisplayName: service.displayName,
+      redirectTo: req.body.loginRedirect
+        ? req.body.loginRedirect
+        : service.redirectUrl
+    });
+  }
+
+  async loginConfirm(req: any, res: express.Response) {
+    let body: {
+      permission: string;
+    } =
+      req.body;
+
+    if (!body.permission) {
+      return res.redirect("https://members.tko-aly.fi");
+    }
+
+    let token: string;
+
+    try {
+      if (req.authorization) {
+        token = this.authService.appendNewServiceAuthenticationToToken(
+          req.authorization.token,
+          req.session.user.serviceIdentifier
+        );
+      } else {
+        token = this.authService.createToken(req.session.user.userId, [
+          req.session.user.serviceIdentifier
+        ]);
+      }
+    } catch (e) {
+      return res.status(500).json(new ServiceResponse(null, e.message));
+    }
+
+    let redirectTo = req.session.user.redirectTo;
+    req.session.user = null;
+
+    res.cookie("token", token, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: "localhost"
+    });
+
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Credentials", "true");
+    res.redirect(redirectTo);
   }
 
   createRoutes() {
     this.route.get(
-      '/', 
-      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware), 
-      this.getLoginView.bind(this));
+      "/",
+      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      this.getLoginView.bind(this)
+    );
+    this.route.post(
+      "/login",
+      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      this.login.bind(this)
+    );
+    this.route.post(
+      "/login_confirm",
+      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      this.loginConfirm.bind(this)
+    );
     this.route.get(
-      '/logout',
+      "/logout",
       this.authorizationMiddleware.authorize.bind(this.authorizationMiddleware),
       this.logOut.bind(this)
     );

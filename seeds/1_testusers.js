@@ -1,5 +1,7 @@
 const sha1 = require("sha1");
 
+const encryptPassword = (password, salt) => sha1(salt + "kekbUr" + password);
+
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex("users")
@@ -19,7 +21,7 @@ exports.seed = function(knex, Promise) {
           membership: "jasen",
           created: new Date(),
           modified: new Date(),
-          hashed_password: sha1("12345kekbUrtest_user"),
+          hashed_password: encryptPassword("test_user", "12345"),
           salt: "12345",
           role: "member",
           tktl: 1,
@@ -37,7 +39,7 @@ exports.seed = function(knex, Promise) {
           membership: "yllapitaja",
           created: new Date(),
           modified: new Date(),
-          hashed_password: sha1("12345kekbUradmin_user"),
+          hashed_password: encryptPassword("admin_user", "12345"),
           salt: "12345",
           role: "member",
           tktl: 1,
