@@ -112,10 +112,12 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#checkusernameavailability" class="tsd-kind-icon">check<wbr>Username<wbr>Availability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#createuser" class="tsd-kind-icon">create<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchallunpaidusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Unpaid<wbr>Users</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchallusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Users</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchuser" class="tsd-kind-icon">fetch<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#getuserwithusernameandpassword" class="tsd-kind-icon">get<wbr>User<wbr>With<wbr>Username<wbr>And<wbr>Password</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#searchusers" class="tsd-kind-icon">search<wbr>Users</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#updateuser" class="tsd-kind-icon">update<wbr>User</a></li>
 							</ul>
 						</section>
 					</div>
@@ -133,7 +135,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L14">services/UserService.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L13">services/UserService.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -165,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L20">services/UserService.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L19">services/UserService.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,20 +184,23 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L73">services/UserService.ts:73</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L120">services/UserService.ts:120</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Checks if usernae is available.</p>
+									<p>Checks if username is available.</p>
 								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>username: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -206,15 +211,25 @@
 					<a name="createuser" class="tsd-anchor"></a>
 					<h3>create<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>User<span class="tsd-signature-symbol">(</span>user<span class="tsd-signature-symbol">: </span><a href="_models_user_.user.html" class="tsd-signature-type">User</a>, password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>User<span class="tsd-signature-symbol">(</span>user<span class="tsd-signature-symbol">: </span><a href="_models_user_.user.html" class="tsd-signature-type">User</a>, password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L77">services/UserService.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L132">services/UserService.ts:132</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates an user.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -224,7 +239,34 @@
 									<h5>password: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fetchallunpaidusers" class="tsd-anchor"></a>
+					<h3>fetch<wbr>All<wbr>Unpaid<wbr>Users</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>Unpaid<wbr>Users<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L53">services/UserService.ts:53</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns all unpaid users.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -238,9 +280,19 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L37">services/UserService.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L42">services/UserService.ts:42</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns all users.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -255,7 +307,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L28">services/UserService.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L27">services/UserService.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -282,22 +334,32 @@
 					<a name="getuserwithusernameandpassword" class="tsd-anchor"></a>
 					<h3>get<wbr>User<wbr>With<wbr>Username<wbr>And<wbr>Password</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>User<wbr>With<wbr>Username<wbr>And<wbr>Password<span class="tsd-signature-symbol">(</span>username<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>User<wbr>With<wbr>Username<wbr>And<wbr>Password<span class="tsd-signature-symbol">(</span>username<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L51">services/UserService.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L82">services/UserService.ts:82</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns username with username and password.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>username: <span class="tsd-signature-type">any</span></h5>
+									<h5>username: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>password: <span class="tsd-signature-type">any</span></h5>
+									<h5>password: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -314,9 +376,19 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/UserService.ts#L42">services/UserService.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L65">services/UserService.ts:65</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Searches all users.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -324,6 +396,45 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updateuser" class="tsd-anchor"></a>
+					<h3>update<wbr>User</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>User<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, udpatedUser<span class="tsd-signature-symbol">: </span><a href="_models_user_.user.html" class="tsd-signature-type">User</a>, password<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/UserService.ts#L148">services/UserService.ts:148</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Updates an user.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>userId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>udpatedUser: <a href="_models_user_.user.html" class="tsd-signature-type">User</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> password: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -345,16 +456,25 @@
 						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_models_payment_.html">"models/<wbr>Payment"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
@@ -365,11 +485,17 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
 					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
+					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_token_token_.html">"token/<wbr>Token"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_apiroute_.html">"utils/<wbr>Api<wbr>Route"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
@@ -408,6 +534,9 @@
 								<a href="_services_userservice_.userservice.html#createuser" class="tsd-kind-icon">create<wbr>User</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_userservice_.userservice.html#fetchallunpaidusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Unpaid<wbr>Users</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_userservice_.userservice.html#fetchallusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Users</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -418,6 +547,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_userservice_.userservice.html#searchusers" class="tsd-kind-icon">search<wbr>Users</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_userservice_.userservice.html#updateuser" class="tsd-kind-icon">update<wbr>User</a>
 							</li>
 						</ul>
 					</li>

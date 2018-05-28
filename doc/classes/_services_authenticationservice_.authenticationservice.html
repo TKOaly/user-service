@@ -105,7 +105,6 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_authenticationservice_.authenticationservice.html#servicedao" class="tsd-kind-icon">service<wbr>Dao</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_authenticationservice_.authenticationservice.html#userdao" class="tsd-kind-icon">user<wbr>Dao</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -113,10 +112,10 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#appendnewserviceauthenticationtotoken" class="tsd-kind-icon">append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#createtoken" class="tsd-kind-icon">create<wbr>Token</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#fetchtokenwithusernameandpassword" class="tsd-kind-icon">fetch<wbr>Token<wbr>With<wbr>Username<wbr>And<wbr>Password</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservice" class="tsd-kind-icon">get<wbr>Service</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservicewithidentifier" class="tsd-kind-icon">get<wbr>Service<wbr>With<wbr>Identifier</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservices" class="tsd-kind-icon">get<wbr>Services</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#removeserviceauthenticationtotoken" class="tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken</a></li>
 							</ul>
 						</section>
 					</div>
@@ -128,13 +127,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Authentication<wbr>Service<span class="tsd-signature-symbol">(</span>userDao<span class="tsd-signature-symbol">: </span><a href="_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a>, serviceDao<span class="tsd-signature-symbol">: </span><a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Authentication<wbr>Service<span class="tsd-signature-symbol">(</span>serviceDao<span class="tsd-signature-symbol">: </span><a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L18">services/AuthenticationService.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L16">services/AuthenticationService.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -149,14 +148,6 @@
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
-								<li>
-									<h5>userDao: <a href="_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>UserDao</p>
-										</div>
-									</div>
-								</li>
 								<li>
 									<h5>serviceDao: <a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></h5>
 									<div class="tsd-comment tsd-typography">
@@ -179,27 +170,12 @@
 					<div class="tsd-signature tsd-kind-icon">service<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L27">services/AuthenticationService.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L24">services/AuthenticationService.ts:24</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>ServiceDao</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="userdao" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> user<wbr>Dao</h3>
-					<div class="tsd-signature tsd-kind-icon">user<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L26">services/AuthenticationService.ts:26</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>UserDao</p>
 						</div>
 					</div>
 				</section>
@@ -216,7 +192,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L106">services/AuthenticationService.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L79">services/AuthenticationService.ts:79</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -252,7 +228,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L140">services/AuthenticationService.ts:140</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L149">services/AuthenticationService.ts:149</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -279,37 +255,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="fetchtokenwithusernameandpassword" class="tsd-anchor"></a>
-					<h3>fetch<wbr>Token<wbr>With<wbr>Username<wbr>And<wbr>Password</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Token<wbr>With<wbr>Username<wbr>And<wbr>Password<span class="tsd-signature-symbol">(</span>username<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L36">services/AuthenticationService.ts:36</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Excanges username and password to access token</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>username: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>password: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getservice" class="tsd-anchor"></a>
 					<h3>get<wbr>Service</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -319,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L63">services/AuthenticationService.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L34">services/AuthenticationService.ts:34</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -352,7 +297,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L78">services/AuthenticationService.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L49">services/AuthenticationService.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -385,7 +330,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/4b03f3e/src/services/AuthenticationService.ts#L92">services/AuthenticationService.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L65">services/AuthenticationService.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -399,6 +344,42 @@
 								</dl>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeserviceauthenticationtotoken" class="tsd-anchor"></a>
+					<h3>remove<wbr>Service<wbr>Authentication<wbr>ToToken</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken<span class="tsd-signature-symbol">(</span>oldToken<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span>, serviceToRemove<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/AuthenticationService.ts#L113">services/AuthenticationService.ts:113</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove a service from the authentication token.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>AuthenticationService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>oldToken: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>serviceToRemove: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -420,16 +401,25 @@
 						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_models_payment_.html">"models/<wbr>Payment"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
@@ -441,10 +431,16 @@
 						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_token_token_.html">"token/<wbr>Token"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_utils_apiroute_.html">"utils/<wbr>Api<wbr>Route"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
@@ -476,17 +472,11 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_services_authenticationservice_.authenticationservice.html#servicedao" class="tsd-kind-icon">service<wbr>Dao</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_services_authenticationservice_.authenticationservice.html#userdao" class="tsd-kind-icon">user<wbr>Dao</a>
-							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_authenticationservice_.authenticationservice.html#appendnewserviceauthenticationtotoken" class="tsd-kind-icon">append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_authenticationservice_.authenticationservice.html#createtoken" class="tsd-kind-icon">create<wbr>Token</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#fetchtokenwithusernameandpassword" class="tsd-kind-icon">fetch<wbr>Token<wbr>With<wbr>Username<wbr>And<wbr>Password</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_authenticationservice_.authenticationservice.html#getservice" class="tsd-kind-icon">get<wbr>Service</a>
@@ -496,6 +486,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_authenticationservice_.authenticationservice.html#getservices" class="tsd-kind-icon">get<wbr>Services</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_authenticationservice_.authenticationservice.html#removeserviceauthenticationtotoken" class="tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken</a>
 							</li>
 						</ul>
 					</li>

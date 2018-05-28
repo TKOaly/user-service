@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>LoginController | user-service</title>
+	<title>PaymentDao | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_controllers_logincontroller_.html">&quot;controllers/LoginController&quot;</a>
+					<a href="../modules/_dao_paymentdao_.html">&quot;dao/PaymentDao&quot;</a>
 				</li>
 				<li>
-					<a href="_controllers_logincontroller_.logincontroller.html">LoginController</a>
+					<a href="_dao_paymentdao_.paymentdao.html">PaymentDao</a>
 				</li>
 			</ul>
-			<h1>Class LoginController</h1>
+			<h1>Class PaymentDao</h1>
 		</div>
 	</div>
 </header>
@@ -72,16 +72,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Login controller.</p>
+						<p>Payment dao.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>export</dt>
 						<dd></dd>
 						<dt>class</dt>
-						<dd><p>LoginController</p>
+						<dd><p>PaymentDao</p>
 						</dd>
 						<dt>implements</dt>
-						<dd><p>{IController}</p>
+						<dd><p>{Dao<Payment>}</p>
 						</dd>
 					</dl>
 				</div>
@@ -90,14 +90,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">LoginController</span>
+						<span class="target">PaymentDao</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_controllers_icontroller_.icontroller.html" class="tsd-signature-type">IController</a></li>
+					<li><a href="../interfaces/_dao_dao_.dao.html" class="tsd-signature-type">Dao</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -107,26 +107,25 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_controllers_logincontroller_.logincontroller.html#authservice" class="tsd-kind-icon">auth<wbr>Service</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#authorizationmiddleware" class="tsd-kind-icon">authorization<wbr>Middleware</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#route" class="tsd-kind-icon">route</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_controllers_logincontroller_.logincontroller.html#userservice" class="tsd-kind-icon">user<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dao_paymentdao_.paymentdao.html#knex" class="tsd-kind-icon">knex</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#createroutes" class="tsd-kind-icon">create<wbr>Routes</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#getloginview" class="tsd-kind-icon">get<wbr>Login<wbr>View</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#logout" class="tsd-kind-icon">log<wbr>Out</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#login" class="tsd-kind-icon">login</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_logincontroller_.logincontroller.html#loginconfirm" class="tsd-kind-icon">login<wbr>Confirm</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#findall" class="tsd-kind-icon">find<wbr>All</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#findbyconfirmer" class="tsd-kind-icon">find<wbr>ByConfirmer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#findbypayer" class="tsd-kind-icon">find<wbr>ByPayer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#findone" class="tsd-kind-icon">find<wbr>One</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#remove" class="tsd-kind-icon">remove</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#save" class="tsd-kind-icon">save</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_paymentdao_.paymentdao.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
 					</div>
@@ -138,78 +137,45 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Login<wbr>Controller<span class="tsd-signature-symbol">(</span>authService<span class="tsd-signature-symbol">: </span><a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a>, userService<span class="tsd-signature-symbol">: </span><a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_controllers_logincontroller_.logincontroller.html" class="tsd-signature-type">LoginController</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Payment<wbr>Dao<span class="tsd-signature-symbol">(</span>knex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Knex</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L21">controllers/LoginController.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L13">dao/PaymentDao.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an instance of LoginController.</p>
+									<p>Creates an instance of PaymentDao.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>authService: <a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></h5>
-								</li>
-								<li>
-									<h5>userService: <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></h5>
+									<h5>knex: <span class="tsd-signature-type">Knex</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_controllers_logincontroller_.logincontroller.html" class="tsd-signature-type">LoginController</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="authservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> auth<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">auth<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></div>
+					<a name="knex" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> knex</h3>
+					<div class="tsd-signature tsd-kind-icon">knex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Knex</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L30">controllers/LoginController.ts:30</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="authorizationmiddleware" class="tsd-anchor"></a>
-					<h3>authorization<wbr>Middleware</h3>
-					<div class="tsd-signature tsd-kind-icon">authorization<wbr>Middleware<span class="tsd-signature-symbol">:</span> <a href="_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-signature-type">AuthorizeMiddleware</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L21">controllers/LoginController.ts:21</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="route" class="tsd-anchor"></a>
-					<h3>route</h3>
-					<div class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Router</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L20">controllers/LoginController.ts:20</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="userservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> user<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">user<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L31">controllers/LoginController.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L19">dao/PaymentDao.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -217,174 +183,242 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createroutes" class="tsd-anchor"></a>
-					<h3>create<wbr>Routes</h3>
+					<a name="findall" class="tsd-anchor"></a>
+					<h3>find<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Routes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Router</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_controllers_icontroller_.icontroller.html">IController</a>.<a href="../interfaces/_controllers_icontroller_.icontroller.html#createroutes">createRoutes</a></p>
+								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#findall">findAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L277">controllers/LoginController.ts:277</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L69">dao/PaymentDao.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Create routes for login controller.</p>
+									<p>Finds all payments.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Router</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getloginview" class="tsd-anchor"></a>
-					<h3>get<wbr>Login<wbr>View</h3>
+					<a name="findbyconfirmer" class="tsd-anchor"></a>
+					<h3>find<wbr>ByConfirmer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Login<wbr>View<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByConfirmer<span class="tsd-signature-symbol">(</span>confirmer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L45">controllers/LoginController.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L56">dao/PaymentDao.ts:56</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns login view.</p>
+									<p>Finds a payment by confirmer.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
+									<h5>confirmer_id: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="logout" class="tsd-anchor"></a>
-					<h3>log<wbr>Out</h3>
+					<a name="findbypayer" class="tsd-anchor"></a>
+					<h3>find<wbr>ByPayer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">log<wbr>Out<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByPayer<span class="tsd-signature-symbol">(</span>payer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L84">controllers/LoginController.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L42">dao/PaymentDao.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Logs the user out.</p>
+									<p>Finds a payment by payer.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
-								</li>
-								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
+									<h5>payer_id: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="login" class="tsd-anchor"></a>
-					<h3>login</h3>
+					<a name="findone" class="tsd-anchor"></a>
+					<h3>find<wbr>One</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">login<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#findone">findOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L129">controllers/LoginController.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L28">dao/PaymentDao.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Logs the user in.</p>
+									<p>Finds a single payment.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
-								</li>
-								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment id</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="loginconfirm" class="tsd-anchor"></a>
-					<h3>login<wbr>Confirm</h3>
+					<a name="remove" class="tsd-anchor"></a>
+					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">login<wbr>Confirm<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#remove">remove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/controllers/LoginController.ts#L231">controllers/LoginController.ts:231</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L80">dao/PaymentDao.ts:80</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Handles GDPR template and redirects the user forward</p>
+									<p>Removes a payment.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>LoginController</p>
+									<dd><p>PaymentDao</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <span class="tsd-signature-type">express.Request</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment id</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Response</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="save" class="tsd-anchor"></a>
+					<h3>save</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L106">dao/PaymentDao.ts:106</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Saves a payment.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentDao</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>entity: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="update" class="tsd-anchor"></a>
+					<h3>update</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/PaymentDao.ts#L93">dao/PaymentDao.ts:93</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Updates a paymemt.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentDao</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>entity: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -402,7 +436,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_controllers_icontroller_.html">"controllers/IController"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -414,7 +448,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -469,45 +503,39 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_controllers_logincontroller_.logincontroller.html" class="tsd-kind-icon">Login<wbr>Controller</a>
+						<a href="_dao_paymentdao_.paymentdao.html" class="tsd-kind-icon">Payment<wbr>Dao</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_dao_paymentdao_.paymentdao.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_controllers_logincontroller_.logincontroller.html#authservice" class="tsd-kind-icon">auth<wbr>Service</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#authorizationmiddleware" class="tsd-kind-icon">authorization<wbr>Middleware</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#route" class="tsd-kind-icon">route</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_controllers_logincontroller_.logincontroller.html#userservice" class="tsd-kind-icon">user<wbr>Service</a>
+								<a href="_dao_paymentdao_.paymentdao.html#knex" class="tsd-kind-icon">knex</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#createroutes" class="tsd-kind-icon">create<wbr>Routes</a>
+								<a href="_dao_paymentdao_.paymentdao.html#findall" class="tsd-kind-icon">find<wbr>All</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#getloginview" class="tsd-kind-icon">get<wbr>Login<wbr>View</a>
+								<a href="_dao_paymentdao_.paymentdao.html#findbyconfirmer" class="tsd-kind-icon">find<wbr>ByConfirmer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#logout" class="tsd-kind-icon">log<wbr>Out</a>
+								<a href="_dao_paymentdao_.paymentdao.html#findbypayer" class="tsd-kind-icon">find<wbr>ByPayer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#login" class="tsd-kind-icon">login</a>
+								<a href="_dao_paymentdao_.paymentdao.html#findone" class="tsd-kind-icon">find<wbr>One</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_controllers_logincontroller_.logincontroller.html#loginconfirm" class="tsd-kind-icon">login<wbr>Confirm</a>
+								<a href="_dao_paymentdao_.paymentdao.html#remove" class="tsd-kind-icon">remove</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dao_paymentdao_.paymentdao.html#save" class="tsd-kind-icon">save</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dao_paymentdao_.paymentdao.html#update" class="tsd-kind-icon">update</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_controllers_logincontroller_.sessionuser.html" class="tsd-kind-icon">Session<wbr>User</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

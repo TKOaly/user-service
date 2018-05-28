@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ServiceDao | user-service</title>
+	<title>PaymentService | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_dao_servicedao_.html">&quot;dao/ServiceDao&quot;</a>
+					<a href="../modules/_services_paymentservice_.html">&quot;services/PaymentService&quot;</a>
 				</li>
 				<li>
-					<a href="_dao_servicedao_.servicedao.html">ServiceDao</a>
+					<a href="_services_paymentservice_.paymentservice.html">PaymentService</a>
 				</li>
 			</ul>
-			<h1>Class ServiceDao</h1>
+			<h1>Class PaymentService</h1>
 		</div>
 	</div>
 </header>
@@ -72,16 +72,13 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Service dao.</p>
+						<p>Payment service.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>export</dt>
 						<dd></dd>
 						<dt>class</dt>
-						<dd><p>ServiceDao</p>
-						</dd>
-						<dt>implements</dt>
-						<dd><p>{Dao<Service>}</p>
+						<dd><p>PaymentService</p>
 						</dd>
 					</dl>
 				</div>
@@ -90,14 +87,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ServiceDao</span>
+						<span class="target">PaymentService</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_dao_dao_.dao.html" class="tsd-signature-type">Dao</a><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -107,25 +98,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dao_servicedao_.servicedao.html#knex" class="tsd-kind-icon">knex</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_paymentservice_.paymentservice.html#paymentdao" class="tsd-kind-icon">payment<wbr>Dao</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#findall" class="tsd-kind-icon">find<wbr>All</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#findbyidentifier" class="tsd-kind-icon">find<wbr>ByIdentifier</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#findbyname" class="tsd-kind-icon">find<wbr>ByName</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#findone" class="tsd-kind-icon">find<wbr>One</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#remove" class="tsd-kind-icon">remove</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#save" class="tsd-kind-icon">save</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_servicedao_.servicedao.html#update" class="tsd-kind-icon">update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#createpayment" class="tsd-kind-icon">create<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchallpayments" class="tsd-kind-icon">fetch<wbr>All<wbr>Payments</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchpayment" class="tsd-kind-icon">fetch<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#updatepayment" class="tsd-kind-icon">update<wbr>Payment</a></li>
 							</ul>
 						</section>
 					</div>
@@ -137,32 +125,32 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Service<wbr>Dao<span class="tsd-signature-symbol">(</span>knex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Knex</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Payment<wbr>Service<span class="tsd-signature-symbol">(</span>paymentDao<span class="tsd-signature-symbol">: </span><a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_paymentservice_.paymentservice.html" class="tsd-signature-type">PaymentService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L13">dao/ServiceDao.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L11">services/PaymentService.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an instance of ServiceDao.</p>
+									<p>Creates an instance of PaymentService.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
+									<dd><p>PaymentService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>knex: <span class="tsd-signature-type">Knex</span></h5>
+									<h5>paymentDao: <a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_services_paymentservice_.paymentservice.html" class="tsd-signature-type">PaymentService</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -170,12 +158,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="knex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> knex</h3>
-					<div class="tsd-signature tsd-kind-icon">knex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Knex</span></div>
+					<a name="paymentdao" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> payment<wbr>Dao</h3>
+					<div class="tsd-signature tsd-kind-icon">payment<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L19">dao/ServiceDao.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L17">services/PaymentService.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -183,209 +171,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="findall" class="tsd-anchor"></a>
-					<h3>find<wbr>All</h3>
+					<a name="createpayment" class="tsd-anchor"></a>
+					<h3>create<wbr>Payment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#findall">findAll</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L69">dao/ServiceDao.ts:69</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Finds all services.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="findbyidentifier" class="tsd-anchor"></a>
-					<h3>find<wbr>ByIdentifier</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>ByIdentifier<span class="tsd-signature-symbol">(</span>service_identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Payment<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L42">dao/ServiceDao.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L52">services/PaymentService.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Finds a service by its identifier.</p>
+									<p>Creates a payment.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
+									<dd><p>PaymentService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>service_identifier: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service identifier</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="findbyname" class="tsd-anchor"></a>
-					<h3>find<wbr>ByName</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>ByName<span class="tsd-signature-symbol">(</span>service_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L56">dao/ServiceDao.ts:56</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Finds a service by its name.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>service_name: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service name</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="findone" class="tsd-anchor"></a>
-					<h3>find<wbr>One</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#findone">findOne</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L28">dao/ServiceDao.ts:28</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Finds a single service.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service id</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="remove" class="tsd-anchor"></a>
-					<h3>remove</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_dao_dao_.dao.html">Dao</a>.<a href="../interfaces/_dao_dao_.dao.html#remove">remove</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L80">dao/ServiceDao.ts:80</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Removes a single service.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service id</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="save" class="tsd-anchor"></a>
-					<h3>save</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L106">dao/ServiceDao.ts:106</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Saves a new service.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>entity: <a href="_models_service_.service.html" class="tsd-signature-type">Service</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service</p>
-									</div>
+									<h5>payment: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -393,35 +204,95 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="update" class="tsd-anchor"></a>
-					<h3>update</h3>
+					<a name="fetchallpayments" class="tsd-anchor"></a>
+					<h3>fetch<wbr>All<wbr>Payments</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>Payments<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/dao/ServiceDao.ts#L93">dao/ServiceDao.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L41">services/PaymentService.ts:41</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Updates a single service.</p>
+									<p>Returns all payments.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>ServiceDao</p>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fetchpayment" class="tsd-anchor"></a>
+					<h3>fetch<wbr>Payment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L26">services/PaymentService.ts:26</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a single payment from the database.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>entity: <a href="_models_service_.service.html" class="tsd-signature-type">Service</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Service</p>
-									</div>
+									<h5>paymentId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updatepayment" class="tsd-anchor"></a>
+					<h3>update<wbr>Payment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, updatedPayment<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L64">services/PaymentService.ts:64</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Updates a payment.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>paymentId: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>updatedPayment: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -457,7 +328,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -475,7 +346,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -509,34 +380,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_dao_servicedao_.servicedao.html" class="tsd-kind-icon">Service<wbr>Dao</a>
+						<a href="_services_paymentservice_.paymentservice.html" class="tsd-kind-icon">Payment<wbr>Service</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_services_paymentservice_.paymentservice.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_dao_servicedao_.servicedao.html#knex" class="tsd-kind-icon">knex</a>
+								<a href="_services_paymentservice_.paymentservice.html#paymentdao" class="tsd-kind-icon">payment<wbr>Dao</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#findall" class="tsd-kind-icon">find<wbr>All</a>
+								<a href="_services_paymentservice_.paymentservice.html#createpayment" class="tsd-kind-icon">create<wbr>Payment</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#findbyidentifier" class="tsd-kind-icon">find<wbr>ByIdentifier</a>
+								<a href="_services_paymentservice_.paymentservice.html#fetchallpayments" class="tsd-kind-icon">fetch<wbr>All<wbr>Payments</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#findbyname" class="tsd-kind-icon">find<wbr>ByName</a>
+								<a href="_services_paymentservice_.paymentservice.html#fetchpayment" class="tsd-kind-icon">fetch<wbr>Payment</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#findone" class="tsd-kind-icon">find<wbr>One</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#remove" class="tsd-kind-icon">remove</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#save" class="tsd-kind-icon">save</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dao_servicedao_.servicedao.html#update" class="tsd-kind-icon">update</a>
+								<a href="_services_paymentservice_.paymentservice.html#updatepayment" class="tsd-kind-icon">update<wbr>Payment</a>
 							</li>
 						</ul>
 					</li>
