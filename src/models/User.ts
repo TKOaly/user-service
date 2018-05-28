@@ -131,15 +131,24 @@ export default class User {
     this.email = userDatabaseObject.email;
     this.residence = userDatabaseObject.residence;
     this.phone = userDatabaseObject.phone;
-    this.isHYYMember = userDatabaseObject.hyy_member == null ? undefined : Boolean(userDatabaseObject.hyy_member);
+    this.isHYYMember =
+      userDatabaseObject.hyy_member == null
+        ? undefined
+        : Boolean(userDatabaseObject.hyy_member);
     this.membership = userDatabaseObject.membership;
     this.role = userDatabaseObject.role;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
     this.createdAt = userDatabaseObject.created;
     this.modifiedAt = userDatabaseObject.modified;
-    this.isTKTL = userDatabaseObject.tktl == null ? undefined : Boolean(userDatabaseObject.tktl);
-    this.isDeleted = userDatabaseObject.deleted == null ? undefined : Boolean(userDatabaseObject.deleted);
+    this.isTKTL =
+      userDatabaseObject.tktl == null
+        ? undefined
+        : Boolean(userDatabaseObject.tktl);
+    this.isDeleted =
+      userDatabaseObject.deleted == null
+        ? undefined
+        : Boolean(userDatabaseObject.deleted);
   }
 
   /**
@@ -161,11 +170,13 @@ export default class User {
    * @returns
    * @memberof User User with non-requested data removed
    */
-  removeNonRequestedData(dataRequest: number) {
-    Object.keys(this.removeSensitiveInformation()).forEach((key, i) => {
-      let val = Math.pow(2, i);
-      if (val == null || (val & dataRequest) != val) delete this[key];
-    });
+  removeNonRequestedData(dataRequest: number): User {
+    Object.keys(this.removeSensitiveInformation()).forEach(
+      (key: string, i: number) => {
+        let val = Math.pow(2, i);
+        if (val == null || (val & dataRequest) != val) delete this[key];
+      }
+    );
     return this;
   }
 
@@ -222,26 +233,21 @@ interface UserDatabaseObject {
 
 export function compareRoles(a: string, b: string) {
   const roleNumbers = {
-    'kayttaja': 1,
-    'virkailija': 2,
-    'tenttiarkistovirkailija': 2,
-    'jasenvirkailija': 3,
-    'yllapitaja': 4
-  }
+    kayttaja: 1,
+    virkailija: 2,
+    tenttiarkistovirkailija: 2,
+    jasenvirkailija: 3,
+    yllapitaja: 4
+  };
 
   let aN = 0;
   let bN = 0;
 
-  if (roleNumbers[a])
-    aN = roleNumbers[a];
+  if (roleNumbers[a]) aN = roleNumbers[a];
 
-  if (roleNumbers[b])
-    bN = roleNumbers[b];
+  if (roleNumbers[b]) bN = roleNumbers[b];
 
-  if (aN < bN)
-    return -1;
-  else if (aN > bN)
-    return 1;
-  else
-    return 0;
+  if (aN < bN) return -1;
+  else if (aN > bN) return 1;
+  else return 0;
 }

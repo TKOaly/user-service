@@ -28,14 +28,12 @@ export class ServiceToken {
    */
   toString(): string {
     try {
-      return JWT.sign(
-        {
-          userId: this.userId,
-          authenticatedTo: this.authenticatedTo.join(","),
-          createdAt: this.createdAt
-        },
-        process.env.AUTHSERVICE_JWT_SECRET
-      );
+      const parsedTokenContents: ParsedTokenContents = {
+        userId: this.userId,
+        authenticatedTo: this.authenticatedTo.join(","),
+        createdAt: this.createdAt
+      };
+      return JWT.sign(parsedTokenContents, process.env.AUTHSERVICE_JWT_SECRET);
     } catch (e) {
       throw e;
     }
@@ -50,15 +48,27 @@ export class ServiceToken {
  * @returns {ServiceToken}
  */
 export function stringToServiceToken(token: string): ServiceToken {
-  let parsedToken = null;
+  let parsedToken: string | object = null;
   try {
     parsedToken = JWT.verify(token, process.env.AUTHSERVICE_JWT_SECRET);
   } catch (e) {
     throw e;
   }
+  const tokenContents: ParsedTokenContents = parsedToken as ParsedTokenContents;
   return new ServiceToken(
-    parsedToken.userId,
-    parsedToken.authenticatedTo.split(","),
-    parsedToken.createdAt
+    tokenContents.userId,
+    tokenContents.authenticatedTo.split(","),
+    tokenContents.createdAt
   );
+}
+
+/**
+ * Interface for parsed token contents.
+ *
+ * @interface ParsedTokenContents
+ */
+interface ParsedTokenContents {
+  userId: number;
+  authenticatedTo: string;
+  createdAt: Date;
 }

@@ -1,0 +1,3 @@
+GET http://localhost:3000/api/payments/1 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImF1dGhlbnRpY2F0ZWRUbyI6IjQzM2Y3Y2Q5LWU3ZGItNDJmYi1hY2ViLWMzNzE2YzZlZjJiNyIsImNyZWF0ZWRBdCI6IjIwMTgtMDUtMjhUMTY6MzU6NTkuNzk3WiIsImlhdCI6MTUyNzUyNTM1OX0.TIhediYTRUNfADWEAcwxO4gc-d4k2ko7GMnQ-c-9MC0

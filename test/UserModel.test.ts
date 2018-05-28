@@ -1,6 +1,5 @@
 process.env.NODE_ENV = "test";
 
-import * as Chai from "chai";
 import "mocha";
 import User from "./../src/models/User";
 const chai: Chai.ChaiStatic = require("chai");

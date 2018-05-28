@@ -34,18 +34,23 @@ interface AdditionalUserData {
 }
 
 // Colums allowed to be self-edited
-const allowedSelfEdit = [
-  "screenName", "email", "residence",
-  "phone", "isHYYMember", "isTKTL",
-  "password1", "password2"];
-
+const allowedSelfEdit: string[] = [
+  "screenName",
+  "email",
+  "residence",
+  "phone",
+  "isHYYMember",
+  "isTKTL",
+  "password1",
+  "password2"
+];
 
 // Colums allowed to be edited by jäsenvirkailija
-const allowedJVEdit = [...allowedSelfEdit];
+const allowedJVEdit: string[] = [...allowedSelfEdit];
 allowedJVEdit.push("name", "username", "membership");
 
 // Colums allowed to be edited by admin
-const allowedAdminEdit = [...allowedJVEdit];
+const allowedAdminEdit: string[] = [...allowedJVEdit];
 allowedAdminEdit.push("role", "createdAt");
 /**
  * User validator.
@@ -60,7 +65,7 @@ export default class UserValidator implements IValidator<User> {
    * @param {UserService} userService
    * @memberof UserValidator
    */
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   /**
    * Validates user creation.
@@ -86,7 +91,7 @@ export default class UserValidator implements IValidator<User> {
     }
 
     // Test username
-    const usernameAvailable = await this.userService.checkUsernameAvailability(
+    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
       newUser.username
     );
     if (!usernameAvailable) {
@@ -121,24 +126,28 @@ export default class UserValidator implements IValidator<User> {
    * @param {User} newUser
    * @memberof UserValidator
    */
-  async validateUpdate(userId: number, newUser: User & AdditionalUserData, modifier: User) {
+  async validateUpdate(
+    userId: number,
+    newUser: User & AdditionalUserData,
+    modifier: User
+  ) {
     // Self-edit
     if (userId === modifier.id) {
       newUser.id = userId;
-      Object.keys(newUser).forEach(key => {
-        if (allowedSelfEdit.indexOf(key) < 0 && key !== 'id') {
+      Object.keys(newUser).forEach((key: string) => {
+        if (allowedSelfEdit.indexOf(key) < 0 && key !== "id") {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
     } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
-      Object.keys(newUser).forEach(key => {
-        if (allowedJVEdit.indexOf(key) < 0 && key !== 'id') {
+      Object.keys(newUser).forEach((key: string) => {
+        if (allowedJVEdit.indexOf(key) < 0 && key !== "id") {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
     } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
-      Object.keys(newUser).forEach(key => {
-        if (allowedAdminEdit.indexOf(key) < 0 && key !== 'id') {
+      Object.keys(newUser).forEach((key: string) => {
+        if (allowedAdminEdit.indexOf(key) < 0 && key !== "id") {
           throw new ServiceError(403, "Forbidden modify action");
         }
       });
@@ -146,10 +155,9 @@ export default class UserValidator implements IValidator<User> {
       throw new ServiceError(403, "Forbidden modify action");
     }
 
-
     // Remove information that hasn't changed
-    const oldUser = await this.userService.fetchUser(userId);
-    Object.keys(newUser).forEach(k => {
+    const oldUser: User = await this.userService.fetchUser(userId);
+    Object.keys(newUser).forEach((k: string) => {
       if (oldUser[k] == newUser[k]) {
         delete newUser[k];
       }
@@ -157,7 +165,7 @@ export default class UserValidator implements IValidator<User> {
 
     if (newUser.username) {
       // Test username
-      const usernameAvailable = await this.userService.checkUsernameAvailability(
+      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
         newUser.username
       );
       if (!usernameAvailable) {

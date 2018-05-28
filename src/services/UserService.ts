@@ -1,4 +1,3 @@
-import * as Knex from "knex";
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
 import User from "../models/User";
@@ -7,7 +6,7 @@ import * as bcrypt from "bcrypt";
 
 /**
  * User service.
- * 
+ *
  * @export
  * @class UserService
  */
@@ -25,8 +24,8 @@ export default class UserService {
    * @returns
    * @memberof UserService
    */
-  async fetchUser(userId: number) {
-    let result = await this.userDao.findOne(userId);
+  async fetchUser(userId: number): Promise<User> {
+    let result: User = await this.userDao.findOne(userId);
     if (!result) {
       throw new ServiceError(404, "Not found");
     }
@@ -34,18 +33,37 @@ export default class UserService {
     return new User(result);
   }
 
+  /**
+   * Returns all users.
+   *
+   * @returns {Promise<User[]>}
+   * @memberof UserService
+   */
   async fetchAllUsers(): Promise<User[]> {
-    const results = await this.userDao.findAll();
+    const results: User[] = await this.userDao.findAll();
     return results.map(dbObj => new User(dbObj));
   }
 
+  /**
+   * Returns all unpaid users.
+   *
+   * @returns {Promise<User[]>}
+   * @memberof UserService
+   */
   async fetchAllUnpaidUsers(): Promise<User[]> {
-    const results = await this.userDao.findAllByUnpaidPayment();
+    const results: User[] = await this.userDao.findAllByUnpaidPayment();
     return results.map(dbObj => new User(dbObj));
   }
 
+  /**
+   * Searches all users.
+   *
+   * @param {string} searchTerm
+   * @returns {Promise<User[]>}
+   * @memberof UserService
+   */
   async searchUsers(searchTerm: string): Promise<User[]> {
-    let results = await this.userDao.findWhere(searchTerm);
+    let results: User[] = await this.userDao.findWhere(searchTerm);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
@@ -53,52 +71,91 @@ export default class UserService {
     return results.map(res => new User(res));
   }
 
-  async getUserWithUsernameAndPassword(username, password): Promise<User> {
-    const dbUser = await this.userDao.findByUsername(username);
+  /**
+   * Returns username with username and password.
+   *
+   * @param {string} username
+   * @param {string} password
+   * @returns {Promise<User>}
+   * @memberof UserService
+   */
+  async getUserWithUsernameAndPassword(
+    username: string,
+    password: string
+  ): Promise<User> {
+    const dbUser: User = await this.userDao.findByUsername(username);
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
 
-    const user = new User(dbUser);
-    let isPasswordCorrect = await validatePassword(
+    const user: User = new User(dbUser);
+    let isPasswordCorrect: boolean = await validatePassword(
       password,
       user.salt,
       user.hashedPassword
     );
     if (isPasswordCorrect) {
       // Recrypt password to bcrypt
-      if (user.salt !== '0') {
-        await this.updateUser(user.id, new User({
-          salt: '0'
-        }), password);
+      if (user.salt !== "0") {
+        await this.updateUser(
+          user.id,
+          new User({
+            salt: "0"
+          }),
+          password
+        );
       }
       return user;
     }
-    throw new ServiceError(400, "Passwords do not match");
+    throw new ServiceError(400, "Invalid username or password");
   }
 
   /**
-   * Checks if usernae is available.
-   * @param username
+   * Checks if username is available.
+   *
+   * @param {string} username
+   * @returns {Promise<boolean>}
+   * @memberof UserService
    */
   async checkUsernameAvailability(username: string): Promise<boolean> {
     return this.userDao.findByUsername(username).then(res => !res);
   }
 
+  /**
+   * Creates an user.
+   *
+   * @param {User} user
+   * @param {string} password
+   * @returns {Promise<number[]>}
+   * @memberof UserService
+   */
   async createUser(user: User, password: string): Promise<number[]> {
     user.hashedPassword = await bcrypt.hash(password, 13);
-    let newUser = new User({});
+    let newUser: User = new User({});
     newUser = Object.assign(newUser, user);
     return await this.userDao.save(newUser);
   }
 
-  async updateUser(userId: number, udpatedUser: User, password?: string) {
+  /**
+   * Updates an user.
+   *
+   * @param {number} userId
+   * @param {User} udpatedUser
+   * @param {string} [password]
+   * @returns {Promise<boolean>}
+   * @memberof UserService
+   */
+  async updateUser(
+    userId: number,
+    udpatedUser: User,
+    password?: string
+  ): Promise<boolean> {
     // re-crypt password
     if (password) {
       udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
     }
-    let newUser = new User({});
+    let newUser: User = new User({});
     newUser = Object.assign(newUser, udpatedUser);
-    await this.userDao.update(userId, newUser);
+    return await this.userDao.update(userId, newUser);
   }
 }

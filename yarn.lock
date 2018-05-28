@@ -149,6 +149,12 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
+"@types/sha1@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/sha1/-/sha1-1.1.1.tgz#ab34efa782ff948d402d896afc9f10f41e94dd44"
+  dependencies:
+    "@types/node" "*"
+
 "@types/shelljs@0.7.8":
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/@types/shelljs/-/shelljs-0.7.8.tgz#4b4d6ee7926e58d7bca448a50ba442fd9f6715bd"

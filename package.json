@@ -41,6 +41,7 @@
     "@types/jsonwebtoken": "^7.2.6",
     "@types/knex": "^0.14.14",
     "@types/node": "^6.0.110",
+    "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
     "chai": "^4.1.2",

@@ -18,6 +18,13 @@ export default class UserDao implements Dao<User> {
    */
   constructor(private readonly knex: Knex) {}
 
+  /**
+   * Finds a single user.
+   *
+   * @param {number} id User id
+   * @returns {Promise<User>}
+   * @memberof UserDao
+   */
   findOne(id: number): Promise<User> {
     return this.knex("users")
       .select()
@@ -26,7 +33,7 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Returns a user by its username
+   * Finds a single user by its username
    *
    * @param {string} username Username
    * @returns {Promise<User>} User
@@ -40,7 +47,7 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Returns a single user who hasn't paid his/her bill.
+   * Finds a single user who hasn't paid his/her bill.
    *
    * @param {number} id User id
    * @returns {Promise<User>} User
@@ -73,7 +80,7 @@ export default class UserDao implements Dao<User> {
   }
 
   /**
-   * Returns all users who have not paid their bill.
+   * Finds all users who haven't paid their bill.
    *
    * @returns {Promise<User[]>} List of users
    * @memberof UserDao
@@ -102,7 +109,12 @@ export default class UserDao implements Dao<User> {
       .where("payments.paid", null);
   }
 
-
+  /**
+   * Finds all users.
+   *
+   * @returns {Promise<User[]>}
+   * @memberof UserDao
+   */
   findAll(): Promise<User[]> {
     return this.knex("users").select();
   }
@@ -110,11 +122,11 @@ export default class UserDao implements Dao<User> {
   /**
    * Search the user table with the specified search term.
    *
-   * @param {any} searchTerm Search term
-   * @returns {Promise<User[]>} User
+   * @param {string} searchTerm Search term
+   * @returns {Promise<User[]>}
    * @memberof UserDao
    */
-  findWhere(searchTerm): Promise<User[]> {
+  findWhere(searchTerm: string): Promise<User[]> {
     return this.knex
       .select()
       .from("users")
@@ -124,18 +136,42 @@ export default class UserDao implements Dao<User> {
       .orWhere("email", "like", `%${searchTerm}%`);
   }
 
+  /**
+   * Removes a single user.
+   *
+   * Note: You need to remove payments of the user first.
+   *
+   * @param {number} id User id
+   * @returns {Promise<boolean>}
+   * @memberof UserDao
+   */
   remove(id: number): Promise<boolean> {
     return this.knex("users")
       .delete()
       .where({ id });
   }
 
-  update(entityId: any, entity: User): Promise<boolean> {
+  /**
+   * Updates a singler user.
+   *
+   * @param {number} entityId User id
+   * @param {User} entity Entity
+   * @returns {Promise<boolean>}
+   * @memberof UserDao
+   */
+  update(entityId: number, entity: User): Promise<boolean> {
     return this.knex("users")
       .update(entity.getDatabaseObject())
-      .where({ id: entityId});
+      .where({ id: entityId });
   }
 
+  /**
+   * Saves a single user.
+   *
+   * @param {User} entity
+   * @returns {Promise<number[]>}
+   * @memberof UserDao
+   */
   save(entity: User): Promise<number[]> {
     return this.knex("users").insert(entity.getDatabaseObject());
   }

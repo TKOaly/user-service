@@ -1,11 +1,7 @@
 process.env.NODE_ENV = "test";
 
-import * as Chai from "chai";
 import "mocha";
 import Service from "./../src/models/Service";
-const chai: Chai.ChaiStatic = require("chai");
-const should = chai.should();
-
 let service: Service;
 
 describe("Service model", () => {

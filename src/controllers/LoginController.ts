@@ -1,5 +1,5 @@
 import { IController } from "./IController";
-import { Response, Router } from "express";
+import { Router } from "express";
 import { AuthenticationService } from "../services/AuthenticationService";
 import Service from "../models/Service";
 import UserService from "../services/UserService";
@@ -9,10 +9,23 @@ import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
 import User from "../models/User";
 
+/**
+ * Login controller.
+ *
+ * @export
+ * @class LoginController
+ * @implements {IController}
+ */
 export default class LoginController implements IController {
   route: Router;
   authorizationMiddleware: AuthorizeMiddleware;
 
+  /**
+   * Creates an instance of LoginController.
+   * @param {AuthenticationService} authService
+   * @param {UserService} userService
+   * @memberof LoginController
+   */
   constructor(
     private authService: AuthenticationService,
     private userService: UserService
@@ -21,7 +34,15 @@ export default class LoginController implements IController {
     this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
-  async getLoginView(req: any, res: Response) {
+  /**
+   * Returns login view.
+   *
+   * @param {*} req
+   * @param {Response} res
+   * @returns
+   * @memberof LoginController
+   */
+  async getLoginView(req: express.Request | any, res: express.Response) {
     if (!req.query.serviceIdentifier) {
       return res.status(400).send("Service identifier missing");
     }
@@ -52,6 +73,14 @@ export default class LoginController implements IController {
     }
   }
 
+  /**
+   * Logs the user out.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof LoginController
+   */
   async logOut(req: express.Request & IASRequest, res: express.Response) {
     if (!req.query.serviceIdentifier) {
       return res
@@ -75,7 +104,7 @@ export default class LoginController implements IController {
         .json(new ServiceResponse(null, e.message));
     }
 
-    const token = this.authService.removeServiceAuthenticationToToken(
+    const token: string = this.authService.removeServiceAuthenticationToToken(
       req.authorization.token,
       service.serviceIdentifier
     );
@@ -89,6 +118,14 @@ export default class LoginController implements IController {
     res.render("logout", { serviceName: service.displayName });
   }
 
+  /**
+   * Logs the user in.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof LoginController
+   */
   async login(req: express.Request & IASRequest, res: express.Response) {
     if (
       !req.body.serviceIdentifier ||
@@ -121,7 +158,7 @@ export default class LoginController implements IController {
       }
     }
 
-    let keys = [];
+    let keys: { name: string; value: string }[] = [];
     let user: User;
     try {
       user = await this.userService.getUserWithUsernameAndPassword(
@@ -153,7 +190,7 @@ export default class LoginController implements IController {
     // We require user id and role every time, regardless of permissions in services
     keys = Object.keys(
       user.removeNonRequestedData(service.dataPermissions | 512 | 1)
-    ).map(key => ({ name: key, value: user[key] }));
+    ).map((key: string) => ({ name: key, value: user[key] }));
 
     // Set session
     if (!user.id) {
@@ -171,8 +208,9 @@ export default class LoginController implements IController {
       redirectTo: req.body.loginRedirect
         ? req.body.loginRedirect
         : service.redirectUrl
-    };
+    } as SessionUser;
 
+    // Render GDPR template, that shows required personal information.
     res.render("gdpr", {
       personalInformation: keys,
       serviceDisplayName: service.displayName,
@@ -182,7 +220,15 @@ export default class LoginController implements IController {
     });
   }
 
-  async loginConfirm(req: any, res: express.Response) {
+  /**
+   * Handles GDPR template and redirects the user forward
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof LoginController
+   */
+  async loginConfirm(req: express.Request | any, res: express.Response) {
     let body: {
       permission: string;
     } =
@@ -209,7 +255,7 @@ export default class LoginController implements IController {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
 
-    let redirectTo = req.session.user.redirectTo;
+    let redirectTo: string = req.session.user.redirectTo;
     req.session.user = null;
 
     res.cookie("token", token, {
@@ -222,6 +268,12 @@ export default class LoginController implements IController {
     res.redirect(redirectTo);
   }
 
+  /**
+   * Create routes for login controller.
+   *
+   * @returns
+   * @memberof LoginController
+   */
   createRoutes() {
     this.route.get(
       "/",
@@ -245,4 +297,17 @@ export default class LoginController implements IController {
     );
     return this.route;
   }
+}
+
+/**
+ * Session user interface.
+ *
+ * @interface SessionUser
+ */
+interface SessionUser {
+  userId: number;
+  username: string;
+  password: string;
+  serviceIdentifier: string;
+  redirectTo: string;
 }

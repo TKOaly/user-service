@@ -9,13 +9,15 @@ import UserController from "./controllers/UserController";
 import UserService from "./services/UserService";
 import * as session from "express-session";
 import * as cookieParser from "cookie-parser";
-import Service from "./models/Service";
 import LoginController from "./controllers/LoginController";
 import UserDao from "./dao/UserDao";
 import ServiceDao from "./dao/ServiceDao";
 import { generateApiRoute } from "./utils/ApiRoute";
+import PaymentService from "./services/PaymentService";
+import PaymentDao from "./dao/PaymentDao";
+import PaymentController from "./controllers/PaymentController";
 
-const app = express();
+const app: express.Application = express();
 
 // Body parser
 app.use(bodyParser.json());
@@ -46,23 +48,58 @@ app.set("view engine", "pug");
 const knexfile = require("./../knexfile");
 
 // Knex instance
-const knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
+const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
 
-// Auth & user service
-const authService = new AuthenticationService(
-  new UserDao(knex),
+// Initialize services here
+
+// User service
+const userService: UserService = new UserService(new UserDao(knex));
+
+// Payment service
+const paymentService: PaymentService = new PaymentService(new PaymentDao(knex));
+
+// Authentication service
+const authService: AuthenticationService = new AuthenticationService(
   new ServiceDao(knex)
 );
-const userService = new UserService(new UserDao(knex));
 
-// Routes
-const authController = new AuthController(authService, userService);
-const userController = new UserController(userService, authService);
-const loginController = new LoginController(authService, userService);
+// Initialize controllers here
 
-// API routes
+// Authentication controller
+const authController: AuthController = new AuthController(
+  userService,
+  authService
+);
+
+// User controller
+const userController: UserController = new UserController(
+  userService,
+  authService
+);
+
+// Login controller
+const loginController: LoginController = new LoginController(
+  authService,
+  userService
+);
+
+// Payment controller
+const paymentController: PaymentController = new PaymentController(
+  userService,
+  paymentService
+);
+
+/*
+API routes
+*/
+
+// Auth route
 app.use(generateApiRoute("auth"), authController.createRoutes());
+// Users route
 app.use(generateApiRoute("users"), userController.createRoutes());
+// Payments route
+app.use(generateApiRoute("payments"), paymentController.createRoutes());
+// Login route
 app.use("/", loginController.createRoutes());
 
 // Start server

@@ -1,0 +1,27 @@
+# @name auth
+POST http://localhost:3000/api/auth/authenticate HTTP/1.1
+content-type: application/json
+
+{
+    "username": "test_user",
+    "password": "test_user",
+    "serviceIdentifier": "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7"
+}
+###
+
+# @name add_payment
+POST http://localhost:3000/api/payments HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{auth.response.body.payload.token}}
+
+ {
+  "payer_id": 1,
+  "confirmer_id": 1,
+  "created": "28/05/2018, 19:39:03",
+  "reference_number": "111222",
+  "amount": 500,
+  "valid_until": "28/05/2018, 19:39:03",
+  "paid": "28/05/2018, 19:39:03",
+  "payment_type": "jasenmaksu"
+}
+###

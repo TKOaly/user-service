@@ -1,11 +1,9 @@
+// @ts-ignore
+// Ignore sha1 as it has no types
 import * as sha1 from "sha1";
-import * as Knex from "knex";
-import * as jwt from "jsonwebtoken";
-import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 import Service from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
-import UserDao from "../dao/UserDao";
 import ServiceDao from "../dao/ServiceDao";
 import * as bcrypt from "bcrypt";
 
@@ -23,9 +21,8 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   constructor(
-    private readonly userDao: UserDao,
     private readonly serviceDao: ServiceDao
-  ) { }
+  ) {}
 
   /**
    * Returns a single service by its name.
@@ -35,7 +32,7 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   async getService(serviceName: string): Promise<Service> {
-    const service = await this.serviceDao.findByName(serviceName);
+    const service: Service = await this.serviceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -50,7 +47,9 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
-    const service = await this.serviceDao.findByIdentifier(service_identifier);
+    const service: Service = await this.serviceDao.findByIdentifier(
+      service_identifier
+    );
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -64,7 +63,7 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   async getServices(): Promise<Service[]> {
-    const services = await this.serviceDao.findAll();
+    const services: Service[] = await this.serviceDao.findAll();
 
     return services.map(service => new Service(service));
   }
@@ -170,7 +169,7 @@ export async function validatePassword(
   salt: string,
   hashedPassword: string
 ): Promise<boolean> {
-  if ((salt === '0' || !salt) && hashedPassword) {
+  if ((salt === "0" || !salt) && hashedPassword) {
     return await bcrypt.compare(password, hashedPassword);
   } else {
     return sha1(`${salt}kekbUr${password}`) === hashedPassword;
