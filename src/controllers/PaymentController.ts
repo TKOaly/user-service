@@ -53,7 +53,7 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
-      return res.status(200).json(new ServiceResponse(payment, "Success"));
+      return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -77,7 +77,7 @@ export default class PaymentController implements IController {
       );
       return res
         .status(200)
-        .json(new ServiceResponse(updatedPayment, "Success"));
+        .json(new ServiceResponse(updatedPayment, "Payment modified", true));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -96,7 +96,7 @@ export default class PaymentController implements IController {
   async getAllPayments(req: express.Request, res: express.Response) {
     try {
       const payments: Payment[] = await this.paymentService.fetchAllPayments();
-      return res.status(200).json(new ServiceResponse(payments, null));
+      return res.status(200).json(new ServiceResponse(payments, null, true));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -118,7 +118,7 @@ export default class PaymentController implements IController {
         req.params.id
       );
       if (payment) {
-        return res.status(200).json(new ServiceResponse(payment, null));
+        return res.status(200).json(new ServiceResponse(payment, null, true));
       }
       return res
         .status(404)
@@ -152,7 +152,11 @@ export default class PaymentController implements IController {
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyPayment.bind(this)
     );
-    this.route.post("/", this.createPayment.bind(this));
+    this.route.post(
+      "/",
+      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.createPayment.bind(this)
+    );
     return this.route;
   }
 }

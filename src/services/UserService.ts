@@ -107,7 +107,7 @@ export default class UserService {
       }
       return user;
     }
-    throw new ServiceError(400, "Invalid username or password");
+    throw new ServiceError(401, "Invalid username or password");
   }
 
   /**

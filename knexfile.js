@@ -13,7 +13,12 @@ const prod = {
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
+    afterCreate: function(connection, callback) {
+      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
+        callback(err, connection);
+      });
+    }
   },
   migrations: {
     tableName: "knex_migrations"
@@ -30,7 +35,12 @@ const staging = {
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
+    afterCreate: function(connection, callback) {
+      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
+        callback(err, connection);
+      });
+    }
   },
   migrations: {
     tableName: "knex_migrations"
@@ -47,7 +57,12 @@ const dev = {
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
+    afterCreate: function(connection, callback) {
+      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
+        callback(err, connection);
+      });
+    }
   },
   migrations: {
     tableName: "knex_migrations"
@@ -65,7 +80,12 @@ const test = {
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
+    afterCreate: function(connection, callback) {
+      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
+        callback(err, connection);
+      });
+    }
   },
   migrations: {
     tableName: "knex_migrations"

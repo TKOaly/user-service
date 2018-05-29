@@ -7,7 +7,7 @@ import app from "./../src/App";
 // Knexfile
 const knexfile = require("./../knexfile");
 // Knex instance
-const knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
+const knex = Knex(knexfile["test"]);
 
 const chai: Chai.ChaiStatic = require("chai");
 const should = chai.should();
@@ -72,7 +72,7 @@ describe("AuthController", () => {
         should.exist(res.body.ok);
         should.exist(res.body.message);
         should.not.exist(res.body.payload);
-        res.status.should.equal(400);
+        res.status.should.equal(401);
         res.body.ok.should.equal(false);
         res.body.message.should.equal("Invalid username or password");
         done();
