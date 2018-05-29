@@ -73,6 +73,7 @@ export default class UserController implements IController {
         serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(
           req.header("service")
         )).dataPermissions;
+        req.params.id = req.authorization.user.id;
       }
       let user: User = await this.userService.fetchUser(req.params.id);
       return res
