@@ -5,11 +5,11 @@ require("dotenv").config();
 const prod = {
   client: "mysql2",
   connection: {
-    host: process.env.AUTHSERVICE_DB_HOST,
-    port: process.env.AUTHSERVICE_DB_PORT,
-    user: process.env.AUTHSERVICE_DB_USER,
-    password: process.env.AUTHSERVICE_DB_PASSWORD,
-    database: process.env.AUTHSERVICE_DB_NAME
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
   },
   pool: {
     min: 2,
@@ -27,11 +27,11 @@ const prod = {
 const staging = {
   client: "mysql2",
   connection: {
-    host: process.env.AUTHSERVICE_DB_HOST,
-    port: process.env.AUTHSERVICE_DB_PORT,
-    user: process.env.AUTHSERVICE_DB_USER,
-    password: process.env.AUTHSERVICE_DB_PASSWORD,
-    database: process.env.AUTHSERVICE_DB_NAME + "_staging"
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME + "_staging"
   },
   pool: {
     min: 2,
@@ -49,11 +49,11 @@ const staging = {
 const dev = {
   client: "mysql2",
   connection: {
-    host: process.env.AUTHSERVICE_DB_HOST,
-    port: process.env.AUTHSERVICE_DB_PORT,
-    user: process.env.AUTHSERVICE_DB_USER,
-    password: process.env.AUTHSERVICE_DB_PASSWORD,
-    database: process.env.AUTHSERVICE_DB_NAME + "_dev"
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME + "_dev"
   },
   pool: {
     min: 2,
@@ -72,11 +72,11 @@ const dev = {
 const test = {
   client: "mysql2",
   connection: {
-    host: process.env.AUTHSERVICE_DB_HOST,
-    port: process.env.AUTHSERVICE_DB_PORT,
-    user: process.env.AUTHSERVICE_DB_USER,
-    password: process.env.AUTHSERVICE_DB_PASSWORD,
-    database: process.env.AUTHSERVICE_DB_NAME + "_test"
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME + "_test"
   },
   pool: {
     min: 2,

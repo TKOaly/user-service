@@ -260,7 +260,7 @@ export default class LoginController implements IController {
 
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: "localhost"
+      domain: process.env.COOKIE_DOMAIN
     });
 
     res.set("Access-Control-Allow-Origin", "*");

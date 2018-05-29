@@ -6,6 +6,7 @@ import * as Knex from "knex";
 import app from "./../src/App";
 
 import payments = require("./../seeds/seedData/payments");
+import Payment from "../src/models/Payment";
 
 // Knexfile
 const knexfile = require("./../knexfile");
@@ -32,7 +33,7 @@ const generateToken = (
       authenticatedTo: authenticatedTo.join(","),
       createdAt: createdAt
     },
-    process.env.AUTHSERVICE_JWT_SECRET
+    process.env.JWT_SECRET
   );
 
 describe("PaymentController", () => {
@@ -340,5 +341,89 @@ describe("PaymentController", () => {
             });
         });
     });
+  });
+
+  describe("Modifies a payment", () => {
+    it("Can modify a payment, with valid information", done => {
+      // First, fetch a payment that will be modified.
+      chai
+        .request(app)
+        .get(url + "/1")
+        .set("Authorization", "Bearer " + generateToken(1))
+        .end((err, res) => {
+          const payment: Payment = res.body.payload;
+          // Set reference number and payment type, except them to be changed
+          const newRefNum: string = "00000001111111";
+          const newPaymentType: string = "HelloWorld";
+          // Then, do a PATCH request
+          chai
+            .request(app)
+            .patch(url + "/" + payment.id)
+            .set("Authorization", "Bearer " + generateToken(1))
+            .send(
+              Object.assign({}, payment, {
+                reference_number: newRefNum,
+                payment_type: newPaymentType
+              })
+            )
+            .end((err, res) => {
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.exist(res.body.payload);
+              should.exist(res.body.payload.id);
+              should.exist(res.body.payload.payer_id);
+              should.exist(res.body.payload.created);
+              should.exist(res.body.payload.reference_number);
+              should.exist(res.body.payload.amount);
+              should.exist(res.body.payload.valid_until);
+              should.exist(res.body.payload.paid);
+              should.exist(res.body.payload.payment_type);
+              res.body.payload.payment_type.should.equal(newPaymentType);
+              res.body.payload.reference_number.should.equal(newRefNum);
+              res.status.should.equal(200);
+              res.body.ok.should.equal(true);
+              res.body.message.should.equal("Payment modified");
+              done();
+            });
+        });
+    });
+/*
+    it("Cannot modify a payment, with invalid", done => {
+      // First, fetch a payment that will be modified.
+      chai
+        .request(app)
+        .get(url + "/1")
+        .set("Authorization", "Bearer " + generateToken(1))
+        .end((err, res) => {
+          const payment: Payment = res.body.payload;
+          // Set reference number and payment type, except them to be changed
+          const newRefNum: string = "00000001111111";
+          const newPaymentType: string = "HelloWorld";
+
+          // PATCH excepts all object params to exist
+          delete payment.confirmer_id;
+
+          // Then, do a PATCH request
+          chai
+            .request(app)
+            .patch(url + "/" + payment.id)
+            .set("Authorization", "Bearer " + generateToken(1))
+            .send(
+              Object.assign({}, payment, {
+                reference_number: newRefNum,
+                payment_type: newPaymentType
+              })
+            )
+            .end((err, res) => {
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.not.exist(res.body.payload);
+              res.status.should.equal(400);
+              res.body.ok.should.equal(false);
+              res.body.message.should.equal("Failed to modify payment");
+              done();
+            });
+        });
+    });*/
   });
 });

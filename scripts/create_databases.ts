@@ -4,16 +4,16 @@ require("dotenv").config();
 
 import { createConnection } from "mysql2/promise";
 
-const dbName: string = process.env.AUTHSERVICE_DB_NAME;
+const dbName: string = process.env.DB_NAME;
 
 async function createTables() {
   // Create connection
   console.log("Creating connection..");
   const con = await createConnection({
-    host: process.env.AUTHSERVICE_DB_HOST,
-    port: process.env.AUTHSERVICE_DB_PORT,
-    user: process.env.AUTHSERVICE_DB_USER,
-    password: process.env.AUTHSERVICE_DB_PASSWORD
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD
   });
   console.log("Connection created.");
 

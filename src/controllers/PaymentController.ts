@@ -53,7 +53,9 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
-      return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
+      return res
+        .status(201)
+        .json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -71,13 +73,22 @@ export default class PaymentController implements IController {
    */
   async modifyPayment(req: express.Request, res: express.Response) {
     try {
-      const updatedPayment: boolean = await this.paymentService.updatePayment(
+      const update: boolean = await this.paymentService.updatePayment(
         req.params.id,
         req.body
       );
-      return res
-        .status(200)
-        .json(new ServiceResponse(updatedPayment, "Payment modified", true));
+      if (update) {
+        const updatedPayment: Payment = await this.paymentService.fetchPayment(
+          req.params.id
+        );
+        return res
+          .status(200)
+          .json(new ServiceResponse(updatedPayment, "Payment modified", true));
+      } else {
+        return res
+          .status(400)
+          .json(new ServiceResponse(null, "Failed to modify payment"));
+      }
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)

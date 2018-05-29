@@ -33,7 +33,7 @@ export class ServiceToken {
         authenticatedTo: this.authenticatedTo.join(","),
         createdAt: this.createdAt
       };
-      return JWT.sign(parsedTokenContents, process.env.AUTHSERVICE_JWT_SECRET);
+      return JWT.sign(parsedTokenContents, process.env.JWT_SECRET);
     } catch (e) {
       throw e;
     }
@@ -50,7 +50,7 @@ export class ServiceToken {
 export function stringToServiceToken(token: string): ServiceToken {
   let parsedToken: string | object = null;
   try {
-    parsedToken = JWT.verify(token, process.env.AUTHSERVICE_JWT_SECRET);
+    parsedToken = JWT.verify(token, process.env.JWT_SECRET);
   } catch (e) {
     throw e;
   }
