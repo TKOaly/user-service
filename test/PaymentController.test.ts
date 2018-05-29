@@ -344,7 +344,7 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("Can modify a payment, with valid information", done => {
+    it("As an authenticated user, can modify a payment, with valid information", done => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
@@ -385,6 +385,33 @@ describe("PaymentController", () => {
               res.body.message.should.equal("Payment modified");
               done();
             });
+        });
+    });
+
+    it("As an unauthenticated user, returns unauthorized", done => {
+      const newPayment = {
+        id: 1,
+        payer_id: 2,
+        confirmer_id: 1,
+        created: new Date(2013, 1, 1),
+        reference_number: "1212121212",
+        amount: 44.44,
+        valid_until: new Date(2018, 1, 1),
+        paid: new Date(2013, 1, 1),
+        payment_type: "jasenmaksu"
+      };
+      chai
+        .request(app)
+        .patch(url + "/" + newPayment.id)
+        .send(newPayment)
+        .end((err, res) => {
+          should.exist(res.body.ok);
+          should.exist(res.body.message);
+          should.not.exist(res.body.payload);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("Unauthorized");
+          res.status.should.equal(401);
+          done();
         });
     });
 /*

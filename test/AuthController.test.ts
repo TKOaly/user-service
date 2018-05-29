@@ -47,179 +47,183 @@ describe("AuthController", () => {
     });
   });
 
-  it("Authenticates with correct credentials", done => {
-    chai
-      .request(app)
-      .post(authUrl + "/authenticate")
-      .send(correctCreds)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.status.should.equal(200);
-        should.exist(res.body.payload);
-        should.exist(res.body.payload.token);
-        should.exist(res.body.ok);
-        res.body.ok.should.equal(true);
-        done();
-      });
+  describe("Authentication", () => {
+    it("Authenticates with correct credentials", done => {
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
+          done();
+        });
+    });
+
+    it("Does not authenticate with incorrect credentials", done => {
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(incorrectCreds)
+        .end((err, res) => {
+          should.exist(res.body.ok);
+          should.exist(res.body.message);
+          should.not.exist(res.body.payload);
+          res.status.should.equal(401);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("Invalid username or password");
+          done();
+        });
+    });
   });
 
-  it("Does not authenticate with incorrect credentials", done => {
-    chai
-      .request(app)
-      .post(authUrl + "/authenticate")
-      .send(incorrectCreds)
-      .end((err, res) => {
-        should.exist(res.body.ok);
-        should.exist(res.body.message);
-        should.not.exist(res.body.payload);
-        res.status.should.equal(401);
-        res.body.ok.should.equal(false);
-        res.body.message.should.equal("Invalid username or password");
-        done();
-      });
-  });
+  describe("Service check", () => {
+    it("Checks that the correct service has been authenticated to", done => {
+      // The default credentials authenticate to KJYR
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
 
-  it("Checks that the correct service has been authenticated to", done => {
-    // The default credentials authenticate to KJYR
-    chai
-      .request(app)
-      .post(authUrl + "/authenticate")
-      .send(correctCreds)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.status.should.equal(200);
-        should.exist(res.body.payload);
-        should.exist(res.body.payload.token);
-        should.exist(res.body.ok);
-        res.body.ok.should.equal(true);
+          // Token to be passed forwards
+          const token: string = res.body.payload.token;
 
-        // Token to be passed forwards
-        const token: string = res.body.payload.token;
+          // Next, check that the user is authenticated to KJYR (as an example)
+          chai
+            .request(app)
+            .get(authUrl + "/check")
+            .set("Authorization", "Bearer " + token)
+            .set("service", kjyrIdentifier)
+            .end((err, res) => {
+              should.not.exist(err);
+              res.status.should.equal(200);
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.not.exist(res.body.payload);
+              res.body.ok.should.equal(true);
+              res.body.message.should.equal("Success");
+              done();
+            });
+        });
+    });
 
-        // Next, check that the user is authenticated to KJYR (as an example)
-        chai
-          .request(app)
-          .get(authUrl + "/check")
-          .set("Authorization", "Bearer " + token)
-          .set("service", kjyrIdentifier)
-          .end((err, res) => {
-            should.not.exist(err);
-            res.status.should.equal(200);
-            should.exist(res.body.ok);
-            should.exist(res.body.message);
-            should.not.exist(res.body.payload);
-            res.body.ok.should.equal(true);
-            res.body.message.should.equal("Success");
-            done();
-          });
-      });
-  });
+    it("Check that the user has not been authenticated to an incorrect service", done => {
+      // The default credentials authenticate to KJYR
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
 
-  it("Check that the user has not been authenticated to an incorrect service", done => {
-    // The default credentials authenticate to KJYR
-    chai
-      .request(app)
-      .post(authUrl + "/authenticate")
-      .send(correctCreds)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.status.should.equal(200);
-        should.exist(res.body.payload);
-        should.exist(res.body.payload.token);
-        should.exist(res.body.ok);
-        res.body.ok.should.equal(true);
+          // Token to be passed forwards
+          const token: string = res.body.payload.token;
 
-        // Token to be passed forwards
-        const token: string = res.body.payload.token;
+          // Next, check that the user is not authenticated to calendar (as an example)
+          chai
+            .request(app)
+            .get(authUrl + "/check")
+            .set("Authorization", "Bearer " + token)
+            .set("service", calendarIdentifier)
+            .end((err, res) => {
+              res.status.should.equal(403);
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.not.exist(res.body.payload);
+              res.body.ok.should.equal(false);
+              res.body.message.should.equal("Not authorized to service");
 
-        // Next, check that the user is not authenticated to calendar (as an example)
-        chai
-          .request(app)
-          .get(authUrl + "/check")
-          .set("Authorization", "Bearer " + token)
-          .set("service", calendarIdentifier)
-          .end((err, res) => {
-            res.status.should.equal(403);
-            should.exist(res.body.ok);
-            should.exist(res.body.message);
-            should.not.exist(res.body.payload);
-            res.body.ok.should.equal(false);
-            res.body.message.should.equal("Not authorized to service");
+              done();
+            });
+        });
+    });
 
-            done();
-          });
-      });
-  });
+    it("Can authenticate to multiple services", done => {
+      // First, authenticate to KJYR
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
 
-  it("Can authenticate to multiple services", done => {
-    // First, authenticate to KJYR
-    chai
-      .request(app)
-      .post(authUrl + "/authenticate")
-      .send(correctCreds)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.status.should.equal(200);
-        should.exist(res.body.payload);
-        should.exist(res.body.payload.token);
-        should.exist(res.body.ok);
-        res.body.ok.should.equal(true);
+          // Token
+          const token: string = res.body.payload.token;
 
-        // Token
-        const token: string = res.body.payload.token;
+          // Set calendar token to request
+          const secondCreds = correctCreds;
+          secondCreds.serviceIdentifier = calendarIdentifier;
 
-        // Set calendar token to request
-        const secondCreds = correctCreds;
-        secondCreds.serviceIdentifier = calendarIdentifier;
+          // Secondly, authenticate to calendar
+          chai
+            .request(app)
+            .post(authUrl + "/authenticate")
+            .set("Authorization", "Bearer " + token)
+            .send(secondCreds)
+            .end((err, res) => {
+              should.not.exist(err);
+              res.status.should.equal(200);
+              should.exist(res.body.payload);
+              should.exist(res.body.payload.token);
+              should.exist(res.body.ok);
+              res.body.ok.should.equal(true);
 
-        // Secondly, authenticate to calendar
-        chai
-          .request(app)
-          .post(authUrl + "/authenticate")
-          .set("Authorization", "Bearer " + token)
-          .send(secondCreds)
-          .end((err, res) => {
-            should.not.exist(err);
-            res.status.should.equal(200);
-            should.exist(res.body.payload);
-            should.exist(res.body.payload.token);
-            should.exist(res.body.ok);
-            res.body.ok.should.equal(true);
+              const token2: string = res.body.payload.token;
 
-            const token2: string = res.body.payload.token;
-
-            // Next, check auth for KJYR
-            chai
-              .request(app)
-              .get(authUrl + "/check")
-              .set("Authorization", "Bearer " + token2)
-              .set("service", kjyrIdentifier)
-              .end((err, res) => {
-                should.not.exist(err);
-                res.status.should.equal(200);
-                should.exist(res.body.ok);
-                should.exist(res.body.message);
-                should.not.exist(res.body.payload);
-                res.body.ok.should.equal(true);
-                res.body.message.should.equal("Success");
-                // Check calendar permission
-                chai
-                  .request(app)
-                  .get(authUrl + "/check")
-                  .set("Authorization", "Bearer " + token2)
-                  .set("service", calendarIdentifier)
-                  .end((err, res) => {
-                    should.not.exist(err);
-                    res.status.should.equal(200);
-                    should.exist(res.body.ok);
-                    should.exist(res.body.message);
-                    should.not.exist(res.body.payload);
-                    res.body.ok.should.equal(true);
-                    res.body.message.should.equal("Success");
-                    done();
-                  });
-              });
-          });
-      });
+              // Next, check auth for KJYR
+              chai
+                .request(app)
+                .get(authUrl + "/check")
+                .set("Authorization", "Bearer " + token2)
+                .set("service", kjyrIdentifier)
+                .end((err, res) => {
+                  should.not.exist(err);
+                  res.status.should.equal(200);
+                  should.exist(res.body.ok);
+                  should.exist(res.body.message);
+                  should.not.exist(res.body.payload);
+                  res.body.ok.should.equal(true);
+                  res.body.message.should.equal("Success");
+                  // Check calendar permission
+                  chai
+                    .request(app)
+                    .get(authUrl + "/check")
+                    .set("Authorization", "Bearer " + token2)
+                    .set("service", calendarIdentifier)
+                    .end((err, res) => {
+                      should.not.exist(err);
+                      res.status.should.equal(200);
+                      should.exist(res.body.ok);
+                      should.exist(res.body.message);
+                      should.not.exist(res.body.payload);
+                      res.body.ok.should.equal(true);
+                      res.body.message.should.equal("Success");
+                      done();
+                    });
+                });
+            });
+        });
+    }).timeout(5000);
   });
 });
