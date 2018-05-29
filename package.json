@@ -30,7 +30,10 @@
     "watch": "nodemon start",
     "test": "node_modules/.bin/nyc --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
     "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
-    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts"
+    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
+    "migrate": "node_modules/.bin/knex migrate:latest",
+    "rollback": "node_modules/.bin/knex migrate:rollback",
+    "seed": "node_modules/.bin/knex seed:run"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
