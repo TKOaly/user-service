@@ -5,6 +5,7 @@ import { IController } from "./IController";
 import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import PaymentService from "../services/PaymentService";
 import Payment from "../models/Payment";
+import PaymentValidator from "../validators/PaymentValidator";
 
 /**
  * Payment controller.
@@ -16,6 +17,7 @@ import Payment from "../models/Payment";
 export default class PaymentController implements IController {
   route: express.Router;
   authorizeMiddleware: AuthorizeMiddleware;
+  paymentValidator: PaymentValidator;
 
   /**
    * Creates an instance of PaymentController.
@@ -29,6 +31,7 @@ export default class PaymentController implements IController {
     private paymentService: PaymentService
   ) {
     this.route = express.Router();
+    this.paymentValidator = new PaymentValidator();
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
@@ -42,11 +45,7 @@ export default class PaymentController implements IController {
    */
   async createPayment(req: express.Request, res: express.Response) {
     try {
-      const paymentData: Payment = req.body;
-      if (paymentData.id) {
-        delete paymentData.id;
-      }
-      paymentData.created = new Date();
+      this.paymentValidator.validateCreate(req.body);
       const paymentIds: number[] = await this.paymentService.createPayment(
         req.body
       );
