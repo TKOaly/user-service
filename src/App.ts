@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 import * as express from "express";
-import * as bodyParser from "body-parser";
 import * as Knex from "knex";
 import AuthController from "./controllers/AuthController";
 import { AuthenticationService } from "./services/AuthenticationService";
@@ -17,12 +16,13 @@ import PaymentService from "./services/PaymentService";
 import PaymentDao from "./dao/PaymentDao";
 import PaymentController from "./controllers/PaymentController";
 
+// Express application instance
 const app: express.Application = express();
 
-// Body parser
-app.use(bodyParser.json());
+// JSON parser
+app.use(express.json());
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     extended: true
   })
 );
@@ -39,8 +39,6 @@ app.use(
 
 // Set static folder
 app.use(express.static("./public"));
-// Set views folder
-app.set("views", "./public/views");
 // Set view engine
 app.set("view engine", "pug");
 
