@@ -11,7 +11,7 @@ import * as cookieParser from "cookie-parser";
 import LoginController from "./controllers/LoginController";
 import UserDao from "./dao/UserDao";
 import ServiceDao from "./dao/ServiceDao";
-import { generateApiRoute } from "./utils/ApiRoute";
+import ApiRoute from "./utils/ApiRoute";
 import PaymentService from "./services/PaymentService";
 import PaymentDao from "./dao/PaymentDao";
 import PaymentController from "./controllers/PaymentController";
@@ -92,11 +92,14 @@ API routes
 */
 
 // Auth route
-app.use(generateApiRoute("auth"), authController.createRoutes());
+app.use(ApiRoute.generateApiRoute("auth"), authController.createRoutes());
 // Users route
-app.use(generateApiRoute("users"), userController.createRoutes());
+app.use(ApiRoute.generateApiRoute("users"), userController.createRoutes());
 // Payments route
-app.use(generateApiRoute("payments"), paymentController.createRoutes());
+app.use(
+  ApiRoute.generateApiRoute("payments"),
+  paymentController.createRoutes()
+);
 // Login route
 app.use("/", loginController.createRoutes());
 

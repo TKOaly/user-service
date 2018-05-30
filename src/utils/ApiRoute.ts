@@ -8,10 +8,7 @@ import * as Express from "express";
  * @param {string} [apiVersion] API version. Defaults to null, can be configured manually.
  * @returns {string} API route, example: /api/v1/users
  */
-export function generateApiRoute(
-  endpointName: string,
-  apiVersion?: string
-): string {
+function generateApiRoute(endpointName: string, apiVersion?: string): string {
   if (!apiVersion) {
     return "/api/" + endpointName;
   } else {
@@ -24,7 +21,7 @@ export function generateApiRoute(
  * @param {string} [apiVersion] API version
  * @returns
  */
-export function apiHeaderMiddleware(apiVersion?: string) {
+function apiHeaderMiddleware(apiVersion?: string) {
   return function(
     req: Express.Request | any,
     res: Express.Response | any,
@@ -37,3 +34,5 @@ export function apiHeaderMiddleware(apiVersion?: string) {
     next();
   };
 }
+
+export default { generateApiRoute, apiHeaderMiddleware };
