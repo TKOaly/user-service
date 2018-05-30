@@ -67,6 +67,8 @@
     "exclude": [
       "**/*.d.ts",
       "test/**/*.ts",
+      "scripts/**/*.ts",
+      "src/controllers/IController.ts",
       "migrations/**/*.js",
       "seeds/**/*.js",
       "coverage/**/*.js",

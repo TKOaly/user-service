@@ -26,9 +26,9 @@ export function generateApiRoute(
  */
 export function apiHeaderMiddleware(apiVersion?: string) {
   return function(
-    req: Express.Request,
-    res: Express.Response,
-    next: Express.NextFunction
+    req: Express.Request | any,
+    res: Express.Response | any,
+    next: Express.NextFunction | any
   ) {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
