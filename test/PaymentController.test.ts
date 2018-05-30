@@ -6,7 +6,7 @@ import * as Knex from "knex";
 import app from "./../src/App";
 
 import payments = require("./../seeds/seedData/payments");
-import Payment from "../src/models/Payment";
+import { IPayment } from "../src/models/Payment";
 
 // Knexfile
 const knexfile = require("./../knexfile");
@@ -351,7 +351,7 @@ describe("PaymentController", () => {
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
         .end((err, res) => {
-          const payment: Payment = res.body.payload;
+          const payment: IPayment = res.body.payload;
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
           const newPaymentType: string = "HelloWorld";
@@ -422,7 +422,7 @@ describe("PaymentController", () => {
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
         .end((err, res) => {
-          const payment: Payment = {
+          const payment: IPayment = {
             id: res.body.payload.id,
             amount: res.body.payload.amount,
             confirmer_id: res.body.payload.confirmer_id,

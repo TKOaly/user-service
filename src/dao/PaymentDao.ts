@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 import Dao from "./Dao";
 import * as Promise from "bluebird";
-import Payment from "../models/Payment";
+import { IPayment } from "../models/Payment";
 
 /**
  * Payment dao.
@@ -10,7 +10,7 @@ import Payment from "../models/Payment";
  * @class PaymentDao
  * @implements {Dao<Payment>}
  */
-export default class PaymentDao implements Dao<Payment> {
+export default class PaymentDao implements Dao<IPayment> {
   /**
    * Creates an instance of PaymentDao.
    * @param {Knex} knex
@@ -22,10 +22,10 @@ export default class PaymentDao implements Dao<Payment> {
    * Finds a single payment.
    *
    * @param {number} id Payment id
-   * @returns {Promise<Payment>}
+   * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findOne(id: number): Promise<Payment> {
+  findOne(id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ id })
@@ -36,10 +36,10 @@ export default class PaymentDao implements Dao<Payment> {
    * Finds a payment by payer.
    *
    * @param {number} payer_id
-   * @returns {Promise<Payment>}
+   * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByPayer(payer_id: number): Promise<Payment> {
+  findByPayer(payer_id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ payer_id })
@@ -50,10 +50,10 @@ export default class PaymentDao implements Dao<Payment> {
    * Finds a payment by confirmer.
    *
    * @param {number} confirmer_id
-   * @returns {Promise<Payment>}
+   * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByConfirmer(confirmer_id: number): Promise<Payment> {
+  findByConfirmer(confirmer_id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ confirmer_id })
@@ -63,10 +63,10 @@ export default class PaymentDao implements Dao<Payment> {
   /**
    * Finds all payments.
    *
-   * @returns {Promise<Payment[]>}
+   * @returns {Promise<IPayment[]>}
    * @memberof PaymentDao
    */
-  findAll(): Promise<Payment[]> {
+  findAll(): Promise<IPayment[]> {
     return this.knex("payments").select();
   }
 
@@ -90,7 +90,7 @@ export default class PaymentDao implements Dao<Payment> {
    * @returns {Promise<boolean>}
    * @memberof PaymentDao
    */
-  update(entity: Payment): Promise<boolean> {
+  update(entity: IPayment): Promise<boolean> {
     return this.knex("payments")
       .update(entity)
       .where({ id: entity.id });
@@ -103,7 +103,7 @@ export default class PaymentDao implements Dao<Payment> {
    * @returns {Promise<number[]>}
    * @memberof PaymentDao
    */
-  save(entity: Payment): Promise<number[]> {
+  save(entity: IPayment): Promise<number[]> {
     return this.knex("payments").insert(entity);
   }
 }

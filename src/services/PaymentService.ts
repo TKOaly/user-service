@@ -1,6 +1,6 @@
 import ServiceError from "../utils/ServiceError";
 import PaymentDao from "../dao/PaymentDao";
-import Payment from "../models/Payment";
+import Payment, { IPayment } from "../models/Payment";
 
 /**
  * Payment service.
@@ -24,12 +24,12 @@ export default class PaymentService {
    * @memberof PaymentService
    */
   async fetchPayment(paymentId: number): Promise<Payment> {
-    let result: Payment = await this.paymentDao.findOne(paymentId);
+    let result: IPayment = await this.paymentDao.findOne(paymentId);
     if (!result) {
       throw new ServiceError(404, "Not found");
     }
 
-    return result;
+    return new Payment(result);
   }
 
   /**
@@ -39,7 +39,8 @@ export default class PaymentService {
    * @memberof PaymentService
    */
   async fetchAllPayments(): Promise<Payment[]> {
-    return this.paymentDao.findAll();
+    const results: IPayment[] = await this.paymentDao.findAll();
+    return results.map((result: IPayment) => new Payment(result));
   }
 
   /**
@@ -50,7 +51,7 @@ export default class PaymentService {
    * @memberof PaymentService
    */
   async createPayment(payment: Payment): Promise<number[]> {
-    return this.paymentDao.save(payment);
+    return this.paymentDao.save(<IPayment>payment);
   }
 
   /**
@@ -65,6 +66,6 @@ export default class PaymentService {
     paymentId: number,
     updatedPayment: Payment
   ): Promise<boolean> {
-    return this.paymentDao.update(updatedPayment);
+    return this.paymentDao.update(<IPayment>updatedPayment);
   }
 }
