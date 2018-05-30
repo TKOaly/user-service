@@ -344,7 +344,7 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("As an authenticated user, can modify a payment, with valid information", done => {
+    it("As an authenticated user, can modify a payment with valid information", done => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
@@ -414,15 +414,25 @@ describe("PaymentController", () => {
           done();
         });
     });
-/*
-    it("Cannot modify a payment, with invalid", done => {
+
+    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", done => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
         .end((err, res) => {
-          const payment: Payment = res.body.payload;
+          const payment: Payment = {
+            id: res.body.payload.id,
+            amount: res.body.payload.amount,
+            confirmer_id: res.body.payload.confirmer_id,
+            created: res.body.payload.created,
+            paid: res.body.payload.created,
+            payer_id: res.body.payload.payer_id,
+            payment_type: res.body.payload.payment_type,
+            reference_number: res.body.payload.payment_type,
+            valid_until: res.body.payload.valid_until
+          };
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
           const newPaymentType: string = "HelloWorld";
@@ -447,10 +457,12 @@ describe("PaymentController", () => {
               should.not.exist(res.body.payload);
               res.status.should.equal(400);
               res.body.ok.should.equal(false);
-              res.body.message.should.equal("Failed to modify payment");
+              res.body.message.should.equal(
+                "Failed to modify payment: missing request parameters"
+              );
               done();
             });
         });
-    });*/
+    });
   });
 });

@@ -73,6 +73,31 @@ export default class PaymentController implements IController {
    */
   async modifyPayment(req: express.Request, res: express.Response) {
     try {
+      // PATCH request requires the whole object to be passed
+      if (
+        !(
+          req.body.id &&
+          req.body.payer_id &&
+          req.body.confirmer_id &&
+          req.body.created &&
+          req.body.reference_number &&
+          req.body.amount &&
+          req.body.valid_until &&
+          req.body.paid &&
+          req.body.payment_type
+        )
+      ) {
+        return res
+          .status(400)
+          .json(
+            new ServiceResponse(
+              null,
+              "Failed to modify payment: missing request parameters",
+              false
+            )
+          );
+      }
+
       const update: boolean = await this.paymentService.updatePayment(
         req.params.id,
         req.body
