@@ -30,7 +30,7 @@ Microservice for authenticating users of members.tko-aly.fi.
 
 1. Copy `.env.example` to `.env` and set environment variables
 2. Execute `docker build -t user-service .` in the project's root folder to build the image
-3. Execute `docker run -v $(pwd)/.env:/app/.env -d --net=host --name user-service-container user-service` in the project's root folder to run the image. This will mount the project folder's .env file to the container.
+3. Execute `docker run --env-file=.env -d --net=host --name user-service-container user-service` in the project's root folder to run the image. This will mount the project folder's .env file to the container.
 
 **Note: Since Docker v18.03, use `host.docker.internal` as the MySQL server address if you are using MacOS or Windows and running the MySQL server from the local machine.**
 

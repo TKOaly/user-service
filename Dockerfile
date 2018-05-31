@@ -21,8 +21,6 @@ COPY views /app/views
 COPY scripts /app/scripts
 COPY public /app/public
 
-RUN touch /app/.env
-
 RUN ls -lra /app
 
 CMD ["yarn", "start"]
