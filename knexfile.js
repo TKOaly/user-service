@@ -35,7 +35,7 @@ const staging = {
   },
   pool: {
     min: 2,
-    max: 1/*,
+    max: 10/*,
     afterCreate: function(connection, callback) {
       connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
         callback(err, connection);
