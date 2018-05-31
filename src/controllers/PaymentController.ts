@@ -2,10 +2,11 @@ import * as express from "express";
 import UserService from "../services/UserService";
 import ServiceResponse from "../utils/ServiceResponse";
 import { IController } from "./IController";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import PaymentService from "../services/PaymentService";
 import Payment from "../models/Payment";
 import PaymentValidator from "../validators/PaymentValidator";
+import { compareRoles } from "../models/User";
 
 /**
  * Payment controller.
@@ -128,7 +129,12 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getAllPayments(req: express.Request, res: express.Response) {
+  async getAllPayments(req: express.Request & IASRequest, res: express.Response) {
+    if (compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
+      return res.
+        status(403).
+        json(new ServiceResponse(null, 'Forbidden'));
+    }
     try {
       const payments: Payment[] = await this.paymentService.fetchAllPayments();
       return res.status(200).json(new ServiceResponse(payments, null, true));
@@ -147,7 +153,12 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getSinglePayment(req: express.Request, res: express.Response) {
+  async getSinglePayment(req: express.Request & IASRequest, res: express.Response) {
+    if (compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
+      return res
+        .status(403)
+        .json(new ServiceResponse(null, 'Forbidden'));
+    }
     try {
       const payment: Payment = await this.paymentService.fetchPayment(
         req.params.id
