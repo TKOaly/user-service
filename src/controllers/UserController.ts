@@ -43,9 +43,7 @@ export default class UserController implements IController {
    * @memberof UserController
    */
   async getUser(req: express.Request | any, res: express.Response) {
-    if (req.params.id === "me") {
-      req.params.id = req.authorization.user.id;
-    } else {
+    if (req.params.id !== "me") {
       if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
@@ -243,7 +241,7 @@ export default class UserController implements IController {
    */
   createRoutes() {
     this.route.get(
-      "/:id(\\d+)/",
+      "/:id/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getUser.bind(this)
     );
