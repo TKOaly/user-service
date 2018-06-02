@@ -53,6 +53,9 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
+      payment.generateReferenceNumber();
+      // Set the generated reference number
+      this.paymentService.updatePayment(payment.id, payment);
       return res
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
@@ -154,15 +157,16 @@ export default class PaymentController implements IController {
    * @memberof PaymentController
    */
   async getSinglePayment(req: express.Request & IASRequest, res: express.Response) {
-    if (compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
-      return res
-        .status(403)
-        .json(new ServiceResponse(null, 'Forbidden'));
-    }
     try {
       const payment: Payment = await this.paymentService.fetchPayment(
         req.params.id
       );
+
+      if (payment.payer_id != req.authorization.user.id && compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, 'Forbidden'));
+      }
       if (payment) {
         return res.status(200).json(new ServiceResponse(payment, null, true));
       }

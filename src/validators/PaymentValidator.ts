@@ -10,8 +10,6 @@ export default class PaymentValidator implements IValidator<Payment> {
   validateCreate(bodyData: Payment) {
     if (
       !bodyData.payer_id ||
-      !bodyData.reference_number ||
-      !bodyData.confirmer_id ||
       !bodyData.amount ||
       !bodyData.valid_until ||
       !bodyData.payment_type) {
@@ -21,7 +19,8 @@ export default class PaymentValidator implements IValidator<Payment> {
       if (bodyData.id) {
         delete bodyData.id;
       }
-      bodyData.created = new Date();
+      
+      bodyData.created = new Date();  
   }
 
   validateUpdate(dataId: number, newData: Payment, validator: User) {
