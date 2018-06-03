@@ -16,7 +16,7 @@ export default class UserDao implements Dao<User> {
    * @param {Knex} knex
    * @memberof UserDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single user.
@@ -115,7 +115,24 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User[]>}
    * @memberof UserDao
    */
-  findAll(): Promise<User[]> {
+  findAll(fields?: string[], conditions?: string[]): Promise<User[]> {
+    if (fields) {
+      let queryString = fields.join('`, ');
+      let query = this.knex('users').select(fields);
+
+      if (queryString.indexOf('Payment.')) {
+        query.innerJoin('payments', 'users.id', 'payments.payer_id');
+      }
+
+      if (conditions) {
+        conditions.forEach((cond, i) => {
+          query = query[i == 0 ? 'whereRaw' : 'andWhereRaw'](cond);
+        });
+      }
+      console.log(query.toString());
+      return query;
+    }
+
     return this.knex("users").select();
   }
 

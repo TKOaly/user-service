@@ -98,7 +98,7 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async getAllUsers(req: express.Request | any, res: express.Response) {
+  async getAllUsers(req: express.Request & IASRequest, res: express.Response) {
     if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -109,6 +109,20 @@ export default class UserController implements IController {
         let users: User[] = await this.userService.searchUsers(
           req.query.searchTerm
         );
+        return res
+          .status(200)
+          .json(
+            new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+          );
+      } catch (e) {
+        return res.status(500).json(new ServiceResponse(null, e.message));
+      }
+    }
+
+    // Request is only looking for certain fields
+    if (req.query.fields) {
+      try {
+        let users: User[] = await this.userService.fetchAllWithSelectedFields(req.query.fields, req.query.conditions || null);
         return res
           .status(200)
           .json(
