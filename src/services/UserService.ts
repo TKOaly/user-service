@@ -90,7 +90,7 @@ export default class UserService {
             conditionQuery.push('(paid <> 1 or paid is null)');
             break;
           case 'revoked':
-            conditionQuery.push('(deleted = 1 or deleted is null)')
+            conditionQuery.push('deleted = 1')
             break;
         }
       });
