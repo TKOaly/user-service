@@ -4,8 +4,10 @@ import { AuthenticationService } from "../services/AuthenticationService";
 import ServiceResponse from "../utils/ServiceResponse";
 import User, { compareRoles } from "../models/User";
 import { IController } from "./IController";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import UserValidator from "../validators/UserValidator";
+import PaymentService from "../services/PaymentService";
+import Payment from "../models/Payment";
 
 /**
  * User controller.
@@ -27,7 +29,8 @@ export default class UserController implements IController {
    */
   constructor(
     private userService: UserService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private paymentService: PaymentService
   ) {
     this.route = express.Router();
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
@@ -77,10 +80,7 @@ export default class UserController implements IController {
       return res
         .status(200)
         .json(
-          new ServiceResponse(
-            serviceDataPermissions
-              ? user.removeNonRequestedData(serviceDataPermissions)
-              : user.removeSensitiveInformation()
+          new ServiceResponse(serviceDataPermissions ? user.removeNonRequestedData(serviceDataPermissions) : user.removeSensitiveInformation(), 'Success'
           )
         );
     } catch (e) {
@@ -234,6 +234,48 @@ export default class UserController implements IController {
   }
 
   /**
+   * Finds payments for user
+   * 
+   */
+  async findUserPayment(req: express.Request & IASRequest, res: express.Response) {
+    try {
+      let id: number;
+      if (req.params.id === 'me' || (req.authorization.user.id === Number(req.params.id))) {
+        id = req.authorization.user.id;
+      } else {
+        if (compareRoles(req.authorization.user.role, 'jasenvirkailija') < 0) {
+          return res
+            .status(403)
+            .json(new ServiceResponse(null, 'Forbidden'));
+        } else {
+          id = Number(req.params.id);
+        }
+      }
+
+      let payment: Payment = null;
+      if (req.query.query) {
+        if (req.query.query === 'validPayment') {
+          payment = await this.paymentService.fetchValidPaymentForUser(id);
+        } else {
+          return res
+            .status(400)
+            .json(new ServiceResponse(null, 'Bad query'));
+        }
+      } else {
+        payment = await this.paymentService.fetchPaymentByPayer(id);
+      }
+
+      return res
+        .status(200)
+        .json(new ServiceResponse(payment, 'Success'));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  /**
    * Creates routes for UserController.
    *
    * @returns
@@ -241,7 +283,7 @@ export default class UserController implements IController {
    */
   createRoutes() {
     this.route.get(
-      "/:id/",
+      "/:id",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getUser.bind(this)
     );
@@ -251,14 +293,19 @@ export default class UserController implements IController {
       this.getAllUsers.bind(this)
     );
     this.route.get(
-      "/unpaid",
+      "/payments/unpaid",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
-      "/:id(\\d+)/",
+      "/:id/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
+    );
+    this.route.get(
+      '/:id/payments/',
+      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.findUserPayment.bind(this)
     );
     this.route.post("/", this.createUser.bind(this));
     return this.route;

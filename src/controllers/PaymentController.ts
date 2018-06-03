@@ -55,7 +55,7 @@ export default class PaymentController implements IController {
       );
       payment.generateReferenceNumber();
       // Set the generated reference number
-      this.paymentService.updatePayment(payment.id, payment);
+      await this.paymentService.updatePayment(payment.id, payment);
       return res
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
