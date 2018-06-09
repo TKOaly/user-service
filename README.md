@@ -1,6 +1,6 @@
 # TKO-äly user service
 
-![Build status](https://travis-ci.org/TKOaly/user-service/jobs/390105747)
+![Build status](https://api.travis-ci.org/TKOaly/user-service.svg?branch=master)
 
 Microservice for authenticating users of members.tko-aly.fi.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
