@@ -9,6 +9,7 @@ services:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
+  - npm install -g yarn
 
 install:
   - yarn install
