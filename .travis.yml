@@ -22,6 +22,6 @@ script:
   
 deploy:
   provider: script
-  script: ./node_modules/.bin/ts-node scripts/deploy.ts staging
+  script: scripts/deploy.sh staging
   on:
-    branch: develop
+    branch: dev
