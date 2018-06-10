@@ -28,6 +28,14 @@ Microservice for authenticating users of members.tko-aly.fi.
 4.  Run `yarn test`to run tests
 5.  Run `yarn start` or `yarn watch``
 
+### Docker
+
+1. Copy `.env.example` to `.env` and set environment variables
+2. Execute `docker build -t user-service .` in the project's root folder to build the image
+3. Execute `docker run -p PORT:PORT --env-file=.env -d --name user-service-container user-service` in the project's root folder to run the image. This will mount the project folder's .env file to the container. Replace `PORT` with the port you have set in the .env file.
+
+**Note: Since Docker v18.03, use `host.docker.internal` as the MySQL server address if you are using MacOS or Windows and running the MySQL server from the local machine.**
+
 ## Endpoints
 
 ### `GET /?serviceIdentifier={service identifier}`

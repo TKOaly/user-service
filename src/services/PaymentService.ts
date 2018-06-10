@@ -43,6 +43,18 @@ export default class PaymentService {
     return results.map((result: IPayment) => new Payment(result));
   }
 
+  async fetchPaymentByPayer(payerId: number): Promise<Payment> {
+    return new Payment(await this.paymentDao.findByPayer(payerId));
+  }
+
+  async fetchValidPaymentForUser(userId: number): Promise<Payment> {
+    const result = await this.paymentDao.findByPayer(userId, true);
+    if (!result) {
+      throw new ServiceError(404, 'Not found');
+    }
+    return new Payment(result);
+  }
+
   /**
    * Creates a payment.
    *

@@ -36,14 +36,20 @@ export default class PaymentDao implements Dao<IPayment> {
    * Finds a payment by payer.
    *
    * @param {number} payer_id
+   * @param {validPayment} only searches for valid payments if true
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByPayer(payer_id: number): Promise<IPayment> {
-    return this.knex("payments")
+  findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
+    let query = this.knex("payments")
       .select()
-      .where({ payer_id })
-      .first();
+      .where({ payer_id });
+
+    if (validPayment === true) {
+      query = query.andWhere('valid_until', '>=', this.knex.fn.now());
+    }
+
+    return query.first();
   }
 
   /**

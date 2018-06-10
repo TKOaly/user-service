@@ -71,6 +71,39 @@ export default class UserService {
     return results.map(res => new User(res));
   }
 
+  async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
+    let conditionQuery: string[] = null;
+    if (conditions) {
+      conditionQuery = [];
+      conditions.forEach(condition => {
+        switch(condition) {
+          case 'member':
+            conditionQuery.push('membership <> \'ei-jasen\'');
+            break;
+          case 'nonmember':
+            conditionQuery.push('membership = \'ei-jasen\'');
+            break;
+          case 'paid':
+            conditionQuery.push('paid is not null');
+            break;
+          case 'nonpaid':
+            conditionQuery.push('(paid <> 1 or paid is null)');
+            break;
+          case 'revoked':
+            conditionQuery.push('deleted = 1')
+            break;
+        }
+      });
+    }
+
+    let results = await this.userDao.findAll(fields, conditionQuery);
+    if (!results.length) {
+      throw new ServiceError(404, "No results returned");
+    }
+
+    return results.map(u => new User(u));
+  }
+
   /**
    * Returns username with username and password.
    *

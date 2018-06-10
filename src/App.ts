@@ -72,7 +72,8 @@ const authController: AuthController = new AuthController(
 // User controller
 const userController: UserController = new UserController(
   userService,
-  authService
+  authService,
+  paymentService
 );
 
 // Login controller

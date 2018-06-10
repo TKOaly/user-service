@@ -2,9 +2,11 @@ import * as express from "express";
 import UserService from "../services/UserService";
 import ServiceResponse from "../utils/ServiceResponse";
 import { IController } from "./IController";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import PaymentService from "../services/PaymentService";
 import Payment from "../models/Payment";
+import PaymentValidator from "../validators/PaymentValidator";
+import { compareRoles } from "../models/User";
 
 /**
  * Payment controller.
@@ -16,6 +18,7 @@ import Payment from "../models/Payment";
 export default class PaymentController implements IController {
   route: express.Router;
   authorizeMiddleware: AuthorizeMiddleware;
+  paymentValidator: PaymentValidator;
 
   /**
    * Creates an instance of PaymentController.
@@ -29,6 +32,7 @@ export default class PaymentController implements IController {
     private paymentService: PaymentService
   ) {
     this.route = express.Router();
+    this.paymentValidator = new PaymentValidator();
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
@@ -42,17 +46,16 @@ export default class PaymentController implements IController {
    */
   async createPayment(req: express.Request, res: express.Response) {
     try {
-      const paymentData: Payment = req.body;
-      if (paymentData.id) {
-        delete paymentData.id;
-      }
-      paymentData.created = new Date();
+      this.paymentValidator.validateCreate(req.body);
       const paymentIds: number[] = await this.paymentService.createPayment(
         req.body
       );
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
+      payment.generateReferenceNumber();
+      // Set the generated reference number
+      await this.paymentService.updatePayment(payment.id, payment);
       return res
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
@@ -129,7 +132,12 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getAllPayments(req: express.Request, res: express.Response) {
+  async getAllPayments(req: express.Request & IASRequest, res: express.Response) {
+    if (compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
+      return res.
+        status(403).
+        json(new ServiceResponse(null, 'Forbidden'));
+    }
     try {
       const payments: Payment[] = await this.paymentService.fetchAllPayments();
       return res.status(200).json(new ServiceResponse(payments, null, true));
@@ -148,11 +156,17 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getSinglePayment(req: express.Request, res: express.Response) {
+  async getSinglePayment(req: express.Request & IASRequest, res: express.Response) {
     try {
       const payment: Payment = await this.paymentService.fetchPayment(
         req.params.id
       );
+
+      if (payment.payer_id != req.authorization.user.id && compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
+        return res
+          .status(403)
+          .json(new ServiceResponse(null, 'Forbidden'));
+      }
       if (payment) {
         return res.status(200).json(new ServiceResponse(payment, null, true));
       }
