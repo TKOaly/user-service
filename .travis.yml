@@ -20,3 +20,8 @@ install:
 script:
   - yarn test
   
+deploy:
+  provider: script
+  script: ./node_modules/.bin/ts-node scripts/deploy.ts staging
+  on:
+    branch: develop
