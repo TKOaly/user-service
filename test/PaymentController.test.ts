@@ -192,7 +192,6 @@ describe("PaymentController", () => {
         payer_id: 2,
         confirmer_id: 1,
         created: new Date(2013, 1, 1),
-        reference_number: "1212121212",
         amount: 44.44,
         valid_until: new Date(2018, 1, 1),
         paid: new Date(2013, 1, 1),
@@ -250,9 +249,6 @@ describe("PaymentController", () => {
           /*Date.parse(res.body.payload.created).should.equal(
             Date.parse(newPayment.created.toLocaleDateString())
           );*/
-          res.body.payload.reference_number.should.equal(
-            newPayment.reference_number
-          );
           parseFloat(res.body.payload.amount).should.equal(newPayment.amount);
           /*Date.parse(res.body.payload.valid_until).should.equal(
             Date.parse(newPayment.valid_until.toLocaleDateString())
