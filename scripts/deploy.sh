@@ -2,7 +2,7 @@
 echo "=== User service deployment script ==="
     
 # Import the SSH deployment key
-if [ "$1" = “production” ]
+if [ "$1" = "production" ]
 then
     echo "Decrypting production environment SSH key"
     openssl aes-256-cbc -K $encrypted_22009518e18d_key -iv $encrypted_22009518e18d_iv -in .travis/deploy-key.enc.prod -out deploy.key -d
@@ -17,7 +17,7 @@ chmod 600 deploy-key
 mv deploy-key ~/.ssh/id_rsa
 
 echo "Starting SSH connection"
-if [ "$1" = “production” ]
+if [ "$1" = "production" ]
 then
     echo "Connecting to production server"
     ssh ${PROD_SERVER_URL}
@@ -28,7 +28,7 @@ fi
 
 cd /srv/user-service
 
-if [ "$1" = “production” ]
+if [ "$1" = "production" ]
 then
     echo "Pulling latest code from master branch"
     git pull origin master
