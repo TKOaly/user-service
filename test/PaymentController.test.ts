@@ -62,6 +62,8 @@ describe("PaymentController", () => {
         .get(url)
         .set("Authorization", "Bearer " + generateToken(1))
         .end((err, res) => {
+          console.log(res.body)
+
           should.not.exist(err);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -215,12 +217,8 @@ describe("PaymentController", () => {
     it("As an authenticated user, adds a new payment", done => {
       const newPayment = {
         payer_id: 2,
-        confirmer_id: 1,
-        created: new Date(2013, 1, 1),
-        reference_number: "1212121212",
         amount: 44.44,
         valid_until: new Date(2018, 1, 1),
-        paid: new Date(2013, 1, 1),
         payment_type: "jasenmaksu"
       };
       chai
@@ -234,18 +232,15 @@ describe("PaymentController", () => {
           should.exist(res.body.payload);
           should.exist(res.body.payload.id);
           should.exist(res.body.payload.payer_id);
-          should.exist(res.body.payload.confirmer_id);
           should.exist(res.body.payload.created);
           should.exist(res.body.payload.reference_number);
           should.exist(res.body.payload.amount);
           should.exist(res.body.payload.valid_until);
-          should.exist(res.body.payload.paid);
           should.exist(res.body.payload.payment_type);
           res.body.ok.should.equal(true);
           res.body.message.should.equal("Payment created");
           res.body.payload.id.should.equal(payments.length + 1);
           res.body.payload.payer_id.should.equal(newPayment.payer_id);
-          res.body.payload.confirmer_id.should.equal(newPayment.confirmer_id);
           /*Date.parse(res.body.payload.created).should.equal(
             Date.parse(newPayment.created.toLocaleDateString())
           );*/
@@ -318,13 +313,9 @@ describe("PaymentController", () => {
               const payment_2 = res.body.payload[2];
               payment_2.id.should.equal(3);
               payment_2.payer_id.should.equal(newPayment.payer_id);
-              payment_2.confirmer_id.should.equal(newPayment.confirmer_id);
               /*Date.parse(payment_2.created).should.equal(
                 Date.parse(newPayment.created.toLocaleDateString())
               );*/
-              payment_2.reference_number.should.equal(
-                newPayment.reference_number
-              );
               parseFloat(payment_2.amount).should.equal(newPayment.amount);
               /*Date.parse(payment_2.valid_until).should.equal(
                 Date.parse(newPayment.valid_until.toLocaleDateString())
