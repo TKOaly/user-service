@@ -7,6 +7,11 @@ node_js:
 services:
   - mysql
 
+addons:
+  ssh_known_hosts:
+  - maija.tko-aly.fi
+  - uolevi.tko-aly.fi
+
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
