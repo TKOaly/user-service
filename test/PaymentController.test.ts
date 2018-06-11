@@ -225,7 +225,6 @@ describe("PaymentController", () => {
         .set("Authorization", "Bearer " + generateToken(2))
         .send(newPayment)
         .end((err, res) => {
-          console.log(res.body)
           res.status.should.equal(201);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -236,7 +235,6 @@ describe("PaymentController", () => {
           should.exist(res.body.payload.amount);
           should.exist(res.body.payload.valid_until);
           should.exist(res.body.payload.payment_type);
-          console.log('asd')
           res.body.ok.should.equal(true);
           res.body.message.should.equal("Payment created");
           res.body.payload.id.should.equal(payments.length + 1);
@@ -269,7 +267,6 @@ describe("PaymentController", () => {
               res.body.ok.should.equal(true);
 
               // Loop through
-              console.log(res.body)
               // Old entries
               for (let i: number = 0; i < res.body.payload.length - 1; i++) {
                 should.exist(res.body.payload[i]);
