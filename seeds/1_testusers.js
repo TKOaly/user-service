@@ -23,7 +23,7 @@ exports.seed = function(knex, Promise) {
           modified: new Date(),
           hashed_password: encryptPassword("test_user", "12345"),
           salt: "12345",
-          role: "member",
+          role: "jasen",
           tktl: 1,
           deleted: 0
         },
@@ -36,12 +36,12 @@ exports.seed = function(knex, Promise) {
           residence: "Test",
           phone: "1234567890",
           hyy_member: 1,
-          membership: "yllapitaja",
+          membership: "jasen",
           created: new Date(),
           modified: new Date(),
           hashed_password: encryptPassword("admin_user", "12345"),
           salt: "12345",
-          role: "member",
+          role: "yllapitaja",
           tktl: 1,
           deleted: 0
         }

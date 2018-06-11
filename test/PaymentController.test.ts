@@ -60,10 +60,8 @@ describe("PaymentController", () => {
       chai
         .request(app)
         .get(url)
-        .set("Authorization", "Bearer " + generateToken(1))
+        .set("Authorization", "Bearer " + generateToken(2))
         .end((err, res) => {
-          console.log(res.body)
-
           should.not.exist(err);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -218,15 +216,16 @@ describe("PaymentController", () => {
       const newPayment = {
         payer_id: 2,
         amount: 44.44,
-        valid_until: new Date(2018, 1, 1),
+        valid_until: '2018-05-28 22:25:4',
         payment_type: "jasenmaksu"
       };
       chai
         .request(app)
         .post(url)
-        .set("Authorization", "Bearer " + generateToken(1))
+        .set("Authorization", "Bearer " + generateToken(2))
         .send(newPayment)
         .end((err, res) => {
+          console.log(res.body)
           res.status.should.equal(201);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -237,6 +236,7 @@ describe("PaymentController", () => {
           should.exist(res.body.payload.amount);
           should.exist(res.body.payload.valid_until);
           should.exist(res.body.payload.payment_type);
+          console.log('asd')
           res.body.ok.should.equal(true);
           res.body.message.should.equal("Payment created");
           res.body.payload.id.should.equal(payments.length + 1);
@@ -257,7 +257,7 @@ describe("PaymentController", () => {
           chai
             .request(app)
             .get(url)
-            .set("Authorization", "Bearer " + generateToken(1))
+            .set("Authorization", "Bearer " + generateToken(2))
             .end((err, res) => {
               should.not.exist(err);
               should.exist(res.body.ok);
@@ -269,7 +269,7 @@ describe("PaymentController", () => {
               res.body.ok.should.equal(true);
 
               // Loop through
-
+              console.log(res.body)
               // Old entries
               for (let i: number = 0; i < res.body.payload.length - 1; i++) {
                 should.exist(res.body.payload[i]);
@@ -292,9 +292,6 @@ describe("PaymentController", () => {
                 /*Date.parse(res.body.payload[i].created).should.equal(
                   Date.parse(payment_2.created.toLocaleDateString())
                 );*/
-                res.body.payload[i].reference_number.should.equal(
-                  payment_2.reference_number
-                );
                 parseFloat(res.body.payload[i].amount).should.equal(
                   payment_2.amount
                 );
