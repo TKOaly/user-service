@@ -13,6 +13,7 @@ addons:
   - uolevi.tko-aly.fi
 
 before_install:
+  - openssl aes-256-cbc -K $encrypted_26418d32bdf1_key -iv $encrypted_26418d32bdf1_iv -in deployment_key_staging.enc -out deployment_key_staging -d
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
 

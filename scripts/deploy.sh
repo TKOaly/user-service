@@ -12,9 +12,9 @@ echo "=== User service deployment script ==="
 #fi
 
 echo "Setting up SSH key"
-rm deploy-key.enc.* # Don't need it anymore
-chmod 600 deploy-key
-mv deploy-key ~/.ssh/id_rsa
+rm .travis/deploy-key.enc.* # Don't need it anymore
+chmod 600 deployment_key_staging
+mv deployment_key_staging ~/.ssh/id_rsa
 
 echo "Starting SSH connection"
 if [ "$1" = "production" ]
