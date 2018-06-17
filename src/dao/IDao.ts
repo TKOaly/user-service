@@ -7,7 +7,7 @@ import * as Promise from "bluebird";
  * @interface Dao
  * @template T
  */
-export default interface Dao<T> {
+export default interface IDao<T> {
   /**
    * Returns an entity by its id.
    *

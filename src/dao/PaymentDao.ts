@@ -1,7 +1,7 @@
-import * as Knex from "knex";
-import Dao from "./Dao";
 import * as Promise from "bluebird";
+import * as Knex from "knex";
 import { IPayment } from "../models/Payment";
+import IDao from "./IDao";
 
 /**
  * Payment dao.
@@ -10,7 +10,7 @@ import { IPayment } from "../models/Payment";
  * @class PaymentDao
  * @implements {Dao<Payment>}
  */
-export default class PaymentDao implements Dao<IPayment> {
+export default class PaymentDao implements IDao<IPayment> {
   /**
    * Creates an instance of PaymentDao.
    * @param {Knex} knex
@@ -25,7 +25,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findOne(id: number): Promise<IPayment> {
+  public findOne(id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ id })
@@ -40,13 +40,13 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
+  public findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
     let query = this.knex("payments")
       .select()
       .where({ payer_id });
 
     if (validPayment === true) {
-      query = query.andWhere('valid_until', '>=', this.knex.fn.now());
+      query = query.andWhere("valid_until", ">=", this.knex.fn.now());
     }
 
     return query.first();
@@ -59,7 +59,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByConfirmer(confirmer_id: number): Promise<IPayment> {
+  public findByConfirmer(confirmer_id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ confirmer_id })
@@ -72,7 +72,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment[]>}
    * @memberof PaymentDao
    */
-  findAll(): Promise<IPayment[]> {
+  public findAll(): Promise<IPayment[]> {
     return this.knex("payments").select();
   }
 
@@ -83,7 +83,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<boolean>}
    * @memberof PaymentDao
    */
-  remove(id: number): Promise<boolean> {
+  public remove(id: number): Promise<boolean> {
     return this.knex("payments")
       .delete()
       .where({ id });
@@ -96,7 +96,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<boolean>}
    * @memberof PaymentDao
    */
-  update(entity: IPayment): Promise<boolean> {
+  public update(entity: IPayment): Promise<boolean> {
     return this.knex("payments")
       .update(entity)
       .where({ id: entity.id });
@@ -109,7 +109,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<number[]>}
    * @memberof PaymentDao
    */
-  save(entity: IPayment): Promise<number[]> {
+  public save(entity: IPayment): Promise<number[]> {
     return this.knex("payments").insert(entity);
   }
 }

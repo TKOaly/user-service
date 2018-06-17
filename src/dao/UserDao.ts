@@ -1,7 +1,7 @@
+import * as Promise from "bluebird";
 import * as Knex from "knex";
 import User from "../models/User";
-import Dao from "./Dao";
-import * as Promise from "bluebird";
+import IDao from "./IDao";
 
 /**
  * User dao.
@@ -10,7 +10,7 @@ import * as Promise from "bluebird";
  * @class UserDao
  * @implements {Dao<User>}
  */
-export default class UserDao implements Dao<User> {
+export default class UserDao implements IDao<User> {
   /**
    * Creates an instance of UserDao.
    * @param {Knex} knex
@@ -25,7 +25,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User>}
    * @memberof UserDao
    */
-  findOne(id: number): Promise<User> {
+  public findOne(id: number): Promise<User> {
     return this.knex("users")
       .select()
       .where({ id })
@@ -39,7 +39,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User>} User
    * @memberof UserDao
    */
-  findByUsername(username: string): Promise<User> {
+  public findByUsername(username: string): Promise<User> {
     return this.knex("users")
       .select()
       .where({ username })
@@ -53,12 +53,11 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User>} User
    * @memberof UserDao
    */
-  findByUnpaidPayment(id: number): Promise<User> {
+  public findByUnpaidPayment(id: number): Promise<User> {
     return this.knex("users")
       .select(
         "users.id",
         "users.username",
-        "users.name",
         "users.name",
         "users.screen_name",
         "users.email",
@@ -85,7 +84,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User[]>} List of users
    * @memberof UserDao
    */
-  findAllByUnpaidPayment(): Promise<User[]> {
+  public findAllByUnpaidPayment(): Promise<User[]> {
     return this.knex("users")
       .select(
         "users.id",
@@ -115,18 +114,18 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User[]>}
    * @memberof UserDao
    */
-  findAll(fields?: string[], conditions?: string[]): Promise<User[]> {
+  public findAll(fields?: string[], conditions?: string[]): Promise<User[]> {
     if (fields) {
-      let queryString = fields.join('`, ');
-      let query = this.knex('users').select(fields);
+      const queryString = fields.join("`, ");
+      let query = this.knex("users").select(fields);
 
-      if (queryString.indexOf('Payment.')) {
-        query.innerJoin('payments', 'users.id', 'payments.payer_id');
+      if (queryString.indexOf("Payment.")) {
+        query.innerJoin("payments", "users.id", "payments.payer_id");
       }
 
       if (conditions) {
         conditions.forEach((cond, i) => {
-          query = query[i == 0 ? 'whereRaw' : 'andWhereRaw'](cond);
+          query = query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
         });
       }
       console.log(query.toString());
@@ -143,7 +142,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<User[]>}
    * @memberof UserDao
    */
-  findWhere(searchTerm: string): Promise<User[]> {
+  public findWhere(searchTerm: string): Promise<User[]> {
     return this.knex
       .select()
       .from("users")
@@ -162,7 +161,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<boolean>}
    * @memberof UserDao
    */
-  remove(id: number): Promise<boolean> {
+  public remove(id: number): Promise<boolean> {
     return this.knex("users")
       .delete()
       .where({ id });
@@ -176,7 +175,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<boolean>}
    * @memberof UserDao
    */
-  update(entityId: number, entity: User): Promise<boolean> {
+  public update(entityId: number, entity: User): Promise<boolean> {
     return this.knex("users")
       .update(entity.getDatabaseObject())
       .where({ id: entityId });
@@ -189,7 +188,7 @@ export default class UserDao implements Dao<User> {
    * @returns {Promise<number[]>}
    * @memberof UserDao
    */
-  save(entity: User): Promise<number[]> {
+  public save(entity: User): Promise<number[]> {
     return this.knex("users").insert(entity.getDatabaseObject());
   }
 }

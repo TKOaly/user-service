@@ -1,11 +1,11 @@
-// @ts-ignore
+import * as bcrypt from "bcrypt";
 // Ignore sha1 as it has no types
+// @ts-ignore
 import * as sha1 from "sha1";
-import ServiceError from "../utils/ServiceError";
+import ServiceDao from "../dao/ServiceDao";
 import Service from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
-import ServiceDao from "../dao/ServiceDao";
-import * as bcrypt from "bcrypt";
+import ServiceError from "../utils/ServiceError";
 
 /**
  * Authentication service.
@@ -31,7 +31,7 @@ export class AuthenticationService {
    * @returns {Promise<Service>}
    * @memberof AuthenticationService
    */
-  async getService(serviceName: string): Promise<Service> {
+  public async getService(serviceName: string): Promise<Service> {
     const service: Service = await this.serviceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
@@ -46,7 +46,7 @@ export class AuthenticationService {
    * @returns {Promise<Service>}
    * @memberof AuthenticationService
    */
-  async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
+  public async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
     const service: Service = await this.serviceDao.findByIdentifier(
       service_identifier
     );
@@ -62,10 +62,10 @@ export class AuthenticationService {
    * @returns {Promise<Service[]>}
    * @memberof AuthenticationService
    */
-  async getServices(): Promise<Service[]> {
+  public async getServices(): Promise<Service[]> {
     const services: Service[] = await this.serviceDao.findAll();
 
-    return services.map(service => new Service(service));
+    return services.map((service) => new Service(service));
   }
 
   /**
@@ -76,12 +76,12 @@ export class AuthenticationService {
    * @returns {string}
    * @memberof AuthenticationService
    */
-  appendNewServiceAuthenticationToToken(
+  public appendNewServiceAuthenticationToToken(
     oldToken: string | any,
     newServiceName: string
   ): string {
     let token: ServiceToken;
-    if (typeof oldToken == "string") {
+    if (typeof oldToken === "string") {
       token = stringToServiceToken(oldToken);
     } else {
       token = new ServiceToken(
@@ -110,12 +110,12 @@ export class AuthenticationService {
    * @returns {string}
    * @memberof AuthenticationService
    */
-  removeServiceAuthenticationToToken(
+  public removeServiceAuthenticationToToken(
     oldToken: string | any,
     serviceToRemove: string
   ): string {
     let token: ServiceToken;
-    if (typeof oldToken == "string") {
+    if (typeof oldToken === "string") {
       token = stringToServiceToken(oldToken);
     } else {
       token = new ServiceToken(
@@ -124,9 +124,9 @@ export class AuthenticationService {
         oldToken.createdAt
       );
     }
-    let newServiceList: string[] = [];
-    token.authenticatedTo.forEach(s => {
-      if (s != serviceToRemove) {
+    const newServiceList: string[] = [];
+    token.authenticatedTo.forEach((s) => {
+      if (s !== serviceToRemove) {
         newServiceList.push(s);
       }
     });
@@ -146,7 +146,7 @@ export class AuthenticationService {
    * @returns {string}
    * @memberof AuthenticationService
    */
-  createToken(userId: number, authenticatedTo: string[]): string {
+  public createToken(userId: number, authenticatedTo: string[]): string {
     try {
       return new ServiceToken(userId, authenticatedTo, new Date()).toString();
     } catch (e) {

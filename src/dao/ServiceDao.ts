@@ -1,7 +1,7 @@
+import * as Promise from "bluebird";
 import * as Knex from "knex";
 import Service from "../models/Service";
-import Dao from "./Dao";
-import * as Promise from "bluebird";
+import IDao from "./IDao";
 
 /**
  * Service dao.
@@ -10,7 +10,7 @@ import * as Promise from "bluebird";
  * @class ServiceDao
  * @implements {Dao<Service>}
  */
-export default class ServiceDao implements Dao<Service> {
+export default class ServiceDao implements IDao<Service> {
   /**
    * Creates an instance of ServiceDao.
    * @param {Knex} knex
@@ -25,7 +25,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<Service>}
    * @memberof ServiceDao
    */
-  findOne(id: number): Promise<Service> {
+  public findOne(id: number): Promise<Service> {
     return this.knex("services")
       .select()
       .where({ id })
@@ -39,7 +39,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<Service>}
    * @memberof ServiceDao
    */
-  findByIdentifier(service_identifier: string): Promise<Service> {
+  public findByIdentifier(service_identifier: string): Promise<Service> {
     return this.knex("services")
       .select()
       .where({ service_identifier })
@@ -53,7 +53,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<Service>}
    * @memberof ServiceDao
    */
-  findByName(service_name: string): Promise<Service> {
+  public findByName(service_name: string): Promise<Service> {
     return this.knex("services")
       .select()
       .where({ service_name })
@@ -66,7 +66,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<Service[]>}
    * @memberof ServiceDao
    */
-  findAll(): Promise<Service[]> {
+  public findAll(): Promise<Service[]> {
     return this.knex("services").select();
   }
 
@@ -77,7 +77,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<boolean>}
    * @memberof ServiceDao
    */
-  remove(id: number): Promise<boolean> {
+  public remove(id: number): Promise<boolean> {
     return this.knex("services")
       .delete()
       .where({ id });
@@ -90,7 +90,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<boolean>}
    * @memberof ServiceDao
    */
-  update(entity: Service): Promise<boolean> {
+  public update(entity: Service): Promise<boolean> {
     return this.knex("services")
       .update(entity)
       .where({ id: entity.id });
@@ -103,7 +103,7 @@ export default class ServiceDao implements Dao<Service> {
    * @returns {Promise<number[]>}
    * @memberof ServiceDao
    */
-  save(entity: Service): Promise<number[]> {
+  public save(entity: Service): Promise<number[]> {
     return this.knex("services").insert(entity);
   }
 }

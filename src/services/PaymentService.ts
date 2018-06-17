@@ -1,6 +1,6 @@
-import ServiceError from "../utils/ServiceError";
 import PaymentDao from "../dao/PaymentDao";
 import Payment, { IPayment } from "../models/Payment";
+import ServiceError from "../utils/ServiceError";
 
 /**
  * Payment service.
@@ -23,8 +23,8 @@ export default class PaymentService {
    * @returns
    * @memberof PaymentService
    */
-  async fetchPayment(paymentId: number): Promise<Payment> {
-    let result: IPayment = await this.paymentDao.findOne(paymentId);
+  public async fetchPayment(paymentId: number): Promise<Payment> {
+    const result: IPayment = await this.paymentDao.findOne(paymentId);
     if (!result) {
       throw new ServiceError(404, "Not found");
     }
@@ -38,19 +38,19 @@ export default class PaymentService {
    * @returns {Promise<Payment[]>}
    * @memberof PaymentService
    */
-  async fetchAllPayments(): Promise<Payment[]> {
+  public async fetchAllPayments(): Promise<Payment[]> {
     const results: IPayment[] = await this.paymentDao.findAll();
     return results.map((result: IPayment) => new Payment(result));
   }
 
-  async fetchPaymentByPayer(payerId: number): Promise<Payment> {
+  public async fetchPaymentByPayer(payerId: number): Promise<Payment> {
     return new Payment(await this.paymentDao.findByPayer(payerId));
   }
 
-  async fetchValidPaymentForUser(userId: number): Promise<Payment> {
+  public async fetchValidPaymentForUser(userId: number): Promise<Payment> {
     const result = await this.paymentDao.findByPayer(userId, true);
     if (!result) {
-      throw new ServiceError(404, 'Not found');
+      throw new ServiceError(404, "Payment not found");
     }
     return new Payment(result);
   }
@@ -62,8 +62,8 @@ export default class PaymentService {
    * @returns {Promise<number[]>}
    * @memberof PaymentService
    */
-  async createPayment(payment: Payment): Promise<number[]> {
-    return this.paymentDao.save(<IPayment>payment);
+  public async createPayment(payment: Payment): Promise<number[]> {
+    return this.paymentDao.save(payment as IPayment);
   }
 
   /**
@@ -74,10 +74,10 @@ export default class PaymentService {
    * @returns {Promise<boolean>}
    * @memberof PaymentService
    */
-  async updatePayment(
+  public async updatePayment(
     paymentId: number,
     updatedPayment: Payment
   ): Promise<boolean> {
-    return this.paymentDao.update(<IPayment>updatedPayment);
+    return this.paymentDao.update(updatedPayment as IPayment);
   }
 }
