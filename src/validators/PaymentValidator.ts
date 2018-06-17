@@ -4,7 +4,7 @@ import ServiceError from "../utils/ServiceError";
 import IValidator from "./IValidator";
 
 export default class PaymentValidator implements IValidator<Payment> {
-  public validateCreate(bodyData: Payment) {
+  public validateCreate(bodyData: Payment): void {
     if (
       !bodyData.payer_id ||
       !bodyData.amount ||
@@ -21,7 +21,7 @@ export default class PaymentValidator implements IValidator<Payment> {
     bodyData.created = new Date();
   }
 
-  public validateUpdate(dataId: number, newData: Payment, validator: User) {
+  public validateUpdate(dataId: number, newData: Payment, validator: User): void {
     return;
   }
 }

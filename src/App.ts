@@ -49,7 +49,7 @@ app.set("view engine", "pug");
 app.use(helmet());
 
 // Knexfile
-const knexfile = require("./../knexfile");
+const knexfile: any = require("./../knexfile");
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);

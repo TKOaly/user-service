@@ -14,7 +14,7 @@ export default interface IValidator<T> {
    * @param {T} bodyData Entity
    * @memberof IValidator
    */
-  validateCreate(bodyData: T);
+  validateCreate(bodyData: T): void;
   /**
    * Validates entity update.
    *
@@ -22,5 +22,5 @@ export default interface IValidator<T> {
    * @param {T} newData New data
    * @memberof IValidator
    */
-  validateUpdate(dataId: number, newData: T, validator: User);
+  validateUpdate(dataId: number, newData: T, validator: User): void;
 }

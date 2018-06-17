@@ -73,7 +73,9 @@ export default class UserValidator implements IValidator<User> {
    * @param {(User & IAdditionalUserData)} newUser
    * @memberof UserValidator
    */
-  public async validateCreate(newUser: User & IAdditionalUserData) {
+  public async validateCreate(
+    newUser: User & IAdditionalUserData
+  ): Promise<void> {
     // Discard user id
     delete newUser.id;
 
@@ -130,7 +132,7 @@ export default class UserValidator implements IValidator<User> {
     userId: number,
     newUser: User & IAdditionalUserData,
     modifier: User
-  ) {
+  ): Promise<void> {
     const error: string = "Forbidden modify action";
     // Self-edit
     if (userId === modifier.id) {

@@ -48,7 +48,7 @@ export default class PaymentService {
   }
 
   public async fetchValidPaymentForUser(userId: number): Promise<Payment> {
-    const result = await this.paymentDao.findByPayer(userId, true);
+    const result: IPayment = await this.paymentDao.findByPayer(userId, true);
     if (!result) {
       throw new ServiceError(404, "Payment not found");
     }

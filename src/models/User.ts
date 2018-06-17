@@ -157,7 +157,7 @@ export default class User {
    * @returns User object with sensitive information removed
    * @memberof User
    */
-  public removeSensitiveInformation() {
+  public removeSensitiveInformation(): User {
     delete this.salt;
     delete this.hashedPassword;
     return this;
@@ -233,8 +233,8 @@ interface IUserDatabaseObject {
   deleted?: number | boolean;
 }
 
-export function compareRoles(a: string, b: string) {
-  const roleNumbers = {
+export function compareRoles(a: string, b: string): number {
+  const roleNumbers: any = {
     kayttaja: 1,
     virkailija: 2,
     tenttiarkistovirkailija: 2,
@@ -242,8 +242,8 @@ export function compareRoles(a: string, b: string) {
     yllapitaja: 4
   };
 
-  let aN = 0;
-  let bN = 0;
+  let aN: number = 0;
+  let bN: number = 0;
 
   if (roleNumbers[a]) {
     aN = roleNumbers[a];

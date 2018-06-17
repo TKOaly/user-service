@@ -41,7 +41,7 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
-    let query = this.knex("payments")
+    let query: Knex.QueryInterface = this.knex("payments")
       .select()
       .where({ payer_id });
 

@@ -96,7 +96,7 @@ export default class UserService {
       });
     }
 
-    const results = await this.userDao.findAll(fields, conditionQuery);
+    const results: User[] = await this.userDao.findAll(fields, conditionQuery);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }

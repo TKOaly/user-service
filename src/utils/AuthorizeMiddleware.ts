@@ -58,7 +58,7 @@ export default class AuthorizeMiddleware {
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ) {
+  ): Promise<express.Response | any> {
     const token: string = req.headers.authorization;
     if (token && token.toString().startsWith("Bearer ")) {
       try {
@@ -110,7 +110,7 @@ export default class AuthorizeMiddleware {
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ) {
+  ): Promise<express.Response | any> {
     const token: string = req.headers.authorization;
     if (token && token.toString().startsWith("Bearer ")) {
       try {

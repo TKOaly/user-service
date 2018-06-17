@@ -22,7 +22,7 @@ function generateApiRoute(endpointName: string, apiVersion?: string): string {
  * @param {string} [apiVersion] API version
  * @returns
  */
-function apiHeaderMiddleware(apiVersion?: string) {
+function apiHeaderMiddleware(apiVersion?: string): any {
   return (
     req: Express.Request | any,
     res: Express.Response | any,
