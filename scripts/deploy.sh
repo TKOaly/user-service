@@ -12,7 +12,7 @@ echo "=== User service deployment script ==="
 #fi
 
 echo "Setting up SSH key"
-rm .travis/deploy-key.enc.* # Don't need it anymore
+rm .travis/deployment_key_staging.enc # Don't need it anymore
 chmod 600 deployment_key_staging
 mv deployment_key_staging ~/.ssh/id_rsa
 
