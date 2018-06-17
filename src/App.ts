@@ -3,7 +3,9 @@ require("dotenv").config();
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as session from "express-session";
+import * as helmet from "helmet";
 import * as Knex from "knex";
+
 import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
@@ -39,8 +41,12 @@ app.use(
 
 // Set static folder
 app.use(express.static("./public"));
+
 // Set view engine
 app.set("view engine", "pug");
+
+// Helmet
+app.use(helmet());
 
 // Knexfile
 const knexfile = require("./../knexfile");
