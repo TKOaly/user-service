@@ -33,7 +33,8 @@
     "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
     "migrate": "node_modules/.bin/knex migrate:latest",
     "rollback": "node_modules/.bin/knex migrate:rollback",
-    "seed": "node_modules/.bin/knex seed:run"
+    "seed": "node_modules/.bin/knex seed:run",
+    "lint": "node_modules/.bin/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
