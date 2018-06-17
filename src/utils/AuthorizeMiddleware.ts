@@ -1,8 +1,8 @@
 import * as express from "express";
-import ServiceResponse from "./ServiceResponse";
-import { stringToServiceToken, ServiceToken } from "../token/Token";
-import UserService from "../services/UserService";
 import User from "../models/User";
+import UserService from "../services/UserService";
+import { ServiceToken, stringToServiceToken } from "../token/Token";
+import ServiceResponse from "./ServiceResponse";
 
 /**
  * IASRequest interface.
@@ -54,19 +54,21 @@ export default class AuthorizeMiddleware {
    * @returns
    * @memberof AuthorizeMiddleware
    */
-  async authorize(
+  public async authorize(
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
   ) {
-    let token = req.headers["authorization"];
+    const token: string = req.headers.authorization;
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        let parsedToken = stringToServiceToken(token.slice(7).toString());
-        let user = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken: ServiceToken = stringToServiceToken(
+          token.slice(7).toString()
+        );
+        const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
-          user,
-          token: parsedToken
+          token: parsedToken,
+          user
         };
         return next();
       } catch (e) {
@@ -76,11 +78,13 @@ export default class AuthorizeMiddleware {
       }
     } else if (req.cookies.token) {
       try {
-        let parsedToken = stringToServiceToken(req.cookies.token);
-        let user = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken: ServiceToken = stringToServiceToken(
+          req.cookies.token
+        );
+        const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
-          user,
-          token: parsedToken
+          token: parsedToken,
+          user
         };
         return next();
       } catch (e) {
@@ -102,19 +106,21 @@ export default class AuthorizeMiddleware {
    * @returns
    * @memberof AuthorizeMiddleware
    */
-  async loadToken(
+  public async loadToken(
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
   ) {
-    let token = req.headers["authorization"];
+    const token: string = req.headers.authorization;
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        let parsedToken = stringToServiceToken(token.slice(7).toString());
-        let user = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken: ServiceToken = stringToServiceToken(
+          token.slice(7).toString()
+        );
+        const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
-          user,
-          token: parsedToken
+          token: parsedToken,
+          user
         };
         return next();
       } catch (e) {
@@ -126,11 +132,13 @@ export default class AuthorizeMiddleware {
 
     if (req.cookies.token) {
       try {
-        let parsedToken = stringToServiceToken(req.cookies.token);
-        let user = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken: ServiceToken = stringToServiceToken(
+          req.cookies.token
+        );
+        const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
-          user,
-          token: parsedToken
+          token: parsedToken,
+          user
         };
         return next();
       } catch (e) {

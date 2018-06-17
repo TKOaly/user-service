@@ -5,7 +5,9 @@
   "rules": {
     "no-var-requires": false,
     "trailing-comma": false,
-    "no-console": false
+    "no-console": [false, "warn"],
+    "no-bitwise": false,
+    "object-literal-sort-keys": [false, "warn"]
   },
   "rulesDirectory": []
 }

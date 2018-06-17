@@ -1,34 +1,34 @@
-import IValidator from "./IValidator";
-import UserService from "../services/UserService";
-import User from "../models/User";
-import ServiceError from "../utils/ServiceError";
 import * as validator from "validator";
+import User from "../models/User";
+import UserService from "../services/UserService";
+import ServiceError from "../utils/ServiceError";
+import IValidator from "./IValidator";
 
 /**
  * Additional user data.
  *
- * @interface AdditionalUserData
+ * @interface IAdditionalUserData
  */
-interface AdditionalUserData {
+interface IAdditionalUserData {
   /**
    * Password.
    *
    * @type {string} Password
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   password1: string;
   /**
    * Password (typed again).
    *
    * @type {string} Password
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   password2: string;
   /**
    * Is the user deleted or not.
    *
    * @type {boolean}
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   deleted: boolean;
 }
@@ -70,10 +70,10 @@ export default class UserValidator implements IValidator<User> {
   /**
    * Validates user creation.
    *
-   * @param {(User & AdditionalUserData)} newUser
+   * @param {(User & IAdditionalUserData)} newUser
    * @memberof UserValidator
    */
-  async validateCreate(newUser: User & AdditionalUserData) {
+  public async validateCreate(newUser: User & IAdditionalUserData) {
     // Discard user id
     delete newUser.id;
 
@@ -103,8 +103,8 @@ export default class UserValidator implements IValidator<User> {
       !newUser.email ||
       !validator.isEmail(newUser.email) ||
       !validator.isLength(newUser.email, {
-        min: 1,
-        max: 255
+        max: 255,
+        min: 1
       })
     ) {
       throw new ServiceError(400, "Malformed email");
@@ -126,39 +126,40 @@ export default class UserValidator implements IValidator<User> {
    * @param {User} newUser
    * @memberof UserValidator
    */
-  async validateUpdate(
+  public async validateUpdate(
     userId: number,
-    newUser: User & AdditionalUserData,
+    newUser: User & IAdditionalUserData,
     modifier: User
   ) {
+    const error: string = "Forbidden modify action";
     // Self-edit
     if (userId === modifier.id) {
       newUser.id = userId;
       Object.keys(newUser).forEach((key: string) => {
         if (allowedSelfEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
+          throw new ServiceError(403, error);
         }
       });
     } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
       Object.keys(newUser).forEach((key: string) => {
         if (allowedJVEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
+          throw new ServiceError(403, error);
         }
       });
     } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
       Object.keys(newUser).forEach((key: string) => {
         if (allowedAdminEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
+          throw new ServiceError(403, error);
         }
       });
     } else {
-      throw new ServiceError(403, "Forbidden modify action");
+      throw new ServiceError(403, error);
     }
 
     // Remove information that hasn't changed
     const oldUser: User = await this.userService.fetchUser(userId);
     Object.keys(newUser).forEach((k: string) => {
-      if (oldUser[k] == newUser[k]) {
+      if (oldUser[k] === newUser[k]) {
         delete newUser[k];
       }
     });
@@ -178,8 +179,8 @@ export default class UserValidator implements IValidator<User> {
       if (
         !validator.isEmail(newUser.email) ||
         !validator.isLength(newUser.email, {
-          min: 1,
-          max: 255
+          max: 255,
+          min: 1
         })
       ) {
         throw new ServiceError(400, "Malformed email");

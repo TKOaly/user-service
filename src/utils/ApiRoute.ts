@@ -1,7 +1,8 @@
 import * as Express from "express";
 
 /**
- * Generates an API route in the format /api/{API_VERSION}/{ENDPOINT_NAME} or /api/{ENDPOINT_NAME} depending on if API version is not set.
+ * Generates an API route in the format /api/{API_VERSION}/{ENDPOINT_NAME} or /api/{ENDPOINT_NAME}
+ * depending on if API version is not set.
  *
  * @export
  * @param {string} endpointName Endpoint name
@@ -22,11 +23,11 @@ function generateApiRoute(endpointName: string, apiVersion?: string): string {
  * @returns
  */
 function apiHeaderMiddleware(apiVersion?: string) {
-  return function(
+  return (
     req: Express.Request | any,
     res: Express.Response | any,
     next: Express.NextFunction | any
-  ) {
+  ) => {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
     }

@@ -11,119 +11,119 @@ export default class User {
    * @type {number}
    * @memberof User
    */
-  id: number;
+  public id: number;
   /**
    * Username
    *
    * @type {string}
    * @memberof User
    */
-  username: string;
+  public username: string;
   /**
    * Name
    *
    * @type {string}
    * @memberof User
    */
-  name: string;
+  public name: string;
   /**
    * Screen name
    *
    * @type {string}
    * @memberof User
    */
-  screenName: string;
+  public screenName: string;
   /**
    * Email
    *
    * @type {string}
    * @memberof User
    */
-  email: string;
+  public email: string;
   /**
    * Residence
    *
    * @type {string}
    * @memberof User
    */
-  residence: string;
+  public residence: string;
   /**
    * Phone
    *
    * @type {string}
    * @memberof User
    */
-  phone: string;
+  public phone: string;
   /**
    * Is the user a HYY member or not
    *
    * @type {boolean}
    * @memberof User
    */
-  isHYYMember: boolean;
+  public isHYYMember: boolean;
   /**
    * Membership status
    *
    * @type {string}
    * @memberof User
    */
-  membership: string;
+  public membership: string;
   /**
    * Role
    *
    * @type {string}
    * @memberof User
    */
-  role: string;
+  public role: string;
   /**
    * Salt
    *
    * @type {string}
    * @memberof User
    */
-  salt: string;
+  public salt: string;
   /**
    * Password hash (sha1 or BCrypt)
    *
    * @type {string}
    * @memberof User
    */
-  hashedPassword: string;
+  public hashedPassword: string;
   /**
    * Date when the user was created at.
    *
    * @type {Date}
    * @memberof User
    */
-  createdAt: Date;
+  public createdAt: Date;
   /**
    * Date when the user was last modified.
    *
    * @type {Date}
    * @memberof User
    */
-  modifiedAt: Date;
+  public modifiedAt: Date;
   /**
    * Is the user a TKTL member or not.
    *
    * @type {boolean}
    * @memberof User
    */
-  isTKTL: boolean;
+  public isTKTL: boolean;
   /**
    * Is the user deleted or not.
    *
    * @type {boolean}
    * @memberof User
    */
-  isDeleted: boolean;
+  public isDeleted: boolean;
 
   /**
    * Creates an instance of User.
-   * @param {UserDatabaseObject} userDatabaseObject User database object
+   * @param {IUserDatabaseObject} userDatabaseObject User database object
    * @memberof User
    */
-  constructor(userDatabaseObject: UserDatabaseObject) {
+  constructor(userDatabaseObject: IUserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;
     this.name = userDatabaseObject.name;
@@ -157,7 +157,7 @@ export default class User {
    * @returns User object with sensitive information removed
    * @memberof User
    */
-  removeSensitiveInformation() {
+  public removeSensitiveInformation() {
     delete this.salt;
     delete this.hashedPassword;
     return this;
@@ -170,11 +170,13 @@ export default class User {
    * @returns
    * @memberof User User with non-requested data removed
    */
-  removeNonRequestedData(dataRequest: number): User {
+  public removeNonRequestedData(dataRequest: number): User {
     Object.keys(this.removeSensitiveInformation()).forEach(
       (key: string, i: number) => {
-        let val = Math.pow(2, i);
-        if (val == null || (val & dataRequest) != val) delete this[key];
+        const val: number = Math.pow(2, i);
+        if (val === null || (val & dataRequest) !== val) {
+          delete this[key];
+        }
       }
     );
     return this;
@@ -183,10 +185,10 @@ export default class User {
   /**
    * Returns a database object.
    *
-   * @returns {UserDatabaseObject} User database object
+   * @returns {IUserDatabaseObject} User database object
    * @memberof User
    */
-  getDatabaseObject(): UserDatabaseObject {
+  public getDatabaseObject(): IUserDatabaseObject {
     return {
       id: this.id,
       username: this.username,
@@ -210,9 +212,9 @@ export default class User {
 /**
  * User database object.
  *
- * @interface UserDatabaseObject
+ * @interface IUserDatabaseObject
  */
-interface UserDatabaseObject {
+interface IUserDatabaseObject {
   id?: number;
   username?: string;
   name?: string;
@@ -243,11 +245,19 @@ export function compareRoles(a: string, b: string) {
   let aN = 0;
   let bN = 0;
 
-  if (roleNumbers[a]) aN = roleNumbers[a];
+  if (roleNumbers[a]) {
+    aN = roleNumbers[a];
+  }
 
-  if (roleNumbers[b]) bN = roleNumbers[b];
+  if (roleNumbers[b]) {
+    bN = roleNumbers[b];
+  }
 
-  if (aN < bN) return -1;
-  else if (aN > bN) return 1;
-  else return 0;
+  if (aN < bN) {
+    return -1;
+  } else if (aN > bN) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
