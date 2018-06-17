@@ -22,18 +22,38 @@ export default class Payment implements IPayment {
   public payment_type: string;
 
   constructor(payment: IPayment) {
-    Object.keys(payment).map((key) => {
+    Object.keys(payment).forEach((key: string) => {
       this[key] = payment[key];
     });
   }
 
-  public generateReferenceNumber() {
-    const baseNumber = "10" + String(this.id);
+  public generateReferenceNumber(): void {
+    const baseNumber: string = "10" + String(this.id);
     if (baseNumber.length < 3 || baseNumber.length > 19) {
       throw new Error("baseNumber too long or short");
     }
 
-    const multipliers = [7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7];
+    const multipliers: number[] = [
+      7,
+      3,
+      1,
+      7,
+      3,
+      1,
+      7,
+      3,
+      1,
+      7,
+      3,
+      1,
+      7,
+      3,
+      1,
+      7,
+      3,
+      1,
+      7
+    ];
     let sum: number = 0;
     let j: number = 0;
     baseNumber
@@ -41,8 +61,8 @@ export default class Payment implements IPayment {
       .reverse()
       .forEach((c, i) => {
         sum += Number(c) * multipliers[j++];
-    });
+      });
 
-    this.reference_number =  baseNumber + String((10 - (sum % 10)) % 10);
+    this.reference_number = baseNumber + String((10 - (sum % 10)) % 10);
   }
 }

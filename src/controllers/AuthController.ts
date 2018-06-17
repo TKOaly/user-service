@@ -1,11 +1,11 @@
 import * as express from "express";
-import ServiceResponse from "../utils/ServiceResponse";
-import UserService from "../services/UserService";
-import { IController } from "./IController";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import Service from "../models/Service";
-import { AuthenticationService } from "../services/AuthenticationService";
 import User from "../models/User";
+import { AuthenticationService } from "../services/AuthenticationService";
+import UserService from "../services/UserService";
+import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import ServiceResponse from "../utils/ServiceResponse";
+import { IController } from "./IController";
 
 /**
  * Authentication controller.
@@ -15,8 +15,8 @@ import User from "../models/User";
  * @implements {IController}
  */
 export default class AuthController implements IController {
-  route: express.Router;
-  authorizeMiddleware: AuthorizeMiddleware;
+  private route: express.Router;
+  private authorizeMiddleware: AuthorizeMiddleware;
 
   /**
    * Creates an instance of AuthController.
@@ -36,7 +36,7 @@ export default class AuthController implements IController {
    * @param req
    * @param res
    */
-  async check(req: express.Request | any, res: express.Response) {
+  public async check(req: express.Request | any, res: express.Response): Promise<express.Response> {
     if (!req.get("service")) {
       return res
         .status(400)
@@ -54,7 +54,10 @@ export default class AuthController implements IController {
     }
   }
 
-  async authenticateUser(req: express.Request | any, res: express.Response) {
+  public async authenticateUser(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
     if (
       !req.body.serviceIdentifier ||
       !req.body.username ||
@@ -119,7 +122,7 @@ export default class AuthController implements IController {
    * @returns
    * @memberof AuthController
    */
-  createRoutes() {
+  public createRoutes(): express.Router {
     this.route.get(
       "/check",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),

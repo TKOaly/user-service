@@ -9,7 +9,7 @@
     "no-bitwise": false,
     "object-literal-sort-keys": false,
     "typeof-compare": true,
-    "typedef": true
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration", "variable-declaration"]
   },
   "rulesDirectory": []
 }

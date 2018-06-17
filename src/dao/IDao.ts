@@ -4,7 +4,7 @@ import * as Promise from "bluebird";
  * Dao interface.
  *
  * @export
- * @interface Dao
+ * @interface IDao
  * @template T
  */
 export default interface IDao<T> {
@@ -13,14 +13,14 @@ export default interface IDao<T> {
    *
    * @param {number} id Entity id
    * @returns {Promise<T>} A single entity
-   * @memberof Dao
+   * @memberof IDao
    */
   findOne(id: number): Promise<T>;
   /**
    * Returns all entities.
    *
    * @returns {Promise<T[]>} All entities
-   * @memberof Dao
+   * @memberof IDao
    */
   findAll(): Promise<T[]>;
   /**
@@ -28,7 +28,7 @@ export default interface IDao<T> {
    *
    * @param {number} id Entity id
    * @returns {Promise<boolean>} Did the remove complete or not
-   * @memberof Dao
+   * @memberof IDao
    */
   remove(id: number): Promise<boolean>;
   /**
@@ -36,7 +36,7 @@ export default interface IDao<T> {
    *
    * @param {T} entity Entity
    * @returns {Promise<boolean>} Did the update complete or not
-   * @memberof Dao
+   * @memberof IDao
    */
   update(entityId: any, entity: T): Promise<boolean>;
   /**
@@ -44,7 +44,7 @@ export default interface IDao<T> {
    *
    * @param {T} entity
    * @returns {Promise<number[]>} Inserted id(s)
-   * @memberof Dao
+   * @memberof IDao
    */
   save(entity: T): Promise<number[]>;
 }
