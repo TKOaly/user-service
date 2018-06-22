@@ -28,7 +28,7 @@
     "pug": "^2.0.3",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
-    "validator": "^10.3.0"
+    "validator": "^10.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
@@ -40,8 +40,8 @@
     "@types/helmet": "^0.0.38",
     "@types/jsonwebtoken": "^7.2.6",
     "@types/knex": "^0.14.14",
-    "@types/mocha": "^5.2.2",
-    "@types/node": "^10.3.3",
+    "@types/mocha": "^5.2.3",
+    "@types/node": "^10.3.4",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
@@ -52,7 +52,7 @@
     "nodemon": "^1.17.3",
     "nyc": "^12.0.2",
     "sqlite3": "^4.0.0",
-    "ts-node": "^6.1.1",
+    "ts-node": "^6.1.2",
     "tslint": "^5.10.0",
     "tslint-sonarts": "^1.7.0",
     "typescript": "^2.9.2",
