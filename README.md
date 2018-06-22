@@ -1,6 +1,6 @@
 # TKO-äly user service
 
-![TKO-äly](https://img.shields.io/badge/Maintainer-TKO--%C3%A4ly-yellow.svg)
+![Maintainer](https://img.shields.io/badge/maintainer-TKO--%C3%A4ly-yellow.svg)
 
 [![Build status (master)](https://api.travis-ci.org/TKOaly/user-service.svg?branch=master)](https://travis-ci.org/TKOaly/user-service)
 
@@ -11,7 +11,6 @@
 
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 ![GitHub top language](https://img.shields.io/github/languages/top/TKOaly/user-service.svg)
-
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/TKOaly/user-service/issues)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/TKOaly/user-service.svg)
