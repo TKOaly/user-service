@@ -1,14 +1,14 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import Payment from "../src/models/Payment";
+import Payment from "./../../src/models/Payment";
 const chai: Chai.ChaiStatic = require("chai");
-const should = chai.should();
+const should: Chai.Should = chai.should();
 
 let payment: Payment;
 
 describe("Payment model", () => {
-  beforeEach(done => {
+  beforeEach((done) => {
     payment = new Payment({
       id: 1,
       amount: 50.55,
@@ -23,7 +23,7 @@ describe("Payment model", () => {
     done();
   });
 
-  it("Sets data correctly", done => {
+  it("Sets data correctly", (done) => {
     payment.id.should.equal(1);
     payment.amount.should.equal(50.55);
     payment.confirmer_id.should.equal(2);
@@ -42,7 +42,7 @@ describe("Payment model", () => {
     done();
   });
 
-  it("Sets partial data correctly", done => {
+  it("Sets partial data correctly", (done) => {
     const payment2: Payment = new Payment({
       id: 55,
       amount: 200

@@ -1,44 +1,44 @@
 process.env.NODE_ENV = "test";
 
 import * as JWT from "jsonwebtoken";
-import "mocha";
 import * as Knex from "knex";
-import app from "./../src/App";
+import "mocha";
+import app from "./../..//src/App";
 
-import payments = require("./../seeds/seedData/payments");
-import { IPayment } from "../src/models/Payment";
+import payments = require("./../../seeds/seedData/payments");
+import { IPayment } from "./../../src/models/Payment";
 
 // Knexfile
-const knexfile = require("./../knexfile");
+const knexfile: any = require("./../../knexfile");
 // Knex instance
-const knex = Knex(knexfile["test"]);
+const knex: any = Knex(knexfile.test);
 
 const chai: Chai.ChaiStatic = require("chai");
-const should = chai.should();
-const chaiHttp = require("chai-http");
+const should: Chai.Should = chai.should();
+const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);
 
 const url: string = "/api/payments";
 
 const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
 const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
-const generateToken = (
+const generateToken: any = (
   userId: number,
   authenticatedTo: string[] = [kjyrIdentifier, calendarIdentifier],
   createdAt: Date = new Date()
 ): string =>
   JWT.sign(
     {
-      userId: userId,
+      userId,
       authenticatedTo: authenticatedTo.join(","),
-      createdAt: createdAt
+      createdAt
     },
     process.env.JWT_SECRET
   );
 
 describe("PaymentController", () => {
   // Roll back
-  beforeEach(done => {
+  beforeEach((done) => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -49,14 +49,14 @@ describe("PaymentController", () => {
   });
 
   // After each
-  afterEach(done => {
+  afterEach((done) => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Returns all payments", () => {
-    it("As an authenticated user, returns all payments", done => {
+    it("As an authenticated user, returns all payments", (done) => {
       chai
         .request(app)
         .get(url)
@@ -82,7 +82,7 @@ describe("PaymentController", () => {
             should.exist(res.body.payload[i].paid);
             should.exist(res.body.payload[i].payment_type);
 
-            const payment_2 = payments[i];
+            const payment_2: IPayment = payments[i];
             res.body.payload[i].id.should.equal(payment_2.id);
             res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
             res.body.payload[i].confirmer_id.should.equal(
@@ -111,7 +111,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", done => {
+    it("As an unauthenticated user, returns unauthorized", (done) => {
       chai
         .request(app)
         .get(url)
@@ -128,7 +128,7 @@ describe("PaymentController", () => {
   });
 
   describe("Returns a single payment", () => {
-    it("As an authenticated user, returns a single payment", done => {
+    it("As an authenticated user, returns a single payment", (done) => {
       chai
         .request(app)
         .get(url + "/1")
@@ -148,7 +148,7 @@ describe("PaymentController", () => {
           should.exist(res.body.payload.paid);
           should.exist(res.body.payload.payment_type);
           res.body.ok.should.equal(true);
-          const payment_2 = payments[0];
+          const payment_2: IPayment = payments[0];
           res.body.payload.id.should.equal(payment_2.id);
           res.body.payload.payer_id.should.equal(payment_2.payer_id);
           res.body.payload.confirmer_id.should.equal(payment_2.confirmer_id);
@@ -170,7 +170,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", done => {
+    it("As an unauthenticated user, returns unauthorized", (done) => {
       chai
         .request(app)
         .get(url + "/1")
@@ -187,8 +187,8 @@ describe("PaymentController", () => {
   });
 
   describe("Adds a new payment", () => {
-    it("As an unauthenticated user, returns unauthorized", done => {
-      const newPayment = {
+    it("As an unauthenticated user, returns unauthorized", (done) => {
+      const newPayment: IPayment = {
         payer_id: 2,
         confirmer_id: 1,
         created: new Date(2013, 1, 1),
@@ -212,11 +212,11 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an authenticated user, adds a new payment", done => {
-      const newPayment = {
+    it("As an authenticated user, adds a new payment", (done) => {
+      const newPayment: any = {
         payer_id: 2,
         amount: 44.44,
-        valid_until: '2018-05-28 22:25:4',
+        valid_until: "2018-05-28 22:25:4",
         payment_type: "jasenmaksu"
       };
       chai
@@ -280,7 +280,7 @@ describe("PaymentController", () => {
                 should.exist(res.body.payload[i].paid);
                 should.exist(res.body.payload[i].payment_type);
 
-                const payment_2 = payments[i];
+                const payment_2: IPayment = payments[i];
                 res.body.payload[i].id.should.equal(payment_2.id);
                 res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
                 res.body.payload[i].confirmer_id.should.equal(
@@ -304,7 +304,7 @@ describe("PaymentController", () => {
               }
 
               // New entry
-              const payment_2 = res.body.payload[2];
+              const payment_2: any = res.body.payload[2];
               payment_2.id.should.equal(3);
               payment_2.payer_id.should.equal(newPayment.payer_id);
               /*Date.parse(payment_2.created).should.equal(
@@ -325,7 +325,7 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("As an authenticated user, can modify a payment with valid information", done => {
+    it("As an authenticated user, can modify a payment with valid information", (done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
@@ -369,8 +369,8 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", done => {
-      const newPayment = {
+    it("As an unauthenticated user, returns unauthorized", (done) => {
+      const newPayment: IPayment = {
         id: 1,
         payer_id: 2,
         confirmer_id: 1,
@@ -396,7 +396,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", done => {
+    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", (done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)

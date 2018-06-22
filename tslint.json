@@ -9,7 +9,14 @@
     "no-bitwise": false,
     "object-literal-sort-keys": false,
     "typeof-compare": true,
-    "typedef": [true, "call-signature", "parameter", "member-variable-declaration", "variable-declaration"]
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration", "variable-declaration"],
+    "no-hardcoded-credentials": false,
+    "no-shadowed-variable": false,
+    "no-duplicate-string": false,
+    "no-identical-functions": false,
+    "no-commented-code": false,
+    "variable-name": false,
+    "no-big-function": false
   },
   "rulesDirectory": []
 }

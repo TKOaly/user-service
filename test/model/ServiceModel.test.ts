@@ -1,11 +1,11 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import Service from "./../src/models/Service";
+import Service from "./../../src/models/Service";
 let service: Service;
 
 describe("Service model", () => {
-  beforeEach(done => {
+  beforeEach((done) => {
     service = new Service({
       id: 1,
       data_permissions: Math.pow(2, 6),
@@ -17,7 +17,7 @@ describe("Service model", () => {
     done();
   });
 
-  it("Sets data correctly", done => {
+  it("Sets data correctly", (done) => {
     service.id.should.equal(1);
     service.dataPermissions.should.equal(Math.pow(2, 6));
     service.displayName.should.equal("Test service");

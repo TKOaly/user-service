@@ -1,28 +1,29 @@
 process.env.NODE_ENV = "test";
 
-import "mocha";
+import chaiHttp = require("chai-http");
 import * as Knex from "knex";
-import app from "./../src/App";
+import "mocha";
+import app from "./../../src/App";
 
 // Knexfile
-const knexfile = require("./../knexfile");
+const knexfile: any = require("./../../knexfile");
 // Knex instance
-const knex = Knex(knexfile["test"]);
+const knex: any = Knex(knexfile.test);
 
 const chai: Chai.ChaiStatic = require("chai");
-const should = chai.should();
-const chaiHttp = require("chai-http");
+const should: Chai.Should = chai.should();
+
 chai.use(chaiHttp);
 
-const authUrl = "/api/auth";
+const authUrl: string = "/api/auth";
 const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
 const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
-const correctCreds = {
+const correctCreds: any = {
   username: "test_user",
   password: "test_user",
   serviceIdentifier: kjyrIdentifier
 };
-const incorrectCreds = {
+const incorrectCreds: any = {
   username: "test_user",
   password: "testuser",
   serviceIdentifier: kjyrIdentifier
@@ -30,7 +31,7 @@ const incorrectCreds = {
 
 describe("AuthController", () => {
   // Roll back
-  beforeEach(done => {
+  beforeEach((done) => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -41,14 +42,14 @@ describe("AuthController", () => {
   });
 
   // After each
-  afterEach(done => {
+  afterEach((done) => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Authentication", () => {
-    it("Authenticates with correct credentials", done => {
+    it("Authenticates with correct credentials", (done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -64,7 +65,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("Does not authenticate with incorrect credentials", done => {
+    it("Does not authenticate with incorrect credentials", (done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -82,7 +83,7 @@ describe("AuthController", () => {
   });
 
   describe("Service check", () => {
-    it("Checks that the correct service has been authenticated to", done => {
+    it("Checks that the correct service has been authenticated to", (done) => {
       // The default credentials authenticate to KJYR
       chai
         .request(app)
@@ -118,7 +119,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("Check that the user has not been authenticated to an incorrect service", done => {
+    it("Check that the user has not been authenticated to an incorrect service", (done) => {
       // The default credentials authenticate to KJYR
       chai
         .request(app)
@@ -154,7 +155,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("Can authenticate to multiple services", done => {
+    it("Can authenticate to multiple services", (done) => {
       // First, authenticate to KJYR
       chai
         .request(app)
@@ -172,7 +173,7 @@ describe("AuthController", () => {
           const token: string = res.body.payload.token;
 
           // Set calendar token to request
-          const secondCreds = correctCreds;
+          const secondCreds: any = correctCreds;
           secondCreds.serviceIdentifier = calendarIdentifier;
 
           // Secondly, authenticate to calendar

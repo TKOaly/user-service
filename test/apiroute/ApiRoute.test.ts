@@ -2,12 +2,12 @@ process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
 
 import "mocha";
-import ApiRoute from "./../src/utils/ApiRoute";
+import ApiRoute from "./../../src/utils/ApiRoute";
 const chai: Chai.ChaiStatic = require("chai");
-const should = chai.should();
+const should: Chai.Should = chai.should();
 
 describe("ApiRoute", () => {
-  it("Creates API route correctly, with API version and route", done => {
+  it("Creates API route correctly, with API version and route", (done) => {
     const apiVersion: string = "v2";
     const route: string = "testroute";
     const apiUrl: string = ApiRoute.generateApiRoute(route, apiVersion);
@@ -15,22 +15,22 @@ describe("ApiRoute", () => {
     done();
   });
 
-  it("Creates API route correctly, with API route", done => {
+  it("Creates API route correctly, with API route", (done) => {
     const route: string = "testroute";
     const apiUrl: string = ApiRoute.generateApiRoute(route);
     apiUrl.should.equal("/api/" + route);
     done();
   });
 
-  it("Middleware sets route and API version headers correctly", done => {
+  it("Middleware sets route and API version headers correctly", (done) => {
     const apiVersion: string = "v2";
 
-    const headers: { name: string; val: string }[] = [];
+    const headers: Array<{ name: string; val: string }> = [];
 
     let calledNext: boolean = false;
 
     // Mocked express
-    const mockExpress = {
+    const mockExpress: any = {
       req: {},
       res: {
         setHeader: (name: string, val: string): void => {
@@ -42,7 +42,7 @@ describe("ApiRoute", () => {
       }
     };
 
-    const middleware = ApiRoute.apiHeaderMiddleware(apiVersion);
+    const middleware: any = ApiRoute.apiHeaderMiddleware(apiVersion);
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
@@ -59,14 +59,14 @@ describe("ApiRoute", () => {
     done();
   });
 
-  it("Middleware sets API version header correctly", done => {
+  it("Middleware sets API version header correctly", (done) => {
 
-    const headers: { name: string; val: string }[] = [];
+    const headers: Array<{ name: string; val: string }> = [];
 
     let calledNext: boolean = false;
 
     // Mocked express
-    const mockExpress = {
+    const mockExpress: any = {
       req: {},
       res: {
         setHeader: (name: string, val: string): void => {
@@ -78,7 +78,7 @@ describe("ApiRoute", () => {
       }
     };
 
-    const middleware = ApiRoute.apiHeaderMiddleware();
+    const middleware: any = ApiRoute.apiHeaderMiddleware();
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
