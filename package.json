@@ -1,14 +1,19 @@
 {
+  "private": true,
   "name": "user-service",
   "description": "User service for TKO-äly",
-  "authors": "Hugo H.",
-  "version": "1.0.0",
-  "private": true,
-  "main": "pathToMain",
   "license": "MIT",
-  "engines": {
-    "node": ">=8.9",
-    "yarn": ">=1.6.0"
+  "version": "1.0.0",
+  "scripts": {
+    "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
+    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
+    "lint": "node_modules/.bin/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'",
+    "migrate": "node_modules/.bin/knex migrate:latest",
+    "rollback": "node_modules/.bin/knex migrate:rollback",
+    "seed": "node_modules/.bin/knex seed:run",
+    "start": "node_modules/.bin/ts-node src/App.ts",
+    "test": "node_modules/.bin/nyc --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
+    "watch": "nodemon start"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
@@ -24,17 +29,6 @@
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
     "validator": "^10.3.0"
-  },
-  "scripts": {
-    "start": "node_modules/.bin/ts-node src/App.ts",
-    "watch": "nodemon start",
-    "test": "node_modules/.bin/nyc --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
-    "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
-    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
-    "migrate": "node_modules/.bin/knex migrate:latest",
-    "rollback": "node_modules/.bin/knex migrate:rollback",
-    "seed": "node_modules/.bin/knex seed:run",
-    "lint": "node_modules/.bin/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
@@ -64,6 +58,16 @@
     "typescript": "^2.9.2",
     "uuid": "^3.2.1"
   },
+  "engines": {
+    "node": ">=8.9",
+    "yarn": ">=1.6.0"
+  },
+  "authors": "Hugo H.",
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
   "nyc": {
     "extension": [
       ".ts",
@@ -84,10 +88,5 @@
       "json"
     ],
     "all": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
   }
 }
