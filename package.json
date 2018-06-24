@@ -12,8 +12,9 @@
     "rollback": "node_modules/.bin/knex migrate:rollback",
     "seed": "node_modules/.bin/knex seed:run",
     "start": "node_modules/.bin/ts-node src/App.ts",
+    "build": "node_modules/.bin/tsc",
     "test": "node_modules/.bin/nyc --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
-    "watch": "nodemon start"
+    "watch": "node_modules/.bin/nodemon start"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
