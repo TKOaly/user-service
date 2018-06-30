@@ -18,7 +18,7 @@ exports.seed = function(knex, Promise) {
           residence: "Test",
           phone: "1234567890",
           hyy_member: 1,
-          membership: "jasen",
+          membership: "ei-jasen",
           created: new Date(),
           modified: new Date(),
           hashed_password: encryptPassword("test_user", "12345"),
