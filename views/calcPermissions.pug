@@ -16,12 +16,13 @@ html(lang="en")
             ul.permissions
                 each val in userKeys
                     li.permissions
-                        if val == "id"
-                            input(type='checkbox', name=val, checked="checked", disabled="disabled")
-                            input(type='hidden', name=val, value="on")
-                        else
-                            input(type='checkbox', name=val)
-                        span=val
+                        if val !== "salt" && val !== "hashedPassword"
+                            if val == "id"
+                                input(type='checkbox', name=val, checked="checked", disabled="disabled")
+                                input(type='hidden', name=val, value="on")
+                            else
+                                input(type='checkbox', name=val)
+                            span=val
             input.accept(type='submit', name='submit', value='Calculate')
         if permissionInteger != 0 && wantedPermissions
             h1="Result"

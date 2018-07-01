@@ -170,22 +170,26 @@ export default class AuthController implements IController {
       screen_name: "",
       tktl: 1,
       username: ""
-    });
+    }).removeSensitiveInformation();
 
     let permissionInteger: number = 0;
 
-    Object.keys(dummyObject).forEach((value: string, i: number) => {
-      Object.keys(wantedPermissions).forEach((bodyValue: string, a: number) => {
-        if (value === bodyValue) {
-          if (permissionInteger === 0) {
-            permissionInteger = Math.pow(2, i);
-          } else {
-            permissionInteger = permissionInteger | Math.pow(2, i);
+    Object.keys(dummyObject.removeSensitiveInformation()).forEach(
+      (value: string, i: number) => {
+        Object.keys(wantedPermissions).forEach(
+          (bodyValue: string, a: number) => {
+            if (value === bodyValue) {
+              if (permissionInteger === 0) {
+                permissionInteger = Math.pow(2, i);
+              } else {
+                permissionInteger = permissionInteger | Math.pow(2, i);
+              }
+              return;
+            }
           }
-          return;
-        }
-      });
-    });
+        );
+      }
+    );
 
     return res.render("calcPermissions", {
       userKeys: Object.keys(dummyObject),
