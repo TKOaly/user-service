@@ -1,6 +1,6 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
-import User from "../models/User";
+import { IUserDatabaseObject } from "../models/User";
 import IDao from "./IDao";
 
 /**
@@ -10,7 +10,7 @@ import IDao from "./IDao";
  * @class UserDao
  * @implements {Dao<User>}
  */
-export default class UserDao implements IDao<User> {
+export default class UserDao implements IDao<IUserDatabaseObject> {
   /**
    * Creates an instance of UserDao.
    * @param {Knex} knex
@@ -22,10 +22,10 @@ export default class UserDao implements IDao<User> {
    * Finds a single user.
    *
    * @param {number} id User id
-   * @returns {Promise<User>}
+   * @returns {Promise<IUserDatabaseObject>}
    * @memberof UserDao
    */
-  public findOne(id: number): Promise<User> {
+  public findOne(id: number): Promise<IUserDatabaseObject> {
     return this.knex("users")
       .select()
       .where({ id })
@@ -36,10 +36,10 @@ export default class UserDao implements IDao<User> {
    * Finds a single user by its username
    *
    * @param {string} username Username
-   * @returns {Promise<User>} User
+   * @returns {Promise<IUserDatabaseObject>} User
    * @memberof UserDao
    */
-  public findByUsername(username: string): Promise<User> {
+  public findByUsername(username: string): Promise<IUserDatabaseObject> {
     return this.knex("users")
       .select()
       .where({ username })
@@ -50,10 +50,10 @@ export default class UserDao implements IDao<User> {
    * Finds a single user who hasn't paid his/her bill.
    *
    * @param {number} id User id
-   * @returns {Promise<User>} User
+   * @returns {Promise<IUserDatabaseObject>} User
    * @memberof UserDao
    */
-  public findByUnpaidPayment(id: number): Promise<User> {
+  public findByUnpaidPayment(id: number): Promise<IUserDatabaseObject> {
     return this.knex("users")
       .select(
         "users.id",
@@ -81,10 +81,10 @@ export default class UserDao implements IDao<User> {
   /**
    * Finds all users who haven't paid their bill.
    *
-   * @returns {Promise<User[]>} List of users
+   * @returns {Promise<IUserDatabaseObject[]>} List of users
    * @memberof UserDao
    */
-  public findAllByUnpaidPayment(): Promise<User[]> {
+  public findAllByUnpaidPayment(): Promise<IUserDatabaseObject[]> {
     return this.knex("users")
       .select(
         "users.id",
@@ -111,10 +111,10 @@ export default class UserDao implements IDao<User> {
   /**
    * Finds all users.
    *
-   * @returns {Promise<User[]>}
+   * @returns {Promise<IUserDatabaseObject[]>}
    * @memberof UserDao
    */
-  public findAll(fields?: string[], conditions?: string[]): Promise<User[]> {
+  public findAll(fields?: string[], conditions?: string[]): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
       let query: any = this.knex("users").select(fields);
@@ -129,7 +129,7 @@ export default class UserDao implements IDao<User> {
         });
       }
       console.log(query.toString());
-      return query as Promise<User[]>;
+      return query as Promise<IUserDatabaseObject[]>;
     }
 
     return this.knex("users").select();
@@ -139,10 +139,10 @@ export default class UserDao implements IDao<User> {
    * Search the user table with the specified search term.
    *
    * @param {string} searchTerm Search term
-   * @returns {Promise<User[]>}
+   * @returns {Promise<IUserDatabaseObject[]>}
    * @memberof UserDao
    */
-  public findWhere(searchTerm: string): Promise<User[]> {
+  public findWhere(searchTerm: string): Promise<IUserDatabaseObject[]> {
     return this.knex
       .select()
       .from("users")
@@ -171,24 +171,24 @@ export default class UserDao implements IDao<User> {
    * Updates a singler user.
    *
    * @param {number} entityId User id
-   * @param {User} entity Entity
+   * @param {IUserDatabaseObject} entity Entity
    * @returns {Promise<boolean>}
    * @memberof UserDao
    */
-  public update(entityId: number, entity: User): Promise<boolean> {
+  public update(entityId: number, entity: IUserDatabaseObject): Promise<boolean> {
     return this.knex("users")
-      .update(entity.getDatabaseObject())
+      .update(entity)
       .where({ id: entityId });
   }
 
   /**
    * Saves a single user.
    *
-   * @param {User} entity
+   * @param {IUserDatabaseObject} entity
    * @returns {Promise<number[]>}
    * @memberof UserDao
    */
-  public save(entity: User): Promise<number[]> {
-    return this.knex("users").insert(entity.getDatabaseObject());
+  public save(entity: IUserDatabaseObject): Promise<number[]> {
+    return this.knex("users").insert(entity);
   }
 }
