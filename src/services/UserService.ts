@@ -3,6 +3,9 @@ import UserDao from "../dao/UserDao";
 import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
+import { UserPayment } from "../types/UserPayment";
+import Payment from "../models/Payment";
+import * as R from 'ramda';
 
 /**
  * User service.
@@ -71,7 +74,7 @@ export default class UserService {
     return results.map((res) => new User(res));
   }
 
-  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
+  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[] & Payment[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
@@ -96,12 +99,13 @@ export default class UserService {
       });
     }
 
-    const results: User[] = await this.userDao.findAll(fields, conditionQuery);
+    const results: UserPayment[] = await this.userDao.findAll(fields, conditionQuery);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
-
-    return results.map((u) => new User(u));
+    const user = results.map((u) => new User(u))
+    const payment = results.map((u) => new Payment(u))
+    return R.merge(user, payment);
   }
 
   /**

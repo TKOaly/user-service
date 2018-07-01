@@ -11,6 +11,7 @@
     "yarn": ">=1.6.0"
   },
   "dependencies": {
+    "@types/ramda": "^0.25.34",
     "bcrypt": "^2.0.1",
     "class-validator": "^0.8.5",
     "cookie-parser": "^1.4.3",
@@ -22,6 +23,7 @@
     "knex": "^0.14.3",
     "mysql2": "1.5.3",
     "pug": "^2.0.3",
+    "ramda": "^0.25.0",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
     "validator": "^10.2.0"
@@ -53,6 +55,7 @@
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
+    "@types/ramda": "^0.25.34",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "husky": "^1.0.0-rc.9",
@@ -86,11 +89,5 @@
       "json"
     ],
     "all": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint",
-      "pre-push": "yarn test"
-    }
   }
 }
