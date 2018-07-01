@@ -184,7 +184,7 @@ function checkModifyPermission(user: User, allowedEdits: string[]): void {
   });
 }
 
-async function checkUsernameAvailability(newUser: User) {
+async function checkUsernameAvailability(newUser: User): Promise<void> {
   if (newUser.username) {
     // Test username
     const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
