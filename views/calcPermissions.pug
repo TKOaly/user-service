@@ -12,24 +12,28 @@ html(lang="en")
         #title-container
           div#title Calculate service permissions
       #content
-        form(action='/api/auth/calcPermissions', method='POST')
-            ul.permissions
-                each val in userKeys
-                    li.permissions
-                        if val !== "salt" && val !== "hashedPassword"
-                            if val == "id"
-                                input(type='checkbox', name=val, checked="checked", disabled="disabled")
-                                input(type='hidden', name=val, value="on")
-                            else
-                                input(type='checkbox', name=val)
-                            span=val
-            input.accept(type='submit', name='submit', value='Calculate')
-        if permissionInteger != 0 && wantedPermissions
-            h1="Result"
-            span="Value: " +permissionInteger
-            h2="Permission list"
-            ul.permissions
-                each wantedPermission in wantedPermissions
-                    li=wantedPermission
+        center="This tool will calculate service permissions for you."
+        #wrapper
+            #wrapper-left
+                form(action='/api/auth/calcPermissions', method='POST')
+                    ul.permissions
+                        each val in userKeys
+                            li.permissions
+                                if val !== "salt" && val !== "hashedPassword"
+                                    if val == "id"
+                                        input(type='checkbox', name=val, checked="checked", disabled="disabled")
+                                        input(type='hidden', name=val, value="on")
+                                    else
+                                        input(type='checkbox', name=val)
+                                    span=val
+                    input.accept(type='submit', name='submit', value='Calculate')
+            #wrapper-right
+                if permissionInteger != 0 && wantedPermissions
+                    h1="Result"
+                    span="Value: " +permissionInteger
+                    h2="Permission list"
+                    ul.permissions
+                        each wantedPermission in wantedPermissions
+                            li=wantedPermission
             
 

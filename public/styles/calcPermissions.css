@@ -36,8 +36,6 @@ html {
   flex-direction: column;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  align-items: center;
-  justify-content: space-around;
   padding: 20px;
 }
 
@@ -47,6 +45,15 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+#wrapper-left, #wrapper-right {
+  width: 50%;
 }
 
 #title-container {
