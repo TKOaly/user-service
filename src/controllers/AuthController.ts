@@ -36,7 +36,10 @@ export default class AuthController implements IController {
    * @param req
    * @param res
    */
-  public async check(req: express.Request | any, res: express.Response): Promise<express.Response> {
+  public async check(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
     if (!req.get("service")) {
       return res
         .status(400)
@@ -116,6 +119,81 @@ export default class AuthController implements IController {
     }
   }
 
+  public calcPermissions(
+    req: express.Request | any,
+    res: express.Response
+  ): void {
+    const dummyObject: User = new User({
+      created: new Date(),
+      deleted: false,
+      email: "",
+      hashed_password: "",
+      hyy_member: 1,
+      id: -1,
+      membership: "jasen",
+      modified: new Date(),
+      name: "",
+      phone: "",
+      residence: "",
+      role: "",
+      salt: "",
+      screen_name: "",
+      tktl: 1,
+      username: ""
+    });
+    return res.render("calcPermissions", {
+      userKeys: Object.keys(dummyObject)
+    });
+  }
+
+  public calcPermissionsPost(
+    req: express.Request | any,
+    res: express.Response
+  ): void {
+    const wantedPermissions: any = req.body;
+    delete wantedPermissions.submit;
+
+    const dummyObject: User = new User({
+      created: new Date(),
+      deleted: false,
+      email: "",
+      hashed_password: "",
+      hyy_member: 1,
+      id: -1,
+      membership: "jasen",
+      modified: new Date(),
+      name: "",
+      phone: "",
+      residence: "",
+      role: "",
+      salt: "",
+      screen_name: "",
+      tktl: 1,
+      username: ""
+    });
+
+    let permissionInteger: number = 0;
+
+    Object.keys(dummyObject).forEach((value: string, i: number) => {
+      Object.keys(wantedPermissions).forEach((bodyValue: string, a: number) => {
+        if (value === bodyValue) {
+          if (permissionInteger === 0) {
+            permissionInteger = Math.pow(2, i);
+          } else {
+            permissionInteger = permissionInteger | Math.pow(2, i);
+          }
+          return;
+        }
+      });
+    });
+
+    return res.render("calcPermissions", {
+      userKeys: Object.keys(dummyObject),
+      wantedPermissions: Object.keys(wantedPermissions),
+      permissionInteger
+    });
+  }
+
   /**
    * Creates routes for authentication controller.
    *
@@ -133,6 +211,10 @@ export default class AuthController implements IController {
       this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
       this.authenticateUser.bind(this)
     );
+    if (process.env.NODE_ENV !== "production") {
+      this.route.get("/calcPermissions", this.calcPermissions.bind(this));
+      this.route.post("/calcPermissions", this.calcPermissionsPost.bind(this));
+    }
     return this.route;
   }
 }

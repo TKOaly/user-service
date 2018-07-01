@@ -1,0 +1,17 @@
+# @name auth
+POST http://localhost:8080/api/auth/authenticate HTTP/1.1
+content-type: application/json
+
+{
+    "username": "admin_user",
+    "password": "admin_user",
+    "serviceIdentifier": "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7"
+}
+###
+
+# @name get_all_users
+GET http://localhost:8080/api/users HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{auth.response.body.payload.token}}
+
+###
