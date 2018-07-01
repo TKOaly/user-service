@@ -120,7 +120,7 @@ export default class UserDao implements IDao<User> {
       let query: any = this.knex("users").select(fields);
 
       if (queryString.indexOf("Payment.")) {
-        query.innerJoin("payments", "users.id", "payments.payer_id");
+        query.leftOuterJoin("payments", "users.id", "payments.payer_id");
       }
 
       if (conditions) {
