@@ -197,7 +197,9 @@ export default class User {
       email: this.email,
       residence: this.residence,
       phone: this.phone,
-      hyy_member: isNaN(Number(this.isHYYMember)) ? undefined : Number(this.isHYYMember),
+      hyy_member: isNaN(Number(this.isHYYMember))
+        ? undefined
+        : Number(this.isHYYMember),
       tktl: isNaN(Number(this.isTKTL)) ? undefined : Number(this.isTKTL),
       membership: this.membership,
       role: this.role,
@@ -234,15 +236,45 @@ export interface IUserDatabaseObject {
   deleted?: number | boolean;
 }
 
-export function compareRoles(a: string, b: string): number {
-  const roleNumbers: any = {
-    kayttaja: 1,
-    virkailija: 2,
-    tenttiarkistovirkailija: 2,
-    jasenvirkailija: 3,
-    yllapitaja: 4
-  };
+interface IUserRoles {
+  readonly kayttaja: number;
+  readonly virkailija: number;
+  readonly tenttiarkistovirkailija: number;
+  readonly jasenvirkailija: number;
+  readonly yllapitaja: number;
+}
 
+export const roleNumbers: IUserRoles = {
+  kayttaja: 1,
+  virkailija: 2,
+  tenttiarkistovirkailija: 2,
+  jasenvirkailija: 3,
+  yllapitaja: 4
+};
+
+/**
+ * User role enumerator.
+ *
+ * @export
+ * @enum {number}
+ */
+export enum UserRoleString {
+  Kayttaja = "kayttaja",
+  Virkailija = "virkailija",
+  Tenttiarkistovirkailija = "tenttiarkistovirkailija",
+  Jasenvirkailija = "jasenvirkailija",
+  Yllapitaja = "yllapitaja"
+}
+
+/**
+ * Compares user roles.
+ *
+ * @export
+ * @param {string} a Role a
+ * @param {string} b Role b
+ * @returns {number} Role difference
+ */
+export function compareRoles(a: string, b: string): number {
   let aN: number = 0;
   let bN: number = 0;
 

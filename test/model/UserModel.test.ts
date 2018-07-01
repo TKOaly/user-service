@@ -1,7 +1,11 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import User, { IUserDatabaseObject } from "./../../src/models/User";
+import User, {
+  compareRoles,
+  IUserDatabaseObject,
+  UserRoleString
+} from "./../../src/models/User";
 const chai: Chai.ChaiStatic = require("chai");
 const should: Chai.Should = chai.should();
 
@@ -339,4 +343,59 @@ describe("User model", () => {
       done();
     }
   );
+
+  describe("compareRoles()", () => {
+    it("aN == bN should return 0", (done) => {
+      let role1: UserRoleString = UserRoleString.Jasenvirkailija;
+      let role2: UserRoleString = UserRoleString.Jasenvirkailija;
+      let roleCompare: number = compareRoles(role1, role2);
+      roleCompare.should.equal(0);
+
+      role1 = UserRoleString.Kayttaja;
+      role2 = UserRoleString.Kayttaja;
+      roleCompare = compareRoles(role1, role2);
+      roleCompare.should.equal(0);
+
+      role1 = UserRoleString.Tenttiarkistovirkailija;
+      role2 = UserRoleString.Tenttiarkistovirkailija;
+      roleCompare = compareRoles(role1, role2);
+      roleCompare.should.equal(0);
+
+      role1 = UserRoleString.Virkailija;
+      role2 = UserRoleString.Virkailija;
+      roleCompare = compareRoles(role1, role2);
+      roleCompare.should.equal(0);
+
+      role1 = UserRoleString.Yllapitaja;
+      role2 = UserRoleString.Yllapitaja;
+      roleCompare = compareRoles(role1, role2);
+      roleCompare.should.equal(0);
+
+      done();
+    });
+
+    it("aN < bN should return -1", (done) => {
+      let role1: UserRoleString = UserRoleString.Jasenvirkailija;
+      let role2: UserRoleString = UserRoleString.Kayttaja;
+      let roleCompare: number = compareRoles(role1, role2);
+      roleCompare.should.equal(1);
+
+      role1 = UserRoleString.Yllapitaja;
+      role2 = UserRoleString.Virkailija;
+      roleCompare = compareRoles(role1, role2);
+      roleCompare.should.equal(1);
+
+      done();
+    });
+
+    it("aN > bN should return 1", (done) => {
+      const role1: UserRoleString = UserRoleString.Jasenvirkailija;
+      const role2: UserRoleString = UserRoleString.Kayttaja;
+      const roleCompare: number = compareRoles(role2, role1);
+
+      roleCompare.should.equal(-1);
+
+      done();
+    });
+  });
 });
