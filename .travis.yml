@@ -23,4 +23,5 @@ install:
   - knex seed:run
 
 script:
+  - yarn lint
   - yarn test

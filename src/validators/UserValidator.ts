@@ -134,26 +134,13 @@ export default class UserValidator implements IValidator<User> {
     modifier: User
   ): Promise<void> {
     const error: string = "Forbidden modify action";
-    // Self-edit
     if (userId === modifier.id) {
       newUser.id = userId;
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedSelfEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedSelfEdit);
     } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedJVEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedJVEdit);
     } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedAdminEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedAdminEdit);
     } else {
       throw new ServiceError(403, error);
     }
@@ -166,33 +153,45 @@ export default class UserValidator implements IValidator<User> {
       }
     });
 
-    if (newUser.username) {
-      // Test username
-      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-        newUser.username
-      );
-      if (!usernameAvailable) {
-        throw new ServiceError(400, "Username already taken");
-      }
-    }
+    await checkUsernameAvailability(newUser);
 
     // Test email
-    if (newUser.email) {
-      if (
-        !validator.isEmail(newUser.email) ||
-        !validator.isLength(newUser.email, {
-          max: 255,
-          min: 1
-        })
-      ) {
-        throw new ServiceError(400, "Malformed email");
-      }
+    if (
+      !newUser.email ||
+      !validator.isEmail(newUser.email) ||
+      !validator.isLength(newUser.email, {
+        max: 255,
+        min: 1
+      })
+    ) {
+      throw new ServiceError(400, "Malformed email");
     }
 
     if (newUser.password1 && newUser.password2) {
       if (!validator.equals(newUser.password1, newUser.password2)) {
         throw new ServiceError(400, "Passwords do not match");
       }
+    }
+  }
+}
+
+function checkModifyPermission(user: User, allowedEdits: string[]): void {
+  const error: string = "Forbidden modify action";
+  Object.keys(user).forEach((key: string) => {
+    if (allowedEdits.indexOf(key) < 0 && key !== "id") {
+      throw new ServiceError(403, error);
+    }
+  });
+}
+
+async function checkUsernameAvailability(newUser: User): Promise<void> {
+  if (newUser.username) {
+    // Test username
+    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
+      newUser.username
+    );
+    if (!usernameAvailable) {
+      throw new ServiceError(400, "Username already taken");
     }
   }
 }
