@@ -1,9 +1,9 @@
 import * as validator from "validator";
 import User from "../models/User";
 import UserService from "../services/UserService";
+import { stringToBoolean } from "../utils/helpers";
 import ServiceError from "../utils/ServiceError";
 import IValidator from "./IValidator";
-import { stringToBoolean } from "../utils/helpers";
 
 /**
  * Additional user data.
@@ -116,7 +116,7 @@ export default class UserValidator implements IValidator<User> {
     newUser.membership = "ei-jasen";
     newUser.role = "kayttaja";
     newUser.deleted = false;
-    newUser.isTKTL = stringToBoolean(newUser.isTKTL)
+    newUser.isTKTL = stringToBoolean(newUser.isTKTL);
 
     if (!validator.equals(newUser.password1, newUser.password2)) {
       throw new ServiceError(400, "Passwords do not match");
@@ -161,20 +161,20 @@ export default class UserValidator implements IValidator<User> {
     if (
       newUser.email &&
       (!validator.isEmail(newUser.email) ||
-      !validator.isLength(newUser.email, {
-        max: 255,
-        min: 1
-      })
-    )) {
+        !validator.isLength(newUser.email, {
+          max: 255,
+          min: 1
+        }))
+    ) {
       throw new ServiceError(400, "Malformed email");
     }
 
     if (newUser.isTKTL) {
-      newUser.isTKTL = stringToBoolean(newUser.isTKTL)
+      newUser.isTKTL = stringToBoolean(newUser.isTKTL);
     }
 
     if (newUser.isHYYMember) {
-      newUser.isHYYMember = stringToBoolean(newUser.isHYYMember)
+      newUser.isHYYMember = stringToBoolean(newUser.isHYYMember);
     }
 
     if (newUser.password1 && newUser.password2) {
