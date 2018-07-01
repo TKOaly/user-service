@@ -1,6 +1,6 @@
 import * as express from "express";
 import Payment from "../models/Payment";
-import { compareRoles } from "../models/User";
+import { compareRoles, UserRoleString } from "../models/User";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -136,7 +136,7 @@ export default class PaymentController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
-    if (compareRoles(req.authorization.user.role, "yllapitaja") < 0) {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
     try {
@@ -168,7 +168,7 @@ export default class PaymentController implements IController {
 
       if (
         payment.payer_id !== req.authorization.user.id &&
-        compareRoles(req.authorization.user.role, "yllapitaja") < 0
+        compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
       ) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }

@@ -1,6 +1,6 @@
 import * as express from "express";
 import Payment from "../models/Payment";
-import User, { compareRoles } from "../models/User";
+import User, { compareRoles, UserRoleString } from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
@@ -47,7 +47,7 @@ export default class UserController implements IController {
    */
   public async getUser(req: express.Request | any, res: express.Response): Promise<express.Response> {
     if (req.params.id !== "me") {
-      if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
+      if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
     }
@@ -106,7 +106,7 @@ export default class UserController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
-    if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
@@ -170,7 +170,7 @@ export default class UserController implements IController {
    * @memberof UserController
    */
   public async getAllUnpaidUsers(req: any, res: express.Response): Promise<express.Response> {
-    if (req.authorization.user.role !== "yllapitaja") {
+    if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
@@ -281,7 +281,7 @@ export default class UserController implements IController {
       ) {
         id = req.authorization.user.id;
       } else {
-        if (compareRoles(req.authorization.user.role, "jasenvirkailija") < 0) {
+        if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
           return res.status(403).json(new ServiceResponse(null, "Forbidden"));
         } else {
           id = Number(req.params.id);
@@ -315,7 +315,7 @@ export default class UserController implements IController {
    */
   public createRoutes(): express.Router {
     this.route.get(
-      "/:id",
+      "/:id(\\d+)",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getUser.bind(this)
     );
@@ -330,12 +330,12 @@ export default class UserController implements IController {
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
-      "/:id/",
+      "/:id(\\d+)/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );
     this.route.get(
-      "/:id/payments/",
+      "/:id(\\d+)/payments/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.findUserPayment.bind(this)
     );
