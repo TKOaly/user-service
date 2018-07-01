@@ -1,5 +1,3 @@
-import { IsDate, IsInt, MaxLength } from "class-validator";
-
 export interface IPayment {
   id?: number;
   payer_id?: number;
@@ -13,16 +11,14 @@ export interface IPayment {
 }
 
 export default class Payment implements IPayment {
-  @IsInt() public id: number;
-  @IsInt() public payer_id: number;
-  @IsInt() public confirmer_id: number;
-  @IsDate() public created: Date;
-  @MaxLength(20)
+  public id: number;
+  public payer_id: number;
+  public confirmer_id: number;
+  public created: Date;
   public reference_number: string;
-  @IsInt() public amount: number;
-  @IsDate() public valid_until: Date;
-  @IsDate() public paid: Date;
-  @MaxLength(20)
+  public amount: number;
+  public valid_until: Date;
+  public paid: Date;
   public payment_type: string;
 
   constructor(payment: IPayment) {
