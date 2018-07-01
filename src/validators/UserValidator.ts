@@ -134,26 +134,13 @@ export default class UserValidator implements IValidator<User> {
     modifier: User
   ): Promise<void> {
     const error: string = "Forbidden modify action";
-    // Self-edit
     if (userId === modifier.id) {
       newUser.id = userId;
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedSelfEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedSelfEdit);
     } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedJVEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedJVEdit);
     } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedAdminEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, error);
-        }
-      });
+      checkModifyPermission(newUser, allowedAdminEdit);
     } else {
       throw new ServiceError(403, error);
     }
@@ -195,4 +182,13 @@ export default class UserValidator implements IValidator<User> {
       }
     }
   }
+}
+
+function checkModifyPermission(user: User, allowedEdits: string[]): void {
+  const error: string = "Forbidden modify action";
+  Object.keys(user).forEach((key: string) => {
+    if (allowedEdits.indexOf(key) < 0 && key !== "id") {
+      throw new ServiceError(403, error);
+    }
+  });
 }
