@@ -197,8 +197,8 @@ export default class User {
       email: this.email,
       residence: this.residence,
       phone: this.phone,
-      hyy_member: Number(this.isHYYMember),
-      tktl: Number(this.isTKTL),
+      hyy_member: isNaN(Number(this.isHYYMember)) ? undefined : Number(this.isHYYMember),
+      tktl: isNaN(Number(this.isTKTL)) ? undefined : Number(this.isTKTL),
       membership: this.membership,
       role: this.role,
       salt: this.salt,
@@ -215,7 +215,7 @@ export default class User {
  *
  * @interface IUserDatabaseObject
  */
-interface IUserDatabaseObject {
+export interface IUserDatabaseObject {
   id?: number;
   username?: string;
   name?: string;

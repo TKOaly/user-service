@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import User from "./../../src/models/User";
+import User, { IUserDatabaseObject } from "./../../src/models/User";
 const chai: Chai.ChaiStatic = require("chai");
 const should: Chai.Should = chai.should();
 
@@ -60,6 +60,56 @@ describe("User model", () => {
     const newUser: User = user.removeSensitiveInformation();
     should.not.exist(newUser.hashedPassword);
     should.not.exist(newUser.salt);
+    done();
+  });
+
+  it("Requesting database object should return correct information", (done) => {
+    const userDatabaseObject: IUserDatabaseObject = user.getDatabaseObject();
+    // Username
+    should.exist(userDatabaseObject.username);
+    userDatabaseObject.username.should.equal(user.username);
+    // TKTL
+    should.exist(userDatabaseObject.tktl);
+    userDatabaseObject.tktl.should.equal(Number(user.isTKTL));
+    // Screen name
+    should.exist(userDatabaseObject.screen_name);
+    userDatabaseObject.screen_name.should.equal(user.screenName);
+    // Salt
+    should.exist(userDatabaseObject.salt);
+    userDatabaseObject.salt.should.equal(user.salt);
+    // Role
+    should.exist(userDatabaseObject.role);
+    userDatabaseObject.role.should.equal(user.role);
+    // Residence
+    should.exist(userDatabaseObject.residence);
+    userDatabaseObject.residence.should.equal(user.residence);
+    // Phone
+    should.exist(userDatabaseObject.phone);
+    userDatabaseObject.phone.should.equal(user.phone);
+    // Name
+    should.exist(userDatabaseObject.name);
+    userDatabaseObject.name.should.equal(user.name);
+    // Membership
+    should.exist(userDatabaseObject.membership);
+    userDatabaseObject.membership.should.equal(user.membership);
+    // ID
+    should.exist(userDatabaseObject.id);
+    userDatabaseObject.id.should.equal(user.id);
+    // HYY member
+    should.exist(userDatabaseObject.hyy_member);
+    userDatabaseObject.hyy_member.should.equal(Number(user.isHYYMember));
+    // Hashed password
+    should.exist(userDatabaseObject.hashed_password);
+    userDatabaseObject.hashed_password.should.equal(user.hashedPassword);
+    // Email
+    should.exist(userDatabaseObject.email);
+    userDatabaseObject.email.should.equal(user.email);
+    // Deleted
+    should.exist(userDatabaseObject.deleted);
+    userDatabaseObject.deleted.should.equal(user.isDeleted);
+    // Created
+    should.exist(userDatabaseObject.created);
+    userDatabaseObject.created.should.equal(user.createdAt);
     done();
   });
 
