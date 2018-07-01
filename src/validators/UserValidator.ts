@@ -153,27 +153,18 @@ export default class UserValidator implements IValidator<User> {
       }
     });
 
-    if (newUser.username) {
-      // Test username
-      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-        newUser.username
-      );
-      if (!usernameAvailable) {
-        throw new ServiceError(400, "Username already taken");
-      }
-    }
+    await checkUsernameAvailability(newUser);
 
     // Test email
-    if (newUser.email) {
-      if (
-        !validator.isEmail(newUser.email) ||
-        !validator.isLength(newUser.email, {
-          max: 255,
-          min: 1
-        })
-      ) {
-        throw new ServiceError(400, "Malformed email");
-      }
+    if (
+      !newUser.email ||
+      !validator.isEmail(newUser.email) ||
+      !validator.isLength(newUser.email, {
+        max: 255,
+        min: 1
+      })
+    ) {
+      throw new ServiceError(400, "Malformed email");
     }
 
     if (newUser.password1 && newUser.password2) {
@@ -191,4 +182,16 @@ function checkModifyPermission(user: User, allowedEdits: string[]): void {
       throw new ServiceError(403, error);
     }
   });
+}
+
+async function checkUsernameAvailability(newUser: User) {
+  if (newUser.username) {
+    // Test username
+    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
+      newUser.username
+    );
+    if (!usernameAvailable) {
+      throw new ServiceError(400, "Username already taken");
+    }
+  }
 }
