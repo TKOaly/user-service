@@ -2,7 +2,6 @@ import * as Promise from "bluebird";
 import * as Knex from "knex";
 import User from "../models/User";
 import IDao from "./IDao";
-import { UserPayment } from "../types/UserPayment";
 
 /**
  * User dao.
@@ -115,7 +114,7 @@ export default class UserDao implements IDao<User> {
    * @returns {Promise<User[]>}
    * @memberof UserDao
    */
-  public findAll(fields?: string[], conditions?: string[]): Promise<UserPayment[]> {
+  public findAll(fields?: string[], conditions?: string[]): Promise<User[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
       let query: any = this.knex("users").select(fields);
@@ -130,7 +129,7 @@ export default class UserDao implements IDao<User> {
         });
       }
       console.log(query.toString());
-      return query as Promise<UserPayment[]>;
+      return query as Promise<User[]>;
     }
 
     return this.knex("users").select();
