@@ -186,6 +186,7 @@ export default class UserService {
     // re-crypt password
     if (password) {
       udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
+      udpatedUser.salt = "0";
     }
     let newUser: User = new User({});
     newUser = Object.assign(newUser, udpatedUser);

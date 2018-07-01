@@ -3,6 +3,7 @@ import User from "../models/User";
 import UserService from "../services/UserService";
 import ServiceError from "../utils/ServiceError";
 import IValidator from "./IValidator";
+import { stringToBoolean } from "../utils/helpers";
 
 /**
  * Additional user data.
@@ -115,6 +116,7 @@ export default class UserValidator implements IValidator<User> {
     newUser.membership = "ei-jasen";
     newUser.role = "kayttaja";
     newUser.deleted = false;
+    newUser.isTKTL = stringToBoolean(newUser.isTKTL)
 
     if (!validator.equals(newUser.password1, newUser.password2)) {
       throw new ServiceError(400, "Passwords do not match");
@@ -133,6 +135,14 @@ export default class UserValidator implements IValidator<User> {
     newUser: User & IAdditionalUserData,
     modifier: User
   ): Promise<void> {
+    // Remove information that hasn't changed
+    const oldUser: User = await this.userService.fetchUser(userId);
+    Object.keys(newUser).forEach((k: string) => {
+      if (oldUser[k] === newUser[k]) {
+        delete newUser[k];
+      }
+    });
+
     const error: string = "Forbidden modify action";
     if (userId === modifier.id) {
       newUser.id = userId;
@@ -145,26 +155,26 @@ export default class UserValidator implements IValidator<User> {
       throw new ServiceError(403, error);
     }
 
-    // Remove information that hasn't changed
-    const oldUser: User = await this.userService.fetchUser(userId);
-    Object.keys(newUser).forEach((k: string) => {
-      if (oldUser[k] === newUser[k]) {
-        delete newUser[k];
-      }
-    });
-
     await checkUsernameAvailability(newUser);
 
     // Test email
     if (
-      !newUser.email ||
-      !validator.isEmail(newUser.email) ||
+      newUser.email &&
+      (!validator.isEmail(newUser.email) ||
       !validator.isLength(newUser.email, {
         max: 255,
         min: 1
       })
-    ) {
+    )) {
       throw new ServiceError(400, "Malformed email");
+    }
+
+    if (newUser.isTKTL) {
+      newUser.isTKTL = stringToBoolean(newUser.isTKTL)
+    }
+
+    if (newUser.isHYYMember) {
+      newUser.isHYYMember = stringToBoolean(newUser.isHYYMember)
     }
 
     if (newUser.password1 && newUser.password2) {
