@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 import "mocha";
 import UserRoleString from "../../src/enum/UserRoleString";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
-import { compareRoles } from "../utils/Helpers";
+import { compareRoles } from "../../src/utils/helpers";
 import User from "./../../src/models/User";
 
 const chai: Chai.ChaiStatic = require("chai");

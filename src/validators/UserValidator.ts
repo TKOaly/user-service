@@ -1,5 +1,5 @@
 import * as validator from "validator";
-import IValidator from "../interface/IValidator";
+import IValidator from "../interfaces/IValidator";
 import User from "../models/User";
 import UserService from "../services/UserService";
 import { stringToBoolean } from "../utils/Helpers";

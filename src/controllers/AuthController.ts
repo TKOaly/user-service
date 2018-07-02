@@ -83,7 +83,7 @@ export default class AuthController implements IController {
    * @memberof AuthController
    */
   public async authenticateUser(
-    req: express.Request,
+    req: express.Request | any,
     res: express.Response
   ): Promise<express.Response> {
     if (

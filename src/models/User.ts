@@ -1,6 +1,6 @@
-import { IUserRoles } from "../interfaces/IUserRoles";
+import IUserRoles from "../interfaces/IUserRoles";
 
-import { IUserDatabaseObject } from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 
 /**
  * User object.

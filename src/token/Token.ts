@@ -1,4 +1,4 @@
-import { IParsedTokenContents } from "../interface/IParsedTokenContents";
+import IParsedTokenContents from "../interfaces/IParsedTokenContents";
 
 import * as JWT from "jsonwebtoken";
 
