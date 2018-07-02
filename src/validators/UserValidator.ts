@@ -1,10 +1,10 @@
 import * as validator from "validator";
+import UserRoleString from "../enum/UserRoleString";
 import IValidator from "../interfaces/IValidator";
 import User from "../models/User";
 import UserService from "../services/UserService";
 import { stringToBoolean } from "../utils/Helpers";
 import ServiceError from "../utils/ServiceError";
-import UserRoleString from "../enum/UserRoleString";
 
 /**
  * Additional user data.
