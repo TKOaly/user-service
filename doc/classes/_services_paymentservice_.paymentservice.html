@@ -110,9 +110,17 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#addcashpayment" class="tsd-kind-icon">add<wbr>Cash<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#createbankpayment" class="tsd-kind-icon">create<wbr>Bank<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#createcashpayment" class="tsd-kind-icon">create<wbr>Cash<wbr>Payment</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#createpayment" class="tsd-kind-icon">create<wbr>Payment</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchallpayments" class="tsd-kind-icon">fetch<wbr>All<wbr>Payments</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchpayment" class="tsd-kind-icon">fetch<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchpaymentbypayer" class="tsd-kind-icon">fetch<wbr>Payment<wbr>ByPayer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#fetchvalidpaymentforuser" class="tsd-kind-icon">fetch<wbr>Valid<wbr>Payment<wbr>For<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#findpaymentspaidbybanktransfer" class="tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByBank<wbr>Transfer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#findpaymentspaidbycash" class="tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByCash</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#makecashpaid" class="tsd-kind-icon">make<wbr>Cash<wbr>Paid</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_paymentservice_.paymentservice.html#updatepayment" class="tsd-kind-icon">update<wbr>Payment</a></li>
 							</ul>
 						</section>
@@ -131,7 +139,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L11">services/PaymentService.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L15">services/PaymentService.ts:15</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -148,6 +156,11 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>paymentDao: <a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>PaymentDAO</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_services_paymentservice_.paymentservice.html" class="tsd-signature-type">PaymentService</a></h4>
@@ -163,24 +176,158 @@
 					<div class="tsd-signature tsd-kind-icon">payment<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L17">services/PaymentService.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L21">services/PaymentService.ts:21</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>PaymentDAO</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createpayment" class="tsd-anchor"></a>
-					<h3>create<wbr>Payment</h3>
+					<a name="addcashpayment" class="tsd-anchor"></a>
+					<h3>add<wbr>Cash<wbr>Payment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Payment<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Cash<wbr>Payment<span class="tsd-signature-symbol">(</span>payer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, confirmer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, seasons<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, membership<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L52">services/PaymentService.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L185">services/PaymentService.ts:185</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds a cash payment.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payer_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payer ID</p>
+									</div>
+								</li>
+								<li>
+									<h5>confirmer_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Confirmer ID</p>
+									</div>
+								</li>
+								<li>
+									<h5>seasons: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Number of seasons</p>
+									</div>
+								</li>
+								<li>
+									<h5>membership: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Membership</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Created payment</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createbankpayment" class="tsd-anchor"></a>
+					<h3>create<wbr>Bank<wbr>Payment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Bank<wbr>Payment<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L94">services/PaymentService.ts:94</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a bank payment.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payment: <a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Inserted id</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createcashpayment" class="tsd-anchor"></a>
+					<h3>create<wbr>Cash<wbr>Payment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Cash<wbr>Payment<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L107">services/PaymentService.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a cash payment.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payment: <a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Inserted id</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createpayment" class="tsd-anchor"></a>
+					<h3>create<wbr>Payment</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Payment<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L83">services/PaymentService.ts:83</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -196,10 +343,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>payment: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<h5>payment: <a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Inserted payment ID</p>
 						</li>
 					</ul>
 				</section>
@@ -207,13 +358,13 @@
 					<a name="fetchallpayments" class="tsd-anchor"></a>
 					<h3>fetch<wbr>All<wbr>Payments</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>Payments<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>Payments<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L41">services/PaymentService.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L45">services/PaymentService.ts:45</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -226,7 +377,8 @@
 									</dd>
 								</dl>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>All payments</p>
 						</li>
 					</ul>
 				</section>
@@ -234,13 +386,13 @@
 					<a name="fetchpayment" class="tsd-anchor"></a>
 					<h3>fetch<wbr>Payment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L26">services/PaymentService.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L30">services/PaymentService.ts:30</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -257,9 +409,192 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>paymentId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment ID</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Single payment</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fetchpaymentbypayer" class="tsd-anchor"></a>
+					<h3>fetch<wbr>Payment<wbr>ByPayer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Payment<wbr>ByPayer<span class="tsd-signature-symbol">(</span>payerId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L57">services/PaymentService.ts:57</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns payments by payer.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payerId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payer ID</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Payment</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="fetchvalidpaymentforuser" class="tsd-anchor"></a>
+					<h3>fetch<wbr>Valid<wbr>Payment<wbr>For<wbr>User</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>Valid<wbr>Payment<wbr>For<wbr>User<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L68">services/PaymentService.ts:68</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns valid payment for user.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>userId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>User ID</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Payment</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findpaymentspaidbybanktransfer" class="tsd-anchor"></a>
+					<h3>find<wbr>Payments<wbr>Paid<wbr>ByBank<wbr>Transfer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByBank<wbr>Transfer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L144">services/PaymentService.ts:144</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Finds payments that have been paid by bank transfer.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>List of payments paid by bank transfer.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findpaymentspaidbycash" class="tsd-anchor"></a>
+					<h3>find<wbr>Payments<wbr>Paid<wbr>ByCash</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByCash<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L134">services/PaymentService.ts:134</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Finds payments that have been paid by cash.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_payment_.ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>List of payments paid by cash.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="makecashpaid" class="tsd-anchor"></a>
+					<h3>make<wbr>Cash<wbr>Paid</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Cash<wbr>Paid<span class="tsd-signature-symbol">(</span>payment_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, payer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, confirmer_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L157">services/PaymentService.ts:157</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Marks a cash payment paid.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PaymentService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>payment_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment ID</p>
+									</div>
+								</li>
+								<li>
+									<h5>payer_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payer ID</p>
+									</div>
+								</li>
+								<li>
+									<h5>confirmer_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Confirmer ID</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>True if the operation succeeded.</p>
 						</li>
 					</ul>
 				</section>
@@ -267,13 +602,13 @@
 					<a name="updatepayment" class="tsd-anchor"></a>
 					<h3>update<wbr>Payment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, updatedPayment<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Payment<span class="tsd-signature-symbol">(</span>paymentId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, updatedPayment<span class="tsd-signature-symbol">: </span><a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/services/PaymentService.ts#L64">services/PaymentService.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/services/PaymentService.ts#L121">services/PaymentService.ts:121</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -290,9 +625,15 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>paymentId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Payment id</p>
+									</div>
 								</li>
 								<li>
-									<h5>updatedPayment: <a href="../interfaces/_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<h5>updatedPayment: <a href="_models_payment_.payment.html" class="tsd-signature-type">Payment</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Updated payment</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -307,71 +648,8 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_authcontroller_.html">"controllers/<wbr>Auth<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_icontroller_.html">"controllers/IController"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_payment_.html">"models/<wbr>Payment"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_user_.html">"models/<wbr>User"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
-					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_token_token_.html">"token/<wbr>Token"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_apiroute_.html">"utils/<wbr>Api<wbr>Route"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceerror_.html">"utils/<wbr>Service<wbr>Error"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_validators_ivalidator_.html">"validators/IValidator"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_validators_uservalidator_.html">"validators/<wbr>User<wbr>Validator"</a>
 					</li>
 				</ul>
 			</nav>
@@ -389,6 +667,15 @@
 								<a href="_services_paymentservice_.paymentservice.html#paymentdao" class="tsd-kind-icon">payment<wbr>Dao</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#addcashpayment" class="tsd-kind-icon">add<wbr>Cash<wbr>Payment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#createbankpayment" class="tsd-kind-icon">create<wbr>Bank<wbr>Payment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#createcashpayment" class="tsd-kind-icon">create<wbr>Cash<wbr>Payment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_paymentservice_.paymentservice.html#createpayment" class="tsd-kind-icon">create<wbr>Payment</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -398,12 +685,33 @@
 								<a href="_services_paymentservice_.paymentservice.html#fetchpayment" class="tsd-kind-icon">fetch<wbr>Payment</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#fetchpaymentbypayer" class="tsd-kind-icon">fetch<wbr>Payment<wbr>ByPayer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#fetchvalidpaymentforuser" class="tsd-kind-icon">fetch<wbr>Valid<wbr>Payment<wbr>For<wbr>User</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#findpaymentspaidbybanktransfer" class="tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByBank<wbr>Transfer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#findpaymentspaidbycash" class="tsd-kind-icon">find<wbr>Payments<wbr>Paid<wbr>ByCash</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_paymentservice_.paymentservice.html#makecashpaid" class="tsd-kind-icon">make<wbr>Cash<wbr>Paid</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_paymentservice_.paymentservice.html#updatepayment" class="tsd-kind-icon">update<wbr>Payment</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_services_paymentservice_.html#bankpayment" class="tsd-kind-icon">bank<wbr>Payment</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_services_paymentservice_.html#cashpayment" class="tsd-kind-icon">cash<wbr>Payment</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
