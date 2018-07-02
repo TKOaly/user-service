@@ -4,6 +4,7 @@ import User from "../models/User";
 import UserService from "../services/UserService";
 import { stringToBoolean } from "../utils/Helpers";
 import ServiceError from "../utils/ServiceError";
+import UserRoleString from "../enum/UserRoleString";
 
 /**
  * Additional user data.
@@ -114,7 +115,7 @@ export default class UserValidator implements IValidator<User> {
     }
 
     newUser.membership = "ei-jasen";
-    newUser.role = "kayttaja";
+    newUser.role = UserRoleString.Kayttaja;
     newUser.deleted = false;
     newUser.isTKTL = stringToBoolean(newUser.isTKTL);
 
