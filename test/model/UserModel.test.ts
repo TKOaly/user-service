@@ -1,18 +1,18 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import User, {
-  compareRoles,
-  IUserDatabaseObject,
-  UserRoleString
-} from "./../../src/models/User";
+import UserRoleString from "../../src/enum/UserRoleString";
+import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
+import { compareRoles } from "../utils/Helpers";
+import User from "./../../src/models/User";
+
 const chai: Chai.ChaiStatic = require("chai");
 const should: Chai.Should = chai.should();
 
 let user: User;
 
 describe("User model", () => {
-  beforeEach((done) => {
+  beforeEach((done: Mocha.Done) => {
     user = new User({
       id: 1,
       username: "testuser",
@@ -34,7 +34,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Sets data correctly", (done) => {
+  it("Sets data correctly", (done: Mocha.Done) => {
     user.id.should.equal(1);
     user.username.should.equal("testuser");
     user.name.should.equal("Test User");
@@ -49,16 +49,18 @@ describe("User model", () => {
     user.hashedPassword.should.equal("12345");
     user.createdAt
       .toDateString()
-      .should.equal(new Date(2017, 1, 1).toDateString());
+      .should
+      .equal(new Date(2017, 1, 1).toDateString());
     user.modifiedAt
       .toDateString()
-      .should.equal(new Date(2017, 1, 1).toDateString());
+      .should
+      .equal(new Date(2017, 1, 1).toDateString());
     user.isTKTL.should.equal(true);
     user.isDeleted.should.equal(false);
     done();
   });
 
-  it("Removing sensitive data should remove salt and hashed_password", (done) => {
+  it("Removing sensitive data should remove salt and hashed_password", (done: Mocha.Done) => {
     should.exist(user.hashedPassword);
     should.exist(user.salt);
     const newUser: User = user.removeSensitiveInformation();
@@ -67,7 +69,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting database object should return correct information", (done) => {
+  it("Requesting database object should return correct information", (done: Mocha.Done) => {
     const userDatabaseObject: IUserDatabaseObject = user.getDatabaseObject();
     // Username
     should.exist(userDatabaseObject.username);
@@ -117,7 +119,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only id should only return id", (done) => {
+  it("Requesting only id should only return id", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 0));
     should.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -134,7 +136,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only username should only return username", (done) => {
+  it("Requesting only username should only return username", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 1));
     should.not.exist(newUser.id);
     should.exist(newUser.username);
@@ -151,7 +153,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only name should only return name", (done) => {
+  it("Requesting only name should only return name", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 2));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -168,7 +170,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only screenName should only return screenName", (done) => {
+  it("Requesting only screenName should only return screenName", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 3));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -185,7 +187,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only email should only return email", (done) => {
+  it("Requesting only email should only return email", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 4));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -202,7 +204,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only residence should only return residence", (done) => {
+  it("Requesting only residence should only return residence", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 5));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -219,7 +221,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only phone should only return phone", (done) => {
+  it("Requesting only phone should only return phone", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 6));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -236,7 +238,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only isHYYMember should only return isHYYMember", (done) => {
+  it("Requesting only isHYYMember should only return isHYYMember", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 7));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -253,7 +255,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only membership should only return membership", (done) => {
+  it("Requesting only membership should only return membership", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 8));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -270,7 +272,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only role should only return role", (done) => {
+  it("Requesting only role should only return role", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 9));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -287,7 +289,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only salt should not return salt", (done) => {
+  it("Requesting only salt should not return salt", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 10));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -304,7 +306,7 @@ describe("User model", () => {
     done();
   });
 
-  it("Requesting only hashedPassword should not return hashedPassword", (done) => {
+  it("Requesting only hashedPassword should not return hashedPassword", (done: Mocha.Done) => {
     const newUser: User = user.removeNonRequestedData(Math.pow(2, 11));
     should.not.exist(newUser.id);
     should.not.exist(newUser.username);
@@ -324,7 +326,7 @@ describe("User model", () => {
   it(
     "Requesting username, name, email and membership should" +
       " only return username, name, email and membership",
-    (done) => {
+    (done: Mocha.Done) => {
       const newUser: User = user.removeNonRequestedData(
         Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8)
       );
@@ -345,7 +347,7 @@ describe("User model", () => {
   );
 
   describe("compareRoles()", () => {
-    it("aN == bN should return 0", (done) => {
+    it("aN == bN should return 0", (done: Mocha.Done) => {
       let role1: UserRoleString = UserRoleString.Jasenvirkailija;
       let role2: UserRoleString = UserRoleString.Jasenvirkailija;
       let roleCompare: number = compareRoles(role1, role2);
@@ -374,7 +376,7 @@ describe("User model", () => {
       done();
     });
 
-    it("aN < bN should return -1", (done) => {
+    it("aN < bN should return -1", (done: Mocha.Done) => {
       let role1: UserRoleString = UserRoleString.Jasenvirkailija;
       let role2: UserRoleString = UserRoleString.Kayttaja;
       let roleCompare: number = compareRoles(role1, role2);
@@ -388,7 +390,7 @@ describe("User model", () => {
       done();
     });
 
-    it("aN > bN should return 1", (done) => {
+    it("aN > bN should return 1", (done: Mocha.Done) => {
       const role1: UserRoleString = UserRoleString.Jasenvirkailija;
       const role2: UserRoleString = UserRoleString.Kayttaja;
       const roleCompare: number = compareRoles(role2, role1);

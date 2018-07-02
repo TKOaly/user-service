@@ -1,3 +1,7 @@
+import { IUserRoles } from "../interfaces/IUserRoles";
+
+import { IUserDatabaseObject } from "../interfaces/IUserDatabaseObject";
+
 /**
  * User object.
  *
@@ -166,7 +170,7 @@ export default class User {
   /**
    * Removes non-requested user data.
    *
-   * @param {number} dataRequest Data request number
+   * @param {number} dataRequest Data request export number
    * @returns
    * @memberof User User with non-requested data removed
    */
@@ -212,38 +216,6 @@ export default class User {
   }
 }
 
-/**
- * User database object.
- *
- * @interface IUserDatabaseObject
- */
-export interface IUserDatabaseObject {
-  id?: number;
-  username?: string;
-  name?: string;
-  screen_name?: string;
-  email?: string;
-  residence?: string;
-  phone?: string;
-  hyy_member?: number | boolean;
-  membership?: string;
-  role?: string;
-  salt?: string;
-  hashed_password?: string;
-  created?: Date;
-  modified?: Date;
-  tktl?: number | boolean;
-  deleted?: number | boolean;
-}
-
-interface IUserRoles {
-  readonly kayttaja: number;
-  readonly virkailija: number;
-  readonly tenttiarkistovirkailija: number;
-  readonly jasenvirkailija: number;
-  readonly yllapitaja: number;
-}
-
 export const roleNumbers: IUserRoles = {
   kayttaja: 1,
   virkailija: 2,
@@ -251,46 +223,3 @@ export const roleNumbers: IUserRoles = {
   jasenvirkailija: 3,
   yllapitaja: 4
 };
-
-/**
- * User role enumerator.
- *
- * @export
- * @enum {number}
- */
-export enum UserRoleString {
-  Kayttaja = "kayttaja",
-  Virkailija = "virkailija",
-  Tenttiarkistovirkailija = "tenttiarkistovirkailija",
-  Jasenvirkailija = "jasenvirkailija",
-  Yllapitaja = "yllapitaja"
-}
-
-/**
- * Compares user roles.
- *
- * @export
- * @param {string} a Role a
- * @param {string} b Role b
- * @returns {number} Role difference
- */
-export function compareRoles(a: string, b: string): number {
-  let aN: number = 0;
-  let bN: number = 0;
-
-  if (roleNumbers[a]) {
-    aN = roleNumbers[a];
-  }
-
-  if (roleNumbers[b]) {
-    bN = roleNumbers[b];
-  }
-
-  if (aN < bN) {
-    return -1;
-  } else if (aN > bN) {
-    return 1;
-  } else {
-    return 0;
-  }
-}

@@ -34,8 +34,8 @@
     "migrate": "node_modules/.bin/knex migrate:latest",
     "rollback": "node_modules/.bin/knex migrate:rollback",
     "seed": "node_modules/.bin/knex seed:run",
-    "lint": "node_modules/.bin/tslint --project tsconfig.json",
-    "fix-ts": "node_modules/.bin/tslint --project tsconfig.json --fix",
+    "lint": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json",
+    "fix-ts": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json --fix",
     "build": "node_modules/.bin/tsc"
   },
   "devDependencies": {
@@ -61,7 +61,6 @@
     "sqlite3": "^4.0.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
-    "tslint-sonarts": "^1.7.0",
     "typescript": "^2.8.1",
     "uuid": "^3.3.2"
   },

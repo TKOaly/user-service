@@ -5,7 +5,7 @@ import { AuthenticationService } from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
-import { IController } from "./IController";
+import IController from "./../interfaces/IController";
 
 /**
  * Authentication controller.
@@ -15,7 +15,21 @@ import { IController } from "./IController";
  * @implements {IController}
  */
 export default class AuthController implements IController {
+  /**
+   * Router
+   *
+   * @private
+   * @type {express.Router}
+   * @memberof AuthController
+   */
   private route: express.Router;
+  /**
+   * Authorization middleware
+   *
+   * @private
+   * @type {AuthorizeMiddleware}
+   * @memberof AuthController
+   */
   private authorizeMiddleware: AuthorizeMiddleware;
 
   /**
@@ -32,9 +46,12 @@ export default class AuthController implements IController {
   }
 
   /**
-   * Used to check authorization to a specified service
-   * @param req
-   * @param res
+   * Used to check authorization to a specified service.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof AuthController
    */
   public async check(
     req: express.Request | any,
@@ -57,8 +74,16 @@ export default class AuthController implements IController {
     }
   }
 
+  /**
+   * Authenticates the user.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof AuthController
+   */
   public async authenticateUser(
-    req: express.Request | any,
+    req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
     if (
@@ -119,6 +144,14 @@ export default class AuthController implements IController {
     }
   }
 
+  /**
+   * Renders a view to calculate service permissions.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns {void}
+   * @memberof AuthController
+   */
   public calcPermissions(
     req: express.Request | any,
     res: express.Response
@@ -146,6 +179,14 @@ export default class AuthController implements IController {
     });
   }
 
+  /**
+   * Calculates service permissions.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns {void}
+   * @memberof AuthController
+   */
   public calcPermissionsPost(
     req: express.Request | any,
     res: express.Response

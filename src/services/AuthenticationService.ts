@@ -3,7 +3,7 @@ import * as bcrypt from "bcrypt";
 // @ts-ignore
 import * as sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
-import Service from "../models/Service";
+import Service, { IServiceDatabaseObject } from "../models/Service";
 import { ServiceToken, stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
@@ -20,9 +20,7 @@ export class AuthenticationService {
    * @param {ServiceDao} serviceDao ServiceDao
    * @memberof AuthenticationService
    */
-  constructor(
-    private readonly serviceDao: ServiceDao
-  ) {}
+  constructor(private readonly serviceDao: ServiceDao) {}
 
   /**
    * Returns a single service by its name.
@@ -46,7 +44,9 @@ export class AuthenticationService {
    * @returns {Promise<Service>}
    * @memberof AuthenticationService
    */
-  public async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
+  public async getServiceWithIdentifier(
+    service_identifier: string
+  ): Promise<Service> {
     const service: Service = await this.serviceDao.findByIdentifier(
       service_identifier
     );
@@ -63,9 +63,11 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   public async getServices(): Promise<Service[]> {
-    const services: Service[] = await this.serviceDao.findAll();
+    const services: IServiceDatabaseObject[] = await this.serviceDao.findAll();
 
-    return services.map((service) => new Service(service));
+    return services.map(
+      (service: IServiceDatabaseObject) => new Service(service)
+    );
   }
 
   /**
@@ -125,7 +127,7 @@ export class AuthenticationService {
       );
     }
     const newServiceList: string[] = [];
-    token.authenticatedTo.forEach((s) => {
+    token.authenticatedTo.forEach((s: string) => {
       if (s !== serviceToRemove) {
         newServiceList.push(s);
       }

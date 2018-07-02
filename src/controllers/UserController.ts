@@ -1,13 +1,15 @@
 import * as express from "express";
+import UserRoleString from "../enum/UserRoleString";
+import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
-import User, { compareRoles, UserRoleString } from "../models/User";
+import User from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import { compareRoles } from "../utils/Helpers";
 import ServiceResponse from "../utils/ServiceResponse";
 import UserValidator from "../validators/UserValidator";
-import { IController } from "./IController";
 
 /**
  * User controller.
@@ -17,8 +19,26 @@ import { IController } from "./IController";
  * @implements {IController}
  */
 export default class UserController implements IController {
+  /**
+   * Router
+   *
+   * @type {express.Router}
+   * @memberof UserController
+   */
   public route: express.Router;
+  /**
+   * Authorize middleware
+   *
+   * @type {AuthorizeMiddleware}
+   * @memberof UserController
+   */
   public authorizeMiddleware: AuthorizeMiddleware;
+  /**
+   * User validator
+   *
+   * @type {UserValidator}
+   * @memberof UserController
+   */
   public userValidator: UserValidator;
 
   /**

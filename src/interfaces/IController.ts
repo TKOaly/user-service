@@ -6,7 +6,7 @@ import * as express from "express";
  * @export
  * @interface IController
  */
-export interface IController {
+export default interface IController {
   /**
    * Creates routes for the controller.
    *

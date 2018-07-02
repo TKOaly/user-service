@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
-import { IUserDatabaseObject } from "../models/User";
-import IDao from "./IDao";
+import IDao from "../interfaces/IDao";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 
 /**
  * User dao.
@@ -124,11 +124,11 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       }
 
       if (conditions) {
-        conditions.forEach((cond, i) => {
+        conditions.forEach((cond: string, i: number) => {
           query = query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
         });
       }
-      console.log(query.toString());
+      // console.log(query.toString());
       return query as Promise<IUserDatabaseObject[]>;
     }
 

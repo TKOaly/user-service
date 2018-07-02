@@ -1,6 +1,8 @@
 import * as bcrypt from "bcrypt";
 import UserDao from "../dao/UserDao";
-import User, { IUserDatabaseObject } from "../models/User";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import User from "../models/User";
+
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
 
@@ -71,11 +73,19 @@ export default class UserService {
     return results.map((res: IUserDatabaseObject) => new User(res));
   }
 
+  /**
+   * Fetches users with selected fields and those who match the conditions.
+   *
+   * @param {string[]} fields Fields
+   * @param {string[]} [conditions] Conditions
+   * @returns {Promise<User[]>} List of users.
+   * @memberof UserService
+   */
   public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
-      conditions.forEach((condition) => {
+      conditions.forEach((condition: string) => {
         switch (condition) {
           case "member":
             conditionQuery.push("membership <> 'ei-jasen'");
@@ -92,6 +102,8 @@ export default class UserService {
           case "revoked":
             conditionQuery.push("deleted = 1");
             break;
+          default:
+            break;
         }
       });
     }
@@ -107,9 +119,9 @@ export default class UserService {
   /**
    * Returns username with username and password.
    *
-   * @param {string} username
-   * @param {string} password
-   * @returns {Promise<User>}
+   * @param {string} username Username
+   * @param {string} password Password
+   * @returns {Promise<User>} User
    * @memberof UserService
    */
   public async getUserWithUsernameAndPassword(
@@ -147,7 +159,7 @@ export default class UserService {
    * Checks if username is available.
    *
    * @param {string} username
-   * @returns {Promise<boolean>}
+   * @returns {Promise<boolean>} True if the username is available
    * @memberof UserService
    */
   public async checkUsernameAvailability(username: string): Promise<boolean> {
@@ -157,8 +169,8 @@ export default class UserService {
   /**
    * Creates an user.
    *
-   * @param {User} user
-   * @param {string} password
+   * @param {User} user User object
+   * @param {string} password Password
    * @returns {Promise<number[]>}
    * @memberof UserService
    */
@@ -172,10 +184,10 @@ export default class UserService {
   /**
    * Updates an user.
    *
-   * @param {number} userId
-   * @param {User} udpatedUser
-   * @param {string} [password]
-   * @returns {Promise<boolean>}
+   * @param {number} userId User ID
+   * @param {User} udpatedUser User data
+   * @param {string} [password] Password
+   * @returns {Promise<boolean>} True if the operation succeeds.
    * @memberof UserService
    */
   public async updateUser(

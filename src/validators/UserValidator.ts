@@ -1,9 +1,9 @@
 import * as validator from "validator";
+import IValidator from "../interface/IValidator";
 import User from "../models/User";
 import UserService from "../services/UserService";
-import { stringToBoolean } from "../utils/helpers";
+import { stringToBoolean } from "../utils/Helpers";
 import ServiceError from "../utils/ServiceError";
-import IValidator from "./IValidator";
 
 /**
  * Additional user data.
@@ -185,6 +185,12 @@ export default class UserValidator implements IValidator<User> {
   }
 }
 
+/**
+ * Checks modify permission.
+ *
+ * @param {User} user
+ * @param {string[]} allowedEdits
+ */
 function checkModifyPermission(user: User, allowedEdits: string[]): void {
   const error: string = "Forbidden modify action";
   Object.keys(user).forEach((key: string) => {
@@ -194,6 +200,12 @@ function checkModifyPermission(user: User, allowedEdits: string[]): void {
   });
 }
 
+/**
+ * Checks for username availability.
+ *
+ * @param {User} newUser User object
+ * @returns {Promise<void>}
+ */
 async function checkUsernameAvailability(newUser: User): Promise<void> {
   if (newUser.username) {
     // Test username

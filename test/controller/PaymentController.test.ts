@@ -38,7 +38,7 @@ const generateToken: any = (
 
 describe("PaymentController", () => {
   // Roll back
-  beforeEach((done) => {
+  beforeEach((done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -49,19 +49,19 @@ describe("PaymentController", () => {
   });
 
   // After each
-  afterEach((done) => {
+  afterEach((done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Returns all payments", () => {
-    it("As an authenticated user, returns all payments", (done) => {
+    it("As an authenticated user, returns all payments", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
         .set("Authorization", "Bearer " + generateToken(2))
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -111,11 +111,11 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done) => {
+    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -128,12 +128,12 @@ describe("PaymentController", () => {
   });
 
   describe("Returns a single payment", () => {
-    it("As an authenticated user, returns a single payment", (done) => {
+    it("As an authenticated user, returns a single payment", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           res.status.should.equal(200);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -170,11 +170,11 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done) => {
+    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -187,7 +187,7 @@ describe("PaymentController", () => {
   });
 
   describe("Adds a new payment", () => {
-    it("As an unauthenticated user, returns unauthorized", (done) => {
+    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       const newPayment: IPayment = {
         payer_id: 2,
         confirmer_id: 1,
@@ -201,7 +201,7 @@ describe("PaymentController", () => {
         .request(app)
         .post(url)
         .send(newPayment)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -212,7 +212,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an authenticated user, adds a new payment", (done) => {
+    it("As an authenticated user, adds a new payment", (done: Mocha.Done) => {
       const newPayment: any = {
         payer_id: 2,
         amount: 44.44,
@@ -224,7 +224,7 @@ describe("PaymentController", () => {
         .post(url)
         .set("Authorization", "Bearer " + generateToken(2))
         .send(newPayment)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           res.status.should.equal(201);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -256,7 +256,7 @@ describe("PaymentController", () => {
             .request(app)
             .get(url)
             .set("Authorization", "Bearer " + generateToken(2))
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               should.not.exist(err);
               should.exist(res.body.ok);
               should.exist(res.body.payload);
@@ -325,13 +325,13 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("As an authenticated user, can modify a payment with valid information", (done) => {
+    it("As an authenticated user, can modify a payment with valid information", (done: Mocha.Done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           const payment: IPayment = res.body.payload;
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
@@ -347,7 +347,7 @@ describe("PaymentController", () => {
                 payment_type: newPaymentType
               })
             )
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               should.exist(res.body.ok);
               should.exist(res.body.message);
               should.exist(res.body.payload);
@@ -369,7 +369,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done) => {
+    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       const newPayment: IPayment = {
         id: 1,
         payer_id: 2,
@@ -385,7 +385,7 @@ describe("PaymentController", () => {
         .request(app)
         .patch(url + "/" + newPayment.id)
         .send(newPayment)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -396,13 +396,13 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", (done) => {
+    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", (done: Mocha.Done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           const payment: IPayment = {
             id: res.body.payload.id,
             amount: res.body.payload.amount,
@@ -432,7 +432,7 @@ describe("PaymentController", () => {
                 payment_type: newPaymentType
               })
             )
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               should.exist(res.body.ok);
               should.exist(res.body.message);
               should.not.exist(res.body.payload);

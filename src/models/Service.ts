@@ -68,7 +68,7 @@ export default class Service {
  *
  * @interface ServiceDatabaseObject
  */
-interface IServiceDatabaseObject {
+export interface IServiceDatabaseObject {
   id?: number;
   service_name?: string;
   display_name?: string;

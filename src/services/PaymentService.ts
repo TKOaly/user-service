@@ -1,5 +1,5 @@
 import PaymentDao from "../dao/PaymentDao";
-import Payment, { IPayment } from "../models/Payment";
+import Payment, {IPayment} from "../models/Payment";
 import ServiceError from "../utils/ServiceError";
 
 // Constants for bank and cash payments
@@ -172,6 +172,16 @@ export default class PaymentService {
     return this.paymentDao.makePaid(payment_id, confirmer_id, cashPayment);
   }
 
+  /**
+   * Adds a cash payment.
+   *
+   * @param {number} payer_id Payer ID
+   * @param {number} confirmer_id Confirmer ID
+   * @param {number} seasons Number of seasons
+   * @param {string} membership Membership
+   * @returns {Promise<Payment>} Created payment
+   * @memberof PaymentService
+   */
   public async addCashPayment(
     payer_id: number,
     confirmer_id: number,
