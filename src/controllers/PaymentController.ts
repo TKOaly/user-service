@@ -5,9 +5,9 @@ import Payment from "../models/Payment";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import { compareRoles } from "../utils/Helpers";
 import ServiceResponse from "../utils/ServiceResponse";
 import PaymentValidator from "../validators/PaymentValidator";
+import { compareRoles } from "./../utils/Helpers";
 
 /**
  * Payment controller.
