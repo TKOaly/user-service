@@ -25,7 +25,7 @@ install:
 
 script:
   - yarn lint
-  - yarn build
+  - yarn test
 
 after_success:
   - codecov

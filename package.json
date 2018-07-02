@@ -35,7 +35,7 @@
     "seed": "node_modules/.bin/knex seed:run",
     "lint": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json",
     "fix-ts": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json --fix",
-    "build": "node_modules/.bin/tsc --moduleResolution node"
+    "build": "node_modules/.bin/tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
