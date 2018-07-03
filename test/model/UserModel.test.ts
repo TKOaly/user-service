@@ -4,7 +4,7 @@ import "mocha";
 import UserRoleString from "../../src/enum/UserRoleString";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 import User from "../../src/models/User";
-import { compareRoles } from "../../src/utils/helpers";
+import { compareRoles } from "../../src/utils/UserHelpers";
 
 import chai = require("chai");
 const should: Chai.Should = chai.should();
