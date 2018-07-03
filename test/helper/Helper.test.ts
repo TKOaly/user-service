@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import { stringToBoolean } from "../../src/utils/Helpers";
+import { stringToBoolean } from "../../src/utils/UserHelpers";
 
 describe("stringToBoolean()", () => {
   it("'0' returns false", (done: Mocha.Done) => {
