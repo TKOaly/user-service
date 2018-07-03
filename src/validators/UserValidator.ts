@@ -3,8 +3,8 @@ import UserRoleString from "../enum/UserRoleString";
 import IValidator from "../interfaces/IValidator";
 import User from "../models/User";
 import UserService from "../services/UserService";
-import { stringToBoolean } from "../utils/Helpers";
 import ServiceError from "../utils/ServiceError";
+import { stringToBoolean } from "../utils/UserHelpers";
 
 /**
  * Additional user data.

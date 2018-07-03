@@ -7,8 +7,8 @@ import { AuthenticationService } from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import { compareRoles } from "../utils/Helpers";
 import ServiceResponse from "../utils/ServiceResponse";
+import { compareRoles } from "../utils/UserHelpers";
 import UserValidator from "../validators/UserValidator";
 
 /**
