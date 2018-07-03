@@ -1,20 +1,13 @@
 {
-  "private": true,
   "name": "user-service",
   "description": "User service for TKO-äly",
-  "license": "MIT",
+  "authors": "TKO-äly ry",
   "version": "1.0.0",
-  "scripts": {
-    "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
-    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
-    "lint": "node_modules/.bin/tslint --project ./tsconfig.json 'src/**/*.{ts,tsx}'",
-    "migrate": "node_modules/.bin/knex migrate:latest",
-    "rollback": "node_modules/.bin/knex migrate:rollback",
-    "seed": "node_modules/.bin/knex seed:run",
-    "start": "node_modules/.bin/ts-node src/App.ts",
-    "build": "node_modules/.bin/tsc",
-    "test": "node_modules/.bin/nyc --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
-    "watch": "node_modules/.bin/nodemon start"
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=9.2",
+    "yarn": ">=1.6.0"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
@@ -22,14 +15,27 @@
     "dotenv": "^6.0.0",
     "express": "4.16.3",
     "express-session": "^1.15.6",
-    "helmet": "^3.12.1",
-    "jsonwebtoken": "^8.3.0",
-    "knex": "^0.14.3",
-    "mysql2": "1.5.3",
+    "helmet": "^3.11.0",
+    "jsonwebtoken": "^8.2.1",
+    "knex": "^0.15.0",
+    "mysql2": "^1.5.3",
     "pug": "^2.0.3",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
-    "validator": "^10.4.0"
+    "validator": "^10.2.0"
+  },
+  "scripts": {
+    "start": "node_modules/.bin/ts-node src/App.ts",
+    "watch": "node_modules/.bin/nodemon start",
+    "test": "node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
+    "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
+    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
+    "migrate": "node_modules/.bin/knex migrate:latest",
+    "rollback": "node_modules/.bin/knex migrate:rollback",
+    "seed": "node_modules/.bin/knex seed:run",
+    "lint": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json",
+    "fix-ts": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json --fix",
+    "build": "node_modules/.bin/tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
@@ -37,12 +43,11 @@
     "@types/chai-http": "^3.0.4",
     "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.16.0",
-    "@types/express-session": "^1.15.10",
-    "@types/helmet": "^0.0.38",
-    "@types/jsonwebtoken": "^7.2.6",
-    "@types/knex": "^0.14.14",
-    "@types/mocha": "^5.2.3",
-    "@types/node": "^10.3.5",
+    "@types/express-session": "^1.15.9",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/knex": "^0.14.15",
+    "@types/mocha": "^5.2.0",
+    "@types/node": "^10.5.1",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
@@ -52,22 +57,11 @@
     "mocha": "^5.1.1",
     "nodemon": "^1.17.3",
     "nyc": "^12.0.2",
-    "sqlite3": "^4.0.1",
+    "sqlite3": "^4.0.0",
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
-    "tslint-sonarts": "^1.7.0",
     "typescript": "^2.9.2",
-    "uuid": "^3.2.1"
-  },
-  "engines": {
-    "node": ">=8.9",
-    "yarn": ">=1.6.0"
-  },
-  "authors": "Hugo H.",
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
+    "uuid": "^3.3.2"
   },
   "nyc": {
     "extension": [
@@ -89,5 +83,11 @@
       "json"
     ],
     "all": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn test"
+    }
   }
 }

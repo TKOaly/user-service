@@ -59,7 +59,7 @@ export default class AuthorizeMiddleware {
     res: express.Response,
     next: express.NextFunction
   ): Promise<express.Response | any> {
-    const token: string = req.headers.authorization;
+    const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
         const parsedToken: ServiceToken = stringToServiceToken(
@@ -111,7 +111,7 @@ export default class AuthorizeMiddleware {
     res: express.Response,
     next: express.NextFunction
   ): Promise<express.Response | any> {
-    const token: string = req.headers.authorization;
+    const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
         const parsedToken: ServiceToken = stringToServiceToken(

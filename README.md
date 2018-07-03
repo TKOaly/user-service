@@ -4,6 +4,10 @@
 
 [![Build status (master)](https://api.travis-ci.org/TKOaly/user-service.svg?branch=master)](https://travis-ci.org/TKOaly/user-service)
 
+Test coverage (master) [![codecov](https://codecov.io/gh/TKOaly/user-service/branch/master/graph/badge.svg)](https://codecov.io/gh/TKOaly/user-service)
+
+Test coverage (dev) [![codecov](https://codecov.io/gh/TKOaly/user-service/branch/dev/graph/badge.svg)](https://codecov.io/gh/TKOaly/user-service)
+
 ![license](https://img.shields.io/github/license/TKOaly/user-service.svg)
 
 [![devDependencies](https://david-dm.org/tkoaly/user-service/dev-status.svg)](path/to/linked/page)

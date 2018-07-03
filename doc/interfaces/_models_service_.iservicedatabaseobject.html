@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AdditionalUserData | user-service</title>
+	<title>IServiceDatabaseObject | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_validators_uservalidator_.html">&quot;validators/UserValidator&quot;</a>
+					<a href="../modules/_models_service_.html">&quot;models/Service&quot;</a>
 				</li>
 				<li>
-					<a href="_validators_uservalidator_.additionaluserdata.html">AdditionalUserData</a>
+					<a href="_models_service_.iservicedatabaseobject.html">IServiceDatabaseObject</a>
 				</li>
 			</ul>
-			<h1>Interface AdditionalUserData</h1>
+			<h1>Interface IServiceDatabaseObject</h1>
 		</div>
 	</div>
 </header>
@@ -72,11 +72,11 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Additional user data.</p>
+						<p>Service database object.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>interface</dt>
-						<dd><p>AdditionalUserData</p>
+						<dd><p>ServiceDatabaseObject</p>
 						</dd>
 					</dl>
 				</div>
@@ -85,7 +85,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AdditionalUserData</span>
+						<span class="target">IServiceDatabaseObject</span>
 					</li>
 				</ul>
 			</section>
@@ -93,87 +93,81 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_validators_uservalidator_.additionaluserdata.html#deleted" class="tsd-kind-icon">deleted</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_validators_uservalidator_.additionaluserdata.html#password1" class="tsd-kind-icon">password1</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_validators_uservalidator_.additionaluserdata.html#password2" class="tsd-kind-icon">password2</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#data_permissions" class="tsd-kind-icon">data_<wbr>permissions</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#display_name" class="tsd-kind-icon">display_<wbr>name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#redirect_url" class="tsd-kind-icon">redirect_<wbr>url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#service_identifier" class="tsd-kind-icon">service_<wbr>identifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_service_.iservicedatabaseobject.html#service_name" class="tsd-kind-icon">service_<wbr>name</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="deleted" class="tsd-anchor"></a>
-					<h3>deleted</h3>
-					<div class="tsd-signature tsd-kind-icon">deleted<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="data_permissions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data_<wbr>permissions</h3>
+					<div class="tsd-signature tsd-kind-icon">data_<wbr>permissions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/validators/UserValidator.ts#L33">validators/UserValidator.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L77">models/Service.ts:77</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Is the user deleted or not.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{boolean}</p>
-							</dd>
-							<dt>memberof</dt>
-							<dd><p>AdditionalUserData</p>
-							</dd>
-						</dl>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="password1" class="tsd-anchor"></a>
-					<h3>password1</h3>
-					<div class="tsd-signature tsd-kind-icon">password1<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="display_name" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> display_<wbr>name</h3>
+					<div class="tsd-signature tsd-kind-icon">display_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/validators/UserValidator.ts#L19">validators/UserValidator.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L74">models/Service.ts:74</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Password.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{string} Password</p>
-							</dd>
-							<dt>memberof</dt>
-							<dd><p>AdditionalUserData</p>
-							</dd>
-						</dl>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="password2" class="tsd-anchor"></a>
-					<h3>password2</h3>
-					<div class="tsd-signature tsd-kind-icon">password2<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/validators/UserValidator.ts#L26">validators/UserValidator.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L72">models/Service.ts:72</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Password (typed again).</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>type</dt>
-							<dd><p>{string} Password</p>
-							</dd>
-							<dt>memberof</dt>
-							<dd><p>AdditionalUserData</p>
-							</dd>
-						</dl>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="redirect_url" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> redirect_<wbr>url</h3>
+					<div class="tsd-signature tsd-kind-icon">redirect_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L75">models/Service.ts:75</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="service_identifier" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> service_<wbr>identifier</h3>
+					<div class="tsd-signature tsd-kind-icon">service_<wbr>identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L76">models/Service.ts:76</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="service_name" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> service_<wbr>name</h3>
+					<div class="tsd-signature tsd-kind-icon">service_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/models/Service.ts#L73">models/Service.ts:73</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -183,106 +177,43 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_authcontroller_.html">"controllers/<wbr>Auth<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_icontroller_.html">"controllers/IController"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_payment_.html">"models/<wbr>Payment"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_user_.html">"models/<wbr>User"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_token_token_.html">"token/<wbr>Token"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_apiroute_.html">"utils/<wbr>Api<wbr>Route"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceerror_.html">"utils/<wbr>Service<wbr>Error"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_validators_ivalidator_.html">"validators/IValidator"</a>
-					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_validators_uservalidator_.html">"validators/<wbr>User<wbr>Validator"</a>
+						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_validators_uservalidator_.uservalidator.html" class="tsd-kind-icon">User<wbr>Validator</a>
+						<a href="../classes/_models_service_.service.html" class="tsd-kind-icon">Service</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_validators_uservalidator_.additionaluserdata.html" class="tsd-kind-icon">Additional<wbr>User<wbr>Data</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_models_service_.iservicedatabaseobject.html" class="tsd-kind-icon">IService<wbr>Database<wbr>Object</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_validators_uservalidator_.additionaluserdata.html#deleted" class="tsd-kind-icon">deleted</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#data_permissions" class="tsd-kind-icon">data_<wbr>permissions</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_validators_uservalidator_.additionaluserdata.html#password1" class="tsd-kind-icon">password1</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#display_name" class="tsd-kind-icon">display_<wbr>name</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_validators_uservalidator_.additionaluserdata.html#password2" class="tsd-kind-icon">password2</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#redirect_url" class="tsd-kind-icon">redirect_<wbr>url</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#service_identifier" class="tsd-kind-icon">service_<wbr>identifier</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_service_.iservicedatabaseobject.html#service_name" class="tsd-kind-icon">service_<wbr>name</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_validators_uservalidator_.html#allowedadminedit" class="tsd-kind-icon">allowed<wbr>Admin<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_validators_uservalidator_.html#allowedjvedit" class="tsd-kind-icon">allowedJVEdit</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_validators_uservalidator_.html#allowedselfedit" class="tsd-kind-icon">allowed<wbr>Self<wbr>Edit</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

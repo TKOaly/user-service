@@ -1,3 +1,5 @@
+import IParsedTokenContents from "../interfaces/IParsedTokenContents";
+
 import * as JWT from "jsonwebtoken";
 
 /**
@@ -60,15 +62,4 @@ export function stringToServiceToken(token: string): ServiceToken {
     tokenContents.authenticatedTo.split(","),
     tokenContents.createdAt
   );
-}
-
-/**
- * Interface for parsed token contents.
- *
- * @interface ParsedTokenContents
- */
-interface IParsedTokenContents {
-  userId: number;
-  authenticatedTo: string;
-  createdAt: Date;
 }

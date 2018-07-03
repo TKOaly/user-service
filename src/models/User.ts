@@ -1,3 +1,7 @@
+import IUserRoles from "../interfaces/IUserRoles";
+
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+
 /**
  * User object.
  *
@@ -166,7 +170,7 @@ export default class User {
   /**
    * Removes non-requested user data.
    *
-   * @param {number} dataRequest Data request number
+   * @param {number} dataRequest Data request export number
    * @returns
    * @memberof User User with non-requested data removed
    */
@@ -197,7 +201,10 @@ export default class User {
       email: this.email,
       residence: this.residence,
       phone: this.phone,
-      hyy_member: this.isHYYMember,
+      hyy_member: isNaN(Number(this.isHYYMember))
+        ? undefined
+        : Number(this.isHYYMember),
+      tktl: isNaN(Number(this.isTKTL)) ? undefined : Number(this.isTKTL),
       membership: this.membership,
       role: this.role,
       salt: this.salt,
@@ -209,55 +216,10 @@ export default class User {
   }
 }
 
-/**
- * User database object.
- *
- * @interface IUserDatabaseObject
- */
-interface IUserDatabaseObject {
-  id?: number;
-  username?: string;
-  name?: string;
-  screen_name?: string;
-  email?: string;
-  residence?: string;
-  phone?: string;
-  hyy_member?: number | boolean;
-  membership?: string;
-  role?: string;
-  salt?: string;
-  hashed_password?: string;
-  created?: Date;
-  modified?: Date;
-  tktl?: number | boolean;
-  deleted?: number | boolean;
-}
-
-export function compareRoles(a: string, b: string): number {
-  const roleNumbers: any = {
-    kayttaja: 1,
-    virkailija: 2,
-    tenttiarkistovirkailija: 2,
-    jasenvirkailija: 3,
-    yllapitaja: 4
-  };
-
-  let aN: number = 0;
-  let bN: number = 0;
-
-  if (roleNumbers[a]) {
-    aN = roleNumbers[a];
-  }
-
-  if (roleNumbers[b]) {
-    bN = roleNumbers[b];
-  }
-
-  if (aN < bN) {
-    return -1;
-  } else if (aN > bN) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
+export const roleNumbers: IUserRoles = {
+  kayttaja: 1,
+  virkailija: 2,
+  tenttiarkistovirkailija: 2,
+  jasenvirkailija: 3,
+  yllapitaja: 4
+};

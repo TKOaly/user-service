@@ -10,7 +10,7 @@ exports.seed = function(knex, Promise) {
           service_name: "event_calendar",
           display_name: "Event calendar",
           redirect_url: "https://calendar.tko-aly.fi",
-          data_permissions: 9 // 1 | 8 = 9 (id, membership)
+          data_permissions: 6143
         },
         {
           service_identifier: "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7",

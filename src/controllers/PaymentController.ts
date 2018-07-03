@@ -1,12 +1,13 @@
 import * as express from "express";
+import UserRoleString from "../enum/UserRoleString";
+import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
-import { compareRoles } from "../models/User";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
+import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
-import { IController } from "./IController";
 
 /**
  * Payment controller.
@@ -16,8 +17,29 @@ import { IController } from "./IController";
  * @implements {IController}
  */
 export default class PaymentController implements IController {
+  /**
+   * Router
+   *
+   * @private
+   * @type {express.Router}
+   * @memberof PaymentController
+   */
   private route: express.Router;
+  /**
+   * Authorize middleware
+   *
+   * @private
+   * @type {AuthorizeMiddleware}
+   * @memberof PaymentController
+   */
   private authorizeMiddleware: AuthorizeMiddleware;
+  /**
+   * Payment validator
+   *
+   * @private
+   * @type {PaymentValidator}
+   * @memberof PaymentController
+   */
   private paymentValidator: PaymentValidator;
 
   /**
@@ -136,7 +158,7 @@ export default class PaymentController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
-    if (compareRoles(req.authorization.user.role, "yllapitaja") < 0) {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
     try {
@@ -168,7 +190,7 @@ export default class PaymentController implements IController {
 
       if (
         payment.payer_id !== req.authorization.user.id &&
-        compareRoles(req.authorization.user.role, "yllapitaja") < 0
+        compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
       ) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }

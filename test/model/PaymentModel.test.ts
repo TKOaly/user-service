@@ -1,14 +1,14 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import "mocha";
-import Payment from "./../../src/models/Payment";
-const chai: Chai.ChaiStatic = require("chai");
+import Payment from "../../src/models/Payment";
 const should: Chai.Should = chai.should();
 
 let payment: Payment;
 
 describe("Payment model", () => {
-  beforeEach((done) => {
+  beforeEach((done: Mocha.Done) => {
     payment = new Payment({
       id: 1,
       amount: 50.55,
@@ -23,7 +23,7 @@ describe("Payment model", () => {
     done();
   });
 
-  it("Sets data correctly", (done) => {
+  it("Sets data correctly", (done: Mocha.Done) => {
     payment.id.should.equal(1);
     payment.amount.should.equal(50.55);
     payment.confirmer_id.should.equal(2);
@@ -32,17 +32,20 @@ describe("Payment model", () => {
     payment.reference_number.should.equal("12345678");
     payment.created
       .toDateString()
-      .should.equal(new Date(2018, 1, 1).toDateString());
+      .should
+      .equal(new Date(2018, 1, 1).toDateString());
     payment.valid_until
       .toDateString()
-      .should.equal(new Date(2020, 1, 1).toDateString());
+      .should
+      .equal(new Date(2020, 1, 1).toDateString());
     payment.paid
       .toDateString()
-      .should.equal(new Date(2018, 1, 1).toDateString());
+      .should
+      .equal(new Date(2018, 1, 1).toDateString());
     done();
   });
 
-  it("Sets partial data correctly", (done) => {
+  it("Sets partial data correctly", (done: Mocha.Done) => {
     const payment2: Payment = new Payment({
       id: 55,
       amount: 200

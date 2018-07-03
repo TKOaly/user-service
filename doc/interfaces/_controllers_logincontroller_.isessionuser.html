@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ServiceDatabaseObject | user-service</title>
+	<title>ISessionUser | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_service_.html">&quot;models/Service&quot;</a>
+					<a href="../modules/_controllers_logincontroller_.html">&quot;controllers/LoginController&quot;</a>
 				</li>
 				<li>
-					<a href="_models_service_.servicedatabaseobject.html">ServiceDatabaseObject</a>
+					<a href="_controllers_logincontroller_.isessionuser.html">ISessionUser</a>
 				</li>
 			</ul>
-			<h1>Interface ServiceDatabaseObject</h1>
+			<h1>Interface ISessionUser</h1>
 		</div>
 	</div>
 </header>
@@ -72,11 +72,11 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Service database object.</p>
+						<p>Session user interface.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>interface</dt>
-						<dd><p>ServiceDatabaseObject</p>
+						<dd><p>ISessionUser</p>
 						</dd>
 					</dl>
 				</div>
@@ -85,7 +85,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ServiceDatabaseObject</span>
+						<span class="target">ISessionUser</span>
 					</li>
 				</ul>
 			</section>
@@ -96,12 +96,11 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#data_permissions" class="tsd-kind-icon">data_<wbr>permissions</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#display_name" class="tsd-kind-icon">display_<wbr>name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#redirect_url" class="tsd-kind-icon">redirect_<wbr>url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#service_identifier" class="tsd-kind-icon">service_<wbr>identifier</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_models_service_.servicedatabaseobject.html#service_name" class="tsd-kind-icon">service_<wbr>name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_controllers_logincontroller_.isessionuser.html#password" class="tsd-kind-icon">password</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_controllers_logincontroller_.isessionuser.html#redirectto" class="tsd-kind-icon">redirect<wbr>To</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_controllers_logincontroller_.isessionuser.html#serviceidentifier" class="tsd-kind-icon">service<wbr>Identifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_controllers_logincontroller_.isessionuser.html#userid" class="tsd-kind-icon">user<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_controllers_logincontroller_.isessionuser.html#username" class="tsd-kind-icon">username</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,62 +109,52 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="data_permissions" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data_<wbr>permissions</h3>
-					<div class="tsd-signature tsd-kind-icon">data_<wbr>permissions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="password" class="tsd-anchor"></a>
+					<h3>password</h3>
+					<div class="tsd-signature tsd-kind-icon">password<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L77">models/Service.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/controllers/LoginController.ts#L325">controllers/LoginController.ts:325</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="display_name" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> display_<wbr>name</h3>
-					<div class="tsd-signature tsd-kind-icon">display_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="redirectto" class="tsd-anchor"></a>
+					<h3>redirect<wbr>To</h3>
+					<div class="tsd-signature tsd-kind-icon">redirect<wbr>To<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L74">models/Service.ts:74</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/controllers/LoginController.ts#L327">controllers/LoginController.ts:327</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="id" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="serviceidentifier" class="tsd-anchor"></a>
+					<h3>service<wbr>Identifier</h3>
+					<div class="tsd-signature tsd-kind-icon">service<wbr>Identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L72">models/Service.ts:72</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/controllers/LoginController.ts#L326">controllers/LoginController.ts:326</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="redirect_url" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> redirect_<wbr>url</h3>
-					<div class="tsd-signature tsd-kind-icon">redirect_<wbr>url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="userid" class="tsd-anchor"></a>
+					<h3>user<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">user<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L75">models/Service.ts:75</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/controllers/LoginController.ts#L323">controllers/LoginController.ts:323</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="service_identifier" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> service_<wbr>identifier</h3>
-					<div class="tsd-signature tsd-kind-icon">service_<wbr>identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="username" class="tsd-anchor"></a>
+					<h3>username</h3>
+					<div class="tsd-signature tsd-kind-icon">username<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L76">models/Service.ts:76</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="service_name" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> service_<wbr>name</h3>
-					<div class="tsd-signature tsd-kind-icon">service_<wbr>name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/7223e49/src/models/Service.ts#L73">models/Service.ts:73</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/controllers/LoginController.ts#L324">controllers/LoginController.ts:324</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -177,101 +166,35 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_authcontroller_.html">"controllers/<wbr>Auth<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_icontroller_.html">"controllers/IController"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_payment_.html">"models/<wbr>Payment"</a>
-					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_service_.html">"models/<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_models_user_.html">"models/<wbr>User"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_token_token_.html">"token/<wbr>Token"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_apiroute_.html">"utils/<wbr>Api<wbr>Route"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceerror_.html">"utils/<wbr>Service<wbr>Error"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_validators_ivalidator_.html">"validators/IValidator"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="../modules/_validators_uservalidator_.html">"validators/<wbr>User<wbr>Validator"</a>
+						<a href="../modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_models_service_.service.html" class="tsd-kind-icon">Service</a>
+						<a href="../classes/_controllers_logincontroller_.logincontroller.html" class="tsd-kind-icon">Login<wbr>Controller</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_models_service_.servicedatabaseobject.html" class="tsd-kind-icon">Service<wbr>Database<wbr>Object</a>
+						<a href="_controllers_logincontroller_.isessionuser.html" class="tsd-kind-icon">ISession<wbr>User</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#data_permissions" class="tsd-kind-icon">data_<wbr>permissions</a>
+								<a href="_controllers_logincontroller_.isessionuser.html#password" class="tsd-kind-icon">password</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#display_name" class="tsd-kind-icon">display_<wbr>name</a>
+								<a href="_controllers_logincontroller_.isessionuser.html#redirectto" class="tsd-kind-icon">redirect<wbr>To</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#id" class="tsd-kind-icon">id</a>
+								<a href="_controllers_logincontroller_.isessionuser.html#serviceidentifier" class="tsd-kind-icon">service<wbr>Identifier</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#redirect_url" class="tsd-kind-icon">redirect_<wbr>url</a>
+								<a href="_controllers_logincontroller_.isessionuser.html#userid" class="tsd-kind-icon">user<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#service_identifier" class="tsd-kind-icon">service_<wbr>identifier</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_models_service_.servicedatabaseobject.html#service_name" class="tsd-kind-icon">service_<wbr>name</a>
+								<a href="_controllers_logincontroller_.isessionuser.html#username" class="tsd-kind-icon">username</a>
 							</li>
 						</ul>
 					</li>

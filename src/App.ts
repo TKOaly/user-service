@@ -49,7 +49,7 @@ app.set("view engine", "pug");
 app.use(helmet());
 
 // Knexfile
-const knexfile: any = require("./../knexfile");
+import knexfile = require("./../knexfile");
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
@@ -112,6 +112,7 @@ app.use("/", loginController.createRoutes());
 
 // Start server
 app.listen(process.env.USERSERVICE_PORT || 3000, () => {
+  // @ts-ignore
   console.log(
     "User service listening on port %d",
     process.env.USERSERVICE_PORT || 3000

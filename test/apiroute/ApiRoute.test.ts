@@ -1,13 +1,13 @@
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
 
+import chai = require("chai");
 import "mocha";
-import ApiRoute from "./../../src/utils/ApiRoute";
-const chai: Chai.ChaiStatic = require("chai");
+import ApiRoute from "../../src/utils/ApiRoute";
 const should: Chai.Should = chai.should();
 
 describe("ApiRoute", () => {
-  it("Creates API route correctly, with API version and route", (done) => {
+  it("Creates API route correctly, with API version and route", (done: Mocha.Done) => {
     const apiVersion: string = "v2";
     const route: string = "testroute";
     const apiUrl: string = ApiRoute.generateApiRoute(route, apiVersion);
@@ -15,14 +15,14 @@ describe("ApiRoute", () => {
     done();
   });
 
-  it("Creates API route correctly, with API route", (done) => {
+  it("Creates API route correctly, with API route", (done: Mocha.Done) => {
     const route: string = "testroute";
     const apiUrl: string = ApiRoute.generateApiRoute(route);
     apiUrl.should.equal("/api/" + route);
     done();
   });
 
-  it("Middleware sets route and API version headers correctly", (done) => {
+  it("Middleware sets route and API version headers correctly", (done: Mocha.Done) => {
     const apiVersion: string = "v2";
 
     const headers: Array<{ name: string; val: string }> = [];
@@ -37,7 +37,7 @@ describe("ApiRoute", () => {
           headers.push({ name, val });
         }
       },
-      next: () => {
+      next: (): void => {
         calledNext = true;
       }
     };
@@ -59,7 +59,7 @@ describe("ApiRoute", () => {
     done();
   });
 
-  it("Middleware sets API version header correctly", (done) => {
+  it("Middleware sets API version header correctly", (done: Mocha.Done) => {
 
     const headers: Array<{ name: string; val: string }> = [];
 
@@ -73,7 +73,7 @@ describe("ApiRoute", () => {
           headers.push({ name, val });
         }
       },
-      next: () => {
+      next: (): void => {
         calledNext = true;
       }
     };

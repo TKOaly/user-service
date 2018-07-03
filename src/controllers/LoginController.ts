@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as express from "express";
+import IController from "../interfaces/IController";
 import Service from "../models/Service";
 import User from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
@@ -7,7 +8,6 @@ import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
-import { IController } from "./IController";
 
 /**
  * Login controller.
@@ -17,7 +17,19 @@ import { IController } from "./IController";
  * @implements {IController}
  */
 export default class LoginController implements IController {
+  /**
+   * Router.
+   *
+   * @type {Router}
+   * @memberof LoginController
+   */
   public route: Router;
+  /**
+   * Authorization middleware.
+   *
+   * @type {AuthorizeMiddleware}
+   * @memberof LoginController
+   */
   public authorizationMiddleware: AuthorizeMiddleware;
 
   /**
@@ -35,11 +47,11 @@ export default class LoginController implements IController {
   }
 
   /**
-   * Returns login view.
+   * Returns the login view.
    *
-   * @param {*} req
-   * @param {Response} res
-   * @returns
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns {(Promise<express.Response | void>)}
    * @memberof LoginController
    */
   public async getLoginView(req: express.Request | any, res: express.Response): Promise<express.Response | void> {

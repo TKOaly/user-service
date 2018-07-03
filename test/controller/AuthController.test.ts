@@ -3,14 +3,14 @@ process.env.NODE_ENV = "test";
 import chaiHttp = require("chai-http");
 import * as Knex from "knex";
 import "mocha";
-import app from "./../../src/App";
+import app from "../../src/App";
 
 // Knexfile
-const knexfile: any = require("./../../knexfile");
+const knexfile: any = require("../../knexfile");
 // Knex instance
 const knex: any = Knex(knexfile.test);
 
-const chai: Chai.ChaiStatic = require("chai");
+import chai = require("chai");
 const should: Chai.Should = chai.should();
 
 chai.use(chaiHttp);
@@ -31,7 +31,7 @@ const incorrectCreds: any = {
 
 describe("AuthController", () => {
   // Roll back
-  beforeEach((done) => {
+  beforeEach((done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -42,19 +42,19 @@ describe("AuthController", () => {
   });
 
   // After each
-  afterEach((done) => {
+  afterEach((done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Authentication", () => {
-    it("Authenticates with correct credentials", (done) => {
+    it("Authenticates with correct credentials", (done: Mocha.Done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -65,12 +65,12 @@ describe("AuthController", () => {
         });
     });
 
-    it("Does not authenticate with incorrect credentials", (done) => {
+    it("Does not authenticate with incorrect credentials", (done: Mocha.Done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(incorrectCreds)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -83,13 +83,13 @@ describe("AuthController", () => {
   });
 
   describe("Service check", () => {
-    it("Checks that the correct service has been authenticated to", (done) => {
+    it("Checks that the correct service has been authenticated to", (done: Mocha.Done) => {
       // The default credentials authenticate to KJYR
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -106,7 +106,7 @@ describe("AuthController", () => {
             .get(authUrl + "/check")
             .set("Authorization", "Bearer " + token)
             .set("service", kjyrIdentifier)
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               should.not.exist(err);
               res.status.should.equal(200);
               should.exist(res.body.ok);
@@ -119,13 +119,13 @@ describe("AuthController", () => {
         });
     });
 
-    it("Check that the user has not been authenticated to an incorrect service", (done) => {
+    it("Check that the user has not been authenticated to an incorrect service", (done: Mocha.Done) => {
       // The default credentials authenticate to KJYR
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -142,7 +142,7 @@ describe("AuthController", () => {
             .get(authUrl + "/check")
             .set("Authorization", "Bearer " + token)
             .set("service", calendarIdentifier)
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               res.status.should.equal(403);
               should.exist(res.body.ok);
               should.exist(res.body.message);
@@ -155,13 +155,13 @@ describe("AuthController", () => {
         });
     });
 
-    it("Can authenticate to multiple services", (done) => {
+    it("Can authenticate to multiple services", (done: Mocha.Done) => {
       // First, authenticate to KJYR
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err, res) => {
+        .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -182,7 +182,7 @@ describe("AuthController", () => {
             .post(authUrl + "/authenticate")
             .set("Authorization", "Bearer " + token)
             .send(secondCreds)
-            .end((err, res) => {
+            .end((err: any, res: ChaiHttp.Response) => {
               should.not.exist(err);
               res.status.should.equal(200);
               should.exist(res.body.payload);
@@ -198,7 +198,7 @@ describe("AuthController", () => {
                 .get(authUrl + "/check")
                 .set("Authorization", "Bearer " + token2)
                 .set("service", kjyrIdentifier)
-                .end((err, res) => {
+                .end((err: any, res: ChaiHttp.Response) => {
                   should.not.exist(err);
                   res.status.should.equal(200);
                   should.exist(res.body.ok);
@@ -212,7 +212,7 @@ describe("AuthController", () => {
                     .get(authUrl + "/check")
                     .set("Authorization", "Bearer " + token2)
                     .set("service", calendarIdentifier)
-                    .end((err, res) => {
+                    .end((err: any, res: ChaiHttp.Response) => {
                       should.not.exist(err);
                       res.status.should.equal(200);
                       should.exist(res.body.ok);
