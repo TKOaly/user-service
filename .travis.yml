@@ -14,6 +14,8 @@ addons:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
+  - npm install -g typescript
+  - npm install -g ts-node
   - npm install -g yarn
   - npm install -g codecov
 
