@@ -10,7 +10,7 @@ COPY yarn.lock /app
 COPY package.json /app
 RUN yarn --dev
 
-COPY knexfile.js /app
+COPY knexfile.ts /app
 COPY nodemon.json /app
 COPY tsconfig.json /app
 COPY seeds /app/seeds
@@ -20,7 +20,5 @@ COPY test /app/test
 COPY views /app/views
 COPY scripts /app/scripts
 COPY public /app/public
-
-RUN ls -lra /app
 
 CMD ["yarn", "start"]

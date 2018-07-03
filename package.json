@@ -21,7 +21,9 @@
     "seed": "node_modules/.bin/knex seed:run",
     "lint": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json",
     "fix-ts": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json --fix",
-    "build": "node_modules/.bin/tsc -p tsconfig.json"
+    "build": "node_modules/.bin/tsc -p tsconfig.json",
+    "build-docker": "docker build . -t user-service",
+    "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
