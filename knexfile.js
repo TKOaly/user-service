@@ -3,7 +3,8 @@
 require("dotenv").config();
 
 const prod = {
-  client: "mysql2",
+  dialect: "mysql2",
+  version: 5.6,
   connection: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -13,19 +14,15 @@ const prod = {
   },
   pool: {
     min: 2,
-    max: 10,/*,
-    afterCreate: function(connection, callback) {
-      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
-        callback(err, connection);
-      });
-    }*/
+    max: 10
   },
   migrations: {
     tableName: "knex_migrations",
   },
 };
 const staging = {
-  client: "mysql2",
+  dialect: "mysql2",
+  version: 5.6,
   connection: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -35,19 +32,15 @@ const staging = {
   },
   pool: {
     min: 2,
-    max: 10,/*,
-    afterCreate: function(connection, callback) {
-      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
-        callback(err, connection);
-      });
-    }*/
+    max: 10
   },
   migrations: {
     tableName: "knex_migrations",
   },
 };
 const dev = {
-  client: "mysql2",
+  dialect: "mysql2",
+  version: 5.6,
   connection: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -57,12 +50,7 @@ const dev = {
   },
   pool: {
     min: 2,
-    max: 10,/*,
-    afterCreate: function(connection, callback) {
-      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
-        callback(err, connection);
-      });
-    }*/
+    max: 10
   },
   migrations: {
     tableName: "knex_migrations",
@@ -70,7 +58,8 @@ const dev = {
 };
 
 const test = {
-  client: "mysql2",
+  dialect: "mysql2",
+  version: 5.6,
   connection: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -80,12 +69,7 @@ const test = {
   },
   pool: {
     min: 2,
-    max: 10,/*,
-    afterCreate: function(connection, callback) {
-      connection.query('SET time_zone = "Europe/Helsinki";', function(err) {
-        callback(err, connection);
-      });
-    }*/
+    max: 10
   },
   migrations: {
     tableName: "knex_migrations",

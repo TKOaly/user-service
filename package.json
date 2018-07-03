@@ -6,7 +6,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=8.9",
+    "node": ">=9.2",
     "yarn": ">=1.6.0"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "helmet": "^3.11.0",
     "jsonwebtoken": "^8.2.1",
     "knex": "^0.15.0",
-    "mysql2": "1.5.3",
+    "mysql2": "^1.5.3",
     "pug": "^2.0.3",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
