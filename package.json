@@ -2,32 +2,18 @@
   "name": "user-service",
   "description": "User service for TKO-äly",
   "authors": "TKO-äly ry",
+  "contributors": [
+    {
+      "name": "Aleksi H."
+    }
+  ],
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "engines": {
-    "node": ">=9.2",
-    "yarn": ">=1.6.0"
-  },
-  "dependencies": {
-    "bcrypt": "^2.0.1",
-    "cookie-parser": "^1.4.3",
-    "dotenv": "^6.0.0",
-    "express": "4.16.3",
-    "express-session": "^1.15.6",
-    "helmet": "^3.11.0",
-    "jsonwebtoken": "^8.2.1",
-    "knex": "^0.15.0",
-    "mysql2": "^1.5.3",
-    "pug": "^2.0.3",
-    "sha1": "^1.1.1",
-    "typedoc": "^0.11.1",
-    "validator": "^10.2.0"
-  },
   "scripts": {
     "start": "node_modules/.bin/ts-node src/App.ts",
     "watch": "node_modules/.bin/nodemon start",
-    "test": "node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
+    "test": "node_modules/.bin/nyc node_modules/.bin/mocha",
     "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
     "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
     "migrate": "node_modules/.bin/knex migrate:latest",
@@ -61,7 +47,11 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.2.1"
+  },
+  "engines": {
+    "node": ">=8.9",
+    "yarn": ">=1.6.0"
   },
   "nyc": {
     "extension": [
@@ -74,13 +64,18 @@
       "scripts/**/*.ts",
       "src/controllers/IController.ts",
       "migrations/**/*.js",
+      "migrations/**/*.ts",
       "seeds/**/*.js",
+      "seeds/**/*.ts",
       "coverage/**/*.js",
-      "**/*.js"
+      "**/*.js",
+      "knexfile.ts",
+      "src/App.ts"
     ],
     "reporter": [
       "html",
-      "json"
+      "text",
+      "lcov"
     ],
     "all": true
   },
