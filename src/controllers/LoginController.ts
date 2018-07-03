@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as express from "express";
+import IController from "../interfaces/IController";
 import Service from "../models/Service";
 import User from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
@@ -7,7 +8,6 @@ import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
-import IController from "./../interfaces/IController";
 
 /**
  * Login controller.

@@ -2,17 +2,17 @@ process.env.NODE_ENV = "test";
 
 import * as Knex from "knex";
 import "mocha";
+import UserDao from "../../src/dao/UserDao";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
-import UserDao from "./../../src/dao/UserDao";
 
-import userFile = require("./../../seeds/seedData/users");
+import userFile = require("../../seeds/seedData/users");
 const dbUsers: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 
-const chai: Chai.ChaiStatic = require("chai");
+import chai = require("chai");
 const should: Chai.Should = chai.should();
 
 // Knexfile
-const knexfile: any = require("./../../knexfile");
+const knexfile: any = require("../../knexfile");
 // Knex instance
 const knex: any = Knex(knexfile.test);
 

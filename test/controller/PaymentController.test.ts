@@ -3,17 +3,17 @@ process.env.NODE_ENV = "test";
 import * as JWT from "jsonwebtoken";
 import * as Knex from "knex";
 import "mocha";
-import app from "./../..//src/App";
+import app from "../../src/App";
 
-import payments = require("./../../seeds/seedData/payments");
-import { IPayment } from "./../../src/models/Payment";
+import payments = require("../../seeds/seedData/payments");
+import { IPayment } from "../../src/models/Payment";
 
 // Knexfile
-const knexfile: any = require("./../../knexfile");
+const knexfile: any = require("../../knexfile");
 // Knex instance
 const knex: any = Knex(knexfile.test);
 
-const chai: Chai.ChaiStatic = require("chai");
+import chai = require("chai");
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);

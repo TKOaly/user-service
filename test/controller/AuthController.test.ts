@@ -3,14 +3,14 @@ process.env.NODE_ENV = "test";
 import chaiHttp = require("chai-http");
 import * as Knex from "knex";
 import "mocha";
-import app from "./../../src/App";
+import app from "../../src/App";
 
 // Knexfile
-const knexfile: any = require("./../../knexfile");
+const knexfile: any = require("../../knexfile");
 // Knex instance
 const knex: any = Knex(knexfile.test);
 
-const chai: Chai.ChaiStatic = require("chai");
+import chai = require("chai");
 const should: Chai.Should = chai.should();
 
 chai.use(chaiHttp);

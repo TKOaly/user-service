@@ -2,9 +2,9 @@ process.env.NODE_ENV = "test";
 
 import * as Knex from "knex";
 import "mocha";
-import app from "./../../src/App";
+import app from "../../src/App";
 
-import userFile = require("./../../seeds/seedData/users");
+import userFile = require("../../seeds/seedData/users");
 const users: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
@@ -12,11 +12,11 @@ import User from "../../src/models/User";
 import { generateToken } from "../TestUtils";
 
 // Knexfile
-const knexfile: any = require("./../../knexfile");
+const knexfile: any = require("../../knexfile");
 // Knex instance
 const knex: any = Knex(knexfile.test);
 
-const chai: Chai.ChaiStatic = require("chai");
+import chai = require("chai");
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);

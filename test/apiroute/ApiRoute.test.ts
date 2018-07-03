@@ -1,9 +1,9 @@
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
 
+import chai = require("chai");
 import "mocha";
-import ApiRoute from "./../../src/utils/ApiRoute";
-const chai: Chai.ChaiStatic = require("chai");
+import ApiRoute from "../../src/utils/ApiRoute";
 const should: Chai.Should = chai.should();
 
 describe("ApiRoute", () => {

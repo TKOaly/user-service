@@ -1,8 +1,8 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import "mocha";
-import Payment from "./../../src/models/Payment";
-const chai: Chai.ChaiStatic = require("chai");
+import Payment from "../../src/models/Payment";
 const should: Chai.Should = chai.should();
 
 let payment: Payment;

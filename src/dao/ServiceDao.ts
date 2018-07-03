@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
+import IDao from "../interfaces/IDao";
 import Service from "../models/Service";
-import IDao from "./../interfaces/IDao";
 
 /**
  * Service dao.
