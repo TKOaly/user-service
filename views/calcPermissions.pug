@@ -1,0 +1,39 @@
+doctype html
+html(lang="en")
+  head
+    title= "Calculate service permissions"
+    link(rel='stylesheet', href='/styles/calcPermissions.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+  body
+    #container
+      #menubar
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title Calculate service permissions
+      #content
+        center="This tool will calculate service permissions for you."
+        #wrapper
+            #wrapper-left
+                form(action='/api/auth/calcPermissions', method='POST')
+                    ul.permissions
+                        each val in userKeys
+                            li.permissions
+                                if val !== "salt" && val !== "hashedPassword"
+                                    if val == "id"
+                                        input(type='checkbox', name=val, checked="checked", disabled="disabled")
+                                        input(type='hidden', name=val, value="on")
+                                    else
+                                        input(type='checkbox', name=val)
+                                    span=val
+                    input.accept(type='submit', name='submit', value='Calculate')
+            #wrapper-right
+                if permissionInteger != 0 && wantedPermissions
+                    h1="Result"
+                    span="Value: " +permissionInteger
+                    h2="Permission list"
+                    ul.permissions
+                        each wantedPermission in wantedPermissions
+                            li=wantedPermission
+            
+

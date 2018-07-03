@@ -11,21 +11,21 @@ export default class ServiceResponse {
    * @type {boolean}
    * @memberof ServiceResponse
    */
-  ok: boolean;
+  public ok: boolean;
   /**
    * Message.
    *
    * @type {string} Message
    * @memberof ServiceResponse
    */
-  message: string;
+  public message: string;
   /**
    * Payload
    *
    * @type {*} Object, string etc.
    * @memberof ServiceResponse
    */
-  payload: any;
+  public payload: any;
   /**
    * Creates an instance of ServiceResponse.
    * @param {any} payload
@@ -38,9 +38,9 @@ export default class ServiceResponse {
     message: string = "Success",
     ok: boolean | null = null
   ) {
-    if (message == "Success" && ok === null) {
+    if (message === "Success" && ok === null) {
       this.ok = true;
-    } else if (message != "Success" && ok === null) {
+    } else if (message !== "Success" && ok === null) {
       this.ok = false;
     } else if (ok !== null) {
       this.ok = ok;

@@ -8,7 +8,7 @@ module.exports = [
     amount: 55.55,
     valid_until: new Date(2019, 1, 1),
     paid: new Date(2016, 1, 1),
-    payment_type: "jasenmaksu"
+    payment_type: "jasenmaksu",
   },
   {
     id: 2,
@@ -19,6 +19,6 @@ module.exports = [
     amount: 44.44,
     valid_until: new Date(2018, 1, 1),
     paid: new Date(2015, 1, 1),
-    payment_type: "jasenmaksu"
-  }
+    payment_type: "jasenmaksu",
+  },
 ];

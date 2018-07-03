@@ -21,30 +21,30 @@ async function createTables() {
     // Create databases
     console.log("Creating production database named %s", dbName);
     await con.execute(
-      "CREATE DATABASE IF NOT EXISTS " +
+      "CREATE DATABASE IF NOT EXISTS `" +
         dbName +
-        " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
+        "` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
     );
     console.log("Creating staging database named %s", dbName + "_staging");
     await con.execute(
-      "CREATE DATABASE IF NOT EXISTS " +
+      "CREATE DATABASE IF NOT EXISTS `" +
         dbName +
-        "_staging" +
+        "_staging`" +
         " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
     );
     console.log("Creating development database named %s", dbName + "_dev");
     await con.execute(
-      "CREATE DATABASE IF NOT EXISTS " +
+      "CREATE DATABASE IF NOT EXISTS `" +
         dbName +
-        "_dev" +
+        "_dev`" +
         " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
     );
 
     console.log("Creating testing database named %s", dbName + "_test");
     await con.execute(
-      "CREATE DATABASE IF NOT EXISTS " +
+      "CREATE DATABASE IF NOT EXISTS `" +
         dbName +
-        "_test" +
+        "_test`" +
         " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
     );
     console.log("Created development, test, stating and production databases.");

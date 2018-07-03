@@ -2,14 +2,20 @@ sudo: required
 
 language: node_js
 node_js:
-  - '8'
+  - '9.2'
 
 services:
   - mysql
 
+addons:
+  ssh_known_hosts:
+  - maija.tko-aly.fi
+  - uolevi.tko-aly.fi
+
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
+  - npm install -g codecov
 
 install:
   - yarn install
@@ -18,5 +24,8 @@ install:
   - knex seed:run
 
 script:
+  - yarn lint
   - yarn test
-  
+
+after_success:
+  - codecov

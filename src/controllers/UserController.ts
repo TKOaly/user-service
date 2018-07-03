@@ -1,13 +1,15 @@
 import * as express from "express";
-import UserService from "../services/UserService";
-import { AuthenticationService } from "../services/AuthenticationService";
-import ServiceResponse from "../utils/ServiceResponse";
-import User, { compareRoles } from "../models/User";
-import { IController } from "./IController";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import UserValidator from "../validators/UserValidator";
-import PaymentService from "../services/PaymentService";
+import UserRoleString from "../enum/UserRoleString";
+import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
+import User from "../models/User";
+import { AuthenticationService } from "../services/AuthenticationService";
+import PaymentService from "../services/PaymentService";
+import UserService from "../services/UserService";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import ServiceResponse from "../utils/ServiceResponse";
+import { compareRoles } from "../utils/UserHelpers";
+import UserValidator from "../validators/UserValidator";
 
 /**
  * User controller.
@@ -17,9 +19,27 @@ import Payment from "../models/Payment";
  * @implements {IController}
  */
 export default class UserController implements IController {
-  route: express.Router;
-  authorizeMiddleware: AuthorizeMiddleware;
-  userValidator: UserValidator;
+  /**
+   * Router
+   *
+   * @type {express.Router}
+   * @memberof UserController
+   */
+  public route: express.Router;
+  /**
+   * Authorize middleware
+   *
+   * @type {AuthorizeMiddleware}
+   * @memberof UserController
+   */
+  public authorizeMiddleware: AuthorizeMiddleware;
+  /**
+   * User validator
+   *
+   * @type {UserValidator}
+   * @memberof UserController
+   */
+  public userValidator: UserValidator;
 
   /**
    * Creates an instance of UserController.
@@ -45,9 +65,9 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async getUser(req: express.Request | any, res: express.Response) {
+  public async getUser(req: express.Request | any, res: express.Response): Promise<express.Response> {
     if (req.params.id !== "me") {
-      if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
+      if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
     }
@@ -76,11 +96,15 @@ export default class UserController implements IController {
         )).dataPermissions;
         req.params.id = req.authorization.user.id;
       }
-      let user: User = await this.userService.fetchUser(req.params.id);
+      const user: User = await this.userService.fetchUser(req.params.id);
       return res
         .status(200)
         .json(
-          new ServiceResponse(serviceDataPermissions ? user.removeNonRequestedData(serviceDataPermissions) : user.removeSensitiveInformation(), 'Success'
+          new ServiceResponse(
+            serviceDataPermissions
+              ? user.removeNonRequestedData(serviceDataPermissions)
+              : user.removeSensitiveInformation(),
+            "Success"
           )
         );
     } catch (e) {
@@ -98,21 +122,26 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async getAllUsers(req: express.Request & IASRequest, res: express.Response) {
-    if (compareRoles(req.authorization.user.role, "kayttaja") <= 0) {
+  public async getAllUsers(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
     // Request is a search
     if (req.query.searchTerm) {
       try {
-        let users: User[] = await this.userService.searchUsers(
+        const users: User[] = await this.userService.searchUsers(
           req.query.searchTerm
         );
         return res
           .status(200)
           .json(
-            new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+            new ServiceResponse(
+              users.map((u: User) => u.removeSensitiveInformation())
+            )
           );
       } catch (e) {
         return res.status(500).json(new ServiceResponse(null, e.message));
@@ -122,11 +151,16 @@ export default class UserController implements IController {
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        let users: User[] = await this.userService.fetchAllWithSelectedFields(req.query.fields, req.query.conditions || null);
+        const users: User[] = await this.userService.fetchAllWithSelectedFields(
+          req.query.fields,
+          req.query.conditions || null
+        );
         return res
           .status(200)
           .json(
-            new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+            new ServiceResponse(
+              users.map((u: User) => u.removeSensitiveInformation())
+            )
           );
       } catch (e) {
         return res.status(500).json(new ServiceResponse(null, e.message));
@@ -134,11 +168,13 @@ export default class UserController implements IController {
     }
 
     try {
-      let users: User[] = await this.userService.fetchAllUsers();
+      const users: User[] = await this.userService.fetchAllUsers();
       return res
         .status(200)
         .json(
-          new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+          new ServiceResponse(
+            users.map((u: User) => u.removeSensitiveInformation())
+          )
         );
     } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
@@ -153,17 +189,19 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async getAllUnpaidUsers(req: any, res: express.Response) {
-    if (req.authorization.user.role != "yllapitaja") {
+  public async getAllUnpaidUsers(req: any, res: express.Response): Promise<express.Response> {
+    if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
     try {
-      let users: User[] = await this.userService.fetchAllUnpaidUsers();
+      const users: User[] = await this.userService.fetchAllUnpaidUsers();
       return res
         .status(200)
         .json(
-          new ServiceResponse(users.map(u => u.removeSensitiveInformation()))
+          new ServiceResponse(
+            users.map((u: User) => u.removeSensitiveInformation())
+          )
         );
     } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
@@ -178,7 +216,7 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async modifyMe(req: express.Request | any, res: express.Response) {
+  public async modifyMe(req: express.Request | any, res: express.Response): Promise<express.Response> {
     if (req.params.id === "me") {
       // Edit me
       try {
@@ -227,7 +265,7 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  async createUser(req: express.Request, res: express.Response) {
+  public async createUser(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       await this.userValidator.validateCreate(req.body);
       const userIds: number[] = await this.userService.createUser(
@@ -249,18 +287,22 @@ export default class UserController implements IController {
 
   /**
    * Finds payments for user
-   * 
+   *
    */
-  async findUserPayment(req: express.Request & IASRequest, res: express.Response) {
+  public async findUserPayment(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
     try {
       let id: number;
-      if (req.params.id === 'me' || (req.authorization.user.id === Number(req.params.id))) {
+      if (
+        req.params.id === "me" ||
+        req.authorization.user.id === Number(req.params.id)
+      ) {
         id = req.authorization.user.id;
       } else {
-        if (compareRoles(req.authorization.user.role, 'jasenvirkailija') < 0) {
-          return res
-            .status(403)
-            .json(new ServiceResponse(null, 'Forbidden'));
+        if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+          return res.status(403).json(new ServiceResponse(null, "Forbidden"));
         } else {
           id = Number(req.params.id);
         }
@@ -268,20 +310,16 @@ export default class UserController implements IController {
 
       let payment: Payment = null;
       if (req.query.query) {
-        if (req.query.query === 'validPayment') {
+        if (req.query.query === "validPayment") {
           payment = await this.paymentService.fetchValidPaymentForUser(id);
         } else {
-          return res
-            .status(400)
-            .json(new ServiceResponse(null, 'Bad query'));
+          return res.status(400).json(new ServiceResponse(null, "Bad query"));
         }
       } else {
         payment = await this.paymentService.fetchPaymentByPayer(id);
       }
 
-      return res
-        .status(200)
-        .json(new ServiceResponse(payment, 'Success'));
+      return res.status(200).json(new ServiceResponse(payment, "Success"));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -295,9 +333,9 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  createRoutes() {
+  public createRoutes(): express.Router {
     this.route.get(
-      "/:id",
+      "/:id(\\d+)",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.getUser.bind(this)
     );
@@ -312,12 +350,12 @@ export default class UserController implements IController {
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
-      "/:id/",
+      "/:id(\\d+)/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );
     this.route.get(
-      '/:id/payments/',
+      "/:id(\\d+)/payments/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
       this.findUserPayment.bind(this)
     );

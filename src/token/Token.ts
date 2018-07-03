@@ -1,3 +1,5 @@
+import IParsedTokenContents from "../interfaces/IParsedTokenContents";
+
 import * as JWT from "jsonwebtoken";
 
 /**
@@ -26,9 +28,9 @@ export class ServiceToken {
    * @returns {string} Token as a string
    * @memberof ServiceToken
    */
-  toString(): string {
+  public toString(): string {
     try {
-      const parsedTokenContents: ParsedTokenContents = {
+      const parsedTokenContents: IParsedTokenContents = {
         userId: this.userId,
         authenticatedTo: this.authenticatedTo.join(","),
         createdAt: this.createdAt
@@ -54,21 +56,10 @@ export function stringToServiceToken(token: string): ServiceToken {
   } catch (e) {
     throw e;
   }
-  const tokenContents: ParsedTokenContents = parsedToken as ParsedTokenContents;
+  const tokenContents: IParsedTokenContents = parsedToken as IParsedTokenContents;
   return new ServiceToken(
     tokenContents.userId,
     tokenContents.authenticatedTo.split(","),
     tokenContents.createdAt
   );
-}
-
-/**
- * Interface for parsed token contents.
- *
- * @interface ParsedTokenContents
- */
-interface ParsedTokenContents {
-  userId: number;
-  authenticatedTo: string;
-  createdAt: Date;
 }

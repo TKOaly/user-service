@@ -65,6 +65,16 @@
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
 				<h1 id="tko-ly-user-service">TKO-äly user service</h1>
+				<p><img src="https://img.shields.io/badge/maintainer-TKO--%C3%A4ly-yellow.svg" alt="Maintainer"></p>
+				<p><a href="https://travis-ci.org/TKOaly/user-service"><img src="https://api.travis-ci.org/TKOaly/user-service.svg?branch=master" alt="Build status (master)"></a></p>
+				<p><img src="https://img.shields.io/github/license/TKOaly/user-service.svg" alt="license"></p>
+				<p><a href="path/to/linked/page"><img src="https://david-dm.org/tkoaly/user-service/dev-status.svg" alt="devDependencies"></a>
+				<a href="path/to/linked/page"><img src="https://david-dm.org/tkoaly/user-service/status.svg" alt="dependencies"></a></p>
+				<p><a href="https://github.com/ellerbrock/typescript-badges/"><img src="https://badges.frapsoft.com/typescript/code/typescript.svg?v=101" alt="TypeScript"></a>
+				<img src="https://img.shields.io/github/languages/top/TKOaly/user-service.svg" alt="GitHub top language"></p>
+				<p><a href="https://github.com/TKOaly/user-service/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions welcome"></a>
+					<img src="https://img.shields.io/github/issues-pr/TKOaly/user-service.svg" alt="GitHub pull requests">
+				<img src="https://img.shields.io/github/issues/TKOaly/user-service.svg" alt="GitHub issues"></p>
 				<p>Microservice for authenticating users of members.tko-aly.fi.
 					<!-- START doctoc generated TOC please keep comment here to allow auto update -->
 					<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -90,6 +100,13 @@
 					<li>Run <code>yarn test</code>to run tests</li>
 					<li>Run <code>yarn start</code> or <code>yarn watch`</code></li>
 				</ol>
+				<h3 id="docker">Docker</h3>
+				<ol>
+					<li>Copy <code>.env.example</code> to <code>.env</code> and set environment variables</li>
+					<li>Execute <code>docker build -t user-service .</code> in the project&#39;s root folder to build the image</li>
+					<li>Execute <code>docker run -p PORT:PORT --env-file=.env -d --name user-service-container user-service</code> in the project&#39;s root folder to run the image. This will mount the project folder&#39;s .env file to the container. Replace <code>PORT</code> with the port you have set in the .env file.</li>
+				</ol>
+				<p><strong>Note: Since Docker v18.03, use <code>host.docker.internal</code> as the MySQL server address if you are using MacOS or Windows and running the MySQL server from the local machine.</strong></p>
 				<h2 id="endpoints">Endpoints</h2>
 				<h3 id="get-serviceidentifier-service-identifier-"><code>GET /?serviceIdentifier={service identifier}</code></h3>
 				<p>Shows the user a login form, that authenticates to a service identified by the service identifier.</p>
@@ -132,9 +149,6 @@
 						<a href="modules/_controllers_authcontroller_.html">"controllers/<wbr>Auth<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_controllers_icontroller_.html">"controllers/IController"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_controllers_logincontroller_.html">"controllers/<wbr>Login<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -144,9 +158,6 @@
 						<a href="modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_dao_dao_.html">"dao/<wbr>Dao"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -154,6 +165,30 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_enum_userrolestring_.html">"enum/<wbr>User<wbr>Role<wbr>String"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_icontroller_.html">"interfaces/IController"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_idao_.html">"interfaces/IDao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iparsedtokencontents_.html">"interfaces/IParsed<wbr>Token<wbr>Contents"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iservice_.html">"interfaces/IService"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iuserdatabaseobject_.html">"interfaces/IUser<wbr>Database<wbr>Object"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iuserroles_.html">"interfaces/IUser<wbr>Roles"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_ivalidator_.html">"interfaces/IValidator"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_payment_.html">"models/<wbr>Payment"</a>
@@ -183,13 +218,16 @@
 						<a href="modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_helpers_.html">"utils/<wbr>Helpers"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_serviceerror_.html">"utils/<wbr>Service<wbr>Error"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_validators_ivalidator_.html">"validators/IValidator"</a>
+						<a href="modules/_validators_paymentvalidator_.html">"validators/<wbr>Payment<wbr>Validator"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_validators_uservalidator_.html">"validators/<wbr>User<wbr>Validator"</a>

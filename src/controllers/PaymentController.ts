@@ -1,12 +1,13 @@
 import * as express from "express";
-import UserService from "../services/UserService";
-import ServiceResponse from "../utils/ServiceResponse";
-import { IController } from "./IController";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import PaymentService from "../services/PaymentService";
+import UserRoleString from "../enum/UserRoleString";
+import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
+import PaymentService from "../services/PaymentService";
+import UserService from "../services/UserService";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import ServiceResponse from "../utils/ServiceResponse";
+import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
-import { compareRoles } from "../models/User";
 
 /**
  * Payment controller.
@@ -16,9 +17,30 @@ import { compareRoles } from "../models/User";
  * @implements {IController}
  */
 export default class PaymentController implements IController {
-  route: express.Router;
-  authorizeMiddleware: AuthorizeMiddleware;
-  paymentValidator: PaymentValidator;
+  /**
+   * Router
+   *
+   * @private
+   * @type {express.Router}
+   * @memberof PaymentController
+   */
+  private route: express.Router;
+  /**
+   * Authorize middleware
+   *
+   * @private
+   * @type {AuthorizeMiddleware}
+   * @memberof PaymentController
+   */
+  private authorizeMiddleware: AuthorizeMiddleware;
+  /**
+   * Payment validator
+   *
+   * @private
+   * @type {PaymentValidator}
+   * @memberof PaymentController
+   */
+  private paymentValidator: PaymentValidator;
 
   /**
    * Creates an instance of PaymentController.
@@ -44,7 +66,7 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async createPayment(req: express.Request, res: express.Response) {
+  public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       this.paymentValidator.validateCreate(req.body);
       const paymentIds: number[] = await this.paymentService.createPayment(
@@ -74,7 +96,7 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async modifyPayment(req: express.Request, res: express.Response) {
+  public async modifyPayment(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       // PATCH request requires the whole object to be passed
       if (
@@ -132,11 +154,12 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getAllPayments(req: express.Request & IASRequest, res: express.Response) {
-    if (compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
-      return res.
-        status(403).
-        json(new ServiceResponse(null, 'Forbidden'));
+  public async getAllPayments(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
     try {
       const payments: Payment[] = await this.paymentService.fetchAllPayments();
@@ -156,16 +179,20 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  async getSinglePayment(req: express.Request & IASRequest, res: express.Response) {
+  public async getSinglePayment(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
     try {
       const payment: Payment = await this.paymentService.fetchPayment(
         req.params.id
       );
 
-      if (payment.payer_id != req.authorization.user.id && compareRoles(req.authorization.user.role, 'yllapitaja') < 0) {
-        return res
-          .status(403)
-          .json(new ServiceResponse(null, 'Forbidden'));
+      if (
+        payment.payer_id !== req.authorization.user.id &&
+        compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
+      ) {
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
       if (payment) {
         return res.status(200).json(new ServiceResponse(payment, null, true));
@@ -186,7 +213,7 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  createRoutes() {
+  public createRoutes(): express.Router {
     this.route.get(
       "/:id(\\d+)/",
       this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),

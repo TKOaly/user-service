@@ -1,6 +1,25 @@
 # TKO-äly user service
 
-![Build status](https://api.travis-ci.org/TKOaly/user-service.svg?branch=master)
+![Maintainer](https://img.shields.io/badge/maintainer-TKO--%C3%A4ly-yellow.svg)
+
+[![Build status (master)](https://api.travis-ci.org/TKOaly/user-service.svg?branch=master)](https://travis-ci.org/TKOaly/user-service)
+
+Test coverage (master) [![codecov](https://codecov.io/gh/TKOaly/user-service/branch/master/graph/badge.svg)](https://codecov.io/gh/TKOaly/user-service)
+
+Test coverage (dev) [![codecov](https://codecov.io/gh/TKOaly/user-service/branch/dev/graph/badge.svg)](https://codecov.io/gh/TKOaly/user-service)
+
+![license](https://img.shields.io/github/license/TKOaly/user-service.svg)
+
+[![devDependencies](https://david-dm.org/tkoaly/user-service/dev-status.svg)](path/to/linked/page)
+[![dependencies](https://david-dm.org/tkoaly/user-service/status.svg)](path/to/linked/page)
+
+[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
+![GitHub top language](https://img.shields.io/github/languages/top/TKOaly/user-service.svg)
+
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/TKOaly/user-service/issues)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/TKOaly/user-service.svg)
+![GitHub issues](https://img.shields.io/github/issues/TKOaly/user-service.svg)
+
 
 Microservice for authenticating users of members.tko-aly.fi.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->

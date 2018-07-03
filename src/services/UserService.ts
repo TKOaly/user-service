@@ -1,8 +1,10 @@
+import * as bcrypt from "bcrypt";
+import UserDao from "../dao/UserDao";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import User from "../models/User";
+
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
-import User from "../models/User";
-import UserDao from "../dao/UserDao";
-import * as bcrypt from "bcrypt";
 
 /**
  * User service.
@@ -24,8 +26,8 @@ export default class UserService {
    * @returns
    * @memberof UserService
    */
-  async fetchUser(userId: number): Promise<User> {
-    let result: User = await this.userDao.findOne(userId);
+  public async fetchUser(userId: number): Promise<User> {
+    const result: IUserDatabaseObject = await this.userDao.findOne(userId);
     if (!result) {
       throw new ServiceError(404, "Not found");
     }
@@ -39,9 +41,9 @@ export default class UserService {
    * @returns {Promise<User[]>}
    * @memberof UserService
    */
-  async fetchAllUsers(): Promise<User[]> {
-    const results: User[] = await this.userDao.findAll();
-    return results.map(dbObj => new User(dbObj));
+  public async fetchAllUsers(): Promise<User[]> {
+    const results: IUserDatabaseObject[] = await this.userDao.findAll();
+    return results.map((dbObj: IUserDatabaseObject) => new User(dbObj));
   }
 
   /**
@@ -50,9 +52,9 @@ export default class UserService {
    * @returns {Promise<User[]>}
    * @memberof UserService
    */
-  async fetchAllUnpaidUsers(): Promise<User[]> {
-    const results: User[] = await this.userDao.findAllByUnpaidPayment();
-    return results.map(dbObj => new User(dbObj));
+  public async fetchAllUnpaidUsers(): Promise<User[]> {
+    const results: IUserDatabaseObject[] = await this.userDao.findAllByUnpaidPayment();
+    return results.map((dbObj: IUserDatabaseObject) => new User(dbObj));
   }
 
   /**
@@ -62,67 +64,77 @@ export default class UserService {
    * @returns {Promise<User[]>}
    * @memberof UserService
    */
-  async searchUsers(searchTerm: string): Promise<User[]> {
-    let results: User[] = await this.userDao.findWhere(searchTerm);
+  public async searchUsers(searchTerm: string): Promise<User[]> {
+    const results: IUserDatabaseObject[] = await this.userDao.findWhere(searchTerm);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
 
-    return results.map(res => new User(res));
+    return results.map((res: IUserDatabaseObject) => new User(res));
   }
 
-  async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
+  /**
+   * Fetches users with selected fields and those who match the conditions.
+   *
+   * @param {string[]} fields Fields
+   * @param {string[]} [conditions] Conditions
+   * @returns {Promise<User[]>} List of users.
+   * @memberof UserService
+   */
+  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
-      conditions.forEach(condition => {
-        switch(condition) {
-          case 'member':
-            conditionQuery.push('membership <> \'ei-jasen\'');
+      conditions.forEach((condition: string) => {
+        switch (condition) {
+          case "member":
+            conditionQuery.push("membership <> 'ei-jasen'");
             break;
-          case 'nonmember':
-            conditionQuery.push('membership = \'ei-jasen\'');
+          case "nonmember":
+            conditionQuery.push("membership = 'ei-jasen'");
             break;
-          case 'paid':
-            conditionQuery.push('paid is not null');
+          case "paid":
+            conditionQuery.push("paid is not null");
             break;
-          case 'nonpaid':
-            conditionQuery.push('(paid <> 1 or paid is null)');
+          case "nonpaid":
+            conditionQuery.push("(paid <> 1 or paid is null)");
             break;
-          case 'revoked':
-            conditionQuery.push('deleted = 1')
+          case "revoked":
+            conditionQuery.push("deleted = 1");
+            break;
+          default:
             break;
         }
       });
     }
 
-    let results = await this.userDao.findAll(fields, conditionQuery);
+    const results: IUserDatabaseObject[] = await this.userDao.findAll(fields, conditionQuery);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
 
-    return results.map(u => new User(u));
+    return results.map((u: IUserDatabaseObject) => new User(u));
   }
 
   /**
    * Returns username with username and password.
    *
-   * @param {string} username
-   * @param {string} password
-   * @returns {Promise<User>}
+   * @param {string} username Username
+   * @param {string} password Password
+   * @returns {Promise<User>} User
    * @memberof UserService
    */
-  async getUserWithUsernameAndPassword(
+  public async getUserWithUsernameAndPassword(
     username: string,
     password: string
   ): Promise<User> {
-    const dbUser: User = await this.userDao.findByUsername(username);
+    const dbUser: IUserDatabaseObject = await this.userDao.findByUsername(username);
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
 
     const user: User = new User(dbUser);
-    let isPasswordCorrect: boolean = await validatePassword(
+    const isPasswordCorrect: boolean = await validatePassword(
       password,
       user.salt,
       user.hashedPassword
@@ -147,38 +159,38 @@ export default class UserService {
    * Checks if username is available.
    *
    * @param {string} username
-   * @returns {Promise<boolean>}
+   * @returns {Promise<boolean>} True if the username is available
    * @memberof UserService
    */
-  async checkUsernameAvailability(username: string): Promise<boolean> {
-    return this.userDao.findByUsername(username).then(res => !res);
+  public async checkUsernameAvailability(username: string): Promise<boolean> {
+    return this.userDao.findByUsername(username).then((res: IUserDatabaseObject) => !res);
   }
 
   /**
    * Creates an user.
    *
-   * @param {User} user
-   * @param {string} password
+   * @param {User} user User object
+   * @param {string} password Password
    * @returns {Promise<number[]>}
    * @memberof UserService
    */
-  async createUser(user: User, password: string): Promise<number[]> {
+  public async createUser(user: User, password: string): Promise<number[]> {
     user.hashedPassword = await bcrypt.hash(password, 13);
     let newUser: User = new User({});
     newUser = Object.assign(newUser, user);
-    return await this.userDao.save(newUser);
+    return await this.userDao.save(newUser.getDatabaseObject());
   }
 
   /**
    * Updates an user.
    *
-   * @param {number} userId
-   * @param {User} udpatedUser
-   * @param {string} [password]
-   * @returns {Promise<boolean>}
+   * @param {number} userId User ID
+   * @param {User} udpatedUser User data
+   * @param {string} [password] Password
+   * @returns {Promise<boolean>} True if the operation succeeds.
    * @memberof UserService
    */
-  async updateUser(
+  public async updateUser(
     userId: number,
     udpatedUser: User,
     password?: string
@@ -186,9 +198,10 @@ export default class UserService {
     // re-crypt password
     if (password) {
       udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
+      udpatedUser.salt = "0";
     }
     let newUser: User = new User({});
     newUser = Object.assign(newUser, udpatedUser);
-    return await this.userDao.update(userId, newUser);
+    return await this.userDao.update(userId, newUser.getDatabaseObject());
   }
 }

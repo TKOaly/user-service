@@ -1,34 +1,36 @@
-import IValidator from "./IValidator";
-import UserService from "../services/UserService";
-import User from "../models/User";
-import ServiceError from "../utils/ServiceError";
 import * as validator from "validator";
+import UserRoleString from "../enum/UserRoleString";
+import IValidator from "../interfaces/IValidator";
+import User from "../models/User";
+import UserService from "../services/UserService";
+import ServiceError from "../utils/ServiceError";
+import { stringToBoolean } from "../utils/UserHelpers";
 
 /**
  * Additional user data.
  *
- * @interface AdditionalUserData
+ * @interface IAdditionalUserData
  */
-interface AdditionalUserData {
+interface IAdditionalUserData {
   /**
    * Password.
    *
    * @type {string} Password
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   password1: string;
   /**
    * Password (typed again).
    *
    * @type {string} Password
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   password2: string;
   /**
    * Is the user deleted or not.
    *
    * @type {boolean}
-   * @memberof AdditionalUserData
+   * @memberof IAdditionalUserData
    */
   deleted: boolean;
 }
@@ -70,10 +72,12 @@ export default class UserValidator implements IValidator<User> {
   /**
    * Validates user creation.
    *
-   * @param {(User & AdditionalUserData)} newUser
+   * @param {(User & IAdditionalUserData)} newUser
    * @memberof UserValidator
    */
-  async validateCreate(newUser: User & AdditionalUserData) {
+  public async validateCreate(
+    newUser: User & IAdditionalUserData
+  ): Promise<void> {
     // Discard user id
     delete newUser.id;
 
@@ -103,16 +107,17 @@ export default class UserValidator implements IValidator<User> {
       !newUser.email ||
       !validator.isEmail(newUser.email) ||
       !validator.isLength(newUser.email, {
-        min: 1,
-        max: 255
+        max: 255,
+        min: 1
       })
     ) {
       throw new ServiceError(400, "Malformed email");
     }
 
     newUser.membership = "ei-jasen";
-    newUser.role = "kayttaja";
+    newUser.role = UserRoleString.Kayttaja;
     newUser.deleted = false;
+    newUser.isTKTL = stringToBoolean(newUser.isTKTL);
 
     if (!validator.equals(newUser.password1, newUser.password2)) {
       throw new ServiceError(400, "Passwords do not match");
@@ -126,70 +131,90 @@ export default class UserValidator implements IValidator<User> {
    * @param {User} newUser
    * @memberof UserValidator
    */
-  async validateUpdate(
+  public async validateUpdate(
     userId: number,
-    newUser: User & AdditionalUserData,
+    newUser: User & IAdditionalUserData,
     modifier: User
-  ) {
-    // Self-edit
-    if (userId === modifier.id) {
-      newUser.id = userId;
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedSelfEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
-        }
-      });
-    } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedJVEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
-        }
-      });
-    } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
-      Object.keys(newUser).forEach((key: string) => {
-        if (allowedAdminEdit.indexOf(key) < 0 && key !== "id") {
-          throw new ServiceError(403, "Forbidden modify action");
-        }
-      });
-    } else {
-      throw new ServiceError(403, "Forbidden modify action");
-    }
-
+  ): Promise<void> {
     // Remove information that hasn't changed
     const oldUser: User = await this.userService.fetchUser(userId);
     Object.keys(newUser).forEach((k: string) => {
-      if (oldUser[k] == newUser[k]) {
+      if (oldUser[k] === newUser[k]) {
         delete newUser[k];
       }
     });
 
-    if (newUser.username) {
-      // Test username
-      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-        newUser.username
-      );
-      if (!usernameAvailable) {
-        throw new ServiceError(400, "Username already taken");
-      }
+    const error: string = "Forbidden modify action";
+    if (userId === modifier.id) {
+      newUser.id = userId;
+      checkModifyPermission(newUser, allowedSelfEdit);
+    } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
+      checkModifyPermission(newUser, allowedJVEdit);
+    } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
+      checkModifyPermission(newUser, allowedAdminEdit);
+    } else {
+      throw new ServiceError(403, error);
     }
 
+    await checkUsernameAvailability(newUser);
+
     // Test email
-    if (newUser.email) {
-      if (
-        !validator.isEmail(newUser.email) ||
+    if (
+      newUser.email &&
+      (!validator.isEmail(newUser.email) ||
         !validator.isLength(newUser.email, {
-          min: 1,
-          max: 255
-        })
-      ) {
-        throw new ServiceError(400, "Malformed email");
-      }
+          max: 255,
+          min: 1
+        }))
+    ) {
+      throw new ServiceError(400, "Malformed email");
+    }
+
+    if (newUser.isTKTL) {
+      newUser.isTKTL = stringToBoolean(newUser.isTKTL);
+    }
+
+    if (newUser.isHYYMember) {
+      newUser.isHYYMember = stringToBoolean(newUser.isHYYMember);
     }
 
     if (newUser.password1 && newUser.password2) {
       if (!validator.equals(newUser.password1, newUser.password2)) {
         throw new ServiceError(400, "Passwords do not match");
       }
+    }
+  }
+}
+
+/**
+ * Checks modify permission.
+ *
+ * @param {User} user
+ * @param {string[]} allowedEdits
+ */
+function checkModifyPermission(user: User, allowedEdits: string[]): void {
+  const error: string = "Forbidden modify action";
+  Object.keys(user).forEach((key: string) => {
+    if (allowedEdits.indexOf(key) < 0 && key !== "id") {
+      throw new ServiceError(403, error);
+    }
+  });
+}
+
+/**
+ * Checks for username availability.
+ *
+ * @param {User} newUser User object
+ * @returns {Promise<void>}
+ */
+async function checkUsernameAvailability(newUser: User): Promise<void> {
+  if (newUser.username) {
+    // Test username
+    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
+      newUser.username
+    );
+    if (!usernameAvailable) {
+      throw new ServiceError(400, "Username already taken");
     }
   }
 }

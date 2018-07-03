@@ -1,6 +1,6 @@
-import * as Knex from "knex";
-import Dao from "./Dao";
 import * as Promise from "bluebird";
+import * as Knex from "knex";
+import IDao from "../interfaces/IDao";
 import { IPayment } from "../models/Payment";
 
 /**
@@ -8,9 +8,9 @@ import { IPayment } from "../models/Payment";
  *
  * @export
  * @class PaymentDao
- * @implements {Dao<Payment>}
+ * @implements {Dao<IPayment>}
  */
-export default class PaymentDao implements Dao<IPayment> {
+export default class PaymentDao implements IDao<IPayment> {
   /**
    * Creates an instance of PaymentDao.
    * @param {Knex} knex
@@ -25,7 +25,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findOne(id: number): Promise<IPayment> {
+  public findOne(id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ id })
@@ -36,17 +36,20 @@ export default class PaymentDao implements Dao<IPayment> {
    * Finds a payment by payer.
    *
    * @param {number} payer_id
-   * @param {validPayment} only searches for valid payments if true
+   * @param {boolean} [validPayment] If set to true, only searches for valid payments
    * @returns {Promise<IPayment>}
    * @memberof PaymentDao
    */
-  findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
-    let query = this.knex("payments")
+  public findByPayer(
+    payer_id: number,
+    validPayment?: boolean
+  ): Promise<IPayment> {
+    let query: Knex.QueryInterface = this.knex("payments")
       .select()
       .where({ payer_id });
 
     if (validPayment === true) {
-      query = query.andWhere('valid_until', '>=', this.knex.fn.now());
+      query = query.andWhere("valid_until", ">=", this.knex.fn.now());
     }
 
     return query.first();
@@ -56,10 +59,10 @@ export default class PaymentDao implements Dao<IPayment> {
    * Finds a payment by confirmer.
    *
    * @param {number} confirmer_id
-   * @returns {Promise<IPayment>}
+   * @returns {Promise<IPayment>} Payment by confirmer.
    * @memberof PaymentDao
    */
-  findByConfirmer(confirmer_id: number): Promise<IPayment> {
+  public findByConfirmer(confirmer_id: number): Promise<IPayment> {
     return this.knex("payments")
       .select()
       .where({ confirmer_id })
@@ -72,7 +75,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<IPayment[]>}
    * @memberof PaymentDao
    */
-  findAll(): Promise<IPayment[]> {
+  public findAll(): Promise<IPayment[]> {
     return this.knex("payments").select();
   }
 
@@ -83,7 +86,7 @@ export default class PaymentDao implements Dao<IPayment> {
    * @returns {Promise<boolean>}
    * @memberof PaymentDao
    */
-  remove(id: number): Promise<boolean> {
+  public remove(id: number): Promise<boolean> {
     return this.knex("payments")
       .delete()
       .where({ id });
@@ -92,11 +95,11 @@ export default class PaymentDao implements Dao<IPayment> {
   /**
    * Updates a paymemt.
    *
-   * @param {Payment} entity Payment
-   * @returns {Promise<boolean>}
+   * @param {IPayment} entity Payment
+   * @returns {Promise<boolean>} True if update was successful.
    * @memberof PaymentDao
    */
-  update(entity: IPayment): Promise<boolean> {
+  public update(entity: IPayment): Promise<boolean> {
     return this.knex("payments")
       .update(entity)
       .where({ id: entity.id });
@@ -105,11 +108,68 @@ export default class PaymentDao implements Dao<IPayment> {
   /**
    * Saves a payment.
    *
-   * @param {Payment} entity Payment
-   * @returns {Promise<number[]>}
+   * @param {IPayment} entity Payment
+   * @returns {Promise<number[]>} Inserted payment ID.
    * @memberof PaymentDao
    */
-  save(entity: IPayment): Promise<number[]> {
+  public save(entity: IPayment): Promise<number[]> {
     return this.knex("payments").insert(entity);
+  }
+
+  /**
+   * Finds payments by payment type.
+   *
+   * @private
+   * @param {string} payment_type Payment type
+   * @returns {Promise<IPayment[]>} List of payments
+   * @memberof PaymentDao
+   */
+  public findPaymentsByPaymentType(payment_type: string): Promise<IPayment[]> {
+    return this.knex("payments")
+      .select()
+      .where({ payment_type });
+  }
+
+  /**
+   * Confirms a payment.
+   *
+   * @param {number} payment_id Payment ID
+   * @param {number} confirmer_id Confirmer ID
+   * @returns {Promise<boolean>} True if the update was successful.
+   * @memberof PaymentDao
+   */
+  public confirmPayment(
+    payment_id: number,
+    confirmer_id: number
+  ): Promise<boolean> {
+    return this.knex("payments")
+      .update({
+        paid: this.knex.fn.now(),
+        confirmer_id
+      })
+      .where({ id: payment_id });
+  }
+
+  /**
+   * Marks a payment paid by cash.
+   *
+   * @param {number} payment_id Payment ID
+   * @param {number} confirmer_id Confirmer ID
+   * @param {string} payment_type Payment type
+   * @returns {Promise<boolean>} True if the update was successful.
+   * @memberof PaymentDao
+   */
+  public makePaid(
+    payment_id: number,
+    confirmer_id: number,
+    payment_type: string
+  ): Promise<boolean> {
+    return this.knex("payments")
+      .update({
+        payment_type,
+        paid: this.knex.fn.now(),
+        confirmer_id
+      })
+      .where({ id: payment_id });
   }
 }

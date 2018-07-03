@@ -11,10 +11,8 @@
     "noImplicitAny": false,
     "outDir": "./dist/",
     "rootDirs": ["./src"],
-    "lib": ["es6", "dom", "esnext"],
+    "lib": ["es6", "dom", "esnext"]
   },
-  "include": [
-    "src/**/*.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
