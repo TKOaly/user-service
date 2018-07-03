@@ -19,8 +19,8 @@ before_install:
 
 install:
   - yarn install --dev
-  - node_modules/.bin/knex migrate:latest
-  - node_modules/.bin/knex seed:run
+  - ./node_modules/.bin/knex migrate:latest
+  - ./node_modules/.bin/knex seed:run
 
 script:
   - yarn lint
