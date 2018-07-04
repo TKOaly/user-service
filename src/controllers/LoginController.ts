@@ -6,7 +6,6 @@ import User from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
-import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
 
 /**
@@ -54,9 +53,14 @@ export default class LoginController implements IController {
    * @returns {(Promise<express.Response | void>)}
    * @memberof LoginController
    */
-  public async getLoginView(req: express.Request | any, res: express.Response): Promise<express.Response | void> {
+  public async getLoginView(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response | void> {
     if (!req.query.serviceIdentifier) {
-      return res.status(400).send("Service identifier missing");
+      return res.status(400).render("serviceError", {
+        error: "Missing service identifier"
+      });
     }
 
     try {
@@ -81,7 +85,9 @@ export default class LoginController implements IController {
         loginRedirect: req.query.loginRedirect || undefined
       });
     } catch (err) {
-      return res.status(400).send(err.message);
+      return res.status(400).render("serviceError", {
+        error: err.message
+      });
     }
   }
 
@@ -98,9 +104,9 @@ export default class LoginController implements IController {
     res: express.Response
   ): Promise<express.Response | void> {
     if (!req.query.serviceIdentifier) {
-      return res
-        .status(400)
-        .json(new ServiceError(null, "No service identifier"));
+      return res.status(400).render("serviceError", {
+        error: "Missing service identifier"
+      });
     }
 
     if (req.query.serviceIdentifier === "*" && req.query.redirect) {
@@ -114,9 +120,9 @@ export default class LoginController implements IController {
         req.query.serviceIdentifier
       );
     } catch (e) {
-      return res
-        .status(e.httpStatusCode || 500)
-        .json(new ServiceResponse(null, e.message));
+      return res.status(e.httpStatusCode || 500).render("serviceError", {
+        error: e.message
+      });
     }
 
     const token: string = this.authService.removeServiceAuthenticationToToken(
@@ -130,7 +136,8 @@ export default class LoginController implements IController {
 
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");
-    res.render("logout", { serviceName: service.displayName });
+
+    return res.render("logout", { serviceName: service.displayName });
   }
 
   /**
@@ -141,7 +148,10 @@ export default class LoginController implements IController {
    * @returns
    * @memberof LoginController
    */
-  public async login(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  public async login(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response | void> {
     if (
       !req.body.serviceIdentifier ||
       !req.body.username ||
@@ -196,9 +206,12 @@ export default class LoginController implements IController {
         // Something is missing here..?
       }
     } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
+      return res.status(500).render("login", {
+        service,
+        errors: [e.message],
+        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        loginRedirect: req.query.loginRedirect || undefined
+      });
     }
 
     // Removes data that are not needed when making a request
@@ -209,9 +222,12 @@ export default class LoginController implements IController {
 
     // Set session
     if (!user.id) {
-      return res
-        .status(500)
-        .send("Authentication failure: User ID is undefined.");
+      return res.status(500).render("login", {
+        service,
+        errors: ["Authentication failure: User ID is undefined."],
+        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        loginRedirect: req.query.loginRedirect || undefined
+      });
     }
 
     req.session.user = {
@@ -226,7 +242,7 @@ export default class LoginController implements IController {
     } as ISessionUser;
 
     // Render GDPR template, that shows required personal information.
-    res.render("gdpr", {
+    return res.render("gdpr", {
       personalInformation: keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect
@@ -243,7 +259,10 @@ export default class LoginController implements IController {
    * @returns
    * @memberof LoginController
    */
-  public async loginConfirm(req: express.Request | any, res: express.Response): Promise<express.Response | void> {
+  public async loginConfirm(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response | void> {
     const body: {
       permission: string;
     } =
@@ -280,7 +299,7 @@ export default class LoginController implements IController {
 
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");
-    res.redirect(redirectTo);
+    return res.redirect(redirectTo);
   }
 
   /**
@@ -307,7 +326,7 @@ export default class LoginController implements IController {
     );
     this.route.get(
       "/logout",
-      this.authorizationMiddleware.authorize.bind(this.authorizationMiddleware),
+      this.authorizationMiddleware.authorize(false).bind(this.authorizationMiddleware),
       this.logOut.bind(this)
     );
     return this.route;
