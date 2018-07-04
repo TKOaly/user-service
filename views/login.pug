@@ -27,11 +27,11 @@ html(lang="en")
           .form-group
             label(for='username')="Username"
             - let unameVal = loggedUser || '';
-            input(required type='text', value=unameVal name='username', id='username' placeholder='Username')
+            input.input(required type='text', value=unameVal name='username', id='username' placeholder='Username')
           .form-group
             label(for='password')="Password"
-            input(required type='password', name='password', id='password' placeholder='Password')
+            input.input(required type='password', name='password', id='password' placeholder='Password')
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           input(type='hidden', name='loginRedirect', value=loginRedirect)
           .form-group
-            input.accept(type='submit', name='accept', value='Login')
+            input.input.accept(type='submit', name='accept', value='Login')

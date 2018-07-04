@@ -112,8 +112,8 @@ form#loginForm {
   align-items: center;
 }
 
-input,
-button {
+input.input,
+button.button {
   width: 60%;
   height: 40px;
   text-align: center;

@@ -16,7 +16,7 @@ html(lang="en")
         center="This tool will calculate service permissions for you."
         #wrapper
             #wrapper-left
-                form(action='/api/auth/calcPermissions', method='POST')
+                form#permissionForm(action='/api/auth/calcPermissions', method='POST')
                     ul.permissions
                         each val in userKeys
                             li.permissions
