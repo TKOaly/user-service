@@ -47,14 +47,12 @@ export default class AuthorizeMiddleware {
 
   /**
    * Authorizes the user.
+   * 
+   * @param {boolean} returnAsJson Return as JSOn 
    *
-   * @param {IASRequest} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
-   * @returns
    * @memberof AuthorizeMiddleware
    */
-  public authorize = (returnAsJson: boolean = true) => async (
+  public authorize = (returnAsJson: boolean): any => async (
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
@@ -113,7 +111,7 @@ export default class AuthorizeMiddleware {
         });
       }
     }
-  };
+  }
 
   /**
    * Loads the token.

@@ -336,27 +336,27 @@ export default class UserController implements IController {
   public createRoutes(): express.Router {
     this.route.get(
       "/:id(\\d+)",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getUser.bind(this)
     );
     this.route.get(
       "/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getAllUsers.bind(this)
     );
     this.route.get(
       "/payments/unpaid",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
       "/:id(\\d+)/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );
     this.route.get(
       "/:id(\\d+)/payments/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.findUserPayment.bind(this)
     );
     this.route.post("/", this.createUser.bind(this));

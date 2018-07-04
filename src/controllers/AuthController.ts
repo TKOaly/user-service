@@ -248,7 +248,7 @@ export default class AuthController implements IController {
   public createRoutes(): express.Router {
     this.route.get(
       "/check",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.check.bind(this)
     );
     this.route.post(

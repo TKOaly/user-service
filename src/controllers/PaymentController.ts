@@ -216,22 +216,22 @@ export default class PaymentController implements IController {
   public createRoutes(): express.Router {
     this.route.get(
       "/:id(\\d+)/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getSinglePayment.bind(this)
     );
     this.route.get(
       "/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getAllPayments.bind(this)
     );
     this.route.patch(
       "/:id(\\d+)/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.modifyPayment.bind(this)
     );
     this.route.post(
       "/",
-      this.authorizeMiddleware.authorize.bind(this.authorizeMiddleware),
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.createPayment.bind(this)
     );
     return this.route;
