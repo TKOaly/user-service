@@ -6,6 +6,7 @@ import User from "../models/User";
 import { AuthenticationService } from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
 /**
@@ -311,16 +312,19 @@ export default class LoginController implements IController {
   public createRoutes(): express.Router {
     this.route.get(
       "/",
+      cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.getLoginView.bind(this)
     );
     this.route.post(
       "/login",
+      cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.login.bind(this)
     );
     this.route.post(
       "/login_confirm",
+      cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.loginConfirm.bind(this)
     );
