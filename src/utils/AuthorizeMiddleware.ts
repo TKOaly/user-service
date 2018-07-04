@@ -47,18 +47,16 @@ export default class AuthorizeMiddleware {
 
   /**
    * Authorizes the user.
+   * 
+   * @param {boolean} returnAsJson Return as JSOn 
    *
-   * @param {IASRequest} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
-   * @returns
    * @memberof AuthorizeMiddleware
    */
-  public async authorize(
+  public authorize = (returnAsJson: boolean): any => async (
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ): Promise<express.Response | any> {
+  ): Promise<express.Response | any> => {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
@@ -72,9 +70,15 @@ export default class AuthorizeMiddleware {
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        if (returnAsJson) {
+          return res
+            .status(e.httpStatusCode || 500)
+            .json(new ServiceResponse(null, e.message));
+        } else {
+          return res.status(e.httpStatusCode || 500).render("serviceError", {
+            error: e.message
+          });
+        }
       }
     } else if (req.cookies.token) {
       try {
@@ -88,12 +92,24 @@ export default class AuthorizeMiddleware {
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        if (returnAsJson) {
+          return res
+            .status(e.httpStatusCode || 500)
+            .json(new ServiceResponse(null, e.message));
+        } else {
+          return res.status(e.httpStatusCode || 500).render("serviceError", {
+            error: e.message
+          });
+        }
       }
     } else {
-      return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
+      if (returnAsJson) {
+        return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
+      } else {
+        return res.status(401).render("serviceError", {
+          error: "Unauthorized"
+        });
+      }
     }
   }
 

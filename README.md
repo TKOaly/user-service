@@ -59,11 +59,20 @@ Microservice for authenticating users of members.tko-aly.fi.
 
 ### `GET /?serviceIdentifier={service identifier}`
 
-Shows the user a login form, that authenticates to a service identified by the service identifier.
-
-If the user is already authenticated to the service, the form will redirect the user to the service specified.
+Shows the user a login form, that authenticates to a service identified by the service identifier. If the user is already authenticated to the service, the form will redirect the user to the service specified.
 
 ![Login page](img/login_page.png)
+
+If the user does not input a service identifier, the following view is shown:
+
+![Missing service identifier page](img/missing_service_identifier.png)
+
+If the login fails, the following view is shown:
+
+![Login error page](img/login_page_error.png)
+
+After clicking login, the user is redirected to the permission prompt page:
+
 ![Permission page](img/permission.png)
 
 ### `POST /api/auth/requestPermissions`

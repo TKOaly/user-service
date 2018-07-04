@@ -10,9 +10,8 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Logout
+          div#title Service error
       #content
-        .success-message
-          span.success-title="Success"
-          span.success-text='You\'ve been logged out from ' + serviceName + '.'
-        a(href="https://tko-aly.fi") Return to TKO-äly website
+        div.error-message
+            span.error-title="Error"
+            span.error-text=error
