@@ -49,7 +49,7 @@ describe("AuthController", () => {
   });
 
   describe("Authentication", () => {
-    it("Authenticates with correct credentials", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Authenticates with correct credentials", (done: Mocha.Done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -65,7 +65,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("Does not authenticate with incorrect credentials", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", (done: Mocha.Done) => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -83,79 +83,87 @@ describe("AuthController", () => {
   });
 
   describe("Service check", () => {
-    it("Checks that the correct service has been authenticated to", (done: Mocha.Done) => {
-      // The default credentials authenticate to KJYR
-      chai
-        .request(app)
-        .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
+    it(
+      "POST /api/auth/authenticate : " +
+        "Checks that the correct service has been authenticated to",
+      (done: Mocha.Done) => {
+        // The default credentials authenticate to KJYR
+        chai
+          .request(app)
+          .post(authUrl + "/authenticate")
+          .send(correctCreds)
+          .end((err: any, res: ChaiHttp.Response) => {
+            should.not.exist(err);
+            res.status.should.equal(200);
+            should.exist(res.body.payload);
+            should.exist(res.body.payload.token);
+            should.exist(res.body.ok);
+            res.body.ok.should.equal(true);
 
-          // Token to be passed forwards
-          const token: string = res.body.payload.token;
+            // Token to be passed forwards
+            const token: string = res.body.payload.token;
 
-          // Next, check that the user is authenticated to KJYR (as an example)
-          chai
-            .request(app)
-            .get(authUrl + "/check")
-            .set("Authorization", "Bearer " + token)
-            .set("service", kjyrIdentifier)
-            .end((err: any, res: ChaiHttp.Response) => {
-              should.not.exist(err);
-              res.status.should.equal(200);
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.not.exist(res.body.payload);
-              res.body.ok.should.equal(true);
-              res.body.message.should.equal("Success");
-              done();
-            });
-        });
-    });
+            // Next, check that the user is authenticated to KJYR (as an example)
+            chai
+              .request(app)
+              .get(authUrl + "/check")
+              .set("Authorization", "Bearer " + token)
+              .set("service", kjyrIdentifier)
+              .end((err: any, res: ChaiHttp.Response) => {
+                should.not.exist(err);
+                res.status.should.equal(200);
+                should.exist(res.body.ok);
+                should.exist(res.body.message);
+                should.not.exist(res.body.payload);
+                res.body.ok.should.equal(true);
+                res.body.message.should.equal("Success");
+                done();
+              });
+          });
+      }
+    );
 
-    it("Check that the user has not been authenticated to an incorrect service", (done: Mocha.Done) => {
-      // The default credentials authenticate to KJYR
-      chai
-        .request(app)
-        .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
+    it(
+      "POST /api/auth/authenticate : " +
+        "Check that the user has not been authenticated to an incorrect service",
+      (done: Mocha.Done) => {
+        // The default credentials authenticate to KJYR
+        chai
+          .request(app)
+          .post(authUrl + "/authenticate")
+          .send(correctCreds)
+          .end((err: any, res: ChaiHttp.Response) => {
+            should.not.exist(err);
+            res.status.should.equal(200);
+            should.exist(res.body.payload);
+            should.exist(res.body.payload.token);
+            should.exist(res.body.ok);
+            res.body.ok.should.equal(true);
 
-          // Token to be passed forwards
-          const token: string = res.body.payload.token;
+            // Token to be passed forwards
+            const token: string = res.body.payload.token;
 
-          // Next, check that the user is not authenticated to calendar (as an example)
-          chai
-            .request(app)
-            .get(authUrl + "/check")
-            .set("Authorization", "Bearer " + token)
-            .set("service", calendarIdentifier)
-            .end((err: any, res: ChaiHttp.Response) => {
-              res.status.should.equal(403);
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.not.exist(res.body.payload);
-              res.body.ok.should.equal(false);
-              res.body.message.should.equal("Not authorized to service");
+            // Next, check that the user is not authenticated to calendar (as an example)
+            chai
+              .request(app)
+              .get(authUrl + "/check")
+              .set("Authorization", "Bearer " + token)
+              .set("service", calendarIdentifier)
+              .end((err: any, res: ChaiHttp.Response) => {
+                res.status.should.equal(403);
+                should.exist(res.body.ok);
+                should.exist(res.body.message);
+                should.not.exist(res.body.payload);
+                res.body.ok.should.equal(false);
+                res.body.message.should.equal("Not authorized to service");
 
-              done();
-            });
-        });
-    });
+                done();
+              });
+          });
+      }
+    );
 
-    it("Can authenticate to multiple services", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Can authenticate to multiple services", (done: Mocha.Done) => {
       // First, authenticate to KJYR
       chai
         .request(app)
@@ -225,6 +233,6 @@ describe("AuthController", () => {
                 });
             });
         });
-    }).timeout(5000);
+    });
   });
 });
