@@ -56,7 +56,7 @@ describe("PaymentController", () => {
   });
 
   describe("Returns all payments", () => {
-    it("As an authenticated user, returns all payments", (done: Mocha.Done) => {
+    it("GET /api/payments : As an authenticated user, returns all payments", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
@@ -111,7 +111,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/payments : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
@@ -128,7 +128,7 @@ describe("PaymentController", () => {
   });
 
   describe("Returns a single payment", () => {
-    it("As an authenticated user, returns a single payment", (done: Mocha.Done) => {
+    it("GET /api/payments/{id} : As an authenticated user, returns a single payment", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
@@ -170,7 +170,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
@@ -187,7 +187,7 @@ describe("PaymentController", () => {
   });
 
   describe("Adds a new payment", () => {
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("POST /api/payments : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       const newPayment: IPayment = {
         payer_id: 2,
         confirmer_id: 1,
@@ -212,7 +212,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an authenticated user, adds a new payment", (done: Mocha.Done) => {
+    it("POST /api/payments : As an authenticated user, adds a new payment", (done: Mocha.Done) => {
       const newPayment: any = {
         payer_id: 2,
         amount: 44.44,
@@ -325,7 +325,7 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("As an authenticated user, can modify a payment with valid information", (done: Mocha.Done) => {
+    it("PATCH /api/payments/{id} : As an authenticated user, can modify a payment with valid information", (done: Mocha.Done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
@@ -369,7 +369,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("PATCH /api/payments/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       const newPayment: IPayment = {
         id: 1,
         payer_id: 2,
@@ -396,7 +396,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("As an unauthenticated user, cannot modify a payment, with missing request parameters", (done: Mocha.Done) => {
+    it("PATCH /api/payments/{id} : As an unauthenticated user, cannot modify a payment, with missing request parameters", (done: Mocha.Done) => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)

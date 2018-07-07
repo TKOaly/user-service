@@ -13,7 +13,7 @@ import ServiceError from "../utils/ServiceError";
  * @export
  * @class AuthenticationService
  */
-export class AuthenticationService {
+export default class AuthenticationService {
   /**
    * Creates an instance of AuthenticationService.
    * @param {UserDao} userDao UserDao
@@ -30,7 +30,7 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   public async getService(serviceName: string): Promise<Service> {
-    const service: Service = await this.serviceDao.findByName(serviceName);
+    const service: IServiceDatabaseObject = await this.serviceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -47,7 +47,7 @@ export class AuthenticationService {
   public async getServiceWithIdentifier(
     service_identifier: string
   ): Promise<Service> {
-    const service: Service = await this.serviceDao.findByIdentifier(
+    const service: IServiceDatabaseObject = await this.serviceDao.findByIdentifier(
       service_identifier
     );
     if (!service) {

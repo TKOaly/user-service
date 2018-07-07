@@ -31,7 +31,7 @@ const incorrectCreds: any = {
 
 describe("AuthController", () => {
   // Roll back
-  beforeEach((done: Mocha.Done) => {
+  beforeEach("Knex migrate & seed", (done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -42,7 +42,7 @@ describe("AuthController", () => {
   });
 
   // After each
-  afterEach((done: Mocha.Done) => {
+  afterEach("Knex migrate rollback", (done: Mocha.Done) => {
     knex.migrate.rollback().then(() => {
       done();
     });

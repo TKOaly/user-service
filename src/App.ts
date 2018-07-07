@@ -1,4 +1,5 @@
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
@@ -13,7 +14,7 @@ import UserController from "./controllers/UserController";
 import PaymentDao from "./dao/PaymentDao";
 import ServiceDao from "./dao/ServiceDao";
 import UserDao from "./dao/UserDao";
-import { AuthenticationService } from "./services/AuthenticationService";
+import AuthenticationService from "./services/AuthenticationService";
 import PaymentService from "./services/PaymentService";
 import UserService from "./services/UserService";
 import ApiRoute from "./utils/ApiRoute";

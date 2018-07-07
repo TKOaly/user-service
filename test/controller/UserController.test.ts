@@ -9,6 +9,7 @@ const users: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 import User from "../../src/models/User";
+import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken } from "../TestUtils";
 
 // Knexfile
@@ -17,11 +18,16 @@ const knexfile: any = require("../../knexfile");
 const knex: any = Knex(knexfile.test);
 
 import chai = require("chai");
+import ServiceDao from "../../src/dao/ServiceDao";
+import Service, { IServiceDatabaseObject } from "../../src/models/Service";
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);
 
 const url: string = "/api/users";
+
+// Service dao
+const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
 
 describe("UserController", () => {
   // Roll back
@@ -43,13 +49,30 @@ describe("UserController", () => {
   });
 
   describe("Returns all users", () => {
-    it("As an authenticated user, returns all users", (done: Mocha.Done) => {
+    // Roll back
+    beforeEach((done: Mocha.Done) => {
+      knex.migrate.rollback().then(() => {
+        knex.migrate.latest().then(() => {
+          knex.seed.run().then(() => {
+            done();
+          });
+        });
+      });
+    });
+
+    // After each
+    afterEach((done: Mocha.Done) => {
+      knex.migrate.rollback().then(() => {
+        done();
+      });
+    });
+
+    it("GET /api/users : As an authenticated user, returns all users", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
         .set("Authorization", "Bearer " + generateToken(2))
         .end((err: any, res: ChaiHttp.Response) => {
-
           should.not.exist(err);
           should.exist(res.body.ok);
           res.body.ok.should.equal(true);
@@ -109,12 +132,11 @@ describe("UserController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/users : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url)
         .end((err: any, res: ChaiHttp.Response) => {
-
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -127,13 +149,12 @@ describe("UserController", () => {
   });
 
   describe("Returns a single user", () => {
-    it("As an authenticated user, returns a single user", (done: Mocha.Done) => {
+    it("GET /api/users/{id} : As an authenticated user, returns a single user", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(2))
         .end((err: any, res: ChaiHttp.Response) => {
-
           res.status.should.equal(200);
           should.exist(res.body.ok);
           res.body.ok.should.equal(true);
@@ -141,7 +162,9 @@ describe("UserController", () => {
           should.exist(res.body.message);
           res.body.message.should.equal("Success");
 
-          const user_2: User = new User(users.find((user: IUserDatabaseObject) => user.id === 1));
+          const user_2: User = new User(
+            users.find((user: IUserDatabaseObject) => user.id === 1)
+          );
 
           should.exist(user_2);
 
@@ -191,7 +214,7 @@ describe("UserController", () => {
         });
     });
 
-    it("As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/users/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
       chai
         .request(app)
         .get(url + "/1")
@@ -205,5 +228,101 @@ describe("UserController", () => {
           done();
         });
     });
+  });
+
+  describe("Returns my information", () => {
+    // Roll back
+    beforeEach((done: Mocha.Done) => {
+      knex.migrate.rollback().then(() => {
+        knex.migrate.latest().then(() => {
+          knex.seed.run().then(() => {
+            done();
+          });
+        });
+      });
+    });
+
+    // After each
+    afterEach((done: Mocha.Done) => {
+      knex.migrate.rollback().then(() => {
+        done();
+      });
+    });
+
+    authService
+      .getServices()
+      .then((dbServices: Service[]) => {
+        const services: IServiceDatabaseObject[] = dbServices.map(
+          (dbService: Service) => dbService.getDatabaseObject()
+        );
+        // Loop through services
+        for (const service of services) {
+          describe(
+            "Returns correct data for service " + service.display_name,
+            () => {
+              const serviceIdentifier: string = service.service_identifier;
+              const permissionNumber: number = service.data_permissions;
+
+              chai
+                .request(app)
+                .get(url + "/me")
+                .set(
+                  "Authorization",
+                  "Bearer " + generateToken(1, [serviceIdentifier])
+                )
+                .set("Service", serviceIdentifier)
+                .end((err: any, res: ChaiHttp.Response) => {
+                  res.status.should.equal(200);
+                  should.exist(res.body.ok);
+                  res.body.ok.should.equal(true);
+                  should.exist(res.body.payload);
+                  should.exist(res.body.message);
+                  res.body.message.should.equal("Success");
+
+                  const user_2: User = new User(
+                    users.find((user: IUserDatabaseObject) => user.id === 1)
+                  );
+
+                  should.exist(user_2);
+
+                  const payloadObject: User = res.body.payload;
+
+                  const allFields: string[] = Object.keys(
+                    new User(
+                      user_2.getDatabaseObject()
+                    ).removeSensitiveInformation()
+                  );
+
+                  const required: string[] = Object.keys(
+                    user_2
+                      .removeSensitiveInformation()
+                      .removeNonRequestedData(permissionNumber)
+                  );
+                  it(
+                    "Fields " + required.join() + " should be only present",
+                    (done: Mocha.Done) => {
+                      for (const field of allFields) {
+                        if (
+                          required.find(
+                            (requiredField: string) => requiredField === field
+                          )
+                        ) {
+                          // Should expect and equal
+                          should.exist(payloadObject[field]);
+                          payloadObject[field].should.equal(user_2[field]);
+                        } else {
+                          // Should not exist
+                          should.not.exist(payloadObject[field]);
+                        }
+                      }
+                      done();
+                    }
+                  );
+                });
+            }
+          );
+        }
+      })
+      .catch((err) => console.error(err));
   });
 });

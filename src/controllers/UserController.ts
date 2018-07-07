@@ -2,8 +2,9 @@ import * as express from "express";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
+import Service from "../models/Service";
 import User from "../models/User";
-import { AuthenticationService } from "../services/AuthenticationService";
+import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -58,6 +59,57 @@ export default class UserController implements IController {
   }
 
   /**
+   * Returns the currently logged in user's data.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof UserController
+   */
+  public async getMe(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (!req.header("service")) {
+      return res
+        .status(400)
+        .json(new ServiceResponse(null, "No service defined"));
+    }
+
+    if (
+      req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0
+    ) {
+      return res
+        .status(403)
+        .json(new ServiceResponse(null, "User not authorized to service"));
+    }
+
+    try {
+      const service: Service = await this.authenticationService.getServiceWithIdentifier(
+        req.header("service")
+      );
+      const serviceDataPermissions: number = service.dataPermissions;
+      const user: User = await this.userService.fetchUser(
+        req.authorization.user.id
+      );
+      return res
+        .status(200)
+        .json(
+          new ServiceResponse(
+            serviceDataPermissions
+              ? user.removeNonRequestedData(serviceDataPermissions)
+              : user.removeSensitiveInformation(),
+            "Success"
+          )
+        );
+    } catch (e) {
+      return res
+        .status(e.httpErrorCode)
+        .json(new ServiceResponse(null, e.message));
+    }
+  }
+
+  /**
    * Returns a single user.
    *
    * @param {(express.Request | any)} req
@@ -65,9 +117,14 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  public async getUser(req: express.Request | any, res: express.Response): Promise<express.Response> {
+  public async getUser(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
     if (req.params.id !== "me") {
-      if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
+      if (
+        compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0
+      ) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
     }
@@ -126,7 +183,9 @@ export default class UserController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
-    if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
+    if (
+      compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0
+    ) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
@@ -189,7 +248,10 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  public async getAllUnpaidUsers(req: any, res: express.Response): Promise<express.Response> {
+  public async getAllUnpaidUsers(
+    req: any,
+    res: express.Response
+  ): Promise<express.Response> {
     if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -209,6 +271,37 @@ export default class UserController implements IController {
   }
 
   /**
+   * Modifies a user.
+   *
+   * @param {(express.Request | any)} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof UserController
+   */
+  public async modifyUser(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      await this.userValidator.validateUpdate(
+        req.params.id,
+        req.body,
+        req.authorization.user
+      );
+      await this.userService.updateUser(
+        req.params.id,
+        req.body,
+        req.body.password1 || null
+      );
+      return res.status(200).json(new ServiceResponse(req.body, "Success"));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  /**
    * Modifies a user (me).
    *
    * @param {(express.Request | any)} req
@@ -216,44 +309,27 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  public async modifyMe(req: express.Request | any, res: express.Response): Promise<express.Response> {
-    if (req.params.id === "me") {
-      // Edit me
-      try {
-        await this.userValidator.validateUpdate(
-          req.authorization.user.id,
-          req.body,
-          req.authorization.user
-        );
-        await this.userService.updateUser(
-          req.authorization.user.id,
-          req.body,
-          req.body.password1 || null
-        );
-        return res.status(200).json(new ServiceResponse(req.body, "Success"));
-      } catch (err) {
-        return res
-          .status(err.httpErrorCode || 500)
-          .json(new ServiceResponse(null, err.message));
-      }
-    } else {
-      try {
-        await this.userValidator.validateUpdate(
-          Number(req.params.id),
-          req.body,
-          req.authorization.user
-        );
-        await this.userService.updateUser(
-          Number(req.params.id),
-          req.body,
-          req.body.password1 || null
-        );
-        return res.status(200).json(new ServiceResponse(req.body, "Success"));
-      } catch (err) {
-        return res
-          .status(err.httpErrorCode || 500)
-          .json(new ServiceResponse(null, err.message));
-      }
+  public async modifyMe(
+    req: express.Request | any,
+    res: express.Response
+  ): Promise<express.Response> {
+    // Edit me
+    try {
+      await this.userValidator.validateUpdate(
+        req.authorization.user.id,
+        req.body,
+        req.authorization.user
+      );
+      await this.userService.updateUser(
+        req.authorization.user.id,
+        req.body,
+        req.body.password1 || null
+      );
+      return res.status(200).json(new ServiceResponse(req.body, "Success"));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
     }
   }
 
@@ -265,7 +341,10 @@ export default class UserController implements IController {
    * @returns
    * @memberof UserController
    */
-  public async createUser(req: express.Request, res: express.Response): Promise<express.Response> {
+  public async createUser(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
     try {
       await this.userValidator.validateCreate(req.body);
       const userIds: number[] = await this.userService.createUser(
@@ -296,17 +375,45 @@ export default class UserController implements IController {
     try {
       let id: number;
       if (
-        req.params.id === "me" ||
-        req.authorization.user.id === Number(req.params.id)
+        compareRoles(
+          req.authorization.user.role,
+          UserRoleString.Jasenvirkailija
+        ) < 0
       ) {
-        id = req.authorization.user.id;
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       } else {
-        if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
-          return res.status(403).json(new ServiceResponse(null, "Forbidden"));
-        } else {
-          id = Number(req.params.id);
-        }
+        id = Number(req.params.id);
       }
+
+      let payment: Payment = null;
+      if (req.query.query) {
+        if (req.query.query === "validPayment") {
+          payment = await this.paymentService.fetchValidPaymentForUser(id);
+        } else {
+          return res.status(400).json(new ServiceResponse(null, "Bad query"));
+        }
+      } else {
+        payment = await this.paymentService.fetchPaymentByPayer(id);
+      }
+
+      return res.status(200).json(new ServiceResponse(payment, "Success"));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  /**
+   * Finds payments for current user
+   *
+   */
+  public async findMePayment(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      const id: number = req.authorization.user.id;
 
       let payment: Payment = null;
       if (req.query.query) {
@@ -335,9 +442,14 @@ export default class UserController implements IController {
    */
   public createRoutes(): express.Router {
     this.route.get(
-      "/:id(\\d+)",
+      "/:id",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.getUser.bind(this)
+    );
+    this.route.get(
+      "/me",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.getMe.bind(this)
     );
     this.route.get(
       "/",
@@ -350,14 +462,24 @@ export default class UserController implements IController {
       this.getAllUnpaidUsers.bind(this)
     );
     this.route.patch(
-      "/:id(\\d+)/",
+      "/:id(\\d+)",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.modifyUser.bind(this)
+    );
+    this.route.patch(
+      "/me",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.modifyMe.bind(this)
     );
     this.route.get(
-      "/:id(\\d+)/payments/",
+      "/:id(\\d+)/payments",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.findUserPayment.bind(this)
+    );
+    this.route.get(
+      "/me/payments",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.findMePayment.bind(this)
     );
     this.route.post("/", this.createUser.bind(this));
     return this.route;
