@@ -1,7 +1,7 @@
 import * as express from "express";
 import User from "../models/User";
 import UserService from "../services/UserService";
-import { ServiceToken, stringToServiceToken } from "../token/Token";
+import ServiceToken, {stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 
 /**
@@ -47,8 +47,8 @@ export default class AuthorizeMiddleware {
 
   /**
    * Authorizes the user.
-   * 
-   * @param {boolean} returnAsJson Return as JSOn 
+   *
+   * @param {boolean} returnAsJson Return as JSON
    *
    * @memberof AuthorizeMiddleware
    */

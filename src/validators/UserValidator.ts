@@ -11,7 +11,7 @@ import { stringToBoolean } from "../utils/UserHelpers";
  *
  * @interface IAdditionalUserData
  */
-interface IAdditionalUserData {
+export interface IAdditionalUserData {
   /**
    * Password.
    *
@@ -156,7 +156,7 @@ export default class UserValidator implements IValidator<User> {
       throw new ServiceError(403, error);
     }
 
-    await checkUsernameAvailability(newUser);
+    await this.checkUsernameAvailability(newUser);
 
     // Test email
     if (
@@ -184,6 +184,24 @@ export default class UserValidator implements IValidator<User> {
       }
     }
   }
+
+  /**
+   * Checks for username availability.
+   *
+   * @param {User} newUser User object
+   * @returns {Promise<void>}
+   */
+  public async checkUsernameAvailability(newUser: User): Promise<void> {
+    if (newUser.username) {
+      // Test username
+      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
+        newUser.username
+      );
+      if (!usernameAvailable) {
+        throw new ServiceError(400, "Username already taken");
+      }
+    }
+  }
 }
 
 /**
@@ -192,29 +210,14 @@ export default class UserValidator implements IValidator<User> {
  * @param {User} user
  * @param {string[]} allowedEdits
  */
-function checkModifyPermission(user: User, allowedEdits: string[]): void {
+export function checkModifyPermission(
+  user: User,
+  allowedEdits: string[]
+): void {
   const error: string = "Forbidden modify action";
   Object.keys(user).forEach((key: string) => {
     if (allowedEdits.indexOf(key) < 0 && key !== "id") {
       throw new ServiceError(403, error);
     }
   });
-}
-
-/**
- * Checks for username availability.
- *
- * @param {User} newUser User object
- * @returns {Promise<void>}
- */
-async function checkUsernameAvailability(newUser: User): Promise<void> {
-  if (newUser.username) {
-    // Test username
-    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-      newUser.username
-    );
-    if (!usernameAvailable) {
-      throw new ServiceError(400, "Username already taken");
-    }
-  }
 }

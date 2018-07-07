@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import * as sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../models/Service";
-import { ServiceToken, stringToServiceToken } from "../token/Token";
+import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
 /**
@@ -30,7 +30,9 @@ export default class AuthenticationService {
    * @memberof AuthenticationService
    */
   public async getService(serviceName: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await this.serviceDao.findByName(serviceName);
+    const service: IServiceDatabaseObject = await this.serviceDao.findByName(
+      serviceName
+    );
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
