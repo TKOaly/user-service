@@ -9,12 +9,13 @@ import userFile = require("../../seeds/seedData/users");
 const dbUsers: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 const userDao: UserDao = new UserDao(knex);
 

@@ -75,13 +75,13 @@ export default class AuthenticationService {
   /**
    * Appends a new service to the authentication token.
    *
-   * @param {(string | any)} oldToken
+   * @param {(string | ServiceToken)} oldToken
    * @param {string} newServiceName
    * @returns {string}
    * @memberof AuthenticationService
    */
   public appendNewServiceAuthenticationToToken(
-    oldToken: string | any,
+    oldToken: string | ServiceToken,
     newServiceName: string
   ): string {
     let token: ServiceToken;
@@ -109,13 +109,13 @@ export default class AuthenticationService {
   /**
    * Remove a service from the authentication token.
    *
-   * @param {(string | any)} oldToken
+   * @param {(string | ServiceToken)} oldToken
    * @param {string} serviceToRemove
    * @returns {string}
    * @memberof AuthenticationService
    */
   public removeServiceAuthenticationToToken(
-    oldToken: string | any,
+    oldToken: string | ServiceToken,
     serviceToRemove: string
   ): string {
     let token: ServiceToken;

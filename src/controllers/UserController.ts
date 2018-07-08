@@ -61,13 +61,13 @@ export default class UserController implements IController {
   /**
    * Returns the currently logged in user's data.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
    */
   public async getMe(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     if (!req.header("service")) {
@@ -112,13 +112,13 @@ export default class UserController implements IController {
   /**
    * Returns a single user.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
    */
   public async getUser(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     if (req.params.id !== "me") {
@@ -174,7 +174,7 @@ export default class UserController implements IController {
   /**
    * Returns all users.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
@@ -243,13 +243,13 @@ export default class UserController implements IController {
   /**
    * Returns all unpaid users.
    *
-   * @param {*} req
+   * @param {express.Request & IASRequest} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
    */
   public async getAllUnpaidUsers(
-    req: any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
@@ -273,13 +273,13 @@ export default class UserController implements IController {
   /**
    * Modifies a user.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
    */
   public async modifyUser(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     try {
@@ -310,13 +310,13 @@ export default class UserController implements IController {
   /**
    * Modifies a user (me).
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof UserController
    */
   public async modifyMe(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     // Edit me

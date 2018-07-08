@@ -13,11 +13,12 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 import ServiceDao from "../../src/dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../../src/models/Service";
 const should: Chai.Should = chai.should();
@@ -341,7 +342,7 @@ describe("UserController", () => {
             }
             done();
           })
-          .catch(err => console.error(err));
+          .catch((err) => console.error(err));
       }
     );
   });

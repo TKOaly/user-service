@@ -9,12 +9,13 @@ import serviceFile = require("../../seeds/seedData/services");
 const dbServices: IServiceDatabaseObject[] = serviceFile as IServiceDatabaseObject[];
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 const serviceDao: ServiceDao = new ServiceDao(knex);
 

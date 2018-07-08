@@ -3,7 +3,7 @@ import IController from "../interfaces/IController";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
 /**
@@ -47,13 +47,13 @@ export default class AuthController implements IController {
   /**
    * Used to check authorization to a specified service.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns {Promise<express.Response>}
    * @memberof AuthController
    */
   public async check(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     if (!req.get("service")) {
@@ -76,13 +76,13 @@ export default class AuthController implements IController {
   /**
    * Authenticates the user.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns {Promise<express.Response>}
    * @memberof AuthController
    */
   public async authenticateUser(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     if (
@@ -141,15 +141,12 @@ export default class AuthController implements IController {
   /**
    * Renders a view to calculate service permissions.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request)} req
    * @param {express.Response} res
    * @returns {void}
    * @memberof AuthController
    */
-  public calcPermissions(
-    req: express.Request | any,
-    res: express.Response
-  ): void {
+  public calcPermissions(req: express.Request, res: express.Response): void {
     const dummyObject: User = new User({
       created: new Date(),
       deleted: false,
@@ -176,17 +173,22 @@ export default class AuthController implements IController {
   /**
    * Calculates service permissions.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request)} req
    * @param {express.Response} res
    * @returns {void}
    * @memberof AuthController
    */
   public calcPermissionsPost(
-    req: express.Request | any,
+    req: express.Request,
     res: express.Response
   ): void {
-    const wantedPermissions: any = req.body;
-    delete wantedPermissions.submit;
+    const wantedPermissions: {
+      [key: string]: string;
+    } =
+      req.body;
+    if (wantedPermissions.submit) {
+      delete wantedPermissions.submit;
+    }
 
     const dummyObject: User = new User({
       created: new Date(),

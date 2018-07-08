@@ -9,11 +9,12 @@ import payments = require("../../seeds/seedData/payments");
 import { IPayment } from "../../src/models/Payment";
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);

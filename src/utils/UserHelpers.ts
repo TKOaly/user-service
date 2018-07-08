@@ -7,7 +7,7 @@ import { roleNumbers } from "../models/User";
  * @param {*} str String representation
  * @returns {boolean} Boolean
  */
-export function stringToBoolean(str: any): boolean  {
+export function stringToBoolean(str: string | number | object | boolean): boolean  {
   return str === "0"
     ? false
     : str === "false"

@@ -10,14 +10,15 @@ import UserValidator, {
 } from "../../src/validators/UserValidator";
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 let userValidator: UserValidator;
 const userDao: UserDao = new UserDao(knex);
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 import UserRoleString from "../../src/enum/UserRoleString";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 import User from "../../src/models/User";
@@ -207,7 +208,7 @@ describe("UserValidator", () => {
         .then(function() {
           done();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     });
@@ -232,7 +233,7 @@ describe("UserValidator", () => {
               done();
             });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     });
@@ -258,7 +259,7 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }
@@ -285,7 +286,7 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }
@@ -315,7 +316,7 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }
@@ -343,7 +344,7 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }
@@ -362,14 +363,14 @@ describe("UserValidator", () => {
                 { username: "tester" } as User & IAdditionalUserData,
                 new User(user)
               )
-              .then(res => {
+              .then((res) => {
                 done();
               })
-              .catch(err => {
+              .catch((err) => {
                 console.log(err);
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }
@@ -397,7 +398,7 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       }

@@ -6,11 +6,12 @@ import "mocha";
 import app from "../../src/App";
 
 // Knexfile
-const knexfile: any = require("../../knexfile");
+const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: any = Knex(knexfile.test);
+const knex: Knex = Knex(knexfile.test);
 
 import chai = require("chai");
+import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
 
 chai.use(chaiHttp);
@@ -18,12 +19,12 @@ chai.use(chaiHttp);
 const authUrl: string = "/api/auth";
 const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
 const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
-const correctCreds: any = {
+const correctCreds: { [value: string]: string } = {
   username: "test_user",
   password: "test_user",
   serviceIdentifier: kjyrIdentifier
 };
-const incorrectCreds: any = {
+const incorrectCreds: { [value: string]: string } = {
   username: "test_user",
   password: "testuser",
   serviceIdentifier: kjyrIdentifier

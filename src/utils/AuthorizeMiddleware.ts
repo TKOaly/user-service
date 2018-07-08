@@ -1,7 +1,7 @@
 import * as express from "express";
 import User from "../models/User";
 import UserService from "../services/UserService";
-import ServiceToken, {stringToServiceToken } from "../token/Token";
+import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 
 /**
@@ -52,11 +52,17 @@ export default class AuthorizeMiddleware {
    *
    * @memberof AuthorizeMiddleware
    */
-  public authorize = (returnAsJson: boolean): any => async (
+  public authorize = (
+    returnAsJson: boolean
+  ): ((
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ): Promise<express.Response | any> => {
+  ) => void) => async (
+    req: IASRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<express.Response | void> => {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
@@ -126,7 +132,7 @@ export default class AuthorizeMiddleware {
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ): Promise<express.Response | any> {
+  ): Promise<express.Response | void> {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {

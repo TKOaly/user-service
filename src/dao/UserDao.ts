@@ -134,7 +134,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
   ): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
-      let query: any = this.knex("users").select(fields);
+      let query: Knex.QueryBuilder = this.knex("users").select(fields);
 
       if (queryString.indexOf("Payment.")) {
         query.leftOuterJoin("payments", "users.id", "payments.payer_id");
