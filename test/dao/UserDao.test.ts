@@ -323,6 +323,79 @@ describe("UserDao", () => {
     });
   });
 
+  it("Returns a single user with findByUsername()", (done: Mocha.Done) => {
+    userDao.findByUsername(dbUsers[0].username).then((dbUser: IUserDatabaseObject) => {
+      const seedUser: IUserDatabaseObject = dbUsers[0];
+
+      // Username
+      should.exist(dbUser.username);
+      dbUser.username.should.equal(seedUser.username);
+
+      // Screen name
+      should.exist(dbUser.screen_name);
+      dbUser.screen_name.should.equal(seedUser.screen_name);
+
+      // Salt
+      should.exist(dbUser.salt);
+      dbUser.salt.should.equal(seedUser.salt);
+
+      // Role
+      should.exist(dbUser.role);
+      dbUser.role.should.equal(seedUser.role);
+
+      // Residence
+      should.exist(dbUser.residence);
+      dbUser.residence.should.equal(seedUser.residence);
+
+      // Phone
+      should.exist(dbUser.phone);
+      dbUser.phone.should.equal(seedUser.phone);
+
+      // Name
+      should.exist(dbUser.name);
+      dbUser.name.should.equal(seedUser.name);
+
+      // ModifiedAt
+      should.exist(dbUser.modified);
+
+      // Membership
+      should.exist(dbUser.membership);
+      dbUser.membership.should.equal(seedUser.membership);
+
+      // isTKTL
+      should.exist(dbUser.tktl);
+      dbUser.tktl.should.equal(seedUser.tktl);
+
+      // isHYYMember
+      should.exist(dbUser.hyy_member);
+      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+
+      // isDeleted
+      should.exist(dbUser.deleted);
+      dbUser.deleted.should.equal(seedUser.deleted);
+
+      // id
+      should.exist(dbUser.id);
+      dbUser.id.should.equal(seedUser.id);
+
+      // hashedPassword
+      should.exist(dbUser.hashed_password);
+      dbUser.hashed_password.should.equal(seedUser.hashed_password);
+
+      // email
+      should.exist(dbUser.email);
+      dbUser.email.should.equal(seedUser.email);
+
+      // createdAt
+      should.exist(dbUser.created);
+      dbUser.created
+        .toDateString()
+        .should.equal(seedUser.created.toDateString());
+
+      done();
+    });
+  });
+
   it("Returns a single user with findWhere()", (done: Mocha.Done) => {
     userDao.findWhere("Test User").then((dbUsers: IUserDatabaseObject[]) => {
       const seedUser: IUserDatabaseObject = dbUsers.find(

@@ -33,7 +33,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
   }
 
   /**
-   * Finds a single user by its username
+   * Finds a single user by its username.
    *
    * @param {string} username Username
    * @returns {Promise<IUserDatabaseObject>} User
@@ -43,6 +43,20 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     return this.knex("users")
       .select()
       .where({ username })
+      .first();
+  }
+
+  /**
+   * Finds a single user by its email address.
+   *
+   * @param {string} email Email address
+   * @returns {Promise<IUserDatabaseObject>} User
+   * @memberof UserDao
+   */
+  public findByEmail(email: string): Promise<IUserDatabaseObject> {
+    return this.knex("users")
+      .select()
+      .where({ email })
       .first();
   }
 
@@ -168,14 +182,14 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
   }
 
   /**
-   * Updates a singler user.
+   * Updates a single user.
    *
    * @param {number} entityId User id
    * @param {IUserDatabaseObject} entity Entity
-   * @returns {Promise<boolean>}
+   * @returns {Promise<number[]>} Affected rows
    * @memberof UserDao
    */
-  public update(entityId: number, entity: IUserDatabaseObject): Promise<boolean> {
+  public update(entityId: number, entity: IUserDatabaseObject): Promise<number> {
     return this.knex("users")
       .update(entity)
       .where({ id: entityId });
@@ -185,7 +199,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * Saves a single user.
    *
    * @param {IUserDatabaseObject} entity
-   * @returns {Promise<number[]>}
+   * @returns {Promise<number[]>} Inserted ID(s)
    * @memberof UserDao
    */
   public save(entity: IUserDatabaseObject): Promise<number[]> {

@@ -1,6 +1,5 @@
-// Update with your config settings.
-
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import * as Knex from "knex";
 

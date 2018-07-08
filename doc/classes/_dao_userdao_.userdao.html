@@ -121,6 +121,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findall" class="tsd-kind-icon">find<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findallbyunpaidpayment" class="tsd-kind-icon">find<wbr>All<wbr>ByUnpaid<wbr>Payment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findbyemail" class="tsd-kind-icon">find<wbr>ByEmail</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findbyunpaidpayment" class="tsd-kind-icon">find<wbr>ByUnpaid<wbr>Payment</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findbyusername" class="tsd-kind-icon">find<wbr>ByUsername</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dao_userdao_.userdao.html#findone" class="tsd-kind-icon">find<wbr>One</a></li>
@@ -145,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L13">dao/UserDao.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L13">dao/UserDao.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -177,7 +178,7 @@
 					<div class="tsd-signature tsd-kind-icon">knex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Knex</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L19">dao/UserDao.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L19">dao/UserDao.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -194,7 +195,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L117">dao/UserDao.ts:117</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L131">dao/UserDao.ts:131</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -230,7 +231,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L87">dao/UserDao.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L101">dao/UserDao.ts:101</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -249,6 +250,43 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findbyemail" class="tsd-anchor"></a>
+					<h3>find<wbr>ByEmail</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByEmail<span class="tsd-signature-symbol">(</span>email<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interfaces_iuserdatabaseobject_.iuserdatabaseobject.html" class="tsd-signature-type">IUserDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L56">dao/UserDao.ts:56</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Finds a single user by its email address.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserDao</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>email: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Email address</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_interfaces_iuserdatabaseobject_.iuserdatabaseobject.html" class="tsd-signature-type">IUserDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>User</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="findbyunpaidpayment" class="tsd-anchor"></a>
 					<h3>find<wbr>ByUnpaid<wbr>Payment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -258,7 +296,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L56">dao/UserDao.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L70">dao/UserDao.ts:70</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -295,12 +333,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L42">dao/UserDao.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L42">dao/UserDao.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Finds a single user by its username</p>
+									<p>Finds a single user by its username.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
@@ -333,7 +371,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_interfaces_idao_.idao.html">IDao</a>.<a href="../interfaces/_interfaces_idao_.idao.html#findone">findOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L28">dao/UserDao.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L28">dao/UserDao.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -369,7 +407,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L145">dao/UserDao.ts:145</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L159">dao/UserDao.ts:159</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -406,7 +444,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_interfaces_idao_.idao.html">IDao</a>.<a href="../interfaces/_interfaces_idao_.idao.html#remove">remove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L164">dao/UserDao.ts:164</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L178">dao/UserDao.ts:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -443,7 +481,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L191">dao/UserDao.ts:191</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L205">dao/UserDao.ts:205</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -463,6 +501,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Inserted ID(s)</p>
 						</li>
 					</ul>
 				</section>
@@ -470,18 +509,18 @@
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_iuserdatabaseobject_.iuserdatabaseobject.html" class="tsd-signature-type">IUserDatabaseObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_iuserdatabaseobject_.iuserdatabaseobject.html" class="tsd-signature-type">IUserDatabaseObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/UserDao.ts#L178">dao/UserDao.ts:178</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/UserDao.ts#L192">dao/UserDao.ts:192</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Updates a singler user.</p>
+									<p>Updates a single user.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
@@ -504,7 +543,8 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Affected rows</p>
 						</li>
 					</ul>
 				</section>
@@ -539,6 +579,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_dao_userdao_.userdao.html#findallbyunpaidpayment" class="tsd-kind-icon">find<wbr>All<wbr>ByUnpaid<wbr>Payment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dao_userdao_.userdao.html#findbyemail" class="tsd-kind-icon">find<wbr>ByEmail</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_dao_userdao_.userdao.html#findbyunpaidpayment" class="tsd-kind-icon">find<wbr>ByUnpaid<wbr>Payment</a>

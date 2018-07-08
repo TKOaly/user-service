@@ -81,7 +81,7 @@
 						<dd><p>ServiceDao</p>
 						</dd>
 						<dt>implements</dt>
-						<dd><p>{Dao<Service>}</p>
+						<dd><p>{Dao<IServiceDatabaseObject>}</p>
 						</dd>
 					</dl>
 				</div>
@@ -97,7 +97,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_interfaces_idao_.idao.html" class="tsd-signature-type">IDao</a><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/_interfaces_idao_.idao.html" class="tsd-signature-type">IDao</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -143,7 +143,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L13">dao/ServiceDao.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L13">dao/ServiceDao.ts:13</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -175,7 +175,7 @@
 					<div class="tsd-signature tsd-kind-icon">knex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Knex</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L19">dao/ServiceDao.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L19">dao/ServiceDao.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,14 +186,14 @@
 					<a name="findall" class="tsd-anchor"></a>
 					<h3>find<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_interfaces_idao_.idao.html">IDao</a>.<a href="../interfaces/_interfaces_idao_.idao.html#findall">findAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L69">dao/ServiceDao.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L71">dao/ServiceDao.ts:71</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -206,7 +206,7 @@
 									</dd>
 								</dl>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -214,13 +214,13 @@
 					<a name="findbyidentifier" class="tsd-anchor"></a>
 					<h3>find<wbr>ByIdentifier</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>ByIdentifier<span class="tsd-signature-symbol">(</span>service_identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByIdentifier<span class="tsd-signature-symbol">(</span>service_identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L42">dao/ServiceDao.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L42">dao/ServiceDao.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -242,7 +242,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -250,13 +250,13 @@
 					<a name="findbyname" class="tsd-anchor"></a>
 					<h3>find<wbr>ByName</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>ByName<span class="tsd-signature-symbol">(</span>service_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByName<span class="tsd-signature-symbol">(</span>service_name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L56">dao/ServiceDao.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L58">dao/ServiceDao.ts:58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -278,7 +278,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -286,14 +286,14 @@
 					<a name="findone" class="tsd-anchor"></a>
 					<h3>find<wbr>One</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_interfaces_idao_.idao.html">IDao</a>.<a href="../interfaces/_interfaces_idao_.idao.html#findone">findOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L28">dao/ServiceDao.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L28">dao/ServiceDao.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +315,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -330,7 +330,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_interfaces_idao_.idao.html">IDao</a>.<a href="../interfaces/_interfaces_idao_.idao.html#remove">remove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L80">dao/ServiceDao.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L82">dao/ServiceDao.ts:82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -360,13 +360,13 @@
 					<a name="save" class="tsd-anchor"></a>
 					<h3>save</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L106">dao/ServiceDao.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L108">dao/ServiceDao.ts:108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -382,13 +382,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>entity: <a href="_models_service_.service.html" class="tsd-signature-type">Service</a></h5>
+									<h5>entity: <a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Service</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Inserted ID(s)</p>
 						</li>
 					</ul>
 				</section>
@@ -396,13 +397,13 @@
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/dao/ServiceDao.ts#L93">dao/ServiceDao.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/541acd7/src/dao/ServiceDao.ts#L95">dao/ServiceDao.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -418,13 +419,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>entity: <a href="_models_service_.service.html" class="tsd-signature-type">Service</a></h5>
+									<h5>entity: <a href="../interfaces/_models_service_.iservicedatabaseobject.html" class="tsd-signature-type">IServiceDatabaseObject</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Service</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Affected rows</p>
 						</li>
 					</ul>
 				</section>

@@ -1,6 +1,7 @@
 // This script creates databases that are needed by the user service.
 
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import { createConnection } from "mysql2/promise";
 

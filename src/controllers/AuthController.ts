@@ -1,8 +1,7 @@
 import * as express from "express";
 import IController from "../interfaces/IController";
-import Service from "../models/Service";
 import User from "../models/User";
-import { AuthenticationService } from "../services/AuthenticationService";
+import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
@@ -97,14 +96,9 @@ export default class AuthController implements IController {
     }
 
     try {
-      const service: Service = await this.authService.getServiceWithIdentifier(
+      await this.authService.getServiceWithIdentifier(
         req.body.serviceIdentifier
       );
-      if (!service) {
-        return res
-          .status(400)
-          .json(new ServiceResponse(null, "Service not found"));
-      }
     } catch (e) {
       return res
         .status(e.httpErrorCode)

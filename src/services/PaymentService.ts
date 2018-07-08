@@ -77,7 +77,7 @@ export default class PaymentService {
    * Creates a payment.
    *
    * @param {Payment} payment Payment
-   * @returns {Promise<number[]>} Inserted payment ID
+   * @returns {Promise<number>} Inserted payment ID(s)
    * @memberof PaymentService
    */
   public async createPayment(payment: Payment): Promise<number[]> {
@@ -88,7 +88,7 @@ export default class PaymentService {
    * Creates a bank payment.
    *
    * @param {Payment} payment Payment
-   * @returns {Promise<number[]>} Inserted id
+   * @returns {Promise<number>} Inserted id
    * @memberof PaymentService
    */
   public async createBankPayment(payment: Payment): Promise<number[]> {
@@ -101,7 +101,7 @@ export default class PaymentService {
    * Creates a cash payment.
    *
    * @param {Payment} payment Payment
-   * @returns {Promise<number[]>} Inserted id
+   * @returns {Promise<number>} Inserted id
    * @memberof PaymentService
    */
   public async createCashPayment(payment: Payment): Promise<number[]> {
@@ -115,13 +115,13 @@ export default class PaymentService {
    *
    * @param {number} paymentId Payment id
    * @param {Payment} updatedPayment Updated payment
-   * @returns {Promise<boolean>}
+   * @returns {Promise<IPayment>}
    * @memberof PaymentService
    */
   public async updatePayment(
     paymentId: number,
     updatedPayment: Payment
-  ): Promise<boolean> {
+  ): Promise<number> {
     return this.paymentDao.update(updatedPayment as IPayment);
   }
 

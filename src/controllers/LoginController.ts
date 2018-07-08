@@ -3,7 +3,7 @@ import * as express from "express";
 import IController from "../interfaces/IController";
 import Service from "../models/Service";
 import User from "../models/User";
-import { AuthenticationService } from "../services/AuthenticationService";
+import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";

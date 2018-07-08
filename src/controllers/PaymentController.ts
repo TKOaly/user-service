@@ -66,7 +66,10 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+  public async createPayment(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
     try {
       this.paymentValidator.validateCreate(req.body);
       const paymentIds: number[] = await this.paymentService.createPayment(
@@ -96,7 +99,10 @@ export default class PaymentController implements IController {
    * @returns
    * @memberof PaymentController
    */
-  public async modifyPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+  public async modifyPayment(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
     try {
       // PATCH request requires the whole object to be passed
       if (
@@ -123,11 +129,11 @@ export default class PaymentController implements IController {
           );
       }
 
-      const update: boolean = await this.paymentService.updatePayment(
+      const affectedRow: number = await this.paymentService.updatePayment(
         req.params.id,
         req.body
       );
-      if (update) {
+      if (affectedRow === 1) {
         const updatedPayment: Payment = await this.paymentService.fetchPayment(
           req.params.id
         );
@@ -158,7 +164,9 @@ export default class PaymentController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
-    if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0) {
+    if (
+      compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
+    ) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
     try {

@@ -61,4 +61,21 @@ describe("Payment model", () => {
     should.not.exist(payment2.valid_until);
     done();
   });
+
+  it("Throws an exception when base number is too long", (done: Mocha.Done) => {
+    payment.id = 1111111111111111111111111111;
+    chai.expect(payment.generateReferenceNumber.bind(payment)).to.throw("baseNumber too long or short");
+    done();
+  });
+
+  it("Generates a correct reference number", (done: Mocha.Done) => {
+    payment.generateReferenceNumber();
+    payment.reference_number.should.equal("1012");
+
+    payment.id = 32487238;
+    payment.generateReferenceNumber();
+    payment.reference_number.should.equal("10324872386");
+
+    done();
+  });
 });
