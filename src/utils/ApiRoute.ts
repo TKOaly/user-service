@@ -22,12 +22,18 @@ function generateApiRoute(endpointName: string, apiVersion?: string): string {
  * @param {string} [apiVersion] API version
  * @returns
  */
-function apiHeaderMiddleware(apiVersion?: string): any {
+function apiHeaderMiddleware(
+  apiVersion?: string
+): (
+  req: Express.Request,
+  res: Express.Response,
+  next: Express.NextFunction
+) => void {
   return function(
-    req: Express.Request | any,
-    res: Express.Response | any,
-    next: Express.NextFunction | any
-  ): any {
+    req: Express.Request,
+    res: Express.Response,
+    next: Express.NextFunction
+  ): void {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
     }

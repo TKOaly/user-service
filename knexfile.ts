@@ -78,9 +78,16 @@ const test: Knex.Config = {
   }
 };
 
+export interface IKnexFile {
+  development: Knex.Config;
+  staging: Knex.Config;
+  production: Knex.Config;
+  test: Knex.Config;
+}
+
 module.exports = {
   development: dev,
   staging,
   production: prod,
   test
-};
+} as IKnexFile;

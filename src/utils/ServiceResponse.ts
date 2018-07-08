@@ -4,7 +4,7 @@
  * @export
  * @class ServiceResponse
  */
-export default class ServiceResponse {
+export default class ServiceResponse<T> {
   /**
    * Status of the response.
    *
@@ -22,19 +22,19 @@ export default class ServiceResponse {
   /**
    * Payload
    *
-   * @type {*} Object, string etc.
+   * @type {T}
    * @memberof ServiceResponse
    */
-  public payload: any;
+  public payload: T;
   /**
    * Creates an instance of ServiceResponse.
-   * @param {any} payload
+   * @param {T} payload
    * @param {string} [message="Success"]
    * @param {(boolean | null)} [ok=null]
    * @memberof ServiceResponse
    */
   constructor(
-    payload: any,
+    payload: T,
     message: string = "Success",
     ok: boolean | null = null
   ) {

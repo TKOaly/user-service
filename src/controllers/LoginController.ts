@@ -49,13 +49,13 @@ export default class LoginController implements IController {
   /**
    * Returns the login view.
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request & IASRequest)} req
    * @param {express.Response} res
    * @returns {(Promise<express.Response | void>)}
    * @memberof LoginController
    */
   public async getLoginView(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response | void> {
     if (!req.query.serviceIdentifier) {
@@ -255,13 +255,13 @@ export default class LoginController implements IController {
   /**
    * Handles GDPR template and redirects the user forward
    *
-   * @param {(express.Request | any)} req
+   * @param {(express.Request | IASRequest)} req
    * @param {express.Response} res
    * @returns
    * @memberof LoginController
    */
   public async loginConfirm(
-    req: express.Request | any,
+    req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response | void> {
     const body: {
@@ -330,7 +330,9 @@ export default class LoginController implements IController {
     );
     this.route.get(
       "/logout",
-      this.authorizationMiddleware.authorize(false).bind(this.authorizationMiddleware),
+      this.authorizationMiddleware
+        .authorize(false)
+        .bind(this.authorizationMiddleware),
       this.logOut.bind(this)
     );
     return this.route;

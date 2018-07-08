@@ -182,7 +182,7 @@ export default class PaymentController implements IController {
   /**
    * Returns a single payment.
    *
-   * @param {express.Request} req
+   * @param {express.Request & IASRequest} req
    * @param {express.Response} res
    * @returns
    * @memberof PaymentController

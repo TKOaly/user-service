@@ -7,7 +7,7 @@
   "rules": {
     "no-var-requires": false,
     "trailing-comma": false,
-    "no-console": true,
+    "no-console": false,
     "no-bitwise": false,
     "object-literal-sort-keys": false,
     "typeof-compare": true,
