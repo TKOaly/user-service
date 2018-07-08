@@ -1,7 +1,7 @@
 import * as express from "express";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
-import Payment from "../models/Payment";
+import Payment, { PaymentListing } from "../models/Payment";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -165,12 +165,27 @@ export default class PaymentController implements IController {
     res: express.Response
   ): Promise<express.Response> {
     if (
-      compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
+      compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0
     ) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
+
+    let payments: Payment[] | PaymentListing[] = null;
+
     try {
-      const payments: Payment[] = await this.paymentService.fetchAllPayments();
+      switch (req.query.filter) {
+        case 'unpaid':
+          payments = await this.paymentService.fetchUnpaidPayments();
+          break;
+        case 'bankPaid':
+          payments = await this.paymentService.findPaymentsPaidByBankTransfer()
+          break;
+        case 'cashPaid':
+          payments = await this.paymentService.findPaymentsPaidByCash()
+          break;
+        default:
+          payments = await this.paymentService.fetchAllPayments();
+      }
       return res.status(200).json(new ServiceResponse(payments, null, true));
     } catch (err) {
       return res

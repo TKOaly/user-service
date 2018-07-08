@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
-import { IPayment } from "../models/Payment";
+import { IPayment, IPaymentListing } from "../models/Payment";
 
 /**
  * Payment dao.
@@ -129,10 +129,29 @@ export default class PaymentDao implements IDao<IPayment> {
    * @returns {Promise<IPayment[]>} List of payments
    * @memberof PaymentDao
    */
-  public findPaymentsByPaymentType(payment_type: string): Promise<IPayment[]> {
+  public findPaymentsByPaymentType(payment_type: string): Promise<IPaymentListing[]> {
     return this.knex("payments")
-      .select()
+      .select('payments.*', 'pu.name as payer_name', 'cu.name as confirmer_name')
+      .leftJoin(this.knex.raw('users as pu on (payments.payer_id = pu.id)'))
+      .leftJoin(this.knex.raw('users as cu on (payments.confirmer_id = cu.id)'))
       .where({ payment_type });
+  }
+
+
+  /**
+   * Finds unpaid payments
+   * 
+   * @returns {Promise<IPayment[]>} List of payments
+   * @memberof PaymentDao
+   */
+  public findUnpaid(): Promise<IPaymentListing[]> {
+    const query = this
+    .knex('payments')
+    .select('payments.*', 'users.name as payer_name')
+    .leftJoin(this.knex.raw('users on (users.id = payments.payer_id)'))
+    .where({paid: null});
+    console.log(query.toString())
+    return query;
   }
 
   /**

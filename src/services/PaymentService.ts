@@ -1,5 +1,5 @@
 import PaymentDao from "../dao/PaymentDao";
-import Payment, {IPayment} from "../models/Payment";
+import Payment, {IPayment, IPaymentListing, PaymentListing} from "../models/Payment";
 import ServiceError from "../utils/ServiceError";
 
 // Constants for bank and cash payments
@@ -72,6 +72,18 @@ export default class PaymentService {
     }
     return new Payment(result);
   }
+  
+  /**
+   * Returns all unpaid payments
+   *
+   * @returns {Promise<PaymentListing>} Payment
+   * @memberof PaymentService
+   */
+  public async fetchUnpaidPayments(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findUnpaid();
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
+  }
+
 
   /**
    * Creates a payment.
@@ -128,21 +140,23 @@ export default class PaymentService {
   /**
    * Finds payments that have been paid by cash.
    *
-   * @returns {Promise<IPayment[]>} List of payments paid by cash.
+   * @returns {Promise<PaymentListing[]>} List of payments paid by cash.
    * @memberof PaymentService
    */
-  public async findPaymentsPaidByCash(): Promise<IPayment[]> {
-    return this.paymentDao.findPaymentsByPaymentType(cashPayment);
+  public async findPaymentsPaidByCash(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(cashPayment);
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
 
   /**
    * Finds payments that have been paid by bank transfer.
    *
-   * @returns {Promise<IPayment[]>} List of payments paid by bank transfer.
+   * @returns {Promise<PaymentListing[]>} List of payments paid by bank transfer.
    * @memberof PaymentService
    */
-  public async findPaymentsPaidByBankTransfer(): Promise<IPayment[]> {
-    return this.paymentDao.findPaymentsByPaymentType(bankPayment);
+  public async findPaymentsPaidByBankTransfer(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(bankPayment);
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
 
   /**

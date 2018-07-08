@@ -143,3 +143,19 @@ export default class Payment implements IPayment {
     this.reference_number = baseNumber + String((10 - (sum % 10)) % 10);
   }
 }
+
+export interface IPaymentListing extends IPayment {
+  payer_name?: string;
+  confirmer_name?: string;
+}
+
+export class PaymentListing extends Payment {
+  payerName: string;
+  confirmerName: string;
+
+  constructor(dbEntity: IPaymentListing) {
+    super(dbEntity);
+    this.payerName = dbEntity.payer_name;
+    this.confirmerName = dbEntity.confirmer_name;
+  }
+}
