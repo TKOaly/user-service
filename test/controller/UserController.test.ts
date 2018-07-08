@@ -10,7 +10,7 @@ const users: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 import User from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
-import { generateToken } from "../TestUtils";
+import { generateToken, kjyrIdentifier } from "../TestUtils";
 
 // Knexfile
 const knexfile: any = require("../../knexfile");
@@ -27,7 +27,9 @@ chai.use(chaiHttp);
 const url: string = "/api/users";
 
 // Service dao
-const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
+const authService: AuthenticationService = new AuthenticationService(
+  new ServiceDao(knex)
+);
 
 describe("UserController", () => {
   // Roll back
@@ -231,35 +233,55 @@ describe("UserController", () => {
   });
 
   describe("Returns my information", () => {
-    // Roll back
-    beforeEach((done: Mocha.Done) => {
-      knex.migrate.rollback().then(() => {
-        knex.migrate.latest().then(() => {
-          knex.seed.run().then(() => {
+    it("GET /api/users/me : Returns an error if no service is defined", (done: Mocha.Done) => {
+      chai
+        .request(app)
+        .get(url + "/me")
+        .set("Authorization", "Bearer " + generateToken(1, [kjyrIdentifier]))
+        .end((err: any, res: ChaiHttp.Response) => {
+          should.exist(res.body.ok);
+          should.exist(res.body.message);
+          should.not.exist(res.body.payload);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("No service defined");
+          res.status.should.equal(400);
+          done();
+        });
+    });
+
+    it(
+      "GET /api/users/me: Trying to get information from" +
+        " a service the user is not authenticated to",
+      (done: Mocha.Done) => {
+        chai
+          .request(app)
+          .get(url + "/me")
+          .set("Authorization", "Bearer " + generateToken(1, []))
+          .set("Service", kjyrIdentifier)
+          .end((err: any, res: ChaiHttp.Response) => {
+            should.exist(res.body.ok);
+            should.exist(res.body.message);
+            should.not.exist(res.body.payload);
+            res.body.ok.should.equal(false);
+            res.body.message.should.equal("User not authorized to service");
+            res.status.should.equal(403);
             done();
           });
-        });
-      });
-    });
+      }
+    );
 
-    // After each
-    afterEach((done: Mocha.Done) => {
-      knex.migrate.rollback().then(() => {
-        done();
-      });
-    });
-
-    authService
-      .getServices()
-      .then((dbServices: Service[]) => {
-        const services: IServiceDatabaseObject[] = dbServices.map(
-          (dbService: Service) => dbService.getDatabaseObject()
-        );
-        // Loop through services
-        for (const service of services) {
-          describe(
-            "Returns correct data for service " + service.display_name,
-            () => {
+    it(
+      "GET /api/users/me : Removes unwanted information" +
+        " and returns my information from every service",
+      (done: Mocha.Done) => {
+        authService
+          .getServices()
+          .then((dbServices: Service[]) => {
+            const services: IServiceDatabaseObject[] = dbServices.map(
+              (dbService: Service) => dbService.getDatabaseObject()
+            );
+            // Loop through services
+            for (const service of services) {
               const serviceIdentifier: string = service.service_identifier;
               const permissionNumber: number = service.data_permissions;
 
@@ -287,42 +309,40 @@ describe("UserController", () => {
 
                   const payloadObject: User = res.body.payload;
 
-                  const allFields: string[] = Object.keys(
-                    new User(
-                      user_2.getDatabaseObject()
-                    ).removeSensitiveInformation()
-                  );
+                  const user: User = new User(
+                    user_2.getDatabaseObject()
+                  ).removeSensitiveInformation();
+
+                  delete user.createdAt;
+                  delete user.modifiedAt;
+
+                  const allFields: string[] = Object.keys(user);
 
                   const required: string[] = Object.keys(
                     user_2
                       .removeSensitiveInformation()
                       .removeNonRequestedData(permissionNumber)
                   );
-                  it(
-                    "Fields " + required.join() + " should be only present",
-                    (done: Mocha.Done) => {
-                      for (const field of allFields) {
-                        if (
-                          required.find(
-                            (requiredField: string) => requiredField === field
-                          )
-                        ) {
-                          // Should expect and equal
-                          should.exist(payloadObject[field]);
-                          payloadObject[field].should.equal(user_2[field]);
-                        } else {
-                          // Should not exist
-                          should.not.exist(payloadObject[field]);
-                        }
-                      }
-                      done();
+                  for (const field of allFields) {
+                    if (
+                      required.find(
+                        (requiredField: string) => requiredField === field
+                      )
+                    ) {
+                      // Should expect and equal
+                      should.exist(payloadObject[field]);
+                      payloadObject[field].should.equal(user_2[field]);
+                    } else {
+                      // Should not exist
+                      should.not.exist(payloadObject[field]);
                     }
-                  );
+                  }
                 });
             }
-          );
-        }
-      })
-      .catch((err) => console.error(err));
+            done();
+          })
+          .catch(err => console.error(err));
+      }
+    );
   });
 });
