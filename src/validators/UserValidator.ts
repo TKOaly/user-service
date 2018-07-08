@@ -95,24 +95,15 @@ export default class UserValidator implements IValidator<User> {
     }
 
     // Test username
-    const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-      newUser.username
-    );
-    if (!usernameAvailable) {
-      throw new ServiceError(400, "Username already taken");
-    }
+    await this.checkUsernameAvailability(newUser);
 
     // Test email
-    if (
-      !newUser.email ||
-      !validator.isEmail(newUser.email) ||
-      !validator.isLength(newUser.email, {
-        max: 255,
-        min: 1
-      })
-    ) {
+    if (!this.checkEmailValidity(newUser.email)) {
       throw new ServiceError(400, "Malformed email");
     }
+
+    // Test email for taken
+    await this.checkEmailAvailability(newUser);
 
     newUser.membership = "ei-jasen";
     newUser.role = UserRoleString.Kayttaja;
@@ -127,8 +118,11 @@ export default class UserValidator implements IValidator<User> {
   /**
    * Validates user update.
    *
-   * @param {number} userId
-   * @param {User} newUser
+   * @param {number} userId User ID
+   * @param {(User & IAdditionalUserData)} newUser User data
+   * @param {User} modifier Modifier
+   * @returns {Promise<void>}
+   * @throws {ServiceError}
    * @memberof UserValidator
    */
   public async validateUpdate(
@@ -139,34 +133,37 @@ export default class UserValidator implements IValidator<User> {
     // Remove information that hasn't changed
     const oldUser: User = await this.userService.fetchUser(userId);
     Object.keys(newUser).forEach((k: string) => {
-      if (oldUser[k] === newUser[k]) {
+      if (oldUser[k] !== undefined && oldUser[k] === newUser[k]) {
         delete newUser[k];
       }
     });
 
     const error: string = "Forbidden modify action";
     if (userId === modifier.id) {
+      // Self edit
       newUser.id = userId;
       checkModifyPermission(newUser, allowedSelfEdit);
-    } else if (userId !== modifier.id && modifier.role === "jasenvirkailija") {
+    } else if (
+      userId !== modifier.id &&
+      modifier.role === UserRoleString.Jasenvirkailija
+    ) {
+      // Jasenvirkailija edit
       checkModifyPermission(newUser, allowedJVEdit);
-    } else if (userId !== modifier.id && modifier.role === "yllapitaja") {
+    } else if (
+      userId !== modifier.id &&
+      modifier.role === UserRoleString.Yllapitaja
+    ) {
+      // Yllapitaja edit
       checkModifyPermission(newUser, allowedAdminEdit);
     } else {
       throw new ServiceError(403, error);
     }
 
     await this.checkUsernameAvailability(newUser);
+    await this.checkEmailAvailability(newUser);
 
     // Test email
-    if (
-      newUser.email &&
-      (!validator.isEmail(newUser.email) ||
-        !validator.isLength(newUser.email, {
-          max: 255,
-          min: 1
-        }))
-    ) {
+    if (newUser.email && !this.checkEmailValidity(newUser.email)) {
       throw new ServiceError(400, "Malformed email");
     }
 
@@ -190,25 +187,69 @@ export default class UserValidator implements IValidator<User> {
    *
    * @param {User} newUser User object
    * @returns {Promise<void>}
+   * @throws {ServiceError}
    */
   public async checkUsernameAvailability(newUser: User): Promise<void> {
     if (newUser.username) {
       // Test username
       const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-        newUser.username
+        newUser.username.trim()
       );
       if (!usernameAvailable) {
         throw new ServiceError(400, "Username already taken");
       }
     }
   }
+
+  /**
+   * Checks for email availability.
+   *
+   * @param {User} newUser User object
+   * @returns {Promise<void>}
+   * @throws {ServiceError}
+   */
+  public async checkEmailAvailability(newUser: User): Promise<void> {
+    if (newUser.email) {
+      // Test email
+      const emailAvailable: boolean = await this.userService.checkEmailAvailability(
+        newUser.email.trim()
+      );
+      if (!emailAvailable) {
+        throw new ServiceError(400, "Email address already taken");
+      }
+    }
+  }
+
+  /**
+   * Checks for email address validity.
+   *
+   * @private
+   * @param {string} email Email address
+   * @returns {boolean} True if the email is valid
+   * @memberof UserValidator
+   */
+  public checkEmailValidity(email: string): boolean {
+    if (
+      !email ||
+      !validator.isEmail(email) ||
+      !validator.isLength(email, {
+        max: 255,
+        min: 1
+      })
+    ) {
+      return false;
+    }
+
+    return true;
+  }
 }
 
 /**
  * Checks modify permission.
  *
- * @param {User} user
- * @param {string[]} allowedEdits
+ * @param {User} user User
+ * @param {string[]} allowedEdits Allowed edits
+ * @throws {ServiceError}
  */
 export function checkModifyPermission(
   user: User,
@@ -216,7 +257,10 @@ export function checkModifyPermission(
 ): void {
   const error: string = "Forbidden modify action";
   Object.keys(user).forEach((key: string) => {
-    if (allowedEdits.indexOf(key) < 0 && key !== "id") {
+    if (
+      !allowedEdits.find((allowedEdit: string) => allowedEdit === key) &&
+      key !== "id"
+    ) {
       throw new ServiceError(403, error);
     }
   });

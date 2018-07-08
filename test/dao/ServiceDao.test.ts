@@ -32,14 +32,12 @@ describe("ServiceDao", () => {
 
   // After each
   afterEach((done: Mocha.Done) => {
-    knex.migrate
-      .rollback()
-      .then(() => {
-        done();
-      });
+    knex.migrate.rollback().then(() => {
+      done();
+    });
   });
 
-  it("Returns all services with all fields", (done: Mocha.Done) => {
+  it("Returns all services with findAll()", (done: Mocha.Done) => {
     serviceDao
       .findAll()
       .then((services: IServiceDatabaseObject[]) => {
@@ -70,12 +68,12 @@ describe("ServiceDao", () => {
 
         done();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
   });
 
-  it("Removes a service", (done: Mocha.Done) => {
+  it("Removes a service with remove()", (done: Mocha.Done) => {
     serviceDao
       .remove(dbServices[0].id)
       .then((res: boolean) => {
@@ -90,7 +88,7 @@ describe("ServiceDao", () => {
       });
   });
 
-  it("Inserts a new service", (done: Mocha.Done) => {
+  it("Inserts a new service with save()", (done: Mocha.Done) => {
     const newService: IServiceDatabaseObject = {
       data_permissions: 666,
       display_name: "Test service",
@@ -100,16 +98,19 @@ describe("ServiceDao", () => {
       service_name: "TestServicce"
     };
 
+    delete newService.id;
+
     serviceDao
       .save(newService)
       .then((res: number[]) => {
-        res.length.should.equal(1);
+        should.exist(res);
+        res[0].should.equal(3);
         serviceDao.findAll().then((services: IServiceDatabaseObject[]) => {
           services.length.should.equal(dbServices.length + 1);
           serviceDao
             .findByIdentifier(newService.service_identifier)
             .then((dbService: IServiceDatabaseObject) => {
-              Object.keys(dbService).forEach((key: string) => {
+              Object.keys(newService).forEach((key: string) => {
                 should.exist(dbService[key]);
                 dbService[key].should.equal(newService[key]);
               });
@@ -132,6 +133,49 @@ describe("ServiceDao", () => {
           dbService[key].should.equal(seedService[key]);
         });
         done();
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  });
+
+  it("Returns a single service with findByIdentifier()", (done: Mocha.Done) => {
+    serviceDao
+      .findByIdentifier(dbServices[0].service_identifier)
+      .then((dbService: IServiceDatabaseObject) => {
+        const seedService: IServiceDatabaseObject = dbServices[0];
+        Object.keys(dbService).forEach((key: string) => {
+          should.exist(dbService[key]);
+          dbService[key].should.equal(seedService[key]);
+        });
+        done();
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
+  });
+
+  it("Updates a new service with update()", (done: Mocha.Done) => {
+    const updatedService: IServiceDatabaseObject = {
+      id: 2,
+      service_name: "test_service",
+      data_permissions: 7768
+    };
+
+    serviceDao
+      .update(updatedService)
+      .then((res: number) => {
+        should.exist(res);
+        res.should.equal(1);
+
+        serviceDao
+          .findOne(updatedService.id)
+          .then((service: IServiceDatabaseObject) => {
+            service.id.should.equal(updatedService.id);
+            service.service_name.should.equal(updatedService.service_name);
+            service.data_permissions.should.equal(7768);
+            done();
+          });
       })
       .catch((err: any) => {
         console.error(err);

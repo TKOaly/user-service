@@ -288,12 +288,18 @@ export default class UserController implements IController {
         req.body,
         req.authorization.user
       );
-      await this.userService.updateUser(
+      const update: number = await this.userService.updateUser(
         req.params.id,
         req.body,
         req.body.password1 || null
       );
-      return res.status(200).json(new ServiceResponse(req.body, "Success"));
+      if (update === 1) {
+        return res.status(200).json(new ServiceResponse(req.body, "Success"));
+      } else {
+        return res
+          .status(200)
+          .json(new ServiceResponse(req.body, "User was not modified"));
+      }
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -347,11 +353,11 @@ export default class UserController implements IController {
   ): Promise<express.Response> {
     try {
       await this.userValidator.validateCreate(req.body);
-      const userIds: number[] = await this.userService.createUser(
+      const userId: number = await this.userService.createUser(
         req.body,
         req.body.password1
       );
-      const user: User = await this.userService.fetchUser(userIds[0]);
+      const user: User = await this.userService.fetchUser(userId);
       return res
         .status(200)
         .json(

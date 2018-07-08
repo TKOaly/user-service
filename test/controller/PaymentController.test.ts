@@ -239,16 +239,7 @@ describe("PaymentController", () => {
           res.body.message.should.equal("Payment created");
           res.body.payload.id.should.equal(payments.length + 1);
           res.body.payload.payer_id.should.equal(newPayment.payer_id);
-          /*Date.parse(res.body.payload.created).should.equal(
-            Date.parse(newPayment.created.toLocaleDateString())
-          );*/
           parseFloat(res.body.payload.amount).should.equal(newPayment.amount);
-          /*Date.parse(res.body.payload.valid_until).should.equal(
-            Date.parse(newPayment.valid_until.toLocaleDateString())
-          );
-          Date.parse(res.body.payload.paid).should.equal(
-            Date.parse(newPayment.paid.toLocaleDateString())
-          );*/
           res.body.payload.payment_type.should.equal(newPayment.payment_type);
 
           // Next, get all post and check for a match

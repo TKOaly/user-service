@@ -35,10 +35,10 @@ export default interface IDao<T> {
    * Updates an entity.
    *
    * @param {T} entity Entity
-   * @returns {Promise<boolean>} Did the update complete or not
+   * @returns {Promise<number[]>} Affected row(s)
    * @memberof IDao
    */
-  update(entityId: any, entity: T): Promise<boolean>;
+  update(entityId: any, entity: T): Promise<number>;
   /**
    * Saves an entity.
    *

@@ -4,7 +4,7 @@ dotenv.config();
 import * as Knex from "knex";
 
 const prod: Knex.Config = {
-  dialect: "mysql",
+  dialect: "mysql2",
   version: "5.6",
   connection: {
     host: process.env.DB_HOST,
@@ -23,7 +23,7 @@ const prod: Knex.Config = {
 };
 
 const staging: Knex.Config = {
-  dialect: "mysql",
+  dialect: "mysql2",
   version: "5.6",
   connection: {
     host: process.env.DB_HOST,
@@ -41,7 +41,7 @@ const staging: Knex.Config = {
   }
 };
 const dev: Knex.Config = {
-  dialect: "mysql",
+  dialect: "mysql2",
   version: "5.6",
   connection: {
     host: process.env.DB_HOST,
@@ -60,7 +60,7 @@ const dev: Knex.Config = {
 };
 
 const test: Knex.Config = {
-  dialect: "mysql",
+  dialect: "mysql2",
   version: "5.6",
   connection: {
     host: process.env.DB_HOST,

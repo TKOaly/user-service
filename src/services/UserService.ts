@@ -65,7 +65,9 @@ export default class UserService {
    * @memberof UserService
    */
   public async searchUsers(searchTerm: string): Promise<User[]> {
-    const results: IUserDatabaseObject[] = await this.userDao.findWhere(searchTerm);
+    const results: IUserDatabaseObject[] = await this.userDao.findWhere(
+      searchTerm
+    );
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
@@ -81,7 +83,10 @@ export default class UserService {
    * @returns {Promise<User[]>} List of users.
    * @memberof UserService
    */
-  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<User[]> {
+  public async fetchAllWithSelectedFields(
+    fields: string[],
+    conditions?: string[]
+  ): Promise<User[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
@@ -108,7 +113,10 @@ export default class UserService {
       });
     }
 
-    const results: IUserDatabaseObject[] = await this.userDao.findAll(fields, conditionQuery);
+    const results: IUserDatabaseObject[] = await this.userDao.findAll(
+      fields,
+      conditionQuery
+    );
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
@@ -128,7 +136,9 @@ export default class UserService {
     username: string,
     password: string
   ): Promise<User> {
-    const dbUser: IUserDatabaseObject = await this.userDao.findByUsername(username);
+    const dbUser: IUserDatabaseObject = await this.userDao.findByUsername(
+      username
+    );
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
@@ -163,7 +173,22 @@ export default class UserService {
    * @memberof UserService
    */
   public async checkUsernameAvailability(username: string): Promise<boolean> {
-    return this.userDao.findByUsername(username).then((res: IUserDatabaseObject) => !res);
+    const user: IUserDatabaseObject = await this.userDao.findByUsername(
+      username
+    );
+    return user === undefined;
+  }
+
+  /**
+   * Checks if email is available.
+   *
+   * @param {string} email Email address
+   * @returns {Promise<boolean>}
+   * @memberof UserService
+   */
+  public async checkEmailAvailability(email: string): Promise<boolean> {
+    const user: IUserDatabaseObject = await this.userDao.findByEmail(email);
+    return user === undefined;
   }
 
   /**
@@ -174,11 +199,14 @@ export default class UserService {
    * @returns {Promise<number[]>}
    * @memberof UserService
    */
-  public async createUser(user: User, password: string): Promise<number[]> {
+  public async createUser(user: User, password: string): Promise<number> {
     user.hashedPassword = await bcrypt.hash(password, 13);
     let newUser: User = new User({});
     newUser = Object.assign(newUser, user);
-    return await this.userDao.save(newUser.getDatabaseObject());
+    const insertIds: number[] = await this.userDao.save(
+      newUser.getDatabaseObject()
+    );
+    return insertIds[0];
   }
 
   /**
@@ -187,14 +215,14 @@ export default class UserService {
    * @param {number} userId User ID
    * @param {User} udpatedUser User data
    * @param {string} [password] Password
-   * @returns {Promise<boolean>} True if the operation succeeds.
+   * @returns {Promise<number[]>} Affected rows.
    * @memberof UserService
    */
   public async updateUser(
     userId: number,
     udpatedUser: User,
     password?: string
-  ): Promise<boolean> {
+  ): Promise<number> {
     // re-crypt password
     if (password) {
       udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
@@ -202,6 +230,11 @@ export default class UserService {
     }
     let newUser: User = new User({});
     newUser = Object.assign(newUser, udpatedUser);
-    return await this.userDao.update(userId, newUser.getDatabaseObject());
+    const affectedRows: number = await this.userDao.update(
+      userId,
+      newUser.getDatabaseObject()
+    );
+
+    return affectedRows;
   }
 }

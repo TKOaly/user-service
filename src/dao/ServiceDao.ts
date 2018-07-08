@@ -39,7 +39,9 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @returns {Promise<IServiceDatabaseObject>}
    * @memberof ServiceDao
    */
-  public findByIdentifier(service_identifier: string): Promise<IServiceDatabaseObject> {
+  public findByIdentifier(
+    service_identifier: string
+  ): Promise<IServiceDatabaseObject> {
     return this.knex("services")
       .select()
       .where({ service_identifier })
@@ -87,20 +89,20 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * Updates a single service.
    *
    * @param {IServiceDatabaseObject} entity Service
-   * @returns {Promise<boolean>}
+   * @returns {Promise<number[]>} Affected rows
    * @memberof ServiceDao
    */
-  public update(entity: IServiceDatabaseObject): Promise<boolean> {
+  public update(entity: IServiceDatabaseObject): Promise<number> {
     return this.knex("services")
-      .update(entity)
-      .where({ id: entity.id });
+      .where({ id: entity.id })
+      .update(entity);
   }
 
   /**
    * Saves a new service.
    *
    * @param {IServiceDatabaseObject} entity Service
-   * @returns {Promise<number[]>}
+   * @returns {Promise<number[]>} Inserted ID(s)
    * @memberof ServiceDao
    */
   public save(entity: IServiceDatabaseObject): Promise<number[]> {

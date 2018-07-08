@@ -18,12 +18,12 @@ module.exports = [
     salt: "12345",
     role: "jasen",
     tktl: 1,
-    deleted: 0,
+    deleted: 0
   },
   {
     id: 2,
     username: "admin_user",
-    name: "ADmin User",
+    name: "Admin User",
     screen_name: "admin_user",
     email: "admin@user.com",
     residence: "Test",
@@ -36,6 +36,42 @@ module.exports = [
     salt: "12345",
     role: "yllapitaja",
     tktl: 1,
-    deleted: 0,
+    deleted: 0
   },
+  {
+    id: 3,
+    username: "jasenvirkailija_user",
+    name: "Jasenvirkailija User",
+    screen_name: "jasenvirkailija_user",
+    email: "jasenvirkailija@user.com",
+    residence: "Test",
+    phone: "1234567890",
+    hyy_member: 1,
+    membership: "jasen",
+    created: new Date(),
+    modified: new Date(),
+    hashed_password: encryptPassword("jasenvirkailija_user", "12345"),
+    salt: "12345",
+    role: "jasenvirkailija",
+    tktl: 1,
+    deleted: 0
+  },
+  {
+    id: 4,
+    username: "tv_user",
+    name: "TV User",
+    screen_name: "tv_user",
+    email: "tenttiarkistovirkailija@user.com",
+    residence: "Test",
+    phone: "1234567890",
+    hyy_member: 1,
+    membership: "jasen",
+    created: new Date(),
+    modified: new Date(),
+    hashed_password: encryptPassword("tv_user", "12345"),
+    salt: "12345",
+    role: "tenttiarkistovirkailija",
+    tktl: 1,
+    deleted: 0
+  }
 ];

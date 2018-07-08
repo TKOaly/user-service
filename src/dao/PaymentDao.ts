@@ -96,13 +96,13 @@ export default class PaymentDao implements IDao<IPayment> {
    * Updates a paymemt.
    *
    * @param {IPayment} entity Payment
-   * @returns {Promise<boolean>} True if update was successful.
+   * @returns {Promise<number[]>} Affected rows.
    * @memberof PaymentDao
    */
-  public update(entity: IPayment): Promise<boolean> {
+  public update(entity: IPayment): Promise<number> {
     return this.knex("payments")
-      .update(entity)
-      .where({ id: entity.id });
+      .where({ id: entity.id })
+      .update(entity);
   }
 
   /**
