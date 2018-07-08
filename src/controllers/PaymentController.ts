@@ -230,6 +230,29 @@ export default class PaymentController implements IController {
     }
   }
 
+  public async markPaymentAsPaid(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+  
+    try {
+      if (req.params.method === 'bank') {
+        await this.paymentService.makeBankPaid(req.params.id, req.authorization.user.id);
+        return res.status(200).json(new ServiceResponse(null, 'Success'));
+      } else if(req.params.method === 'cash') {
+        await this.paymentService.makeCashPaid(req.params.id, req.authorization.user.id);
+        return res.status(200).json(new ServiceResponse(null, 'Success'));
+      } else { 
+        return res.status(304)
+      }
+    } catch(e) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+    }
+  }
+
   /**
    * Creates routes for payment controller.
    *
@@ -252,6 +275,11 @@ export default class PaymentController implements IController {
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.modifyPayment.bind(this)
     );
+    this.route.put(
+      "/:id(\\d+)/pay/:method",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.markPaymentAsPaid.bind(this)
+    )
     this.route.post(
       "/",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),

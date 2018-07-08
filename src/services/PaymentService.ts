@@ -163,27 +163,46 @@ export default class PaymentService {
    * Marks a cash payment paid.
    *
    * @param {number} payment_id Payment ID
-   * @param {number} payer_id Payer ID
    * @param {number} confirmer_id Confirmer ID
    * @returns {Promise<boolean>} True if the operation succeeded.
    * @memberof PaymentService
    */
   public async makeCashPaid(
     payment_id: number,
-    payer_id: number,
     confirmer_id: number
   ): Promise<boolean> {
     const payment: IPayment = await this.paymentDao.findOne(payment_id);
 
-    if (
-      payment.payer_id !== payer_id ||
-      !payment.paid ||
-      payment.payment_type !== bankPayment
-    ) {
+    if (!payment.paid) {
       throw new Error("Error marking cash payment as paid");
     }
 
     return this.paymentDao.makePaid(payment_id, confirmer_id, cashPayment);
+  }
+
+    /**
+   * Marks a bank payment paid.
+   *
+   * @param {number} payment_id Payment ID
+   * @param {number} confirmer_id Confirmer ID
+   * @returns {Promise<boolean>} True if the operation succeeded.
+   * @memberof PaymentService
+   */
+  public async makeBankPaid(
+    payment_id: number,
+    confirmer_id: number
+  ): Promise<boolean> {
+    const payment: IPayment = await this.paymentDao.findOne(payment_id);
+
+    if (!payment) {
+      throw new ServiceError(400, "Payment doesn't exsist");
+    }
+
+    if (payment.paid) {
+      throw new ServiceError(400, "Error marking cash payment as paid. Payment has already been paid");
+    }
+
+    return this.paymentDao.makePaid(payment_id, confirmer_id, bankPayment);
   }
 
   /**
