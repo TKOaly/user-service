@@ -128,7 +128,10 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @returns {Promise<IUserDatabaseObject[]>}
    * @memberof UserDao
    */
-  public findAll(fields?: string[], conditions?: string[]): Promise<IUserDatabaseObject[]> {
+  public findAll(
+    fields?: string[],
+    conditions?: string[]
+  ): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
       let query: any = this.knex("users").select(fields);
@@ -189,7 +192,14 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @returns {Promise<number[]>} Affected rows
    * @memberof UserDao
    */
-  public update(entityId: number, entity: IUserDatabaseObject): Promise<number> {
+  public update(
+    entityId: number,
+    entity: IUserDatabaseObject
+  ): Promise<number> {
+    if (entity.created) {
+      delete entity.created;
+    }
+    entity.modified = new Date();
     return this.knex("users")
       .update(entity)
       .where({ id: entityId });
@@ -203,6 +213,12 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public save(entity: IUserDatabaseObject): Promise<number[]> {
+    // Delete id because it's auto-assigned
+    if (entity.id) {
+      delete entity.id;
+    }
+    entity.created = new Date();
+    entity.modified = new Date();
     return this.knex("users").insert(entity);
   }
 }

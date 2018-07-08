@@ -339,7 +339,6 @@ describe("AuthController", () => {
             .get(authUrl + "/check")
             .set("Authorization", "Bearer " + token)
             .end((err: any, res: ChaiHttp.Response) => {
-              console.log(res);
               should.not.exist(err);
               res.status.should.equal(400);
               should.exist(res.body.ok);

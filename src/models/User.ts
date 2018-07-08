@@ -209,8 +209,8 @@ export default class User {
       role: this.role,
       salt: this.salt,
       hashed_password: this.hashedPassword,
-      created: this.createdAt || new Date(),
-      modified: new Date(),
+      created: this.createdAt,
+      modified: this.modifiedAt,
       deleted: this.isDeleted
     };
   }

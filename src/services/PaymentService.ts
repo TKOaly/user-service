@@ -122,7 +122,7 @@ export default class PaymentService {
     paymentId: number,
     updatedPayment: Payment
   ): Promise<number> {
-    return this.paymentDao.update(updatedPayment as IPayment);
+    return this.paymentDao.update(paymentId, updatedPayment as IPayment);
   }
 
   /**

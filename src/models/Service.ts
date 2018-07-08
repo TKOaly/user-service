@@ -49,6 +49,22 @@ export default class Service {
   public dataPermissions: number;
 
   /**
+   * Created at date.
+   *
+   * @type {Date}
+   * @memberof Service
+   */
+  public createdAt: Date;
+
+  /**
+   * Modified at date.
+   *
+   * @type {Date}
+   * @memberof Service
+   */
+  public modifiedAt: Date;
+
+  /**
    * Creates an instance of Service.
    * @param {ServiceDatabaseObject} databaseObject
    * @memberof Service
@@ -60,6 +76,8 @@ export default class Service {
     this.redirectUrl = databaseObject.redirect_url;
     this.serviceIdentifier = databaseObject.service_identifier;
     this.dataPermissions = databaseObject.data_permissions;
+    this.modifiedAt = databaseObject.modified;
+    this.createdAt = databaseObject.created;
   }
 
   /**
@@ -75,7 +93,9 @@ export default class Service {
       data_permissions: this.dataPermissions,
       display_name: this.displayName,
       redirect_url: this.redirectUrl,
-      service_identifier: this.serviceIdentifier
+      service_identifier: this.serviceIdentifier,
+      modified: this.modifiedAt,
+      created: this.createdAt
     } as IServiceDatabaseObject;
   }
 }
@@ -92,4 +112,6 @@ export interface IServiceDatabaseObject {
   redirect_url?: string;
   service_identifier?: string;
   data_permissions?: number;
+  modified?: Date;
+  created?: Date;
 }

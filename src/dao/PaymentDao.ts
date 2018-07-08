@@ -93,15 +93,16 @@ export default class PaymentDao implements IDao<IPayment> {
   }
 
   /**
-   * Updates a paymemt.
+   * Updates a payment.
    *
+   * @param {number} entityId Entity ID
    * @param {IPayment} entity Payment
-   * @returns {Promise<number[]>} Affected rows.
+   * @returns {Promise<number>} Affected rows.
    * @memberof PaymentDao
    */
-  public update(entity: IPayment): Promise<number> {
+  public update(entityId: number, entity: IPayment): Promise<number> {
     return this.knex("payments")
-      .where({ id: entity.id })
+      .where({ id: entityId })
       .update(entity);
   }
 
@@ -113,6 +114,10 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public save(entity: IPayment): Promise<number[]> {
+    // Delete id because it's auto-assigned
+    if (entity.id) {
+      delete entity.id;
+    }
     return this.knex("payments").insert(entity);
   }
 

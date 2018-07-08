@@ -92,9 +92,17 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @returns {Promise<number[]>} Affected rows
    * @memberof ServiceDao
    */
-  public update(entity: IServiceDatabaseObject): Promise<number> {
+  public update(
+    entityId: number,
+    entity: IServiceDatabaseObject
+  ): Promise<number> {
+    // Update modified timestamp. Prevent updating created timestamp.
+    if (entity.created) {
+      delete entity.created;
+    }
+    entity.modified = new Date();
     return this.knex("services")
-      .where({ id: entity.id })
+      .where({ id: entityId })
       .update(entity);
   }
 
@@ -106,6 +114,13 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public save(entity: IServiceDatabaseObject): Promise<number[]> {
+    // Delete id because it's auto-assigned
+    if (entity.id) {
+      delete entity.id;
+    }
+    // Set timestamps
+    entity.created = new Date();
+    entity.modified = new Date();
     return this.knex("services").insert(entity);
   }
 }

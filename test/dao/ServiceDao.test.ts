@@ -55,20 +55,28 @@ describe("ServiceDao", () => {
             seedService.service_identifier
           );
 
+          should.exist(dbService.service_name);
           dbService.service_name.should.equal(seedService.service_name);
 
+          should.exist(dbService.redirect_url);
           dbService.redirect_url.should.equal(seedService.redirect_url);
 
+          should.exist(dbService.id);
           dbService.id.should.equal(seedService.id);
 
+          should.exist(dbService.display_name);
           dbService.display_name.should.equal(seedService.display_name);
 
+          should.exist(dbService.data_permissions);
           dbService.data_permissions.should.equal(seedService.data_permissions);
+
+          should.exist(dbService.created);
+          should.exist(dbService.modified);
         });
 
         done();
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   });
@@ -98,8 +106,6 @@ describe("ServiceDao", () => {
       service_name: "TestServicce"
     };
 
-    delete newService.id;
-
     serviceDao
       .save(newService)
       .then((res: number[]) => {
@@ -110,6 +116,11 @@ describe("ServiceDao", () => {
           serviceDao
             .findByIdentifier(newService.service_identifier)
             .then((dbService: IServiceDatabaseObject) => {
+              delete newService.id;
+              delete newService.modified;
+              delete newService.created;
+              delete dbService.modified;
+              delete dbService.created;
               Object.keys(newService).forEach((key: string) => {
                 should.exist(dbService[key]);
                 dbService[key].should.equal(newService[key]);
@@ -128,6 +139,9 @@ describe("ServiceDao", () => {
       .findOne(dbServices[0].id)
       .then((dbService: IServiceDatabaseObject) => {
         const seedService: IServiceDatabaseObject = dbServices[0];
+        // We can't compare modified and created dates
+        delete dbService.modified;
+        delete dbService.created;
         Object.keys(dbService).forEach((key: string) => {
           should.exist(dbService[key]);
           dbService[key].should.equal(seedService[key]);
@@ -144,6 +158,10 @@ describe("ServiceDao", () => {
       .findByIdentifier(dbServices[0].service_identifier)
       .then((dbService: IServiceDatabaseObject) => {
         const seedService: IServiceDatabaseObject = dbServices[0];
+        // We can't compare modified and created dates
+        delete dbService.modified;
+        delete dbService.created;
+
         Object.keys(dbService).forEach((key: string) => {
           should.exist(dbService[key]);
           dbService[key].should.equal(seedService[key]);
@@ -161,24 +179,36 @@ describe("ServiceDao", () => {
       service_name: "test_service",
       data_permissions: 7768
     };
-
     serviceDao
-      .update(updatedService)
-      .then((res: number) => {
-        should.exist(res);
-        res.should.equal(1);
-
-        serviceDao
-          .findOne(updatedService.id)
-          .then((service: IServiceDatabaseObject) => {
-            service.id.should.equal(updatedService.id);
-            service.service_name.should.equal(updatedService.service_name);
-            service.data_permissions.should.equal(7768);
-            done();
-          });
-      })
-      .catch((err: any) => {
-        console.error(err);
+      .findOne(updatedService.id)
+      .then((oldService: IServiceDatabaseObject) => {
+        new Promise((r) => setTimeout(r, 4000)).then(() => {
+          serviceDao
+            .update(updatedService.id, updatedService)
+            .then((res: number) => {
+              should.exist(res);
+              res.should.equal(1);
+              serviceDao
+                .findOne(updatedService.id)
+                .then((service: IServiceDatabaseObject) => {
+                  service.modified
+                    .toISOString()
+                    .should.not.equal(oldService.modified.toISOString());
+                  service.created
+                    .toISOString()
+                    .should.equal(oldService.created.toISOString());
+                  service.id.should.equal(updatedService.id);
+                  service.service_name.should.equal(
+                    updatedService.service_name
+                  );
+                  service.data_permissions.should.equal(7768);
+                  done();
+                });
+            })
+            .catch((err: any) => {
+              console.error(err);
+            });
+        });
       });
   });
 });

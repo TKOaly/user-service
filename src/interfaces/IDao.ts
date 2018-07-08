@@ -38,7 +38,7 @@ export default interface IDao<T> {
    * @returns {Promise<number[]>} Affected row(s)
    * @memberof IDao
    */
-  update(entityId: any, entity: T): Promise<number>;
+  update(entityId: number, entity: T): Promise<number>;
   /**
    * Saves an entity.
    *
