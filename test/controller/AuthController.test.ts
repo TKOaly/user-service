@@ -80,6 +80,87 @@ describe("AuthController", () => {
           done();
         });
     });
+
+    it("POST /api/auth/authenticate : Does not authenticate with missing username", (done: Mocha.Done) => {
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send({
+          password: "test",
+          serviceIdentifier: kjyrIdentifier
+        })
+        .end((err: any, res: ChaiHttp.Response) => {
+          should.not.exist(err);
+          res.status.should.equal(400);
+          should.not.exist(res.body.payload);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("Invalid request params");
+          done();
+        });
+    });
+
+    it("POST /api/auth/authenticate : Does not authenticate with missing password", (done: Mocha.Done) => {
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send({
+          username: "test",
+          serviceIdentifier: kjyrIdentifier
+        })
+        .end((err: any, res: ChaiHttp.Response) => {
+          should.not.exist(err);
+          res.status.should.equal(400);
+          should.not.exist(res.body.payload);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("Invalid request params");
+          done();
+        });
+    });
+
+    it("POST /api/auth/authenticate : Does not authenticate with missing service identifier", (done: Mocha.Done) => {
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send({
+          username: "test",
+          password: "test"
+        })
+        .end((err: any, res: ChaiHttp.Response) => {
+          should.not.exist(err);
+          res.status.should.equal(400);
+          should.not.exist(res.body.payload);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("Invalid request params");
+          done();
+        });
+    });
+
+    it(
+      "POST /api/auth/authenticate : Returns an error when trying to" +
+        " authenticate with a nonexistent service",
+      (done: Mocha.Done) => {
+        chai
+          .request(app)
+          .post(authUrl + "/authenticate")
+          .send({
+            username: "test",
+            password: "test",
+            serviceIdentifier: "invalidServiceIdentifier"
+          })
+          .end((err: any, res: ChaiHttp.Response) => {
+            should.not.exist(err);
+            res.status.should.equal(404);
+            should.not.exist(res.body.payload);
+            should.exist(res.body.ok);
+            res.body.ok.should.equal(false);
+            res.body.message.should.equal("Service not found");
+            done();
+          });
+      }
+    );
   });
 
   describe("Service check", () => {
@@ -163,7 +244,7 @@ describe("AuthController", () => {
       }
     );
 
-    it("POST /api/auth/authenticate : Can authenticate to multiple services", (done: Mocha.Done) => {
+    it("GET /api/auth/check : Can authenticate to multiple services", (done: Mocha.Done) => {
       // First, authenticate to KJYR
       chai
         .request(app)
@@ -231,6 +312,42 @@ describe("AuthController", () => {
                       done();
                     });
                 });
+            });
+        });
+    });
+
+    it("GET /api/auth/check : Returns error if service is not defined", (done: Mocha.Done) => {
+      // First, authenticate to KJYR
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err: any, res: ChaiHttp.Response) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
+
+          // Token
+          const token: string = res.body.payload.token;
+
+          // Check auth for kjyr
+          chai
+            .request(app)
+            .get(authUrl + "/check")
+            .set("Authorization", "Bearer " + token)
+            .end((err: any, res: ChaiHttp.Response) => {
+              console.log(res);
+              should.not.exist(err);
+              res.status.should.equal(400);
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.not.exist(res.body.payload);
+              res.body.ok.should.equal(false);
+              res.body.message.should.equal("No service defined");
+              done();
             });
         });
     });
