@@ -3,7 +3,7 @@ import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
 import Service from "../models/Service";
-import User from "../models/User";
+import User, { UserPayment } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
@@ -210,7 +210,7 @@ export default class UserController implements IController {
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        const users: User[] = await this.userService.fetchAllWithSelectedFields(
+        const users: UserPayment[] = await this.userService.fetchAllWithSelectedFields(
           req.query.fields,
           req.query.conditions || null
         );
@@ -218,7 +218,7 @@ export default class UserController implements IController {
           .status(200)
           .json(
             new ServiceResponse(
-              users.map((u: User) => u.removeSensitiveInformation())
+              users.map((u: UserPayment) => u.removeSensitiveInformation())
             )
           );
       } catch (e) {

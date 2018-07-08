@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+=======
+import IUserRoles from "../interfaces/IUserRoles";
+
+import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
+>>>>>>> 6e44c2a... Add paid and valid until data to user listing
 
 /**
  * User object.

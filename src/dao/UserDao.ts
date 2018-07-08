@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 
 /**
  * User dao.
@@ -137,19 +137,19 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       let query: Knex.QueryBuilder = this.knex("users").select(fields);
 
       if (queryString.indexOf("Payment.")) {
-        query.leftOuterJoin("payments", "users.id", "payments.payer_id");
+        query.leftOuterJoin(this.knex.raw("payments on (users.id = payments.payer_id and payments.valid_until > now())"));
       }
 
       if (conditions) {
         conditions.forEach((cond: string, i: number) => {
-          query = query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
+          query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
         });
       }
-      // console.log(query.toString());
-      return query as Promise<IUserDatabaseObject[]>;
+      //console.log(query.toString());
+      return query as Promise<IUserPaymentDatabaseObject[]>;
     }
 
-    return this.knex("users").select();
+    return this.knex("users").select() as Promise<IUserDatabaseObject[]>;
   }
 
   /**

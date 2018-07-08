@@ -21,3 +21,14 @@ export default interface IUserDatabaseObject {
   tktl?: number | boolean;
   deleted?: number | boolean;
 }
+
+/**
+ * User database object with additional payment information
+ * 
+ * @interface IUserPaymentDatabaseObject
+ */
+
+ export interface IUserPaymentDatabaseObject extends IUserDatabaseObject {
+    paid?: Date;
+    valid_until?: Date;
+ }
