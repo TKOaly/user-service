@@ -1,7 +1,7 @@
 import * as Express from "express";
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
 import IController from "../interfaces/IController";
-import IPrivacyPolicy from "../interfaces/IPrivacyPolicy";
+import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
 import ServiceResponse from "../utils/ServiceResponse";
 
 /**
@@ -42,8 +42,8 @@ export default class PrivacyPolicyController implements IController {
     res: Express.Response
   ): Promise<Express.Response | void> {
     try {
-      const privacyPolicy: IPrivacyPolicy = await this.privacyPolicyDao.findByName(
-        req.params.policy
+      const privacyPolicy: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findByServiceIdentifier(
+        req.params.serviceIdentifier
       );
       if (privacyPolicy) {
         return res
@@ -68,7 +68,7 @@ export default class PrivacyPolicyController implements IController {
    * @memberof PrivacyPolicyController
    */
   public createRoutes(): Express.Router {
-    this.route.get("/:policy", this.GetPrivacyPolicy.bind(this));
+    this.route.get("/:serviceIdentifier", this.GetPrivacyPolicy.bind(this));
 
     return this.route;
   }

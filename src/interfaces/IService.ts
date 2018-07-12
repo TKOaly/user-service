@@ -10,7 +10,7 @@ export default interface IService<T> {
 
   findAll(): Promise<T[]>;
 
-  update(entity_id: number, entity: T): Promise<boolean>;
+  update(entity_id: number, entity: T): Promise<number>;
 
   delete(entity_id: number): Promise<boolean>;
 

@@ -4,9 +4,9 @@
  * @export
  * @interface IPrivacyPolicy
  */
-export default interface IPrivacyPolicy {
+export default interface IPrivacyPolicyDatabaseObject {
   id?: number;
-  name?: string;
+  service_id?: number;
   text?: string;
   modified?: Date;
   created?: Date;

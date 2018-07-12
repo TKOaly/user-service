@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    title= Käyttöehdot
+    link(rel='stylesheet', href='/styles/common.css')
+    link(rel='stylesheet', href='/styles/termsAndConditions.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+  body
+    #container
+      #menubar
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title Käyttöehdot
+            #termsAndConditions Hello world
+      #content
+        p Sinut ohjataan hyväksymisen jälkeen eteenpäin.
+        p Jos hylkäät palvelun käyttöehdot, et voi käyttää palvelua ennen uudelleenhyväksyntää.
+
+      #confirmation
+        form(id='formSubmitReject', action='/privacypolicy_confirm', method='POST')
+          input.cancel(type='submit', name='cancel', value='Hylkää')
+        form(id='formSubmitAccept', action='/privacypolicy_confirm', method='POST')
+          input(type='hidden', name='permission', value='yes')
+          input.accept(type='submit', name='accept', value='Hyväksy')

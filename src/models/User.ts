@@ -1,5 +1,3 @@
-import IUserRoles from "../interfaces/IUserRoles";
-
 import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 
 /**
@@ -216,10 +214,10 @@ export default class User {
   }
 }
 
-export const roleNumbers: IUserRoles = {
-  kayttaja: 1,
-  virkailija: 2,
-  tenttiarkistovirkailija: 2,
-  jasenvirkailija: 3,
-  yllapitaja: 4
-};
+export enum RoleNumbers {
+  kayttaja = 1,
+  virkailija = 2,
+  tenttiarkistovirkailija = 2,
+  jasenvirkailija = 3,
+  yllapitaja = 4
+}

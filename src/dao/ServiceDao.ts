@@ -80,9 +80,19 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public remove(id: number): Promise<boolean> {
-    return this.knex("services")
+    return this.knex("privacy_policy_consent_data")
       .delete()
-      .where({ id });
+      .where({ service_id: id })
+      .then((result: any) => {
+        return this.knex("privacy_policies")
+          .delete()
+          .where({ service_id: id })
+          .then((result: any) => {
+            return this.knex("services")
+              .delete()
+              .where({ id });
+          });
+      });
   }
 
   /**
