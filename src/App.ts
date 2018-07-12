@@ -6,6 +6,7 @@ import * as express from "express";
 import * as session from "express-session";
 import * as helmet from "helmet";
 import * as Knex from "knex";
+import * as Path from "path";
 
 import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
@@ -51,6 +52,8 @@ app.use(helmet());
 
 // Knexfile
 import knexfile = require("../knexfile");
+import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
@@ -95,6 +98,11 @@ const paymentController: PaymentController = new PaymentController(
   paymentService
 );
 
+// Privacy policy controller
+const privacyPolicyController: PrivacyPolicyController = new PrivacyPolicyController(
+  new PrivacyPolicyDao(knex)
+);
+
 /*
 API routes
 */
@@ -110,6 +118,11 @@ app.use(
 );
 // Login route
 app.use("/", loginController.createRoutes());
+// Privacy policy route
+app.use(
+  ApiRoute.generateApiRoute("policy"),
+  privacyPolicyController.createRoutes()
+);
 
 // Start server
 app.listen(process.env.USERSERVICE_PORT || 3000, () => {
@@ -119,5 +132,10 @@ app.listen(process.env.USERSERVICE_PORT || 3000, () => {
     process.env.USERSERVICE_PORT || 3000
   );
 });
+
+// Privacy policy directory
+export const privacyPolicyDir: string = Path.resolve(
+  Path.join(__dirname, "../", "privacy_policy/")
+);
 
 export default app;
