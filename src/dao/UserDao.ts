@@ -183,7 +183,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     return this.knex("privacy_policy_consent_data")
       .delete()
       .where({ user_id: id })
-      .then((result: any) => {
+      .then<boolean>((result: boolean) => {
         return this.knex("users")
           .delete()
           .where({ id });

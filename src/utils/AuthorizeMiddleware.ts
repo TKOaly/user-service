@@ -1,4 +1,5 @@
 import * as express from "express";
+import { ISessionUser } from "../controllers/LoginController";
 import User from "../models/User";
 import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
@@ -29,6 +30,24 @@ export interface IASRequest extends express.Request {
      */
     token: ServiceToken;
   };
+
+  /**
+   * Session
+   *
+   * @type {ISession}
+   */
+  session?: ISession;
+}
+
+interface ISession extends Express.Session {
+  user?: ISessionUser;
+  loginStep?: LoginStep;
+}
+
+export enum LoginStep {
+  PrivacyPolicy,
+  GDPR,
+  Login
 }
 
 /**

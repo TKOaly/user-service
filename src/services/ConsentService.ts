@@ -5,6 +5,13 @@ import IService from "../interfaces/IService";
 import Consent from "../models/Consent";
 import ServiceError from "../utils/ServiceError";
 
+/**
+ * Consent service.
+ *
+ * @export
+ * @class ConsentService
+ * @implements {IService<Consent>}
+ */
 export default class ConsentService implements IService<Consent> {
   /**
    * Creates an instance of ConsentService.
@@ -140,6 +147,28 @@ export default class ConsentService implements IService<Consent> {
       const inserted: number[] = await this.consentDao.save(consentData);
       return inserted;
     }
+  }
+
+  /**
+   * Finds a consent by user and a service.
+   *
+   * @param {number} user_id User id
+   * @param {number} service_id Service id
+   * @returns {Promise<Consent>}
+   * @memberof ConsentService
+   */
+  public async findByUserAndService(
+    user_id: number,
+    service_id: number
+  ): Promise<Consent> {
+    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(
+      user_id,
+      service_id
+    );
+    if (!res) {
+      throw new ServiceError(404, "Not found");
+    }
+    return new Consent(res);
   }
 
   /**

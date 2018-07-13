@@ -240,7 +240,7 @@ export default class LoginController implements IController {
       redirectTo: req.body.loginRedirect
         ? req.body.loginRedirect
         : service.redirectUrl
-    } as ISessionUser;
+    };
 
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
@@ -344,7 +344,7 @@ export default class LoginController implements IController {
  *
  * @interface ISessionUser
  */
-interface ISessionUser {
+export interface ISessionUser {
   userId: number;
   username: string;
   password: string;
