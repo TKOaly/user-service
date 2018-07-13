@@ -4,7 +4,7 @@ import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IConsentDatabaseObject from "../interfaces/IConsentDatabaseObject";
 import IDao from "../interfaces/IDao";
 
-const tableName: string = "privact_policy_consent_data";
+const tableName: string = "privacy_policy_consent_data";
 
 /**
  * Consent Dao.

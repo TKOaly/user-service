@@ -8,6 +8,14 @@
   justify-content: flex-start;
 }
 
+#personaldata {
+  width: 80%;
+  border: 2px dashed black;
+  margin: 15px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
 #confirmation {
   width: 100%;
   height: 70px;
@@ -35,8 +43,8 @@ input {
   height: 70%;
 }
 
-
 #termsAndConditions {
+  margin: 10px;
   width: 90%;
   height: 300px;
   overflow-y: scroll;

@@ -53,7 +53,10 @@ app.use(helmet());
 // Knexfile
 import knexfile = require("../knexfile");
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import ConsentDao from "./dao/ConsentDao";
 import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
+import ConsentService from "./services/ConsentService";
+import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
@@ -69,6 +72,14 @@ const paymentService: PaymentService = new PaymentService(new PaymentDao(knex));
 // Authentication service
 const authService: AuthenticationService = new AuthenticationService(
   new ServiceDao(knex)
+);
+
+// Consent service
+const consentService: ConsentService = new ConsentService(new ConsentDao(knex));
+
+// Privacy policy service
+const privacyPolicyService: PrivacyPolicyService = new PrivacyPolicyService(
+  new PrivacyPolicyDao(knex)
 );
 
 // Initialize controllers here
@@ -89,7 +100,9 @@ const userController: UserController = new UserController(
 // Login controller
 const loginController: LoginController = new LoginController(
   authService,
-  userService
+  userService,
+  consentService,
+  privacyPolicyService
 );
 
 // Payment controller

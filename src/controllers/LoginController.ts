@@ -1,11 +1,20 @@
 import { Router } from "express";
 import * as express from "express";
+import * as moment from "moment";
+import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IController from "../interfaces/IController";
+import Consent from "../models/Consent";
+import PrivacyPolicy from "../models/PrivacyPolicy";
 import Service from "../models/Service";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
+import ConsentService from "../services/ConsentService";
+import PrivacyPolicyService from "../services/PrivacyPolicyService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, {
+  IASRequest,
+  LoginStep
+} from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
@@ -40,7 +49,9 @@ export default class LoginController implements IController {
    */
   constructor(
     private authService: AuthenticationService,
-    private userService: UserService
+    private userService: UserService,
+    private consentService: ConsentService,
+    private privacyPolicyService: PrivacyPolicyService
   ) {
     this.route = Router();
     this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
@@ -58,6 +69,21 @@ export default class LoginController implements IController {
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response | void> {
+    // Delete login step
+    if (req.session.loginStep) {
+      req.session.loginStep = null;
+    }
+
+    // Delete keys
+    if (req.session.keys) {
+      req.session.keys = null;
+    }
+
+    // Delete user
+    if (req.session.user) {
+      req.session.user = null;
+    }
+
     if (!req.query.serviceIdentifier) {
       return res.status(400).render("serviceError", {
         error: "Missing service identifier"
@@ -242,6 +268,40 @@ export default class LoginController implements IController {
         : service.redirectUrl
     };
 
+    // Consent check here. If status is unknown, declined or the consent doesn't exist, redirect.
+    try {
+      const consent: Consent = await this.consentService.findByUserAndService(
+        user.id,
+        service.id
+      );
+      if (
+        !consent ||
+        consent.consent === PrivacyPolicyConsent.Declined ||
+        consent.consent === PrivacyPolicyConsent.Unknown
+      ) {
+        const policy: PrivacyPolicy = await this.privacyPolicyService.findByServiceIdentifier(
+          service.serviceIdentifier
+        );
+        // Redirect to consent page
+        // Login step detects that in what part the login process currently is
+        req.session.loginStep = LoginStep.PrivacyPolicy;
+        req.session.keys = keys;
+        return res.render("privacypolicy", {
+          serviceDisplayName: service.displayName,
+          policy: policy.text,
+          policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm")
+        });
+      }
+    } catch (err) {
+      return res.status(500).render("login", {
+        service,
+        errors: [err.message],
+        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        loginRedirect: req.query.loginRedirect || undefined
+      });
+    }
+    // Set login step
+    req.session.loginStep = LoginStep.GDPR;
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
       personalInformation: keys,
@@ -273,6 +333,12 @@ export default class LoginController implements IController {
       return res.redirect("https://members.tko-aly.fi");
     }
 
+    if (req.session.loginStep !== LoginStep.GDPR) {
+      return res.status(500).render("serviceError", {
+        error: "Server error"
+      });
+    }
+
     let token: string;
 
     try {
@@ -292,6 +358,8 @@ export default class LoginController implements IController {
 
     const redirectTo: string = req.session.user.redirectTo;
     req.session.user = null;
+    req.session.keys = null;
+    req.session.loginStep = null;
 
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -301,6 +369,61 @@ export default class LoginController implements IController {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");
     return res.redirect(redirectTo);
+  }
+
+  public async privacyPolicyConfirm(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response | void> {
+    const body: {
+      accept: string;
+    } =
+      req.body;
+
+    if (req.session.loginStep !== LoginStep.PrivacyPolicy) {
+      return res.status(500).render("serviceError", {
+        error: "Server error"
+      });
+    }
+
+    const service: Service = await this.authService.getServiceWithIdentifier(
+      req.session.user.serviceIdentifier
+    );
+
+    if (!body.accept) {
+      // Add new consent
+      try {
+        await this.consentService.declineConsent(
+          req.session.user.userId,
+          service.id
+        );
+        return res.redirect("https://members.tko-aly.fi");
+      } catch (ex) {
+        return res.status(500).render("serviceError", {
+          error: "Error saving your answer." + ex.message
+        });
+      }
+    } else {
+      try {
+        await this.consentService.acceptConsent(
+          req.session.user.userId,
+          service.id
+        );
+      } catch (ex) {
+        return res.status(500).render("serviceError", {
+          error: "Error saving your answer: " + ex.message
+        });
+      }
+    }
+    req.session.loginStep = LoginStep.GDPR;
+    // Render GDPR template, that shows required personal information.
+    return res.render("gdpr", {
+      personalInformation: req.session.keys,
+      serviceDisplayName: service.displayName,
+      redirectTo: req.body.loginRedirect
+        ? req.body.loginRedirect
+        : service.redirectUrl
+    });
   }
 
   /**
@@ -321,6 +444,12 @@ export default class LoginController implements IController {
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.login.bind(this)
+    );
+    this.route.post(
+      "/privacypolicy_confirm",
+      cachingMiddleware,
+      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      this.privacyPolicyConfirm.bind(this)
     );
     this.route.post(
       "/login_confirm",

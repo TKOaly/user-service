@@ -13,7 +13,7 @@ exports.up = async function(knex: Knex): Promise<void> {
           .index()
           .references("id")
           .inTable("services");
-        t.string("text", 65535).notNullable();
+        t.string("text", 15000).notNullable();
         t.dateTime("created");
         t.dateTime("modified");
       }

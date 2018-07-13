@@ -166,7 +166,7 @@ export default class ConsentService implements IService<Consent> {
       service_id
     );
     if (!res) {
-      throw new ServiceError(404, "Not found");
+      return null;
     }
     return new Consent(res);
   }
@@ -191,18 +191,11 @@ export default class ConsentService implements IService<Consent> {
     );
     if (res) {
       // Consent exists, check for state
-      if (res.consent === PrivacyPolicyConsent.Declined) {
-        // Declined users do not have the permission to use the service
-        throw new ServiceError(
-          400,
-          "You have previously declined the privacy policy for this service." +
-            " You cannot use the service until you contact the service administrators."
-        );
-      } else if (res.consent === PrivacyPolicyConsent.Accepted) {
+      if (res.consent === PrivacyPolicyConsent.Accepted) {
         // Already accepted, do nothing
         return [1];
       } else {
-        // Otherwise, the status is unknown.
+        // Otherwise, the status is unknown or declined.
         const updated: number = await this.consentDao.update(res.id, {
           consent: PrivacyPolicyConsent.Accepted
         });

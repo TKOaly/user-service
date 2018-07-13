@@ -42,6 +42,13 @@ export interface IASRequest extends express.Request {
 interface ISession extends Express.Session {
   user?: ISessionUser;
   loginStep?: LoginStep;
+  /**
+   * User requested keys
+   *
+   * @type {Array<{ name: string; value: string }>}
+   * @memberof IASRequest
+   */
+  keys: Array<{ name: string; value: string }>;
 }
 
 export enum LoginStep {
@@ -136,7 +143,7 @@ export default class AuthorizeMiddleware {
         });
       }
     }
-  }
+  };
 
   /**
    * Loads the token.
