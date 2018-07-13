@@ -18,7 +18,7 @@ html(lang="en")
           small Tietosuojaseloste on päivitetty viimeksi #{policyUpdateDate}
         #termsAndConditions #{policy}
         p Sinut ohjataan hyväksymisen jälkeen eteenpäin.
-        p Jos hylkäät #{serviceDisplayName} -palvelun tietosuojaselosteen mukaisen henkilötietojen käyttämisen, et voi käyttää palvelua ennen kuin olet hyväksynyt tietosuojaselosteen mukainen henkilötietojen käyttämisen.
+        p Jos hylkäät #{serviceDisplayName} -palvelun tietosuojaselosteen mukaisen henkilötietojen käyttämisen, et voi käyttää palvelua. Voit kuitenkin palata hyväksymään henkilötietojen käyttämisen myöhemmin.
       #confirmation
         form(id='formSubmitReject', action='/privacypolicy_confirm', method='POST')
           input.cancel(type='submit', name='cancel', value='Hylkää')
