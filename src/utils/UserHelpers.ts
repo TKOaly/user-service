@@ -1,4 +1,4 @@
-import { roleNumbers } from "../models/User";
+import { RoleNumbers } from "../models/User";
 
 /**
  * Converts a string representation to a boolean.
@@ -7,7 +7,7 @@ import { roleNumbers } from "../models/User";
  * @param {*} str String representation
  * @returns {boolean} Boolean
  */
-export function stringToBoolean(str: any): boolean  {
+export function stringToBoolean(str: string | number | object | boolean): boolean  {
   return str === "0"
     ? false
     : str === "false"
@@ -31,12 +31,12 @@ export function compareRoles(a: string, b: string): number {
   let aN: number = 0;
   let bN: number = 0;
 
-  if (roleNumbers[a]) {
-    aN = roleNumbers[a];
+  if (RoleNumbers[a]) {
+    aN = RoleNumbers[a];
   }
 
-  if (roleNumbers[b]) {
-    bN = roleNumbers[b];
+  if (RoleNumbers[b]) {
+    bN = RoleNumbers[b];
   }
 
   if (aN < bN) {

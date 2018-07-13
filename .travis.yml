@@ -18,10 +18,9 @@ before_install:
   - npm install -g codecov
 
 install:
-  - yarn install
-  - yarn global add knex
-  - knex migrate:latest
-  - knex seed:run
+  - yarn install --dev
+  - yarn migrate
+  - yarn seed
 
 script:
   - yarn lint

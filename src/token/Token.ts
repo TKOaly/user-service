@@ -8,7 +8,7 @@ import * as JWT from "jsonwebtoken";
  * @export
  * @class ServiceToken
  */
-export class ServiceToken {
+export default class ServiceToken {
   /**
    * Creates an instance of ServiceToken.
    * @param {number} userId User id

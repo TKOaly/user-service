@@ -129,7 +129,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/utils/AuthorizeMiddleware.ts#L40">utils/AuthorizeMiddleware.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L83">utils/AuthorizeMiddleware.ts:83</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -146,6 +146,11 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>userService: <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>User service</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-signature-type">AuthorizeMiddleware</a></h4>
@@ -161,9 +166,14 @@
 					<div class="tsd-signature tsd-kind-icon">user<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/utils/AuthorizeMiddleware.ts#L46">utils/AuthorizeMiddleware.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L89">utils/AuthorizeMiddleware.ts:89</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>User service</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -172,38 +182,56 @@
 					<a name="authorize" class="tsd-anchor"></a>
 					<h3>authorize</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">authorize<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">authorize<span class="tsd-signature-symbol">(</span>returnAsJson<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/utils/AuthorizeMiddleware.ts#L57">utils/AuthorizeMiddleware.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L98">utils/AuthorizeMiddleware.ts:98</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Authorizes the user.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>AuthorizeMiddleware</p>
-									</dd>
-								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
-								</li>
-								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
-								</li>
-								<li>
-									<h5>next: <span class="tsd-signature-type">express.NextFunction</span></h5>
+									<h5>returnAsJson: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Return as JSON</p>
+										</div>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-siganture">
+									<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>req: <a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
+												</li>
+												<li>
+													<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
+												</li>
+												<li>
+													<h5>next: <span class="tsd-signature-type">express.NextFunction</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -211,13 +239,13 @@
 					<a name="loadtoken" class="tsd-anchor"></a>
 					<h3>load<wbr>Token</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<wbr>Token<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">load<wbr>Token<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/utils/AuthorizeMiddleware.ts#L109">utils/AuthorizeMiddleware.ts:109</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L174">utils/AuthorizeMiddleware.ts:174</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -242,7 +270,7 @@
 									<h5>next: <span class="tsd-signature-type">express.NextFunction</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -261,6 +289,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_utils_authorizemiddleware_.loginstep.html" class="tsd-kind-icon">Login<wbr>Step</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
@@ -284,6 +315,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-kind-icon">IASRequest</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../interfaces/_utils_authorizemiddleware_.isession.html" class="tsd-kind-icon">ISession</a>
 					</li>
 				</ul>
 			</nav>

@@ -2,6 +2,8 @@ doctype html
 html(lang="en")
   head
     title= "Calculate service permissions"
+    link(rel='stylesheet', href='/styles/reset.css')
+    link(rel='stylesheet', href='/styles/common.css')
     link(rel='stylesheet', href='/styles/calcPermissions.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
@@ -15,7 +17,7 @@ html(lang="en")
         center="This tool will calculate service permissions for you."
         #wrapper
             #wrapper-left
-                form(action='/api/auth/calcPermissions', method='POST')
+                form#permissionForm(action='/api/auth/calcPermissions', method='POST')
                     ul.permissions
                         each val in userKeys
                             li.permissions

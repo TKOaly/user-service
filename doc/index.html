@@ -67,6 +67,8 @@
 				<h1 id="tko-ly-user-service">TKO-äly user service</h1>
 				<p><img src="https://img.shields.io/badge/maintainer-TKO--%C3%A4ly-yellow.svg" alt="Maintainer"></p>
 				<p><a href="https://travis-ci.org/TKOaly/user-service"><img src="https://api.travis-ci.org/TKOaly/user-service.svg?branch=master" alt="Build status (master)"></a></p>
+				<p>Test coverage (master) <a href="https://codecov.io/gh/TKOaly/user-service"><img src="https://codecov.io/gh/TKOaly/user-service/branch/master/graph/badge.svg" alt="codecov"></a></p>
+				<p>Test coverage (dev) <a href="https://codecov.io/gh/TKOaly/user-service"><img src="https://codecov.io/gh/TKOaly/user-service/branch/dev/graph/badge.svg" alt="codecov"></a></p>
 				<p><img src="https://img.shields.io/github/license/TKOaly/user-service.svg" alt="license"></p>
 				<p><a href="path/to/linked/page"><img src="https://david-dm.org/tkoaly/user-service/dev-status.svg" alt="devDependencies"></a>
 				<a href="path/to/linked/page"><img src="https://david-dm.org/tkoaly/user-service/status.svg" alt="dependencies"></a></p>
@@ -109,10 +111,14 @@
 				<p><strong>Note: Since Docker v18.03, use <code>host.docker.internal</code> as the MySQL server address if you are using MacOS or Windows and running the MySQL server from the local machine.</strong></p>
 				<h2 id="endpoints">Endpoints</h2>
 				<h3 id="get-serviceidentifier-service-identifier-"><code>GET /?serviceIdentifier={service identifier}</code></h3>
-				<p>Shows the user a login form, that authenticates to a service identified by the service identifier.</p>
-				<p>If the user is already authenticated to the service, the form will redirect the user to the service specified.</p>
-				<p><img src="img/login_page.png" alt="Login page">
-				<img src="img/permission.png" alt="Permission page"></p>
+				<p>Shows the user a login form, that authenticates to a service identified by the service identifier. If the user is already authenticated to the service, the form will redirect the user to the service specified.</p>
+				<p><img src="img/login_page.png" alt="Login page"></p>
+				<p>If the user does not input a service identifier, the following view is shown:</p>
+				<p><img src="img/missing_service_identifier.png" alt="Missing service identifier page"></p>
+				<p>If the login fails, the following view is shown:</p>
+				<p><img src="img/login_page_error.png" alt="Login error page"></p>
+				<p>After clicking login, the user is redirected to the permission prompt page:</p>
+				<p><img src="img/permission.png" alt="Permission page"></p>
 				<h3 id="post-api-auth-requestpermissions"><code>POST /api/auth/requestPermissions</code></h3>
 				<p>Authenticates a user with username, password and a service identifier. It returns a authorization token which can be used to fetch user information.</p>
 				<p>Example of form POST body:</p>
@@ -155,10 +161,19 @@
 						<a href="modules/_controllers_paymentcontroller_.html">"controllers/<wbr>Payment<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_controllers_privacypolicycontroller_.html">"controllers/<wbr>Privacy<wbr>Policy<wbr>Controller"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_controllers_usercontroller_.html">"controllers/<wbr>User<wbr>Controller"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_dao_consentdao_.html">"dao/<wbr>Consent<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_dao_paymentdao_.html">"dao/<wbr>Payment<wbr>Dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dao_privacypolicydao_.html">"dao/<wbr>Privacy<wbr>Policy<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_dao_servicedao_.html">"dao/<wbr>Service<wbr>Dao"</a>
@@ -167,7 +182,13 @@
 						<a href="modules/_dao_userdao_.html">"dao/<wbr>User<wbr>Dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_enum_privacypolicyconsent_.html">"enum/<wbr>Privacy<wbr>Policy<wbr>Consent"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_enum_userrolestring_.html">"enum/<wbr>User<wbr>Role<wbr>String"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iconsentdatabaseobject_.html">"interfaces/IConsent<wbr>Database<wbr>Object"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_interfaces_icontroller_.html">"interfaces/IController"</a>
@@ -179,19 +200,25 @@
 						<a href="modules/_interfaces_iparsedtokencontents_.html">"interfaces/IParsed<wbr>Token<wbr>Contents"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_interfaces_iprivacypolicydatabaseobject_.html">"interfaces/IPrivacy<wbr>Policy<wbr>Database<wbr>Object"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_interfaces_iservice_.html">"interfaces/IService"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_interfaces_iuserdatabaseobject_.html">"interfaces/IUser<wbr>Database<wbr>Object"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_interfaces_iuserroles_.html">"interfaces/IUser<wbr>Roles"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_interfaces_ivalidator_.html">"interfaces/IValidator"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_consent_.html">"models/<wbr>Consent"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_payment_.html">"models/<wbr>Payment"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_privacypolicy_.html">"models/<wbr>Privacy<wbr>Policy"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_service_.html">"models/<wbr>Service"</a>
@@ -203,7 +230,13 @@
 						<a href="modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_consentservice_.html">"services/<wbr>Consent<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_services_paymentservice_.html">"services/<wbr>Payment<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_services_privacypolicyservice_.html">"services/<wbr>Privacy<wbr>Policy<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
@@ -218,13 +251,16 @@
 						<a href="modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_helpers_.html">"utils/<wbr>Helpers"</a>
+						<a href="modules/_utils_cachingmiddleware_.html">"utils/<wbr>Caching<wbr>Middleware"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_serviceerror_.html">"utils/<wbr>Service<wbr>Error"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_userhelpers_.html">"utils/<wbr>User<wbr>Helpers"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_validators_paymentvalidator_.html">"validators/<wbr>Payment<wbr>Validator"</a>

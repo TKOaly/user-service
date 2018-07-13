@@ -2,7 +2,7 @@ doctype html
 html(lang="en")
   head
     title= "Login"
-    link(rel='stylesheet', href='/styles/login.css')
+    link(rel='stylesheet', href='/styles/common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -12,5 +12,7 @@ html(lang="en")
         #title-container
           div#title Logout
       #content
-        h2='You\'ve been logged out from ' + serviceName
+        .success-message
+          span.success-title="Success"
+          span.success-text='You\'ve been logged out from ' + serviceName + '.'
         a(href="https://tko-aly.fi") Return to TKO-äly website

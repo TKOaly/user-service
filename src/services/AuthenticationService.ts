@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import * as sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../models/Service";
-import { ServiceToken, stringToServiceToken } from "../token/Token";
+import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
 /**
@@ -13,7 +13,7 @@ import ServiceError from "../utils/ServiceError";
  * @export
  * @class AuthenticationService
  */
-export class AuthenticationService {
+export default class AuthenticationService {
   /**
    * Creates an instance of AuthenticationService.
    * @param {UserDao} userDao UserDao
@@ -30,7 +30,9 @@ export class AuthenticationService {
    * @memberof AuthenticationService
    */
   public async getService(serviceName: string): Promise<Service> {
-    const service: Service = await this.serviceDao.findByName(serviceName);
+    const service: IServiceDatabaseObject = await this.serviceDao.findByName(
+      serviceName
+    );
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -47,7 +49,7 @@ export class AuthenticationService {
   public async getServiceWithIdentifier(
     service_identifier: string
   ): Promise<Service> {
-    const service: Service = await this.serviceDao.findByIdentifier(
+    const service: IServiceDatabaseObject = await this.serviceDao.findByIdentifier(
       service_identifier
     );
     if (!service) {
@@ -73,13 +75,13 @@ export class AuthenticationService {
   /**
    * Appends a new service to the authentication token.
    *
-   * @param {(string | any)} oldToken
+   * @param {(string | ServiceToken)} oldToken
    * @param {string} newServiceName
    * @returns {string}
    * @memberof AuthenticationService
    */
   public appendNewServiceAuthenticationToToken(
-    oldToken: string | any,
+    oldToken: string | ServiceToken,
     newServiceName: string
   ): string {
     let token: ServiceToken;
@@ -107,13 +109,13 @@ export class AuthenticationService {
   /**
    * Remove a service from the authentication token.
    *
-   * @param {(string | any)} oldToken
+   * @param {(string | ServiceToken)} oldToken
    * @param {string} serviceToRemove
    * @returns {string}
    * @memberof AuthenticationService
    */
   public removeServiceAuthenticationToToken(
-    oldToken: string | any,
+    oldToken: string | ServiceToken,
     serviceToRemove: string
   ): string {
     let token: ServiceToken;

@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import Service from "../../src/models/Service";
+import Service, { IServiceDatabaseObject } from "../../src/models/Service";
 let service: Service;
 
 describe("Service model", () => {
@@ -24,6 +24,17 @@ describe("Service model", () => {
     service.redirectUrl.should.equal("https://localhost");
     service.serviceIdentifier.should.equal("1-2-3-4-5");
     service.serviceName.should.equal("testService");
+    done();
+  });
+
+  it("getDatabaseObject() returns a correct object", (done: Mocha.Done) => {
+    const dbObj: IServiceDatabaseObject = service.getDatabaseObject();
+    dbObj.id.should.equal(service.id);
+    dbObj.data_permissions.should.equal(service.dataPermissions);
+    dbObj.display_name.should.equal(service.displayName);
+    dbObj.redirect_url.should.equal(service.redirectUrl);
+    dbObj.service_identifier.should.equal(service.serviceIdentifier);
+    dbObj.service_name.should.equal(service.serviceName);
     done();
   });
 });

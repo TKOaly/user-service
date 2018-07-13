@@ -1,15 +1,16 @@
 // This script creates databases that are needed by the user service.
 
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import { createConnection } from "mysql2/promise";
 
 const dbName: string = process.env.DB_NAME;
 
-async function createTables() {
+async function createTables(): Promise<void> {
   // Create connection
   console.log("Creating connection..");
-  const con = await createConnection({
+  const con: any = await createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,

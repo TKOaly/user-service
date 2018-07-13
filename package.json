@@ -2,12 +2,34 @@
   "name": "user-service",
   "description": "User service for TKO-äly",
   "authors": "TKO-äly ry",
+  "contributors": [
+    {
+      "name": "Aleksi H."
+    }
+  ],
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
-  "engines": {
-    "node": ">=9.2",
-    "yarn": ">=1.6.0"
+  "homepage": "https://github.com/TKOaly/user-service#tko-%C3%A4ly-user-service",
+  "bugs": "https://github.com/TKOaly/user-service/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TKOaly/user-service"
+  },
+  "scripts": {
+    "start": "ts-node src/App.ts",
+    "watch": "nodemon start",
+    "test": "nyc mocha",
+    "create-uuid": "ts-node scripts/create_uuid.ts",
+    "generate-doc": "typedoc --out ./doc/ src/**/*.ts",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "seed": "knex seed:run",
+    "lint": "tslint -c tslint.json --project tsconfig.json",
+    "fix-ts": "tslint -c tslint.json --project tsconfig.json --fix",
+    "build": "tsc -p tsconfig.json",
+    "build-docker": "docker build . -t user-service",
+    "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
@@ -17,36 +39,27 @@
     "express-session": "^1.15.6",
     "helmet": "^3.11.0",
     "jsonwebtoken": "^8.2.1",
-    "knex": "^0.15.0",
+    "knex": "0.14.6",
+    "moment": "^2.22.2",
+    "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
     "pug": "^2.0.3",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
     "validator": "^10.2.0"
   },
-  "scripts": {
-    "start": "node_modules/.bin/ts-node src/App.ts",
-    "watch": "node_modules/.bin/nodemon start",
-    "test": "node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=html node_modules/.bin/mocha -r ts-node/register test/**/*.test.ts --exit",
-    "create-uuid": "node_modules/.bin/ts-node scripts/create_uuid.ts",
-    "generate-doc": "node_modules/.bin/typedoc --out ./doc/ src/**/*.ts",
-    "migrate": "node_modules/.bin/knex migrate:latest",
-    "rollback": "node_modules/.bin/knex migrate:rollback",
-    "seed": "node_modules/.bin/knex seed:run",
-    "lint": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json",
-    "fix-ts": "node_modules/.bin/tslint -c tslint.json --project tsconfig.json --fix",
-    "build": "node_modules/.bin/tsc -p tsconfig.json"
-  },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
     "@types/chai": "^4.1.4",
     "@types/chai-http": "^3.0.4",
     "@types/cookie-parser": "^1.4.1",
+    "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/express-session": "^1.15.9",
     "@types/jsonwebtoken": "^7.2.8",
     "@types/knex": "^0.14.15",
     "@types/mocha": "^5.2.0",
+    "@types/mysql": "^2.15.5",
     "@types/node": "^10.5.1",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
@@ -61,7 +74,11 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.2.1"
+  },
+  "engines": {
+    "node": ">=8.9",
+    "yarn": ">=1.6.0"
   },
   "nyc": {
     "extension": [
@@ -74,20 +91,24 @@
       "scripts/**/*.ts",
       "src/controllers/IController.ts",
       "migrations/**/*.js",
+      "migrations/**/*.ts",
       "seeds/**/*.js",
+      "seeds/**/*.ts",
       "coverage/**/*.js",
-      "**/*.js"
+      "**/*.js",
+      "knexfile.ts",
+      "src/App.ts"
     ],
     "reporter": [
       "html",
-      "json"
+      "text",
+      "lcov"
     ],
     "all": true
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint",
-      "pre-push": "yarn test"
+      "pre-commit": "yarn lint && yarn test"
     }
   }
 }

@@ -105,7 +105,9 @@
 			<section class="tsd-panel">
 				<h3>Implemented by</h3>
 				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_dao_consentdao_.consentdao.html" class="tsd-signature-type">ConsentDao</a></li>
 					<li><a href="../classes/_dao_paymentdao_.paymentdao.html" class="tsd-signature-type">PaymentDao</a></li>
+					<li><a href="../classes/_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a></li>
 					<li><a href="../classes/_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></li>
 					<li><a href="../classes/_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a></li>
 				</ul>
@@ -139,7 +141,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/interfaces/IDao.ts#L25">interfaces/IDao.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/interfaces/IDao.ts#L25">interfaces/IDao.ts:25</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -167,7 +169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/interfaces/IDao.ts#L18">interfaces/IDao.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/interfaces/IDao.ts#L18">interfaces/IDao.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -204,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/interfaces/IDao.ts#L33">interfaces/IDao.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/interfaces/IDao.ts#L33">interfaces/IDao.ts:33</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -241,7 +243,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/interfaces/IDao.ts#L49">interfaces/IDao.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/interfaces/IDao.ts#L49">interfaces/IDao.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -269,13 +271,13 @@
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, entity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, entity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/185b57f/src/interfaces/IDao.ts#L41">interfaces/IDao.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/interfaces/IDao.ts#L41">interfaces/IDao.ts:41</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -291,7 +293,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>entityId: <span class="tsd-signature-type">any</span></h5>
+									<h5>entityId: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
 									<h5>entity: <span class="tsd-signature-type">T</span></h5>
@@ -300,8 +302,8 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>Did the update complete or not</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Affected row(s)</p>
 						</li>
 					</ul>
 				</section>

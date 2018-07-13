@@ -1,7 +1,8 @@
 import * as express from "express";
+import { ISessionUser } from "../controllers/LoginController";
 import User from "../models/User";
 import UserService from "../services/UserService";
-import { ServiceToken, stringToServiceToken } from "../token/Token";
+import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 
 /**
@@ -29,6 +30,48 @@ export interface IASRequest extends express.Request {
      */
     token: ServiceToken;
   };
+
+  /**
+   * Session
+   *
+   * @type {ISession}
+   */
+  session?: ISession;
+}
+/**
+ * ISession interface adds support for new keys in the Express.Session interface.
+ *
+ * @interface ISession
+ * @extends {Express.Session}
+ */
+interface ISession extends Express.Session {
+  /**
+   * User
+   *
+   * @type {ISessionUser}
+   * @memberof ISession
+   */
+  user?: ISessionUser;
+  /**
+   * Current login step
+   *
+   * @type {LoginStep}
+   * @memberof ISession
+   */
+  loginStep?: LoginStep;
+  /**
+   * User requested keys
+   *
+   * @type {Array<{ name: string; value: string }>}
+   * @memberof IASRequest
+   */
+  keys: Array<{ name: string; value: string }>;
+}
+
+export enum LoginStep {
+  PrivacyPolicy,
+  GDPR,
+  Login
 }
 
 /**
@@ -40,7 +83,7 @@ export interface IASRequest extends express.Request {
 export default class AuthorizeMiddleware {
   /**
    * Creates an instance of AuthorizeMiddleware.
-   * @param {UserService} userService
+   * @param {UserService} userService User service
    * @memberof AuthorizeMiddleware
    */
   constructor(private userService: UserService) {}
@@ -48,17 +91,21 @@ export default class AuthorizeMiddleware {
   /**
    * Authorizes the user.
    *
-   * @param {IASRequest} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
-   * @returns
+   * @param {boolean} returnAsJson Return as JSON
+   *
    * @memberof AuthorizeMiddleware
    */
-  public async authorize(
+  public authorize = (
+    returnAsJson: boolean
+  ): ((
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ): Promise<express.Response | any> {
+  ) => void) => async (
+    req: IASRequest,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<express.Response | void> => {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
@@ -72,9 +119,15 @@ export default class AuthorizeMiddleware {
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        if (returnAsJson) {
+          return res
+            .status(e.httpStatusCode || 500)
+            .json(new ServiceResponse(null, e.message));
+        } else {
+          return res.status(e.httpStatusCode || 500).render("serviceError", {
+            error: e.message
+          });
+        }
       }
     } else if (req.cookies.token) {
       try {
@@ -88,12 +141,24 @@ export default class AuthorizeMiddleware {
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        if (returnAsJson) {
+          return res
+            .status(e.httpStatusCode || 500)
+            .json(new ServiceResponse(null, e.message));
+        } else {
+          return res.status(e.httpStatusCode || 500).render("serviceError", {
+            error: e.message
+          });
+        }
       }
     } else {
-      return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
+      if (returnAsJson) {
+        return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
+      } else {
+        return res.status(401).render("serviceError", {
+          error: "Unauthorized"
+        });
+      }
     }
   }
 
@@ -110,7 +175,7 @@ export default class AuthorizeMiddleware {
     req: IASRequest,
     res: express.Response,
     next: express.NextFunction
-  ): Promise<express.Response | any> {
+  ): Promise<express.Response | void> {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
