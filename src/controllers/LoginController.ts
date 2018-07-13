@@ -371,6 +371,14 @@ export default class LoginController implements IController {
     return res.redirect(redirectTo);
   }
 
+  /**
+   * Handles privacy policy confirmation.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns {(Promise<express.Response | void>)}
+   * @memberof LoginController
+   */
   public async privacyPolicyConfirm(
     req: express.Request & IASRequest,
     res: express.Response

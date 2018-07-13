@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AuthenticationService | user-service</title>
+	<title>PrivacyPolicyService | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_services_authenticationservice_.html">&quot;services/AuthenticationService&quot;</a>
+					<a href="../modules/_services_privacypolicyservice_.html">&quot;services/PrivacyPolicyService&quot;</a>
 				</li>
 				<li>
-					<a href="_services_authenticationservice_.authenticationservice.html">AuthenticationService</a>
+					<a href="_services_privacypolicyservice_.privacypolicyservice.html">PrivacyPolicyService</a>
 				</li>
 			</ul>
-			<h1>Class AuthenticationService</h1>
+			<h1>Class PrivacyPolicyService</h1>
 		</div>
 	</div>
 </header>
@@ -72,13 +72,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Authentication service.</p>
+						<p>Privacy policy service.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>export</dt>
 						<dd></dd>
 						<dt>class</dt>
-						<dd><p>AuthenticationService</p>
+						<dd><p>PrivacyPolicyService</p>
+						</dd>
+						<dt>implements</dt>
+						<dd><p>{IService<PrivacyPolicy>}</p>
 						</dd>
 					</dl>
 				</div>
@@ -87,8 +90,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AuthenticationService</span>
+						<span class="target">PrivacyPolicyService</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_interfaces_iservice_.iservice.html" class="tsd-signature-type">IService</a><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -98,24 +107,24 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_authenticationservice_.authenticationservice.html#servicedao" class="tsd-kind-icon">service<wbr>Dao</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_privacypolicyservice_.privacypolicyservice.html#privacypolicydao" class="tsd-kind-icon">privacy<wbr>Policy<wbr>Dao</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#appendnewserviceauthenticationtotoken" class="tsd-kind-icon">append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#createtoken" class="tsd-kind-icon">create<wbr>Token</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservice" class="tsd-kind-icon">get<wbr>Service</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservicewithidentifier" class="tsd-kind-icon">get<wbr>Service<wbr>With<wbr>Identifier</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#getservices" class="tsd-kind-icon">get<wbr>Services</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_authenticationservice_.authenticationservice.html#removeserviceauthenticationtotoken" class="tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#create" class="tsd-kind-icon">create</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#delete" class="tsd-kind-icon">delete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#findall" class="tsd-kind-icon">find<wbr>All</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#findbyserviceidentifier" class="tsd-kind-icon">find<wbr>ByService<wbr>Identifier</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#findone" class="tsd-kind-icon">find<wbr>One</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_privacypolicyservice_.privacypolicyservice.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
 					</div>
@@ -127,37 +136,37 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Authentication<wbr>Service<span class="tsd-signature-symbol">(</span>serviceDao<span class="tsd-signature-symbol">: </span><a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Privacy<wbr>Policy<wbr>Service<span class="tsd-signature-symbol">(</span>privacyPolicyDao<span class="tsd-signature-symbol">: </span><a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_privacypolicyservice_.privacypolicyservice.html" class="tsd-signature-type">PrivacyPolicyService</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L16">services/AuthenticationService.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L14">services/PrivacyPolicyService.ts:14</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an instance of AuthenticationService.</p>
+									<p>Creates an instance of PrivacyPolicyService.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>serviceDao: <a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></h5>
+									<h5>privacyPolicyDao: <a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>ServiceDao</p>
+											<p>Privacy policy DAO</p>
 										</div>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_services_authenticationservice_.authenticationservice.html" class="tsd-signature-type">AuthenticationService</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_services_privacypolicyservice_.privacypolicyservice.html" class="tsd-signature-type">PrivacyPolicyService</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -165,17 +174,17 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="servicedao" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> service<wbr>Dao</h3>
-					<div class="tsd-signature tsd-kind-icon">service<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_servicedao_.servicedao.html" class="tsd-signature-type">ServiceDao</a></div>
+					<a name="privacypolicydao" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> privacy<wbr>Policy<wbr>Dao</h3>
+					<div class="tsd-signature tsd-kind-icon">privacy<wbr>Policy<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L23">services/AuthenticationService.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L20">services/PrivacyPolicyService.ts:20</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>ServiceDao</p>
+							<p>Privacy policy DAO</p>
 						</div>
 					</div>
 				</section>
@@ -183,203 +192,216 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="appendnewserviceauthenticationtotoken" class="tsd-anchor"></a>
-					<h3>append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken</h3>
+					<a name="create" class="tsd-anchor"></a>
+					<h3>create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken<span class="tsd-signature-symbol">(</span>oldToken<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_token_token_.servicetoken.html" class="tsd-signature-type">ServiceToken</a>, newServiceName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>entity<span class="tsd-signature-symbol">: </span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L83">services/AuthenticationService.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L94">services/PrivacyPolicyService.ts:94</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Appends a new service to the authentication token.</p>
+									<p>Creates a privacy policy.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>oldToken: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_token_token_.servicetoken.html" class="tsd-signature-type">ServiceToken</a></h5>
-								</li>
-								<li>
-									<h5>newServiceName: <span class="tsd-signature-type">string</span></h5>
+									<h5>entity: <a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createtoken" class="tsd-anchor"></a>
-					<h3>create<wbr>Token</h3>
+					<a name="delete" class="tsd-anchor"></a>
+					<h3>delete</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Token<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, authenticatedTo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>entity_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_interfaces_iservice_.iservice.html">IService</a>.<a href="../interfaces/_interfaces_iservice_.iservice.html#delete">delete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L153">services/AuthenticationService.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L84">services/PrivacyPolicyService.ts:84</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates token.</p>
+									<p>Deletes a privacy policy.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>userId: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>authenticatedTo: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>entity_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Privacy policy ID</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getservice" class="tsd-anchor"></a>
-					<h3>get<wbr>Service</h3>
+					<a name="findall" class="tsd-anchor"></a>
+					<h3>find<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Service<span class="tsd-signature-symbol">(</span>serviceName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_interfaces_iservice_.iservice.html">IService</a>.<a href="../interfaces/_interfaces_iservice_.iservice.html#findall">findAll</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L63">services/PrivacyPolicyService.ts:63</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns all privacy policies.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PrivacyPolicyService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findbyserviceidentifier" class="tsd-anchor"></a>
+					<h3>find<wbr>ByService<wbr>Identifier</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>ByService<wbr>Identifier<span class="tsd-signature-symbol">(</span>serviceIdentifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L32">services/AuthenticationService.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L45">services/PrivacyPolicyService.ts:45</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns a single service by its name.</p>
+									<p>Finds a privacy policy by service identifier.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>serviceName: <span class="tsd-signature-type">string</span></h5>
+									<h5>serviceIdentifier: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Service identifier</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getservicewithidentifier" class="tsd-anchor"></a>
-					<h3>get<wbr>Service<wbr>With<wbr>Identifier</h3>
+					<a name="findone" class="tsd-anchor"></a>
+					<h3>find<wbr>One</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Service<wbr>With<wbr>Identifier<span class="tsd-signature-symbol">(</span>service_identifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>One<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_interfaces_iservice_.iservice.html">IService</a>.<a href="../interfaces/_interfaces_iservice_.iservice.html#findone">findOne</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L49">services/AuthenticationService.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L28">services/PrivacyPolicyService.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns a single service by its identifier.</p>
+									<p>Finds one privacy policy.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>service_identifier: <span class="tsd-signature-type">string</span></h5>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Privacy policy ID</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Privacy policy</p>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getservices" class="tsd-anchor"></a>
-					<h3>get<wbr>Services</h3>
+					<a name="update" class="tsd-anchor"></a>
+					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Services<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>entity_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, entity<span class="tsd-signature-symbol">: </span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L67">services/AuthenticationService.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/PrivacyPolicyService.ts#L74">services/PrivacyPolicyService.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns all services.</p>
+									<p>Updates a privacy policy.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_service_.service.html" class="tsd-signature-type">Service</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removeserviceauthenticationtotoken" class="tsd-anchor"></a>
-					<h3>remove<wbr>Service<wbr>Authentication<wbr>ToToken</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken<span class="tsd-signature-symbol">(</span>oldToken<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_token_token_.servicetoken.html" class="tsd-signature-type">ServiceToken</a>, serviceToRemove<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/AuthenticationService.ts#L117">services/AuthenticationService.ts:117</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Remove a service from the authentication token.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>AuthenticationService</p>
+									<dd><p>PrivacyPolicyService</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>oldToken: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_token_token_.servicetoken.html" class="tsd-signature-type">ServiceToken</a></h5>
+									<h5>entity_id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Privacy policy ID</p>
+									</div>
 								</li>
 								<li>
-									<h5>serviceToRemove: <span class="tsd-signature-type">string</span></h5>
+									<h5>entity: <a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Privacy policy</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -392,7 +414,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_services_authenticationservice_.html">"services/<wbr>Authentication<wbr>Service"</a>
+						<a href="../modules/_services_privacypolicyservice_.html">"services/<wbr>Privacy<wbr>Policy<wbr>Service"</a>
 					</li>
 				</ul>
 			</nav>
@@ -401,39 +423,36 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_services_authenticationservice_.authenticationservice.html" class="tsd-kind-icon">Authentication<wbr>Service</a>
+						<a href="_services_privacypolicyservice_.privacypolicyservice.html" class="tsd-kind-icon">Privacy<wbr>Policy<wbr>Service</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_services_authenticationservice_.authenticationservice.html#servicedao" class="tsd-kind-icon">service<wbr>Dao</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#privacypolicydao" class="tsd-kind-icon">privacy<wbr>Policy<wbr>Dao</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#appendnewserviceauthenticationtotoken" class="tsd-kind-icon">append<wbr>New<wbr>Service<wbr>Authentication<wbr>ToToken</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#create" class="tsd-kind-icon">create</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#createtoken" class="tsd-kind-icon">create<wbr>Token</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#delete" class="tsd-kind-icon">delete</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#getservice" class="tsd-kind-icon">get<wbr>Service</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#findall" class="tsd-kind-icon">find<wbr>All</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#getservicewithidentifier" class="tsd-kind-icon">get<wbr>Service<wbr>With<wbr>Identifier</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#findbyserviceidentifier" class="tsd-kind-icon">find<wbr>ByService<wbr>Identifier</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#getservices" class="tsd-kind-icon">get<wbr>Services</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#findone" class="tsd-kind-icon">find<wbr>One</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_services_authenticationservice_.authenticationservice.html#removeserviceauthenticationtotoken" class="tsd-kind-icon">remove<wbr>Service<wbr>Authentication<wbr>ToToken</a>
+								<a href="_services_privacypolicyservice_.privacypolicyservice.html#update" class="tsd-kind-icon">update</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_services_authenticationservice_.html#validatepassword" class="tsd-kind-icon">validate<wbr>Password</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

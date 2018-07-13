@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ServiceResponse | user-service</title>
+	<title>PrivacyPolicy | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_utils_serviceresponse_.html">&quot;utils/ServiceResponse&quot;</a>
+					<a href="../modules/_models_privacypolicy_.html">&quot;models/PrivacyPolicy&quot;</a>
 				</li>
 				<li>
-					<a href="_utils_serviceresponse_.serviceresponse.html">ServiceResponse</a>
+					<a href="_models_privacypolicy_.privacypolicy.html">PrivacyPolicy</a>
 				</li>
 			</ul>
-			<h1>Class ServiceResponse&lt;T&gt;</h1>
+			<h1>Class PrivacyPolicy</h1>
 		</div>
 	</div>
 </header>
@@ -72,31 +72,32 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Service response.</p>
+						<p>Privacy policy model.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>export</dt>
 						<dd></dd>
 						<dt>class</dt>
-						<dd><p>ServiceResponse</p>
+						<dd><p>PrivacyPolicy</p>
+						</dd>
+						<dt>implements</dt>
+						<dd><p>{IPrivacyPolicyDatabaseObject}</p>
 						</dd>
 					</dl>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-type-parameters">
-				<h3>Type parameters</h3>
-				<ul class="tsd-type-parameters">
-					<li>
-						<h4>T</h4>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ServiceResponse</span>
+						<span class="target">PrivacyPolicy</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html" class="tsd-signature-type">IPrivacyPolicyDatabaseObject</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -106,15 +107,17 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_utils_serviceresponse_.serviceresponse.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_serviceresponse_.serviceresponse.html#message" class="tsd-kind-icon">message</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_serviceresponse_.serviceresponse.html#ok" class="tsd-kind-icon">ok</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_utils_serviceresponse_.serviceresponse.html#payload" class="tsd-kind-icon">payload</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#created" class="tsd-kind-icon">created</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#modified" class="tsd-kind-icon">modified</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#service_id" class="tsd-kind-icon">service_<wbr>id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_privacypolicy_.privacypolicy.html#text" class="tsd-kind-icon">text</a></li>
 							</ul>
 						</section>
 					</div>
@@ -126,38 +129,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Service<wbr>Response<span class="tsd-signature-symbol">(</span>payload<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, message<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, ok<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_serviceresponse_.serviceresponse.html" class="tsd-signature-type">ServiceResponse</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Privacy<wbr>Policy<span class="tsd-signature-symbol">(</span>payment<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html" class="tsd-signature-type">IPrivacyPolicyDatabaseObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/ServiceResponse.ts#L28">utils/ServiceResponse.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L45">models/PrivacyPolicy.ts:45</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Creates an instance of ServiceResponse.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>memberof</dt>
-									<dd><p>ServiceResponse</p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>payload: <span class="tsd-signature-type">T</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> message: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Success&quot;</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> ok: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></h5>
+									<h5>payment: <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html" class="tsd-signature-type">IPrivacyPolicyDatabaseObject</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_serviceresponse_.serviceresponse.html" class="tsd-signature-type">ServiceResponse</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_models_privacypolicy_.privacypolicy.html" class="tsd-signature-type">PrivacyPolicy</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -165,70 +152,121 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="message" class="tsd-anchor"></a>
-					<h3>message</h3>
-					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="created" class="tsd-anchor"></a>
+					<h3>created</h3>
+					<div class="tsd-signature tsd-kind-icon">created<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html">IPrivacyPolicyDatabaseObject</a>.<a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html#created">created</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/ServiceResponse.ts#L21">utils/ServiceResponse.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L45">models/PrivacyPolicy.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Message.</p>
+							<p>Created</p>
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>type</dt>
-							<dd><p>{string} Message</p>
+							<dd><p>{Date}</p>
 							</dd>
 							<dt>memberof</dt>
-							<dd><p>ServiceResponse</p>
+							<dd><p>PrivacyPolicy</p>
 							</dd>
 						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="ok" class="tsd-anchor"></a>
-					<h3>ok</h3>
-					<div class="tsd-signature tsd-kind-icon">ok<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html">IPrivacyPolicyDatabaseObject</a>.<a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/ServiceResponse.ts#L14">utils/ServiceResponse.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L17">models/PrivacyPolicy.ts:17</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Status of the response.</p>
+							<p>ID</p>
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>type</dt>
-							<dd><p>{boolean}</p>
+							<dd><p>{number}</p>
 							</dd>
 							<dt>memberof</dt>
-							<dd><p>ServiceResponse</p>
+							<dd><p>PrivacyPolicy</p>
 							</dd>
 						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="payload" class="tsd-anchor"></a>
-					<h3>payload</h3>
-					<div class="tsd-signature tsd-kind-icon">payload<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
+					<a name="modified" class="tsd-anchor"></a>
+					<h3>modified</h3>
+					<div class="tsd-signature tsd-kind-icon">modified<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html">IPrivacyPolicyDatabaseObject</a>.<a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html#modified">modified</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/ServiceResponse.ts#L28">utils/ServiceResponse.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L38">models/PrivacyPolicy.ts:38</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Payload</p>
+							<p>Modified</p>
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>type</dt>
-							<dd><p>{T}</p>
+							<dd><p>{Date}</p>
 							</dd>
 							<dt>memberof</dt>
-							<dd><p>ServiceResponse</p>
+							<dd><p>PrivacyPolicy</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="service_id" class="tsd-anchor"></a>
+					<h3>service_<wbr>id</h3>
+					<div class="tsd-signature tsd-kind-icon">service_<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html">IPrivacyPolicyDatabaseObject</a>.<a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html#service_id">service_id</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L24">models/PrivacyPolicy.ts:24</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Name</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>type</dt>
+							<dd><p>{number}</p>
+							</dd>
+							<dt>memberof</dt>
+							<dd><p>PrivacyPolicy</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="text" class="tsd-anchor"></a>
+					<h3>text</h3>
+					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html">IPrivacyPolicyDatabaseObject</a>.<a href="../interfaces/_interfaces_iprivacypolicydatabaseobject_.iprivacypolicydatabaseobject.html#text">text</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/models/PrivacyPolicy.ts#L31">models/PrivacyPolicy.ts:31</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Service</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>type</dt>
+							<dd><p>{string}</p>
+							</dd>
+							<dt>memberof</dt>
+							<dd><p>PrivacyPolicy</p>
 							</dd>
 						</dl>
 					</div>
@@ -242,7 +280,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_utils_serviceresponse_.html">"utils/<wbr>Service<wbr>Response"</a>
+						<a href="../modules/_models_privacypolicy_.html">"models/<wbr>Privacy<wbr>Policy"</a>
 					</li>
 				</ul>
 			</nav>
@@ -250,20 +288,26 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
-						<a href="_utils_serviceresponse_.serviceresponse.html" class="tsd-kind-icon">Service<wbr>Response</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_models_privacypolicy_.privacypolicy.html" class="tsd-kind-icon">Privacy<wbr>Policy</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_utils_serviceresponse_.serviceresponse.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_models_privacypolicy_.privacypolicy.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_serviceresponse_.serviceresponse.html#message" class="tsd-kind-icon">message</a>
+								<a href="_models_privacypolicy_.privacypolicy.html#created" class="tsd-kind-icon">created</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_serviceresponse_.serviceresponse.html#ok" class="tsd-kind-icon">ok</a>
+								<a href="_models_privacypolicy_.privacypolicy.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_utils_serviceresponse_.serviceresponse.html#payload" class="tsd-kind-icon">payload</a>
+								<a href="_models_privacypolicy_.privacypolicy.html#modified" class="tsd-kind-icon">modified</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_models_privacypolicy_.privacypolicy.html#service_id" class="tsd-kind-icon">service_<wbr>id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_models_privacypolicy_.privacypolicy.html#text" class="tsd-kind-icon">text</a>
 							</li>
 						</ul>
 					</li>

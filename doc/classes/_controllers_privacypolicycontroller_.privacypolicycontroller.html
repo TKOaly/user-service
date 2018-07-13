@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AuthorizeMiddleware | user-service</title>
+	<title>PrivacyPolicyController | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_utils_authorizemiddleware_.html">&quot;utils/AuthorizeMiddleware&quot;</a>
+					<a href="../modules/_controllers_privacypolicycontroller_.html">&quot;controllers/PrivacyPolicyController&quot;</a>
 				</li>
 				<li>
-					<a href="_utils_authorizemiddleware_.authorizemiddleware.html">AuthorizeMiddleware</a>
+					<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html">PrivacyPolicyController</a>
 				</li>
 			</ul>
-			<h1>Class AuthorizeMiddleware</h1>
+			<h1>Class PrivacyPolicyController</h1>
 		</div>
 	</div>
 </header>
@@ -72,13 +72,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Authorize middleware.</p>
+						<p>Privacy Policy controller.</p>
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>export</dt>
 						<dd></dd>
 						<dt>class</dt>
-						<dd><p>AuthorizeMiddleware</p>
+						<dd><p>PrivacyPolicyController</p>
+						</dd>
+						<dt>implements</dt>
+						<dd><p>{IController}</p>
 						</dd>
 					</dl>
 				</div>
@@ -87,8 +90,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AuthorizeMiddleware</span>
+						<span class="target">PrivacyPolicyController</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_interfaces_icontroller_.icontroller.html" class="tsd-signature-type">IController</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -98,20 +107,21 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_utils_authorizemiddleware_.authorizemiddleware.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_utils_authorizemiddleware_.authorizemiddleware.html#userservice" class="tsd-kind-icon">user<wbr>Service</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#privacypolicydao" class="tsd-kind-icon">privacy<wbr>Policy<wbr>Dao</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#route" class="tsd-kind-icon">route</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_authorizemiddleware_.authorizemiddleware.html#authorize" class="tsd-kind-icon">authorize</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_utils_authorizemiddleware_.authorizemiddleware.html#loadtoken" class="tsd-kind-icon">load<wbr>Token</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#getprivacypolicy" class="tsd-kind-icon">Get<wbr>Privacy<wbr>Policy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#createroutes" class="tsd-kind-icon">create<wbr>Routes</a></li>
 							</ul>
 						</section>
 					</div>
@@ -123,37 +133,32 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Authorize<wbr>Middleware<span class="tsd-signature-symbol">(</span>userService<span class="tsd-signature-symbol">: </span><a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-signature-type">AuthorizeMiddleware</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Privacy<wbr>Policy<wbr>Controller<span class="tsd-signature-symbol">(</span>privacyPolicyDao<span class="tsd-signature-symbol">: </span><a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html" class="tsd-signature-type">PrivacyPolicyController</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L83">utils/AuthorizeMiddleware.ts:83</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/controllers/PrivacyPolicyController.ts#L22">controllers/PrivacyPolicyController.ts:22</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an instance of AuthorizeMiddleware.</p>
+									<p>Creates an instance of PrivacyPolicyController.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthorizeMiddleware</p>
+									<dd><p>PrivacyPolicyController</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>userService: <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>User service</p>
-										</div>
-									</div>
+									<h5>privacyPolicyDao: <a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-signature-type">AuthorizeMiddleware</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html" class="tsd-signature-type">PrivacyPolicyController</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -161,116 +166,102 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="userservice" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> user<wbr>Service</h3>
-					<div class="tsd-signature tsd-kind-icon">user<wbr>Service<span class="tsd-signature-symbol">:</span> <a href="_services_userservice_.userservice.html" class="tsd-signature-type">UserService</a></div>
+					<a name="privacypolicydao" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> privacy<wbr>Policy<wbr>Dao</h3>
+					<div class="tsd-signature tsd-kind-icon">privacy<wbr>Policy<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_privacypolicydao_.privacypolicydao.html" class="tsd-signature-type">PrivacyPolicyDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L89">utils/AuthorizeMiddleware.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/controllers/PrivacyPolicyController.ts#L28">controllers/PrivacyPolicyController.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="route" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> route</h3>
+					<div class="tsd-signature tsd-kind-icon">route<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Express.Router</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/controllers/PrivacyPolicyController.ts#L22">controllers/PrivacyPolicyController.ts:22</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>User service</p>
+							<p>Router</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>type</dt>
+							<dd><p>{express.Router}</p>
+							</dd>
+							<dt>memberof</dt>
+							<dd><p>PaymentController</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="authorize" class="tsd-anchor"></a>
-					<h3>authorize</h3>
+					<a name="getprivacypolicy" class="tsd-anchor"></a>
+					<h3>Get<wbr>Privacy<wbr>Policy</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">authorize<span class="tsd-signature-symbol">(</span>returnAsJson<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span></li>
+						<li class="tsd-signature tsd-kind-icon">Get<wbr>Privacy<wbr>Policy<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Express.Request</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Express.Response</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L98">utils/AuthorizeMiddleware.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/controllers/PrivacyPolicyController.ts#L40">controllers/PrivacyPolicyController.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Authorizes the user.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>returnAsJson: <span class="tsd-signature-type">boolean</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Return as JSON</p>
-										</div>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">function</span></h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter-siganture">
-									<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>req: <a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
-												</li>
-												<li>
-													<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
-												</li>
-												<li>
-													<h5>next: <span class="tsd-signature-type">express.NextFunction</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="loadtoken" class="tsd-anchor"></a>
-					<h3>load<wbr>Token</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<wbr>Token<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">express.NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L174">utils/AuthorizeMiddleware.ts:174</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Loads the token.</p>
+									<p>Returns a privacy policy.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>memberof</dt>
-									<dd><p>AuthorizeMiddleware</p>
+									<dd><p>PrivacyPolicyController</p>
 									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>req: <a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-signature-type">IASRequest</a></h5>
+									<h5>req: <span class="tsd-signature-type">Express.Request</span></h5>
 								</li>
 								<li>
-									<h5>res: <span class="tsd-signature-type">express.Response</span></h5>
-								</li>
-								<li>
-									<h5>next: <span class="tsd-signature-type">express.NextFunction</span></h5>
+									<h5>res: <span class="tsd-signature-type">Express.Response</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Express.Response</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createroutes" class="tsd-anchor"></a>
+					<h3>create<wbr>Routes</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Routes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Express.Router</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/_interfaces_icontroller_.icontroller.html">IController</a>.<a href="../interfaces/_interfaces_icontroller_.icontroller.html#createroutes">createRoutes</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/controllers/PrivacyPolicyController.ts#L70">controllers/PrivacyPolicyController.ts:70</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates routes</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>PrivacyPolicyController</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Express.Router</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -283,42 +274,36 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_utils_authorizemiddleware_.html">"utils/<wbr>Authorize<wbr>Middleware"</a>
+						<a href="../modules/_controllers_privacypolicycontroller_.html">"controllers/<wbr>Privacy<wbr>Policy<wbr>Controller"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/_utils_authorizemiddleware_.loginstep.html" class="tsd-kind-icon">Login<wbr>Step</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-kind-icon">Authorize<wbr>Middleware</a>
+						<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html" class="tsd-kind-icon">Privacy<wbr>Policy<wbr>Controller</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_utils_authorizemiddleware_.authorizemiddleware.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_utils_authorizemiddleware_.authorizemiddleware.html#userservice" class="tsd-kind-icon">user<wbr>Service</a>
+								<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#privacypolicydao" class="tsd-kind-icon">privacy<wbr>Policy<wbr>Dao</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#route" class="tsd-kind-icon">route</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_utils_authorizemiddleware_.authorizemiddleware.html#authorize" class="tsd-kind-icon">authorize</a>
+								<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#getprivacypolicy" class="tsd-kind-icon">Get<wbr>Privacy<wbr>Policy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_utils_authorizemiddleware_.authorizemiddleware.html#loadtoken" class="tsd-kind-icon">load<wbr>Token</a>
+								<a href="_controllers_privacypolicycontroller_.privacypolicycontroller.html#createroutes" class="tsd-kind-icon">create<wbr>Routes</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_utils_authorizemiddleware_.iasrequest.html" class="tsd-kind-icon">IASRequest</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_utils_authorizemiddleware_.isession.html" class="tsd-kind-icon">ISession</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

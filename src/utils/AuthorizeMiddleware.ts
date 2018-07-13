@@ -38,9 +38,26 @@ export interface IASRequest extends express.Request {
    */
   session?: ISession;
 }
-
+/**
+ * ISession interface adds support for new keys in the Express.Session interface.
+ *
+ * @interface ISession
+ * @extends {Express.Session}
+ */
 interface ISession extends Express.Session {
+  /**
+   * User
+   *
+   * @type {ISessionUser}
+   * @memberof ISession
+   */
   user?: ISessionUser;
+  /**
+   * Current login step
+   *
+   * @type {LoginStep}
+   * @memberof ISession
+   */
   loginStep?: LoginStep;
   /**
    * User requested keys
@@ -66,7 +83,7 @@ export enum LoginStep {
 export default class AuthorizeMiddleware {
   /**
    * Creates an instance of AuthorizeMiddleware.
-   * @param {UserService} userService
+   * @param {UserService} userService User service
    * @memberof AuthorizeMiddleware
    */
   constructor(private userService: UserService) {}
@@ -143,7 +160,7 @@ export default class AuthorizeMiddleware {
         });
       }
     }
-  };
+  }
 
   /**
    * Loads the token.
