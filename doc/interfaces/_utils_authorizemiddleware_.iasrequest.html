@@ -145,7 +145,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#readablelength" class="tsd-kind-icon">readable<wbr>Length</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#route" class="tsd-kind-icon">route</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#secure" class="tsd-kind-icon">secure</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#session" class="tsd-kind-icon">session</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="_utils_authorizemiddleware_.iasrequest.html#session" class="tsd-kind-icon">session</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#sessionid" class="tsd-kind-icon">sessionID</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#signedcookies" class="tsd-kind-icon">signed<wbr>Cookies</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_utils_authorizemiddleware_.iasrequest.html#socket" class="tsd-kind-icon">socket</a></li>
@@ -272,7 +272,7 @@
 					<div class="tsd-signature tsd-kind-icon">authorization<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/456d80d/src/utils/AuthorizeMiddleware.ts#L18">utils/AuthorizeMiddleware.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L19">utils/AuthorizeMiddleware.ts:19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -660,16 +660,26 @@
 						<p>   req.protocol == &#39;https&#39;</p>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
 					<a name="session" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> session</h3>
-					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Session</span></div>
+					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="_utils_authorizemiddleware_.isession.html" class="tsd-signature-type">ISession</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from Request.session</p>
+						<p>Overrides Request.session</p>
 						<ul>
-							<li>Defined in /Users/ahuotala/Documents/Evangelista/user-service/node_modules/@types/express-session/index.d.ts:18</li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/utils/AuthorizeMiddleware.ts#L39">utils/AuthorizeMiddleware.ts:39</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Session</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>type</dt>
+							<dd><p>{ISession}</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="sessionid" class="tsd-anchor"></a>
@@ -3553,6 +3563,9 @@ req.<span class="hljs-built_in">get</span>(<span class="hljs-string">'Something'
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_utils_authorizemiddleware_.loginstep.html" class="tsd-kind-icon">Login<wbr>Step</a>
+					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
 						<a href="../classes/_utils_authorizemiddleware_.authorizemiddleware.html" class="tsd-kind-icon">Authorize<wbr>Middleware</a>
 					</li>
@@ -3651,7 +3664,7 @@ req.<span class="hljs-built_in">get</span>(<span class="hljs-string">'Something'
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 								<a href="_utils_authorizemiddleware_.iasrequest.html#secure" class="tsd-kind-icon">secure</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
 								<a href="_utils_authorizemiddleware_.iasrequest.html#session" class="tsd-kind-icon">session</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
@@ -3814,6 +3827,9 @@ req.<span class="hljs-built_in">get</span>(<span class="hljs-string">'Something'
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_utils_authorizemiddleware_.isession.html" class="tsd-kind-icon">ISession</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

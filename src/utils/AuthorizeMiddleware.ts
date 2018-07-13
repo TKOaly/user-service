@@ -1,4 +1,5 @@
 import * as express from "express";
+import { ISessionUser } from "../controllers/LoginController";
 import User from "../models/User";
 import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
@@ -29,6 +30,48 @@ export interface IASRequest extends express.Request {
      */
     token: ServiceToken;
   };
+
+  /**
+   * Session
+   *
+   * @type {ISession}
+   */
+  session?: ISession;
+}
+/**
+ * ISession interface adds support for new keys in the Express.Session interface.
+ *
+ * @interface ISession
+ * @extends {Express.Session}
+ */
+interface ISession extends Express.Session {
+  /**
+   * User
+   *
+   * @type {ISessionUser}
+   * @memberof ISession
+   */
+  user?: ISessionUser;
+  /**
+   * Current login step
+   *
+   * @type {LoginStep}
+   * @memberof ISession
+   */
+  loginStep?: LoginStep;
+  /**
+   * User requested keys
+   *
+   * @type {Array<{ name: string; value: string }>}
+   * @memberof IASRequest
+   */
+  keys: Array<{ name: string; value: string }>;
+}
+
+export enum LoginStep {
+  PrivacyPolicy,
+  GDPR,
+  Login
 }
 
 /**
@@ -40,7 +83,7 @@ export interface IASRequest extends express.Request {
 export default class AuthorizeMiddleware {
   /**
    * Creates an instance of AuthorizeMiddleware.
-   * @param {UserService} userService
+   * @param {UserService} userService User service
    * @memberof AuthorizeMiddleware
    */
   constructor(private userService: UserService) {}

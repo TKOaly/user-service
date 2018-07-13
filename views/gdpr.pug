@@ -1,7 +1,8 @@
 doctype html
 html(lang="en")
   head
-    title= Käyttöoikeuspyyntö
+    title Henkilötietojen käyttöoikeuspyyntö
+    link(rel='stylesheet', href='/styles/reset.css')
     link(rel='stylesheet', href='/styles/common.css')
     link(rel='stylesheet', href='/styles/gdpr.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
@@ -11,7 +12,7 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Käyttöoikeuspyyntö
+          div#title Henkilötietojen käyttöoikeuspyyntö
       #content
         p <b class='service'>#{serviceDisplayName}</b>-palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä.
         p Palvelu haluaa luvan käyttää alla lueteltuja henkilötietoja.

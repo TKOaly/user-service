@@ -6,6 +6,7 @@ import * as express from "express";
 import * as session from "express-session";
 import * as helmet from "helmet";
 import * as Knex from "knex";
+import * as Path from "path";
 
 import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
@@ -51,6 +52,11 @@ app.use(helmet());
 
 // Knexfile
 import knexfile = require("../knexfile");
+import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import ConsentDao from "./dao/ConsentDao";
+import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
+import ConsentService from "./services/ConsentService";
+import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
@@ -66,6 +72,14 @@ const paymentService: PaymentService = new PaymentService(new PaymentDao(knex));
 // Authentication service
 const authService: AuthenticationService = new AuthenticationService(
   new ServiceDao(knex)
+);
+
+// Consent service
+const consentService: ConsentService = new ConsentService(new ConsentDao(knex));
+
+// Privacy policy service
+const privacyPolicyService: PrivacyPolicyService = new PrivacyPolicyService(
+  new PrivacyPolicyDao(knex)
 );
 
 // Initialize controllers here
@@ -86,13 +100,20 @@ const userController: UserController = new UserController(
 // Login controller
 const loginController: LoginController = new LoginController(
   authService,
-  userService
+  userService,
+  consentService,
+  privacyPolicyService
 );
 
 // Payment controller
 const paymentController: PaymentController = new PaymentController(
   userService,
   paymentService
+);
+
+// Privacy policy controller
+const privacyPolicyController: PrivacyPolicyController = new PrivacyPolicyController(
+  new PrivacyPolicyDao(knex)
 );
 
 /*
@@ -110,6 +131,11 @@ app.use(
 );
 // Login route
 app.use("/", loginController.createRoutes());
+// Privacy policy route
+app.use(
+  ApiRoute.generateApiRoute("policy"),
+  privacyPolicyController.createRoutes()
+);
 
 // Start server
 app.listen(process.env.USERSERVICE_PORT || 3000, () => {
@@ -119,5 +145,10 @@ app.listen(process.env.USERSERVICE_PORT || 3000, () => {
     process.env.USERSERVICE_PORT || 3000
   );
 });
+
+// Privacy policy directory
+export const privacyPolicyDir: string = Path.resolve(
+  Path.join(__dirname, "../", "privacy_policy/")
+);
 
 export default app;
