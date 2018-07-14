@@ -237,4 +237,12 @@ export default class UserService {
 
     return affectedRows;
   }
+
+  public async deleteUser(
+    userId: number
+  ): Promise<boolean> {
+    return this
+      .userDao
+      .remove(userId)
+  }
 }

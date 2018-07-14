@@ -160,6 +160,16 @@ export default class PaymentService {
   }
 
   /**
+   * Delete payment
+   * 
+   * @param {number} paymentId Payment id
+   * @memberof PaymentService
+   */
+  public async deletePatyment(paymentId: number): Promise<void> {
+    await this.paymentDao.deletePayment(paymentId);
+  }
+
+  /**
    * Marks a cash payment paid.
    *
    * @param {number} payment_id Payment ID
@@ -173,7 +183,7 @@ export default class PaymentService {
   ): Promise<boolean> {
     const payment: IPayment = await this.paymentDao.findOne(payment_id);
 
-    if (!payment.paid) {
+    if (payment.paid) {
       throw new Error("Error marking cash payment as paid");
     }
 

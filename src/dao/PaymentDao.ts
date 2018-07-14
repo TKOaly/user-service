@@ -196,4 +196,17 @@ export default class PaymentDao implements IDao<IPayment> {
       })
       .where({ id: payment_id });
   }
+
+  /**
+   * Delete payment
+   * 
+   * @param {number} id Payment id
+   * @memberof PaymentDao
+   */
+  public deletePayment(id: number) {
+    return this
+      .knex("payments")
+      .where({id})
+      .del();
+  }
 }

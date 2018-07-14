@@ -78,9 +78,11 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
-      payment.generateReferenceNumber();
-      // Set the generated reference number
-      await this.paymentService.updatePayment(payment.id, payment);
+      if (payment.payment_type === 'tilisiirto') {
+        payment.generateReferenceNumber();
+        // Set the generated reference number
+        await this.paymentService.updatePayment(payment.id, payment);
+      }
       return res
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
@@ -230,6 +232,14 @@ export default class PaymentController implements IController {
     }
   }
 
+  /**
+   * Marks payments as paid.
+   * 
+   * @param {express.Request} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof PaymentController
+   */
   public async markPaymentAsPaid(
     req: express.Request & IASRequest,
     res: express.Response
@@ -248,6 +258,30 @@ export default class PaymentController implements IController {
       } else { 
         return res.status(304)
       }
+    } catch(e) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+    }
+  }
+
+  /**
+   * Marks payments as paid.
+   * 
+   * @param {express.Request} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof PaymentController
+   */
+  public async deletePayment(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+  
+    try {
+      await this.paymentService.deletePatyment(Number(req.params.id));
+      return res.status(200)
     } catch(e) {
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
@@ -279,7 +313,12 @@ export default class PaymentController implements IController {
       "/:id(\\d+)/pay/:method",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.markPaymentAsPaid.bind(this)
-    )
+    );
+    this.route.delete(
+      "/:id(\\d+)",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.deletePayment.bind(this)
+    );
     this.route.post(
       "/",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),

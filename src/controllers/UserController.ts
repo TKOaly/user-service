@@ -440,6 +440,54 @@ export default class UserController implements IController {
     }
   }
 
+  public async setUserMembership(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+      }
+      const id = parseInt(req.params.id);
+      const user = await this.userService.fetchUser(id);
+      const membership: string = req.body.membership;
+      if (!membership) {
+        return res.status(400).json(new ServiceResponse(null, "Membership not set in request"));
+      }
+
+      if (membership === "hyvaksy") {
+        this.userService.updateUser(id, new User({ membership: user.isTKTL ? 'jasen' : 'ulkojasen' }));
+      } else if (membership === "ei-jasen" || membership === "erotettu") {
+        this.userService.updateUser(id, new User({
+          membership,
+          role: "kayttaja"
+        }));
+      }
+      return res.status(200).json(new ServiceResponse(null, 'User updated', true));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  public async deleteUser(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) === 0) {
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+      }
+      const id = parseInt(req.params.id);
+      this.userService.deleteUser(id);
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
   /**
    * Creates routes for UserController.
    *
@@ -486,6 +534,16 @@ export default class UserController implements IController {
       "/me/payments",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.findMePayment.bind(this)
+    );
+    this.route.put(
+      "/:id(\\d+)/membership",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.setUserMembership.bind(this)
+    );
+    this.route.delete(
+      "/:id(\\d+)",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.deleteUser.bind(this)
     );
     this.route.post("/", this.createUser.bind(this));
     return this.route;
