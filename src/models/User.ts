@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
-=======
-import IUserRoles from "../interfaces/IUserRoles";
-
 import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
->>>>>>> 6e44c2a... Add paid and valid until data to user listing
 
 /**
  * User object.
@@ -226,4 +220,15 @@ export enum RoleNumbers {
   tenttiarkistovirkailija = 2,
   jasenvirkailija = 3,
   yllapitaja = 4
+}
+
+export class UserPayment extends User {
+  paid: Date;
+  valid_until: Date;
+
+  constructor(dbEnt: IUserPaymentDatabaseObject) {
+    super(dbEnt);
+    this.paid = dbEnt.paid;
+    this.valid_until = dbEnt.valid_until;
+  }
 }
