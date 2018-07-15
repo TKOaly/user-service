@@ -96,7 +96,7 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/bcrypt/-/bcrypt-2.0.0.tgz#74cccef82026341fd786cf2eb9c912c7f9107c55"
 
-"@types/bluebird@*":
+"@types/bluebird@*", "@types/bluebird@^3.5.22":
   version "3.5.22"
   resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.22.tgz#519b87fe3c9d290ca6c06381ffc3040770ab452b"
 

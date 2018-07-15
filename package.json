@@ -21,7 +21,7 @@
     "watch": "nodemon start",
     "test": "nyc mocha",
     "create-uuid": "ts-node scripts/create_uuid.ts",
-    "generate-doc": "typedoc --out ./doc/ src/**/*.ts",
+    "generate-doc": "typedoc --ignoreCompilerErrors --out ./doc/ src/**/*.ts",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^2.0.0",
+    "@types/bluebird": "^3.5.22",
     "@types/chai": "^4.1.4",
     "@types/chai-http": "^3.0.5",
     "@types/cookie-parser": "^1.4.1",

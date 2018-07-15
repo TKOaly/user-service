@@ -68,6 +68,12 @@ interface ISession extends Express.Session {
   keys: Array<{ name: string; value: string }>;
 }
 
+/**
+ * Login step enum.
+ *
+ * @export
+ * @enum {number}
+ */
 export enum LoginStep {
   PrivacyPolicy,
   GDPR,
