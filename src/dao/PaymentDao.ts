@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
-import { IPayment } from "../models/Payment";
+import { IPayment, IPaymentListing } from "../models/Payment";
 
 /**
  * Payment dao.
@@ -26,10 +26,12 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public findOne(id: number): Promise<IPayment> {
-    return this.knex("payments")
-      .select()
-      .where({ id })
-      .first();
+    return Promise.resolve(
+      this.knex("payments")
+        .select()
+        .where({ id })
+        .first()
+    );
   }
 
   /**
@@ -52,7 +54,7 @@ export default class PaymentDao implements IDao<IPayment> {
       query = query.andWhere("valid_until", ">=", this.knex.fn.now());
     }
 
-    return query.first();
+    return Promise.resolve(query.first());
   }
 
   /**
@@ -63,10 +65,12 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public findByConfirmer(confirmer_id: number): Promise<IPayment> {
-    return this.knex("payments")
-      .select()
-      .where({ confirmer_id })
-      .first();
+    return Promise.resolve(
+      this.knex("payments")
+        .select()
+        .where({ confirmer_id })
+        .first()
+    );
   }
 
   /**
@@ -76,7 +80,7 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public findAll(): Promise<IPayment[]> {
-    return this.knex("payments").select();
+    return Promise.resolve(this.knex("payments").select());
   }
 
   /**
@@ -87,9 +91,11 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public remove(id: number): Promise<boolean> {
-    return this.knex("payments")
-      .delete()
-      .where({ id });
+    return Promise.resolve(
+      this.knex("payments")
+        .delete()
+        .where({ id })
+    );
   }
 
   /**
@@ -101,9 +107,11 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public update(entityId: number, entity: IPayment): Promise<number> {
-    return this.knex("payments")
-      .where({ id: entityId })
-      .update(entity);
+    return Promise.resolve(
+      this.knex("payments")
+        .where({ id: entityId })
+        .update(entity)
+    );
   }
 
   /**
@@ -118,7 +126,7 @@ export default class PaymentDao implements IDao<IPayment> {
     if (entity.id) {
       delete entity.id;
     }
-    return this.knex("payments").insert(entity);
+    return Promise.resolve(this.knex("payments").insert(entity));
   }
 
   /**
@@ -129,10 +137,37 @@ export default class PaymentDao implements IDao<IPayment> {
    * @returns {Promise<IPayment[]>} List of payments
    * @memberof PaymentDao
    */
-  public findPaymentsByPaymentType(payment_type: string): Promise<IPayment[]> {
-    return this.knex("payments")
-      .select()
-      .where({ payment_type });
+  public findPaymentsByPaymentType(
+    payment_type: string
+  ): Promise<IPaymentListing[]> {
+    return Promise.resolve(
+      this.knex("payments")
+        .select(
+          "payments.*",
+          "pu.name as payer_name",
+          "cu.name as confirmer_name"
+        )
+        .leftJoin(this.knex.raw("users as pu on (payments.payer_id = pu.id)"))
+        .leftJoin(
+          this.knex.raw("users as cu on (payments.confirmer_id = cu.id)")
+        )
+        .where({ payment_type })
+    );
+  }
+
+  /**
+   * Finds unpaid payments
+   *
+   * @returns {Promise<IPayment[]>} List of payments
+   * @memberof PaymentDao
+   */
+  public findUnpaid(): Promise<IPaymentListing[]> {
+    const query: Knex.QueryBuilder = this.knex("payments")
+      .select("payments.*", "users.name as payer_name")
+      .leftJoin(this.knex.raw("users on (users.id = payments.payer_id)"))
+      .where({ paid: null });
+    console.log(query.toString());
+    return Promise.resolve(query);
   }
 
   /**
@@ -147,12 +182,12 @@ export default class PaymentDao implements IDao<IPayment> {
     payment_id: number,
     confirmer_id: number
   ): Promise<boolean> {
-    return this.knex("payments")
+    return Promise.resolve(this.knex("payments")
       .update({
         paid: this.knex.fn.now(),
         confirmer_id
       })
-      .where({ id: payment_id });
+      .where({ id: payment_id }));
   }
 
   /**
@@ -169,12 +204,24 @@ export default class PaymentDao implements IDao<IPayment> {
     confirmer_id: number,
     payment_type: string
   ): Promise<boolean> {
-    return this.knex("payments")
+    return Promise.resolve(this.knex("payments")
       .update({
         payment_type,
         paid: this.knex.fn.now(),
         confirmer_id
       })
-      .where({ id: payment_id });
+      .where({ id: payment_id }));
+  }
+
+  /**
+   * Delete payment
+   *
+   * @param {number} id Payment id
+   * @memberof PaymentDao
+   */
+  public deletePayment(id: number): Promise<boolean> {
+    return Promise.resolve(this.knex("payments")
+      .where({ id })
+      .del());
   }
 }

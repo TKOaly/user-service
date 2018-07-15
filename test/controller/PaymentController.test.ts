@@ -1,20 +1,20 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import * as JWT from "jsonwebtoken";
 import * as Knex from "knex";
 import "mocha";
-import app from "../../src/App";
-
+import { IKnexFile } from "../../knexfile";
 import payments = require("../../seeds/seedData/payments");
+import app from "../../src/App";
 import { IPayment } from "../../src/models/Payment";
 
 // Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
-// Knex instance
-const knex: Knex = Knex(knexfile.test);
+import * as knexfile from "../../knexfile";
 
-import chai = require("chai");
-import { IKnexFile } from "../../knexfile";
+// Knex instance
+const knex: Knex = Knex((knexfile as IKnexFile).test);
+
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");
 chai.use(chaiHttp);
@@ -232,7 +232,7 @@ describe("PaymentController", () => {
           should.exist(res.body.payload.id);
           should.exist(res.body.payload.payer_id);
           should.exist(res.body.payload.created);
-          should.exist(res.body.payload.reference_number);
+          should.not.exist(res.body.payload.reference_number);
           should.exist(res.body.payload.amount);
           should.exist(res.body.payload.valid_until);
           should.exist(res.body.payload.payment_type);

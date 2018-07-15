@@ -113,6 +113,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#checkemailavailability" class="tsd-kind-icon">check<wbr>Email<wbr>Availability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#checkusernameavailability" class="tsd-kind-icon">check<wbr>Username<wbr>Availability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#createuser" class="tsd-kind-icon">create<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#deleteuser" class="tsd-kind-icon">delete<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchallunpaidusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Unpaid<wbr>Users</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchallusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Users</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_userservice_.userservice.html#fetchallwithselectedfields" class="tsd-kind-icon">fetch<wbr>All<wbr>With<wbr>Selected<wbr>Fields</a></li>
@@ -137,7 +138,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L15">services/UserService.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L16">services/UserService.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -169,7 +170,7 @@
 					<div class="tsd-signature tsd-kind-icon">user<wbr>Dao<span class="tsd-signature-symbol">:</span> <a href="_dao_userdao_.userdao.html" class="tsd-signature-type">UserDao</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L21">services/UserService.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L22">services/UserService.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,7 +187,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L189">services/UserService.ts:189</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L190">services/UserService.ts:190</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -222,7 +223,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L175">services/UserService.ts:175</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L176">services/UserService.ts:176</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -256,7 +257,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L202">services/UserService.ts:202</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L203">services/UserService.ts:203</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -289,6 +290,42 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deleteuser" class="tsd-anchor"></a>
+					<h3>delete<wbr>User</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">delete<wbr>User<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L249">services/UserService.ts:249</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deletes a user.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>memberof</dt>
+									<dd><p>UserService</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>userId: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>User ID</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="fetchallunpaidusers" class="tsd-anchor"></a>
 					<h3>fetch<wbr>All<wbr>Unpaid<wbr>Users</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -298,7 +335,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L55">services/UserService.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L56">services/UserService.ts:56</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -325,7 +362,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L44">services/UserService.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L45">services/UserService.ts:45</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -346,13 +383,13 @@
 					<a name="fetchallwithselectedfields" class="tsd-anchor"></a>
 					<h3>fetch<wbr>All<wbr>With<wbr>Selected<wbr>Fields</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>With<wbr>Selected<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, conditions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">fetch<wbr>All<wbr>With<wbr>Selected<wbr>Fields<span class="tsd-signature-symbol">(</span>fields<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, conditions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_userpayment_.userpayment.html" class="tsd-signature-type">UserPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L86">services/UserService.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L87">services/UserService.ts:87</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -377,7 +414,7 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> conditions: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_userpayment_.userpayment.html" class="tsd-signature-type">UserPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>List of users.</p>
 						</li>
 					</ul>
@@ -392,7 +429,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L29">services/UserService.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L30">services/UserService.ts:30</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -425,7 +462,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L135">services/UserService.ts:135</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L136">services/UserService.ts:136</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -468,7 +505,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L67">services/UserService.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L68">services/UserService.ts:68</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -501,7 +538,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/47e31fb/src/services/UserService.ts#L221">services/UserService.ts:221</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/b009811/src/services/UserService.ts#L222">services/UserService.ts:222</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -571,6 +608,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_userservice_.userservice.html#createuser" class="tsd-kind-icon">create<wbr>User</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_userservice_.userservice.html#deleteuser" class="tsd-kind-icon">delete<wbr>User</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_userservice_.userservice.html#fetchallunpaidusers" class="tsd-kind-icon">fetch<wbr>All<wbr>Unpaid<wbr>Users</a>

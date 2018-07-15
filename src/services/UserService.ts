@@ -1,7 +1,8 @@
 import * as bcrypt from "bcrypt";
 import UserDao from "../dao/UserDao";
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 import User from "../models/User";
+import { UserPayment } from "../models/UserPayment";
 
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
@@ -86,7 +87,7 @@ export default class UserService {
   public async fetchAllWithSelectedFields(
     fields: string[],
     conditions?: string[]
-  ): Promise<User[]> {
+  ): Promise<UserPayment[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
@@ -102,7 +103,7 @@ export default class UserService {
             conditionQuery.push("paid is not null");
             break;
           case "nonpaid":
-            conditionQuery.push("(paid <> 1 or paid is null)");
+            conditionQuery.push("(paid is null)");
             break;
           case "revoked":
             conditionQuery.push("deleted = 1");
@@ -113,7 +114,7 @@ export default class UserService {
       });
     }
 
-    const results: IUserDatabaseObject[] = await this.userDao.findAll(
+    const results: IUserPaymentDatabaseObject[]  = await this.userDao.findAll(
       fields,
       conditionQuery
     );
@@ -121,7 +122,7 @@ export default class UserService {
       throw new ServiceError(404, "No results returned");
     }
 
-    return results.map((u: IUserDatabaseObject) => new User(u));
+    return results.map((u: IUserPaymentDatabaseObject) => new UserPayment(u));
   }
 
   /**
@@ -236,5 +237,20 @@ export default class UserService {
     );
 
     return affectedRows;
+  }
+
+  /**
+   * Deletes a user.
+   *
+   * @param {number} userId User ID
+   * @returns {Promise<boolean>}
+   * @memberof UserService
+   */
+  public async deleteUser(
+    userId: number
+  ): Promise<boolean> {
+    return this
+      .userDao
+      .remove(userId);
   }
 }

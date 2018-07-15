@@ -1,7 +1,9 @@
 import * as Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject, {
+  IUserPaymentDatabaseObject
+} from "../interfaces/IUserDatabaseObject";
 
 /**
  * User dao.
@@ -26,10 +28,12 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findOne(id: number): Promise<IUserDatabaseObject> {
-    return this.knex("users")
-      .select()
-      .where({ id })
-      .first();
+    return Promise.resolve(
+      this.knex("users")
+        .select()
+        .where({ id })
+        .first()
+    );
   }
 
   /**
@@ -40,10 +44,12 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findByUsername(username: string): Promise<IUserDatabaseObject> {
-    return this.knex("users")
-      .select()
-      .where({ username })
-      .first();
+    return Promise.resolve(
+      this.knex("users")
+        .select()
+        .where({ username })
+        .first()
+    );
   }
 
   /**
@@ -54,10 +60,12 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findByEmail(email: string): Promise<IUserDatabaseObject> {
-    return this.knex("users")
-      .select()
-      .where({ email })
-      .first();
+    return Promise.resolve(
+      this.knex("users")
+        .select()
+        .where({ email })
+        .first()
+    );
   }
 
   /**
@@ -68,28 +76,14 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findByUnpaidPayment(id: number): Promise<IUserDatabaseObject> {
-    return this.knex("users")
-      .select(
-        "users.id",
-        "users.username",
-        "users.name",
-        "users.screen_name",
-        "users.email",
-        "users.residence",
-        "users.phone",
-        "users.hyy_member",
-        "users.membership",
-        "users.role",
-        "users.salt",
-        "users.hashed_password",
-        "users.created",
-        "users.modified",
-        "users.deleted"
-      )
-      .innerJoin("payments", "users.id", "payments.payer_id")
-      .where("users.id", "=", id)
-      .andWhere("payments.paid", null)
-      .first();
+    return Promise.resolve(
+      this.knex("users")
+        .select("users.*")
+        .innerJoin("payments", "users.id", "payments.payer_id")
+        .where("users.id", "=", id)
+        .andWhere("payments.paid", null)
+        .first()
+    );
   }
 
   /**
@@ -99,27 +93,12 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findAllByUnpaidPayment(): Promise<IUserDatabaseObject[]> {
-    return this.knex("users")
-      .select(
-        "users.id",
-        "users.username",
-        "users.name",
-        "users.name",
-        "users.screen_name",
-        "users.email",
-        "users.residence",
-        "users.phone",
-        "users.hyy_member",
-        "users.membership",
-        "users.role",
-        "users.salt",
-        "users.hashed_password",
-        "users.created",
-        "users.modified",
-        "users.deleted"
-      )
-      .innerJoin("payments", "users.id", "payments.payer_id")
-      .where("payments.paid", null);
+    return Promise.resolve(
+      this.knex("users")
+        .select("users.*")
+        .innerJoin("payments", "users.id", "payments.payer_id")
+        .where("payments.paid", null)
+    );
   }
 
   /**
@@ -134,22 +113,26 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
   ): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
-      let query: Knex.QueryBuilder = this.knex("users").select(fields);
+      const query: Knex.QueryBuilder = this.knex("users").select(fields);
 
       if (queryString.indexOf("Payment.")) {
-        query.leftOuterJoin("payments", "users.id", "payments.payer_id");
+        query.leftOuterJoin(
+          this.knex.raw(
+            "payments on (users.id = payments.payer_id and payments.valid_until > now())"
+          )
+        );
       }
 
       if (conditions) {
         conditions.forEach((cond: string, i: number) => {
-          query = query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
+          query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
         });
       }
       // console.log(query.toString());
-      return query as Promise<IUserDatabaseObject[]>;
+      return query as Promise<IUserPaymentDatabaseObject[]>;
     }
 
-    return this.knex("users").select();
+    return this.knex("users").select() as Promise<IUserDatabaseObject[]>;
   }
 
   /**
@@ -206,9 +189,11 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       delete entity.created;
     }
     entity.modified = new Date();
-    return this.knex("users")
-      .update(entity)
-      .where({ id: entityId });
+    return Promise.resolve(
+      this.knex("users")
+        .update(entity)
+        .where({ id: entityId })
+    );
   }
 
   /**
@@ -225,6 +210,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     }
     entity.created = new Date();
     entity.modified = new Date();
-    return this.knex("users").insert(entity);
+    return Promise.resolve(this.knex("users").insert(entity));
   }
 }

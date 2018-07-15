@@ -4,6 +4,7 @@ import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
 import Service from "../models/Service";
 import User from "../models/User";
+import { UserPayment } from "../models/UserPayment";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
@@ -210,7 +211,7 @@ export default class UserController implements IController {
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        const users: User[] = await this.userService.fetchAllWithSelectedFields(
+        const users: UserPayment[] = await this.userService.fetchAllWithSelectedFields(
           req.query.fields,
           req.query.conditions || null
         );
@@ -218,7 +219,7 @@ export default class UserController implements IController {
           .status(200)
           .json(
             new ServiceResponse(
-              users.map((u: User) => u.removeSensitiveInformation())
+              users.map((u: UserPayment) => u.removeSensitiveInformation())
             )
           );
       } catch (e) {
@@ -441,6 +442,88 @@ export default class UserController implements IController {
   }
 
   /**
+   * Sets user membership.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof UserController
+   */
+  public async setUserMembership(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      if (
+        compareRoles(
+          req.authorization.user.role,
+          UserRoleString.Jasenvirkailija
+        ) < 0
+      ) {
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+      }
+      const id: number = parseInt(req.params.id, 10);
+      const user: User = await this.userService.fetchUser(id);
+      const membership: string = req.body.membership;
+      if (!membership) {
+        return res
+          .status(400)
+          .json(new ServiceResponse(null, "Membership not set in request"));
+      }
+
+      if (membership === "hyvaksy") {
+        this.userService.updateUser(
+          id,
+          new User({ membership: user.isTKTL ? "jasen" : "ulkojasen" })
+        );
+      } else if (membership === "ei-jasen" || membership === "erotettu") {
+        this.userService.updateUser(
+          id,
+          new User({
+            membership,
+            role: "kayttaja"
+          })
+        );
+      }
+      return res
+        .status(200)
+        .json(new ServiceResponse(null, "User updated", true));
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  /**
+   * Deletes a user.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof UserController
+   */
+  public async deleteUser(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      if (
+        compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) ===
+        0
+      ) {
+        return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+      }
+      const id: number = parseInt(req.params.id, 10);
+      this.userService.deleteUser(id);
+    } catch (err) {
+      return res
+        .status(err.httpErrorCode || 500)
+        .json(new ServiceResponse(null, err.message));
+    }
+  }
+
+  /**
    * Creates routes for UserController.
    *
    * @returns
@@ -486,6 +569,16 @@ export default class UserController implements IController {
       "/me/payments",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.findMePayment.bind(this)
+    );
+    this.route.put(
+      "/:id(\\d+)/membership",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.setUserMembership.bind(this)
+    );
+    this.route.delete(
+      "/:id(\\d+)",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.deleteUser.bind(this)
     );
     this.route.post("/", this.createUser.bind(this));
     return this.route;

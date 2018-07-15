@@ -2,6 +2,7 @@ import * as express from "express";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
+import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -78,9 +79,11 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
-      payment.generateReferenceNumber();
-      // Set the generated reference number
-      await this.paymentService.updatePayment(payment.id, payment);
+      if (payment.payment_type === "tilisiirto") {
+        payment.generateReferenceNumber();
+        // Set the generated reference number
+        await this.paymentService.updatePayment(payment.id, payment);
+      }
       return res
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
@@ -165,12 +168,27 @@ export default class PaymentController implements IController {
     res: express.Response
   ): Promise<express.Response> {
     if (
-      compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) < 0
+      compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0
     ) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
+
+    let payments: Payment[] | PaymentListing[] = null;
+
     try {
-      const payments: Payment[] = await this.paymentService.fetchAllPayments();
+      switch (req.query.filter) {
+        case "unpaid":
+          payments = await this.paymentService.fetchUnpaidPayments();
+          break;
+        case "bankPaid":
+          payments = await this.paymentService.findPaymentsPaidByBankTransfer();
+          break;
+        case "cashPaid":
+          payments = await this.paymentService.findPaymentsPaidByCash();
+          break;
+        default:
+          payments = await this.paymentService.fetchAllPayments();
+      }
       return res.status(200).json(new ServiceResponse(payments, null, true));
     } catch (err) {
       return res
@@ -216,6 +234,61 @@ export default class PaymentController implements IController {
   }
 
   /**
+   * Marks payments as paid.
+   *
+   * @param {express.Request} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof PaymentController
+   */
+  public async markPaymentAsPaid(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+
+    try {
+      if (req.params.method === "bank") {
+        await this.paymentService.makeBankPaid(req.params.id, req.authorization.user.id);
+        return res.status(200).json(new ServiceResponse(null, "Success"));
+      } else if (req.params.method === "cash") {
+        await this.paymentService.makeCashPaid(req.params.id, req.authorization.user.id);
+        return res.status(200).json(new ServiceResponse(null, "Success"));
+      } else {
+        return res.status(304);
+      }
+    } catch (e) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+    }
+  }
+
+  /**
+   * Marks payments as paid.
+   *
+   * @param {express.Request} req
+   * @param {express.Response} res
+   * @returns
+   * @memberof PaymentController
+   */
+  public async deletePayment(
+    req: express.Request & IASRequest,
+    res: express.Response
+  ): Promise<express.Response> {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+
+    try {
+      await this.paymentService.deletePatyment(Number(req.params.id));
+      return res.status(200);
+    } catch (e) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+    }
+  }
+
+  /**
    * Creates routes for payment controller.
    *
    * @returns
@@ -236,6 +309,16 @@ export default class PaymentController implements IController {
       "/:id(\\d+)/",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
       this.modifyPayment.bind(this)
+    );
+    this.route.put(
+      "/:id(\\d+)/pay/:method",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.markPaymentAsPaid.bind(this)
+    );
+    this.route.delete(
+      "/:id(\\d+)",
+      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      this.deletePayment.bind(this)
     );
     this.route.post(
       "/",

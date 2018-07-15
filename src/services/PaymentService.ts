@@ -1,10 +1,12 @@
 import PaymentDao from "../dao/PaymentDao";
-import Payment, {IPayment} from "../models/Payment";
+import Payment, { IPayment, IPaymentListing } from "../models/Payment";
+import { PaymentListing } from "../models/PaymentListing";
 import ServiceError from "../utils/ServiceError";
 
-// Constants for bank and cash payments
-const bankPayment: string = "tilisiirto";
-const cashPayment: string = "kateinen";
+enum PaymentType {
+  BankPayment = "tilisiirto",
+  CashPayment = "kateinen"
+}
 
 /**
  * Payment service.
@@ -74,6 +76,17 @@ export default class PaymentService {
   }
 
   /**
+   * Returns all unpaid payments
+   *
+   * @returns {Promise<PaymentListing>} Payment
+   * @memberof PaymentService
+   */
+  public async fetchUnpaidPayments(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findUnpaid();
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
+  }
+
+  /**
    * Creates a payment.
    *
    * @param {Payment} payment Payment
@@ -93,7 +106,7 @@ export default class PaymentService {
    */
   public async createBankPayment(payment: Payment): Promise<number[]> {
     return this.paymentDao.save(Object.assign({}, payment, {
-      payment_type: bankPayment
+      payment_type: PaymentType.BankPayment
     }) as IPayment);
   }
 
@@ -106,7 +119,7 @@ export default class PaymentService {
    */
   public async createCashPayment(payment: Payment): Promise<number[]> {
     return this.paymentDao.save(Object.assign({}, payment, {
-      payment_type: cashPayment
+      payment_type: PaymentType.CashPayment
     }) as IPayment);
   }
 
@@ -128,48 +141,94 @@ export default class PaymentService {
   /**
    * Finds payments that have been paid by cash.
    *
-   * @returns {Promise<IPayment[]>} List of payments paid by cash.
+   * @returns {Promise<PaymentListing[]>} List of payments paid by cash.
    * @memberof PaymentService
    */
-  public async findPaymentsPaidByCash(): Promise<IPayment[]> {
-    return this.paymentDao.findPaymentsByPaymentType(cashPayment);
+  public async findPaymentsPaidByCash(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(
+      PaymentType.CashPayment
+    );
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
 
   /**
    * Finds payments that have been paid by bank transfer.
    *
-   * @returns {Promise<IPayment[]>} List of payments paid by bank transfer.
+   * @returns {Promise<PaymentListing[]>} List of payments paid by bank transfer.
    * @memberof PaymentService
    */
-  public async findPaymentsPaidByBankTransfer(): Promise<IPayment[]> {
-    return this.paymentDao.findPaymentsByPaymentType(bankPayment);
+  public async findPaymentsPaidByBankTransfer(): Promise<PaymentListing[]> {
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(
+      PaymentType.BankPayment
+    );
+    return results.map((ent: IPaymentListing) => new PaymentListing(ent));
+  }
+
+  /**
+   * Delete payment
+   *
+   * @param {number} paymentId Payment id
+   * @memberof PaymentService
+   */
+  public async deletePatyment(paymentId: number): Promise<void> {
+    await this.paymentDao.deletePayment(paymentId);
   }
 
   /**
    * Marks a cash payment paid.
    *
    * @param {number} payment_id Payment ID
-   * @param {number} payer_id Payer ID
    * @param {number} confirmer_id Confirmer ID
    * @returns {Promise<boolean>} True if the operation succeeded.
    * @memberof PaymentService
    */
   public async makeCashPaid(
     payment_id: number,
-    payer_id: number,
     confirmer_id: number
   ): Promise<boolean> {
     const payment: IPayment = await this.paymentDao.findOne(payment_id);
 
-    if (
-      payment.payer_id !== payer_id ||
-      !payment.paid ||
-      payment.payment_type !== bankPayment
-    ) {
+    if (payment.paid) {
       throw new Error("Error marking cash payment as paid");
     }
 
-    return this.paymentDao.makePaid(payment_id, confirmer_id, cashPayment);
+    return this.paymentDao.makePaid(
+      payment_id,
+      confirmer_id,
+      PaymentType.CashPayment
+    );
+  }
+
+  /**
+   * Marks a bank payment paid.
+   *
+   * @param {number} payment_id Payment ID
+   * @param {number} confirmer_id Confirmer ID
+   * @returns {Promise<boolean>} True if the operation succeeded.
+   * @memberof PaymentService
+   */
+  public async makeBankPaid(
+    payment_id: number,
+    confirmer_id: number
+  ): Promise<boolean> {
+    const payment: IPayment = await this.paymentDao.findOne(payment_id);
+
+    if (!payment) {
+      throw new ServiceError(400, "Payment doesn't exsist");
+    }
+
+    if (payment.paid) {
+      throw new ServiceError(
+        400,
+        "Error marking cash payment as paid. Payment has already been paid"
+      );
+    }
+
+    return this.paymentDao.makePaid(
+      payment_id,
+      confirmer_id,
+      PaymentType.BankPayment
+    );
   }
 
   /**

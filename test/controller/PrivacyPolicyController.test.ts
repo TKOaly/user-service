@@ -1,18 +1,17 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import chaiHttp = require("chai-http");
 import * as Knex from "knex";
 import "mocha";
-import app from "../../src/App";
-
-// Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
-// Knex instance
-const knex: Knex = Knex(knexfile.test);
-
-import chai = require("chai");
 import { IKnexFile } from "../../knexfile";
+// Knexfile
+import * as knexfile from "../../knexfile";
+import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
+// Knex instance
+const knex: Knex = Knex((knexfile as IKnexFile).test);
+
 const should: Chai.Should = chai.should();
 
 chai.use(chaiHttp);
