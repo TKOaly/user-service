@@ -27,11 +27,11 @@ export default class PrivacyPolicyDao
    * @memberof PrivacyPolicyDao
    */
   public findOne(id: number): Promise<IPrivacyPolicyDatabaseObject> {
-    return this.knex
+    return Promise.resolve(this.knex
       .select()
       .from("privacy_policies")
       .where({ id })
-      .first();
+      .first());
   }
 
   /**
@@ -44,7 +44,7 @@ export default class PrivacyPolicyDao
   public findByServiceIdentifier(
     serviceIdentifier: string
   ): Promise<IPrivacyPolicyDatabaseObject> {
-    return this.knex
+    return Promise.resolve(this.knex
       .select(
         "privacy_policies.id",
         "privacy_policies.service_id",
@@ -55,7 +55,7 @@ export default class PrivacyPolicyDao
       .from("privacy_policies")
       .innerJoin("services", "privacy_policies.service_id", "services.id")
       .where("services.service_identifier", serviceIdentifier)
-      .first();
+      .first());
   }
 
   /**
@@ -66,11 +66,11 @@ export default class PrivacyPolicyDao
    * @memberof PrivacyPolicyDao
    */
   public findByName(name: string): Promise<IPrivacyPolicyDatabaseObject> {
-    return this.knex
+    return Promise.resolve(this.knex
       .select()
       .from("privacy_policies")
       .where({ name })
-      .first();
+      .first());
   }
 
   /**
@@ -80,7 +80,7 @@ export default class PrivacyPolicyDao
    * @memberof PrivacyPolicyDao
    */
   public findAll(): Promise<IPrivacyPolicyDatabaseObject[]> {
-    return this.knex.select().from("privacy_policies");
+    return Promise.resolve(this.knex.select().from("privacy_policies"));
   }
 
   /**
@@ -91,10 +91,10 @@ export default class PrivacyPolicyDao
    * @memberof PrivacyPolicyDao
    */
   public remove(id: number): Promise<boolean> {
-    return this.knex
+    return Promise.resolve(this.knex
       .delete()
       .from("privacy_policies")
-      .where({ id });
+      .where({ id }));
   }
 
   /**
@@ -113,9 +113,9 @@ export default class PrivacyPolicyDao
       delete entity.created;
     }
     entity.modified = new Date();
-    return this.knex("privacy_policies")
+    return Promise.resolve(this.knex("privacy_policies")
       .update(entity)
-      .where({ id: entityId });
+      .where({ id: entityId }));
   }
 
   /**
@@ -132,6 +132,6 @@ export default class PrivacyPolicyDao
     entity.created = new Date();
     entity.modified = new Date();
 
-    return this.knex("privacy_policies").insert(entity);
+    return Promise.resolve(this.knex("privacy_policies").insert(entity));
   }
 }

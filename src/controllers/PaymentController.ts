@@ -1,7 +1,8 @@
 import * as express from "express";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
-import Payment, { PaymentListing } from "../models/Payment";
+import Payment from "../models/Payment";
+import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -78,7 +79,7 @@ export default class PaymentController implements IController {
       const payment: Payment = await this.paymentService.fetchPayment(
         paymentIds[0]
       );
-      if (payment.payment_type === 'tilisiirto') {
+      if (payment.payment_type === "tilisiirto") {
         payment.generateReferenceNumber();
         // Set the generated reference number
         await this.paymentService.updatePayment(payment.id, payment);
@@ -176,14 +177,14 @@ export default class PaymentController implements IController {
 
     try {
       switch (req.query.filter) {
-        case 'unpaid':
+        case "unpaid":
           payments = await this.paymentService.fetchUnpaidPayments();
           break;
-        case 'bankPaid':
-          payments = await this.paymentService.findPaymentsPaidByBankTransfer()
+        case "bankPaid":
+          payments = await this.paymentService.findPaymentsPaidByBankTransfer();
           break;
-        case 'cashPaid':
-          payments = await this.paymentService.findPaymentsPaidByCash()
+        case "cashPaid":
+          payments = await this.paymentService.findPaymentsPaidByCash();
           break;
         default:
           payments = await this.paymentService.fetchAllPayments();
@@ -234,7 +235,7 @@ export default class PaymentController implements IController {
 
   /**
    * Marks payments as paid.
-   * 
+   *
    * @param {express.Request} req
    * @param {express.Response} res
    * @returns
@@ -247,25 +248,25 @@ export default class PaymentController implements IController {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
-  
+
     try {
-      if (req.params.method === 'bank') {
+      if (req.params.method === "bank") {
         await this.paymentService.makeBankPaid(req.params.id, req.authorization.user.id);
-        return res.status(200).json(new ServiceResponse(null, 'Success'));
-      } else if(req.params.method === 'cash') {
+        return res.status(200).json(new ServiceResponse(null, "Success"));
+      } else if (req.params.method === "cash") {
         await this.paymentService.makeCashPaid(req.params.id, req.authorization.user.id);
-        return res.status(200).json(new ServiceResponse(null, 'Success'));
-      } else { 
-        return res.status(304)
+        return res.status(200).json(new ServiceResponse(null, "Success"));
+      } else {
+        return res.status(304);
       }
-    } catch(e) {
+    } catch (e) {
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
   /**
    * Marks payments as paid.
-   * 
+   *
    * @param {express.Request} req
    * @param {express.Response} res
    * @returns
@@ -278,11 +279,11 @@ export default class PaymentController implements IController {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
-  
+
     try {
       await this.paymentService.deletePatyment(Number(req.params.id));
-      return res.status(200)
-    } catch(e) {
+      return res.status(200);
+    } catch (e) {
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }

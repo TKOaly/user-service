@@ -13,9 +13,9 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 
 // Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
+import * as knexfile from "../../knexfile";
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex: Knex = Knex((knexfile as IKnexFile).test);
 
 import chai = require("chai");
 import { IKnexFile } from "../../knexfile";

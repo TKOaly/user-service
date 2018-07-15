@@ -1,4 +1,4 @@
-import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 
 /**
  * User object.
@@ -220,15 +220,4 @@ export enum RoleNumbers {
   tenttiarkistovirkailija = 2,
   jasenvirkailija = 3,
   yllapitaja = 4
-}
-
-export class UserPayment extends User {
-  paid: Date;
-  valid_until: Date;
-
-  constructor(dbEnt: IUserPaymentDatabaseObject) {
-    super(dbEnt);
-    this.paid = dbEnt.paid;
-    this.valid_until = dbEnt.valid_until;
-  }
 }

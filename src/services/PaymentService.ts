@@ -1,10 +1,12 @@
 import PaymentDao from "../dao/PaymentDao";
-import Payment, {IPayment, IPaymentListing, PaymentListing} from "../models/Payment";
+import Payment, { IPayment, IPaymentListing } from "../models/Payment";
+import { PaymentListing } from "../models/PaymentListing";
 import ServiceError from "../utils/ServiceError";
 
-// Constants for bank and cash payments
-const bankPayment: string = "tilisiirto";
-const cashPayment: string = "kateinen";
+enum PaymentType {
+  BankPayment = "tilisiirto",
+  CashPayment = "kateinen"
+}
 
 /**
  * Payment service.
@@ -72,7 +74,7 @@ export default class PaymentService {
     }
     return new Payment(result);
   }
-  
+
   /**
    * Returns all unpaid payments
    *
@@ -83,7 +85,6 @@ export default class PaymentService {
     const results: IPaymentListing[] = await this.paymentDao.findUnpaid();
     return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
-
 
   /**
    * Creates a payment.
@@ -105,7 +106,7 @@ export default class PaymentService {
    */
   public async createBankPayment(payment: Payment): Promise<number[]> {
     return this.paymentDao.save(Object.assign({}, payment, {
-      payment_type: bankPayment
+      payment_type: PaymentType.BankPayment
     }) as IPayment);
   }
 
@@ -118,7 +119,7 @@ export default class PaymentService {
    */
   public async createCashPayment(payment: Payment): Promise<number[]> {
     return this.paymentDao.save(Object.assign({}, payment, {
-      payment_type: cashPayment
+      payment_type: PaymentType.CashPayment
     }) as IPayment);
   }
 
@@ -144,7 +145,9 @@ export default class PaymentService {
    * @memberof PaymentService
    */
   public async findPaymentsPaidByCash(): Promise<PaymentListing[]> {
-    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(cashPayment);
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(
+      PaymentType.CashPayment
+    );
     return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
 
@@ -155,13 +158,15 @@ export default class PaymentService {
    * @memberof PaymentService
    */
   public async findPaymentsPaidByBankTransfer(): Promise<PaymentListing[]> {
-    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(bankPayment);
+    const results: IPaymentListing[] = await this.paymentDao.findPaymentsByPaymentType(
+      PaymentType.BankPayment
+    );
     return results.map((ent: IPaymentListing) => new PaymentListing(ent));
   }
 
   /**
    * Delete payment
-   * 
+   *
    * @param {number} paymentId Payment id
    * @memberof PaymentService
    */
@@ -187,10 +192,14 @@ export default class PaymentService {
       throw new Error("Error marking cash payment as paid");
     }
 
-    return this.paymentDao.makePaid(payment_id, confirmer_id, cashPayment);
+    return this.paymentDao.makePaid(
+      payment_id,
+      confirmer_id,
+      PaymentType.CashPayment
+    );
   }
 
-    /**
+  /**
    * Marks a bank payment paid.
    *
    * @param {number} payment_id Payment ID
@@ -209,10 +218,17 @@ export default class PaymentService {
     }
 
     if (payment.paid) {
-      throw new ServiceError(400, "Error marking cash payment as paid. Payment has already been paid");
+      throw new ServiceError(
+        400,
+        "Error marking cash payment as paid. Payment has already been paid"
+      );
     }
 
-    return this.paymentDao.makePaid(payment_id, confirmer_id, bankPayment);
+    return this.paymentDao.makePaid(
+      payment_id,
+      confirmer_id,
+      PaymentType.BankPayment
+    );
   }
 
   /**

@@ -3,7 +3,8 @@ import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
 import Service from "../models/Service";
-import User, { UserPayment } from "../models/User";
+import User from "../models/User";
+import { UserPayment } from "../models/UserPayment";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
@@ -440,30 +441,53 @@ export default class UserController implements IController {
     }
   }
 
+  /**
+   * Sets user membership.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof UserController
+   */
   public async setUserMembership(
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     try {
-      if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      if (
+        compareRoles(
+          req.authorization.user.role,
+          UserRoleString.Jasenvirkailija
+        ) < 0
+      ) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
-      const id = parseInt(req.params.id);
-      const user = await this.userService.fetchUser(id);
+      const id: number = parseInt(req.params.id, 10);
+      const user: User = await this.userService.fetchUser(id);
       const membership: string = req.body.membership;
       if (!membership) {
-        return res.status(400).json(new ServiceResponse(null, "Membership not set in request"));
+        return res
+          .status(400)
+          .json(new ServiceResponse(null, "Membership not set in request"));
       }
 
       if (membership === "hyvaksy") {
-        this.userService.updateUser(id, new User({ membership: user.isTKTL ? 'jasen' : 'ulkojasen' }));
+        this.userService.updateUser(
+          id,
+          new User({ membership: user.isTKTL ? "jasen" : "ulkojasen" })
+        );
       } else if (membership === "ei-jasen" || membership === "erotettu") {
-        this.userService.updateUser(id, new User({
-          membership,
-          role: "kayttaja"
-        }));
+        this.userService.updateUser(
+          id,
+          new User({
+            membership,
+            role: "kayttaja"
+          })
+        );
       }
-      return res.status(200).json(new ServiceResponse(null, 'User updated', true));
+      return res
+        .status(200)
+        .json(new ServiceResponse(null, "User updated", true));
     } catch (err) {
       return res
         .status(err.httpErrorCode || 500)
@@ -471,15 +495,26 @@ export default class UserController implements IController {
     }
   }
 
+  /**
+   * Deletes a user.
+   *
+   * @param {(express.Request & IASRequest)} req
+   * @param {express.Response} res
+   * @returns {Promise<express.Response>}
+   * @memberof UserController
+   */
   public async deleteUser(
     req: express.Request & IASRequest,
     res: express.Response
   ): Promise<express.Response> {
     try {
-      if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) === 0) {
+      if (
+        compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) ===
+        0
+      ) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
-      const id = parseInt(req.params.id);
+      const id: number = parseInt(req.params.id, 10);
       this.userService.deleteUser(id);
     } catch (err) {
       return res

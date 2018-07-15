@@ -1,7 +1,8 @@
 import * as bcrypt from "bcrypt";
 import UserDao from "../dao/UserDao";
 import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
-import User, { UserPayment } from "../models/User";
+import User from "../models/User";
+import { UserPayment } from "../models/UserPayment";
 
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
@@ -238,11 +239,18 @@ export default class UserService {
     return affectedRows;
   }
 
+  /**
+   * Deletes a user.
+   *
+   * @param {number} userId User ID
+   * @returns {Promise<boolean>}
+   * @memberof UserService
+   */
   public async deleteUser(
     userId: number
   ): Promise<boolean> {
     return this
       .userDao
-      .remove(userId)
+      .remove(userId);
   }
 }

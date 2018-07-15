@@ -24,11 +24,10 @@ export default interface IUserDatabaseObject {
 
 /**
  * User database object with additional payment information
- * 
+ *
  * @interface IUserPaymentDatabaseObject
  */
-
- export interface IUserPaymentDatabaseObject extends IUserDatabaseObject {
-    paid?: Date;
-    valid_until?: Date;
- }
+export interface IUserPaymentDatabaseObject extends IUserDatabaseObject {
+  paid?: Date;
+  valid_until?: Date;
+}

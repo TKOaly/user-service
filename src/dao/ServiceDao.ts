@@ -26,10 +26,12 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public findOne(id: number): Promise<IServiceDatabaseObject> {
-    return this.knex("services")
-      .select()
-      .where({ id })
-      .first();
+    return Promise.resolve(
+      this.knex("services")
+        .select()
+        .where({ id })
+        .first()
+    );
   }
 
   /**
@@ -42,10 +44,12 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
   public findByIdentifier(
     service_identifier: string
   ): Promise<IServiceDatabaseObject> {
-    return this.knex("services")
-      .select()
-      .where({ service_identifier })
-      .first();
+    return Promise.resolve(
+      this.knex("services")
+        .select()
+        .where({ service_identifier })
+        .first()
+    );
   }
 
   /**
@@ -56,10 +60,12 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public findByName(service_name: string): Promise<IServiceDatabaseObject> {
-    return this.knex("services")
-      .select()
-      .where({ service_name })
-      .first();
+    return Promise.resolve(
+      this.knex("services")
+        .select()
+        .where({ service_name })
+        .first()
+    );
   }
 
   /**
@@ -80,19 +86,21 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public remove(id: number): Promise<boolean> {
-    return this.knex("privacy_policy_consent_data")
-      .delete()
-      .where({ service_id: id })
-      .then<boolean>((result: boolean) => {
-        return this.knex("privacy_policies")
-          .delete()
-          .where({ service_id: id })
-          .then<boolean>((result: boolean) => {
-            return this.knex("services")
-              .delete()
-              .where({ id });
-          });
-      });
+    return Promise.resolve(
+      this.knex("privacy_policy_consent_data")
+        .delete()
+        .where({ service_id: id })
+        .then<boolean>((result: boolean) => {
+          return this.knex("privacy_policies")
+            .delete()
+            .where({ service_id: id })
+            .then<boolean>((result: boolean) => {
+              return this.knex("services")
+                .delete()
+                .where({ id });
+            });
+        })
+    );
   }
 
   /**
@@ -111,9 +119,11 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
       delete entity.created;
     }
     entity.modified = new Date();
-    return this.knex("services")
-      .where({ id: entityId })
-      .update(entity);
+    return Promise.resolve(
+      this.knex("services")
+        .where({ id: entityId })
+        .update(entity)
+    );
   }
 
   /**
@@ -131,6 +141,6 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
     // Set timestamps
     entity.created = new Date();
     entity.modified = new Date();
-    return this.knex("services").insert(entity);
+    return Promise.resolve(this.knex("services").insert(entity));
   }
 }

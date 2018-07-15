@@ -1,21 +1,20 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import * as Knex from "knex";
 import "mocha";
+import { IKnexFile } from "../../knexfile";
+// Knexfile
+import * as knexfile from "../../knexfile";
+import serviceFile = require("../../seeds/seedData/services");
 import ServiceDao from "../../src/dao/ServiceDao";
 import { IServiceDatabaseObject } from "../../src/models/Service";
 
-import serviceFile = require("../../seeds/seedData/services");
 const dbServices: IServiceDatabaseObject[] = serviceFile as IServiceDatabaseObject[];
-
-import chai = require("chai");
-import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
 
-// Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex: Knex = Knex((knexfile as IKnexFile).test);
 
 const serviceDao: ServiceDao = new ServiceDao(knex);
 

@@ -1,21 +1,19 @@
 process.env.NODE_ENV = "test";
 
+import chai = require("chai");
 import * as Knex from "knex";
 import "mocha";
+// Knexfile
+import * as knexfile from "../../knexfile";
+import { IKnexFile } from "../../knexfile";
+import userFile = require("../../seeds/seedData/users");
 import UserDao from "../../src/dao/UserDao";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 
-import userFile = require("../../seeds/seedData/users");
 const dbUsers: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
-
-import chai = require("chai");
-import { IKnexFile } from "../../knexfile";
 const should: Chai.Should = chai.should();
-
-// Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex: Knex = Knex((knexfile as IKnexFile).test);
 
 const userDao: UserDao = new UserDao(knex);
 
@@ -486,12 +484,12 @@ describe("UserDao", () => {
         const modifiedAtString: string = modifiedAt.toISOString();
         const updatedUsername: string = "testUsername";
         // Add a bit of delay to make the timestamp update itself
-        new Promise(resolve => setTimeout(resolve, 3000)).then(f => {
+        new Promise((resolve) => setTimeout(resolve, 3000)).then((f) => {
           userDao
             .update(1, {
               username: updatedUsername
             })
-            .then(rows => {
+            .then((rows) => {
               userDao
                 .findOne(1)
                 .then((user2: IUserDatabaseObject) => {
@@ -501,11 +499,11 @@ describe("UserDao", () => {
                   );
                   done();
                 })
-                .catch(err => console.error(err));
+                .catch((err) => console.error(err));
             })
-            .catch(err => console.error(err));
+            .catch((err) => console.error(err));
         });
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   });
 });

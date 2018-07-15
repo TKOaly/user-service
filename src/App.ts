@@ -20,6 +20,13 @@ import PaymentService from "./services/PaymentService";
 import UserService from "./services/UserService";
 import ApiRoute from "./utils/ApiRoute";
 
+import * as knexfile from "../knexfile";
+import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import ConsentDao from "./dao/ConsentDao";
+import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
+import ConsentService from "./services/ConsentService";
+import PrivacyPolicyService from "./services/PrivacyPolicyService";
+
 // Express application instance
 const app: express.Application = express();
 
@@ -49,14 +56,6 @@ app.set("view engine", "pug");
 
 // Helmet
 app.use(helmet());
-
-// Knexfile
-import knexfile = require("../knexfile");
-import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
-import ConsentDao from "./dao/ConsentDao";
-import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
-import ConsentService from "./services/ConsentService";
-import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
