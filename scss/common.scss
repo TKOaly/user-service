@@ -1,3 +1,5 @@
+@import "_vars";
+
 body,
 html {
   height: 100%;
@@ -8,31 +10,44 @@ html {
   font-family: Arial;
 }
 
+body {
+  background-color: $body-background;
+  font-size: 85%;
+}
+
 .error-title,
-.success-title {
+.success-title,
+.info-title {
   font-weight: bold;
-  font-size: 1.5em;
+  font-size: $message-title-size;
   padding-right: 10px;
 }
 
 .error-message,
-.success-message {
+.success-message,
+.info-message {
   padding: 20px;
   margin-top: 5px;
   margin-bottom: 5px;
-  font-size: 0.8em;
+  font-size: $message-text-size;
 }
 
 .success-message {
-  border: 1px solid rgb(12, 155, 24);
-  background-color: rgb(146, 230, 153);
-  color: rgb(0, 141, 24);
+  border: 1px solid $success-border;
+  background-color: $success-background;
+  color: $success-color;
 }
 
 .error-message {
-  border: 1px solid rgb(155, 12, 12);
-  background-color: rgb(230, 146, 146);
-  color: rgb(141, 0, 0);
+  border: 1px solid $error-border;
+  background-color: $error-background;
+  color: $error-color;
+}
+
+.info-message {
+  border: 1px solid $info-border;
+  background-color: $info-background;
+  color: $info-color;
 }
 
 #container {
@@ -41,7 +56,7 @@ html {
   max-height: 500px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: $container-box-shadow;
 }
 
 #img {
@@ -56,11 +71,16 @@ html {
   color: white;
   align-items: center;
   justify-content: center;
-  background-color: rgb(51, 51, 51);
+  background-color: $title-container;
 }
 
 p {
   text-align: center;
+  margin: 5px;
+}
+
+b {
+  font-weight: bold;
 }
 
 #content {
@@ -74,7 +94,7 @@ p {
   -webkit-box-sizing: border-box;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 10px;
 }
 
 #logo-container {
@@ -110,6 +130,8 @@ form#loginForm {
   justify-content: center;
   align-content: center;
   align-items: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 input.input,
@@ -126,7 +148,12 @@ input[type="submit"] {
   margin-top: 25px;
   width: 30%;
   height: 50px;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  border-radius: 5px;
+  transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 label {
@@ -135,20 +162,25 @@ label {
   text-align: left;
 }
 
+
 .cancel {
-  background-color: white;
-  color: red;
-  border: 2px solid red;
+  background-color: $red;
+  color: white;
+  border: 2px solid $red;
+  &:hover {
+    background-color: white;
+    color: $red;
+  }
 }
 
 .accept {
-  background-color: green;
+  background-color: $green;
   color: white;
-  border: 2px solid green;
-}
-
-p {
-  margin: 5px;
+  border: 2px solid $green;
+  &:hover {
+    background-color: white;
+    color: $green;
+  }
 }
 
 small {
