@@ -72,7 +72,6 @@ app.use(
   })
 );
 
-
 // Set static folder
 app.use(express.static(Path.join(__dirname, "..", "public")));
 
