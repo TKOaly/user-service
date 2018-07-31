@@ -9,6 +9,7 @@ import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import * as Raven from "raven";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import UserValidator from "../validators/UserValidator";
@@ -302,9 +303,17 @@ export default class UserController implements IController {
           .json(new ServiceResponse(req.body, "User was not modified"));
       }
     } catch (err) {
-      return res
+      Raven.captureBreadcrumb({
+        message: "Error modifying user",
+        data: {
+          userId: req.params.id,
+          modifierUserId: req.authorization.user.id
+        }
+      });
+      res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
+      Raven.captureException(err);
     }
   }
 
@@ -334,9 +343,16 @@ export default class UserController implements IController {
       );
       return res.status(200).json(new ServiceResponse(req.body, "Success"));
     } catch (err) {
-      return res
+      Raven.captureBreadcrumb({
+        message: "Error modifying user (self)",
+        data: {
+          userId: req.params.id
+        }
+      });
+      res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
+      Raven.captureException(err);
     }
   }
 
@@ -365,9 +381,13 @@ export default class UserController implements IController {
           new ServiceResponse(user.removeSensitiveInformation(), "Success")
         );
     } catch (err) {
-      return res
+      Raven.captureBreadcrumb({
+        message: "Error creating user"
+      });
+      res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
+      Raven.captureBreadcrumb(err);
     }
   }
 
@@ -489,9 +509,18 @@ export default class UserController implements IController {
         .status(200)
         .json(new ServiceResponse(null, "User updated", true));
     } catch (err) {
-      return res
+      Raven.captureBreadcrumb({
+        message: "Error setting user membership",
+        data: {
+          userId: req.params.id,
+          membership: req.body.membership,
+          modifierUserId: req.authorization.user.id
+        }
+      });
+      res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
+      Raven.captureException(err);
     }
   }
 
@@ -517,9 +546,17 @@ export default class UserController implements IController {
       const id: number = parseInt(req.params.id, 10);
       this.userService.deleteUser(id);
     } catch (err) {
-      return res
+      Raven.captureBreadcrumb({
+        message: "Error deleting user",
+        data: {
+          userId: req.params.id,
+          deleterUserId: req.authorization.user.id
+        }
+      });
+      res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
+      Raven.captureException(err);
     }
   }
 
