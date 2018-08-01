@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import * as Raven from 'raven';
+import * as Raven from "raven";
 
 import * as cookieParser from "cookie-parser";
 import * as express from "express";

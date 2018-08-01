@@ -9,7 +9,7 @@ import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
-import * as Raven from 'raven';
+import * as Raven from "raven";
 
 /**
  * Payment controller.
@@ -305,7 +305,8 @@ export default class PaymentController implements IController {
           paymentId: req.params.id
         }
       });
-      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      Raven.captureException(e);
     }
   }
 
