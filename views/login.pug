@@ -20,7 +20,6 @@ html(lang="en")
         if errors
           each error in errors
             div.error-message
-              span.error-title="Virhe"
               span.error-text=error
         form#loginForm(action='/login', method='POST')
           .form-group
