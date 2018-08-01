@@ -182,12 +182,14 @@ export default class PaymentDao implements IDao<IPayment> {
     payment_id: number,
     confirmer_id: number
   ): Promise<boolean> {
-    return Promise.resolve(this.knex("payments")
-      .update({
-        paid: this.knex.fn.now(),
-        confirmer_id
-      })
-      .where({ id: payment_id }));
+    return Promise.resolve(
+      this.knex("payments")
+        .update({
+          paid: this.knex.fn.now(),
+          confirmer_id
+        })
+        .where({ id: payment_id })
+    );
   }
 
   /**
@@ -204,13 +206,15 @@ export default class PaymentDao implements IDao<IPayment> {
     confirmer_id: number,
     payment_type: string
   ): Promise<boolean> {
-    return Promise.resolve(this.knex("payments")
-      .update({
-        payment_type,
-        paid: this.knex.fn.now(),
-        confirmer_id
-      })
-      .where({ id: payment_id }));
+    return Promise.resolve(
+      this.knex("payments")
+        .update({
+          payment_type,
+          paid: this.knex.fn.now(),
+          confirmer_id
+        })
+        .where({ id: payment_id })
+    );
   }
 
   /**
@@ -220,8 +224,10 @@ export default class PaymentDao implements IDao<IPayment> {
    * @memberof PaymentDao
    */
   public deletePayment(id: number): Promise<boolean> {
-    return Promise.resolve(this.knex("payments")
-      .where({ id })
-      .del());
+    return Promise.resolve(
+      this.knex("payments")
+        .where({ id })
+        .del()
+    );
   }
 }

@@ -75,7 +75,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @memberof ServiceDao
    */
   public findAll(): Promise<IServiceDatabaseObject[]> {
-    return this.knex("services").select();
+    return Promise.resolve(this.knex("services").select());
   }
 
   /**

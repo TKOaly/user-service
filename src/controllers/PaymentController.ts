@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
@@ -88,6 +89,10 @@ export default class PaymentController implements IController {
         .status(201)
         .json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
+      Raven.captureBreadcrumb({
+        message: "Error creating payment",
+        errorMessage: err.message
+      });
       return res
         .status(err.httpErrorCode || 500)
         .json(new ServiceResponse(null, err.message));
@@ -260,7 +265,16 @@ export default class PaymentController implements IController {
         return res.status(304);
       }
     } catch (e) {
-      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      Raven.captureBreadcrumb({
+        message: "Error marking payment as paid",
+        data: {
+          paymentId: req.params.id,
+          paymentMethod: req.params.method,
+          paymentMarkedByUserId: req.authorization.user.id
+        }
+      });
+      res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      Raven.captureException(e);
     }
   }
 
@@ -284,7 +298,15 @@ export default class PaymentController implements IController {
       await this.paymentService.deletePatyment(Number(req.params.id));
       return res.status(200);
     } catch (e) {
-      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      Raven.captureBreadcrumb({
+        message: "Error deleting payment",
+        errorMessage: e.message,
+        data: {
+          paymentId: req.params.id
+        }
+      });
+      res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      Raven.captureException(e);
     }
   }
 

@@ -10,6 +10,15 @@ html {
   font-family: Arial;
 }
 
+input,
+button,
+a.cancel,
+a.accept {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 body {
   background-color: $body-background;
   font-size: 85%;
@@ -53,11 +62,16 @@ body {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   box-shadow: $container-box-shadow;
-}
-
-#img {
-  height: 100%;
-  width: auto;
+  a,
+  a:visited,
+  a:active,
+  a:hover {
+    text-decoration: none;
+    color: blue;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 #menubar {
@@ -99,6 +113,11 @@ b {
   display: flex;
   align-items: center;
   justify-content: center;
+  .img {
+    width: auto;
+    height: 140px;
+    z-index: 999;
+  }
 }
 
 #title-container {
@@ -157,25 +176,24 @@ label {
   text-align: left;
 }
 
-
 .cancel {
   background-color: $red;
   color: white;
   border: 2px solid $red;
-  &:hover {
+  /*&:hover {
     background-color: white;
     color: $red;
-  }
+  }*/
 }
 
 .accept {
   background-color: $green;
   color: white;
   border: 2px solid $green;
-  &:hover {
+  /*&:hover {
     background-color: white;
     color: $green;
-  }
+  }*/
 }
 
 small {

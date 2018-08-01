@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title= "Login to " + service.displayName + " - TKO-äly ry"
+    title= "Kirjaudu palveluun " + service.displayName + " - TKO-äly ry"
     link(rel='stylesheet', href='/reset.css')
     link(rel='stylesheet', href='/common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
@@ -11,27 +11,29 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title='Login'
+          div#title='Kirjaudu sisään'
       #content
         if (loggedUser && logoutRedirect)
-          h5='You are logged in as ' + loggedUser
+          h5='Kirjautunut sisään: ' + loggedUser
           - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`
-          a(href=link fsty)='Destroy session'
+          a(href=link fsty)='Tuhoa istunto'
         if errors
           each error in errors
             div.error-message
-              span.error-title="Error"
+              span.error-title="Virhe"
               span.error-text=error
         form#loginForm(action='/login', method='POST')
           .form-group
-            label(for='username')="Username"
+            label(for='username')="Käyttäjätunnus"
             - let unameVal = loggedUser || '';
-            input.input(required type='text', value=unameVal name='username', id='username' placeholder='Username')
+            input.input(required type='text', value=unameVal name='username', id='username' placeholder='Käyttäjätunnus')
           .form-group
-            label(for='password')="Password"
-            input.input(required type='password', name='password', id='password' placeholder='Password')
+            label(for='password')="Salasana"
+            input.input(required type='password', name='password', id='password' placeholder='Salasana')
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           input(type='hidden', name='loginRedirect', value=loginRedirect)
           .form-group
-            input.input.accept(type='submit', name='accept', value='Login')
+            input.input.accept(type='submit', name='accept', value='Kirjaudu')
+            p
+              a(href='https://members.tko-aly.fi/users/add') Rekisteröidy TKO-älyn jäseneksi
     include partials/footer.pug

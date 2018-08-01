@@ -156,10 +156,16 @@ export default class LoginController implements IController {
       req.authorization.token,
       service.serviceIdentifier
     );
-    res.cookie("token", token, {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: process.env.COOKIE_DOMAIN
-    });
+
+    // this token had one service left which was remove -> clear token
+    if (req.authorization.token.authenticatedTo.length === 1) {
+      res.clearCookie("token");
+    } else {
+      res.cookie("token", token, {
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        domain: process.env.COOKIE_DOMAIN
+      });
+    }
 
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");

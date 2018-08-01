@@ -21,7 +21,7 @@ html(lang="en")
             each info in personalInformation
               li.entry #{info.name}: <b>#{info.value}</b>
         p Sinut uudelleenohjataan hyväksymisen jälkeen osoitteeseen <b>#{redirectTo}</b>
-        p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
+        p Voit lukea jäsenrekisterin tietosuojaselosteen <a href='https://tko-aly.fi/member_privacy' target=_blank>tämän linkin kautta.</a>
 
       #confirmation
         form(id='formSubmitReject', action='/login_confirm', method='POST')
