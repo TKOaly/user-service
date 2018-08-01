@@ -1,5 +1,4 @@
 import IParsedTokenContents from "../interfaces/IParsedTokenContents";
-
 import * as JWT from "jsonwebtoken";
 
 /**
@@ -59,7 +58,7 @@ export function stringToServiceToken(token: string): ServiceToken {
   const tokenContents: IParsedTokenContents = parsedToken as IParsedTokenContents;
   return new ServiceToken(
     tokenContents.userId,
-    tokenContents.authenticatedTo.split(","),
+    tokenContents.authenticatedTo.split(",").filter(id => id.length !== 0),
     tokenContents.createdAt
   );
 }

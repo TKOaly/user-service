@@ -1,6 +1,8 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import * as Raven from "raven";
+
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as session from "express-session";
@@ -27,8 +29,18 @@ import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
 import ConsentService from "./services/ConsentService";
 import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
+// Config raven (only in production)
+if (process.env.NODE_ENV === "production") {
+  Raven.config(process.env.RAVEN_DSN).install();
+} else {
+  console.log("Skipping raven");
+  Raven.config("").install();
+}
+
 // Express application instance
 const app: express.Application = express();
+
+app.use(Raven.requestHandler());
 
 // JSON parser
 app.use(express.json());
