@@ -1,8 +1,8 @@
 doctype html
 html(lang="en")
   head
-    title= "Login"
-    link(rel='stylesheet', href='/styles/common.css')
+    title= "Virhe - TKO-äly ry"
+    link(rel='stylesheet', href='common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -10,8 +10,8 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Service error
+          div#title Virhe
       #content
         div.error-message
-            span.error-title="Error"
             span.error-text=error
+    include partials/footer.pug

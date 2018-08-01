@@ -8,6 +8,7 @@ import * as express from "express";
 import * as session from "express-session";
 import * as helmet from "helmet";
 import * as Knex from "knex";
+import * as sassMiddleware from "node-sass-middleware";
 import * as Path from "path";
 
 import AuthController from "./controllers/AuthController";
@@ -40,6 +41,10 @@ if (process.env.NODE_ENV === "production") {
 // Express application instance
 const app: express.Application = express();
 
+// Helmet
+app.use(helmet());
+
+// Raven
 app.use(Raven.requestHandler());
 
 // JSON parser
@@ -49,8 +54,14 @@ app.use(
     extended: true
   })
 );
+
+// Cookie parser
 app.use(cookieParser());
-app.set("trust proxy", 1); // trust first proxy
+
+// Trust proxy
+app.set("trust proxy", 1);
+
+// Session
 app.use(
   session({
     cookie: { secure: "auto", maxAge: 60000 },
@@ -60,14 +71,22 @@ app.use(
   })
 );
 
-// Set static folder
-app.use(express.static("./public"));
-
 // Set view engine
 app.set("view engine", "pug");
 
-// Helmet
-app.use(helmet());
+// SASS middleware
+app.use(
+  sassMiddleware({
+    src: Path.join(__dirname, "..", "scss"),
+    dest: Path.join(__dirname, "..", "public", "styles"),
+    debug: true,
+    outputStyle: "compressed",
+    response: true
+  })
+);
+
+// Set static folder
+app.use(express.static(Path.join(__dirname, "..", "public")));
 
 // Knex instance
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV || "staging"]);
@@ -148,12 +167,15 @@ app.use(
   privacyPolicyController.createRoutes()
 );
 
+// Service port
+const port: number = Number(process.env.USERSERVICE_PORT || 3000);
+
 // Start server
-app.listen(process.env.USERSERVICE_PORT || 3000, () => {
+app.listen(port, () => {
   // @ts-ignore
   console.log(
     "User service listening on port %d",
-    process.env.USERSERVICE_PORT || 3000
+    port
   );
 });
 

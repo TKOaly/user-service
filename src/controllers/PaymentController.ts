@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
@@ -9,7 +10,6 @@ import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
-import * as Raven from "raven";
 
 /**
  * Payment controller.

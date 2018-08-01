@@ -1,10 +1,10 @@
 doctype html
 html(lang="en")
   head
-    title Henkilötietojen käyttöoikeuspyyntö
-    link(rel='stylesheet', href='/styles/reset.css')
-    link(rel='stylesheet', href='/styles/common.css')
-    link(rel='stylesheet', href='/styles/gdpr.css')
+    title Henkilötietojen käyttöoikeuspyyntö - TKO-äly ry
+    link(rel='stylesheet', href='/reset.css')
+    link(rel='stylesheet', href='/common.css')
+    link(rel='stylesheet', href='/gdpr.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -19,9 +19,9 @@ html(lang="en")
         #personaldata
           ul
             each info in personalInformation
-              li #{info.name}: <b>#{info.value}</b>
+              li.entry #{info.name}: <b>#{info.value}</b>
         p Sinut uudelleenohjataan hyväksymisen jälkeen osoitteeseen <b>#{redirectTo}</b>
-        p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
+        p Voit lukea jäsenrekisterin tietosuojaselosteen <a href='https://tko-aly.fi/member_privacy' target=_blank>tämän linkin kautta.</a>
 
       #confirmation
         form(id='formSubmitReject', action='/login_confirm', method='POST')
@@ -29,3 +29,4 @@ html(lang="en")
         form(id='formSubmitAccept', action='/login_confirm', method='POST')
           input(type='hidden', name='permission', value='yes')
           input.accept(type='submit', name='accept', value='Hyväksy')
+    include partials/footer.pug

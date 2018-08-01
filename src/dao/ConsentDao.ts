@@ -37,7 +37,7 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
    * @memberof ConsentDao
    */
   public findAll(): Promise<IConsentDatabaseObject[]> {
-    return this.knex(tableName).select();
+    return Promise.resolve(this.knex(tableName).select());
   }
   /**
    * Removes a consent.
@@ -97,9 +97,11 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
   public findAllByServiceId(
     service_id: number
   ): Promise<IConsentDatabaseObject[]> {
-    return this.knex(tableName)
-      .select()
-      .where({ service_id });
+    return Promise.resolve(
+      this.knex(tableName)
+        .select()
+        .where({ service_id })
+    );
   }
 
   /**
@@ -110,9 +112,11 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
    * @memberof ConsentDao
    */
   public findAllByUserId(user_id: number): Promise<IConsentDatabaseObject[]> {
-    return this.knex(tableName)
-      .select()
-      .where({ user_id });
+    return Promise.resolve(
+      this.knex(tableName)
+        .select()
+        .where({ user_id })
+    );
   }
 
   /**
@@ -142,9 +146,11 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
    * @memberof ConsentDao
    */
   public findAllDeclined(): Promise<IConsentDatabaseObject[]> {
-    return this.knex(tableName)
-      .select()
-      .where({ consent: PrivacyPolicyConsent.Declined });
+    return Promise.resolve(
+      this.knex(tableName)
+        .select()
+        .where({ consent: PrivacyPolicyConsent.Declined })
+    );
   }
 
   /**

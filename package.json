@@ -7,7 +7,7 @@
       "name": "Aleksi H."
     }
   ],
-  "version": "1.0.0",
+  "version": "0.9.0-dev",
   "private": true,
   "license": "MIT",
   "homepage": "https://github.com/TKOaly/user-service#tko-%C3%A4ly-user-service",
@@ -32,7 +32,7 @@
     "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
   },
   "dependencies": {
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.0",
     "cookie-parser": "^1.4.3",
     "dotenv": "^6.0.0",
     "express": "4.16.3",
@@ -43,6 +43,7 @@
     "moment": "^2.22.2",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
+    "node-sass-middleware": "^0.11.0",
     "pug": "^2.0.3",
     "raven": "^2.6.3",
     "sha1": "^1.1.1",
@@ -63,6 +64,7 @@
     "@types/mocha": "^5.2.0",
     "@types/mysql": "^2.15.5",
     "@types/node": "^10.5.1",
+    "@types/node-sass-middleware": "^0.0.30",
     "@types/raven": "^2.5.1",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
@@ -100,7 +102,8 @@
       "coverage/**/*.js",
       "**/*.js",
       "knexfile.ts",
-      "src/App.ts"
+      "src/App.ts",
+      "node_modules"
     ],
     "reporter": [
       "html",

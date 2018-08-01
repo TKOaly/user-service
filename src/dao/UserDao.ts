@@ -129,10 +129,10 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
         });
       }
       // console.log(query.toString());
-      return query as Promise<IUserPaymentDatabaseObject[]>;
+      return Promise.resolve(query) as Promise<IUserPaymentDatabaseObject[]>;
     }
 
-    return this.knex("users").select() as Promise<IUserDatabaseObject[]>;
+    return Promise.resolve<IUserDatabaseObject[]>(this.knex("users").select());
   }
 
   /**
@@ -143,13 +143,15 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @memberof UserDao
    */
   public findWhere(searchTerm: string): Promise<IUserDatabaseObject[]> {
-    return this.knex
-      .select()
-      .from("users")
-      .where("username", "like", `%${searchTerm}%`)
-      .orWhere("name", "like", `%${searchTerm}%`)
-      .orWhere("screen_name", "like", `%${searchTerm}%`)
-      .orWhere("email", "like", `%${searchTerm}%`);
+    return Promise.resolve(
+      this.knex
+        .select()
+        .from("users")
+        .where("username", "like", `%${searchTerm}%`)
+        .orWhere("name", "like", `%${searchTerm}%`)
+        .orWhere("screen_name", "like", `%${searchTerm}%`)
+        .orWhere("email", "like", `%${searchTerm}%`)
+    );
   }
 
   /**
