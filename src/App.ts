@@ -31,6 +31,7 @@ import ConsentService from "./services/ConsentService";
 import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 import i18n from "./i18n.config";
+import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 
 // Config raven (only in production)
 if (process.env.NODE_ENV === "production") {
@@ -48,6 +49,9 @@ app.use(helmet());
 
 // Cookie parser
 app.use(cookieParser());
+
+// Localization middleware ensures the correct language
+app.use(LocalizationMiddleware);
 
 // Localization
 app.use(i18n.init);

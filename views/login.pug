@@ -35,4 +35,9 @@ html(lang="en")
             input.input.accept(type='submit', name='accept', value=t("login_LoginButton"))
             p
               a(href='https://members.tko-aly.fi/users/add') #{t("login_RegisterToServiceText")}
+            p 
+             if (currentLocale === "fi")
+              a(href='/lang/en/' + service.serviceIdentifier) #{t("login_InEnglish")}
+             else
+              a(href='/lang/fi/' + service.serviceIdentifier) #{t("login_InFinnish")}
     include partials/footer.pug

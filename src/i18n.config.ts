@@ -3,8 +3,7 @@ import * as path from "path";
 
 i18n.configure({
   locales: ["fi", "en"],
-  defaultLocale: "en",
-  queryParameter: "lang",
+  defaultLocale: process.env.DEFAULT_LOCALE,
   cookie: "tkoaly_locale",
   directory: path.resolve(path.join(__dirname, "..", "locales")),
   api: {

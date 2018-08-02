@@ -24,5 +24,6 @@
 	"privacypolicy_IfYouDecline_2": ", you cannot use the service. You can always come back later and accept the usage of your personal information.",
 	"privacypolicy_Decline": "Decline",
 	"privacypolicy_Accept": "Accept",
-	"error_Title": "Error"
+	"error_Title": "Error",
+	"login_InFinnish": "Suomeksi"
 }

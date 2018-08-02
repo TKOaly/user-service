@@ -22,5 +22,6 @@
 	"privacypolicy_IfYouDecline_1": "Jos hylkäät",
 	"privacypolicy_IfYouDecline_2": "-palvelun tietosuojaselosteen mukaisen henkilötietojen käyttämisen, et voi käyttää palvelua. Voit kuitenkin palata hyväksymään henkilötietojen käyttämisen myöhemmin.",
 	"privacypolicy_Decline": "Hylkää",
-	"privacypolicy_Accept": "Hyväksy"
+	"privacypolicy_Accept": "Hyväksy",
+	"login_InEnglish": "In English"
 }
