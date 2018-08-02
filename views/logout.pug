@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title= "Uloskirjautuminen - TKO-äly ry"
+    title= t("logout_Title") - TKO-äly ry
     link(rel='stylesheet', href='/common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
@@ -10,9 +10,9 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Uloskirjautuminen
+          div#title #{t("logout_Title")}
       #content
         .success-message
-          span.success-text='Sinut on kirjattu ulos palvelusta ' + serviceName + '.'
-        a(href="https://tko-aly.fi") Palaa osoitteeseen tko-aly.fi
+          span.success-text #{t("logout_YouHaveBeenLoggedOutFrom")} #{serviceName}.
+        a(href="https://tko-aly.fi") #{t("logout_ReturnTo")} tko-aly.fi
     include partials/footer.pug

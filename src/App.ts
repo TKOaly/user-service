@@ -30,6 +30,8 @@ import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
 import ConsentService from "./services/ConsentService";
 import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
+import i18n from "./i18n.config";
+
 // Config raven (only in production)
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();
@@ -44,6 +46,12 @@ const app: express.Application = express();
 // Helmet
 app.use(helmet());
 
+// Cookie parser
+app.use(cookieParser());
+
+// Localization
+app.use(i18n.init);
+
 // Raven
 app.use(Raven.requestHandler());
 
@@ -54,9 +62,6 @@ app.use(
     extended: true
   })
 );
-
-// Cookie parser
-app.use(cookieParser());
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -173,10 +178,7 @@ const port: number = Number(process.env.USERSERVICE_PORT || 3000);
 // Start server
 app.listen(port, () => {
   // @ts-ignore
-  console.log(
-    "User service listening on port %d",
-    port
-  );
+  console.log("User service listening on port %d", port);
 });
 
 // Privacy policy directory

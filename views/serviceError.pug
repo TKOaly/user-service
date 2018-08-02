@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title= "Virhe - TKO-äly ry"
+    title #{t("error_Title")} TKO-äly ry
     link(rel='stylesheet', href='common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
@@ -10,7 +10,7 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Virhe
+          div#title #{t("error_Title")}
       #content
         div.error-message
             span.error-text=error
