@@ -1,5 +1,6 @@
 {
 	"login_Login": "Kirjaudu palveluun",
+	"login_Login_to": "Kirjaudu palveluun",
 	"login_DestroySession": "Tuhoa istunto",
 	"login_UsernameLabel": "Käyttäjätunnus",
 	"login_UsernamePlaceholder": "Käyttäjätunnus",

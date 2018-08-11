@@ -17,7 +17,7 @@
     "url": "https://github.com/TKOaly/user-service"
   },
   "scripts": {
-    "start": "ts-node src/App.ts",
+    "start": "ts-node src/index.ts",
     "watch": "nodemon start",
     "test": "nyc mocha",
     "browser-test": "wdio wdio.conf.js",

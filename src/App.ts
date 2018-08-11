@@ -176,18 +176,4 @@ app.use(
   privacyPolicyController.createRoutes()
 );
 
-// Service port
-const port: number = Number(process.env.USERSERVICE_PORT || 3000);
-
-// Start server
-app.listen(port, () => {
-  // @ts-ignore
-  console.log("User service listening on port %d", port);
-});
-
-// Privacy policy directory
-export const privacyPolicyDir: string = Path.resolve(
-  Path.join(__dirname, "../", "privacy_policy/")
-);
-
 export default app;
