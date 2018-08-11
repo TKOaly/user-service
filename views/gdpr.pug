@@ -1,10 +1,10 @@
 doctype html
 html(lang="en")
   head
-    title Henkilötietojen käyttöoikeuspyyntö
-    link(rel='stylesheet', href='/styles/reset.css')
-    link(rel='stylesheet', href='/styles/common.css')
-    link(rel='stylesheet', href='/styles/gdpr.css')
+    title #{t("gdpr_PersonalDataRequestTitle")} - TKO-äly ry
+    link(rel='stylesheet', href='/reset.css')
+    link(rel='stylesheet', href='/common.css')
+    link(rel='stylesheet', href='/gdpr.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -12,20 +12,20 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Henkilötietojen käyttöoikeuspyyntö
+          div#title #{t("gdpr_PersonalDataRequestTitle")}
       #content
-        p <b class='service'>#{serviceDisplayName}</b>-palvelun käyttö edellyttää tämän käyttöoikeuspyynnön hyväksymistä.
-        p Palvelu haluaa luvan käyttää alla lueteltuja henkilötietoja.
+        p <b class='service'>#{serviceDisplayName}</b>#{t("gdpr_PersonalDataServiceRequires")}
+        p #{t("gdpr_PersonalDataFollowingData")}
         #personaldata
           ul
             each info in personalInformation
-              li #{info.name}: <b>#{info.value}</b>
-        p Sinut uudelleenohjataan hyväksymisen jälkeen osoitteeseen <b>#{redirectTo}</b>
-        p Voit lukea rekisteriselosteemme <a href='#' target=_blank>tämän linkin kautta.</a>
-
+              li.entry #{info.name}: <b>#{info.value}</b>
+        p #{t("gdpr_PersonalDataRedirectMessage")} <b>#{redirectTo}</b>
+        p #{t("gdpr_PersonalDataReadPrivacyPolicy")} <a href='https://tko-aly.fi/member_privacy' target=_blank>#{t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink")}</a>
       #confirmation
         form(id='formSubmitReject', action='/login_confirm', method='POST')
-          input.cancel(type='submit', name='cancel', value='Hylkää')
+          input.cancel(type='submit', name='cancel', value=t("gdpr_PersonalDataDecline"))
         form(id='formSubmitAccept', action='/login_confirm', method='POST')
           input(type='hidden', name='permission', value='yes')
-          input.accept(type='submit', name='accept', value='Hyväksy')
+          input.accept(type='submit', name='accept', value=t("gdpr_PersonalDataAccept"))
+    include partials/footer.pug

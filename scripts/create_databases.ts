@@ -1,5 +1,4 @@
 // This script creates databases that are needed by the user service.
-
 import * as dotenv from "dotenv";
 dotenv.config();
 

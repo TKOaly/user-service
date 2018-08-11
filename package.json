@@ -32,18 +32,21 @@
     "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
   },
   "dependencies": {
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.0",
     "cookie-parser": "^1.4.3",
     "dotenv": "^6.0.0",
     "express": "4.16.3",
     "express-session": "^1.15.6",
     "helmet": "^3.11.0",
+    "i18n": "^0.8.3",
     "jsonwebtoken": "^8.2.1",
     "knex": "0.14.6",
     "moment": "^2.22.2",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
+    "node-sass-middleware": "^0.11.0",
     "pug": "^2.0.3",
+    "raven": "^2.6.3",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
     "validator": "^10.2.0"
@@ -57,11 +60,14 @@
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/express-session": "^1.15.9",
+    "@types/i18n": "^0.8.3",
     "@types/jsonwebtoken": "^7.2.8",
     "@types/knex": "^0.14.16",
     "@types/mocha": "^5.2.0",
     "@types/mysql": "^2.15.5",
     "@types/node": "^10.5.1",
+    "@types/node-sass-middleware": "^0.0.30",
+    "@types/raven": "^2.5.1",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
@@ -99,7 +105,8 @@
       "coverage/**/*.js",
       "**/*.js",
       "knexfile.ts",
-      "src/App.ts"
+      "src/App.ts",
+      "node_modules"
     ],
     "reporter": [
       "html",

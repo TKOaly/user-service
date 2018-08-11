@@ -1,8 +1,8 @@
 doctype html
 html(lang="en")
   head
-    title= "Login"
-    link(rel='stylesheet', href='/styles/common.css')
+    title= t("logout_Title") - TKO-äly ry
+    link(rel='stylesheet', href='/common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -10,9 +10,9 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title Logout
+          div#title #{t("logout_Title")}
       #content
         .success-message
-          span.success-title="Success"
-          span.success-text='You\'ve been logged out from ' + serviceName + '.'
-        a(href="https://tko-aly.fi") Return to TKO-äly website
+          span.success-text #{t("logout_YouHaveBeenLoggedOutFrom")} #{serviceName}.
+        a(href="https://tko-aly.fi") #{t("logout_ReturnTo")} tko-aly.fi
+    include partials/footer.pug

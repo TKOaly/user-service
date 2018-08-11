@@ -1,10 +1,10 @@
 doctype html
 html(lang="en")
   head
-    title= "Calculate service permissions"
-    link(rel='stylesheet', href='/styles/reset.css')
-    link(rel='stylesheet', href='/styles/common.css')
-    link(rel='stylesheet', href='/styles/calcPermissions.css')
+    title Calculate service permissions - TKO-äly ry
+    link(rel='stylesheet', href='/reset.css')
+    link(rel='stylesheet', href='/common.css')
+    link(rel='stylesheet', href='/calcPermissions.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
   body
     #container
@@ -37,5 +37,5 @@ html(lang="en")
                     ul.permissions
                         each wantedPermission in wantedPermissions
                             li=wantedPermission
-            
+    include partials/footer.pug
 
