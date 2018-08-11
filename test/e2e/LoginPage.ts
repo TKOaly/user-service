@@ -1,24 +1,49 @@
+process.env.NODE_ENV = "test";
+
 import * as assert from "assert";
+import * as Knex from "knex";
+import "mocha";
 import * as Wdio from "webdriverio";
+// Knexfile
+import * as knexfile from "../../knexfile";
 import { IServiceDatabaseObject } from "../../src/models/Service";
+import { IKnexFile } from "./../../knexfile";
 import services = require("./../../seeds/seedData/services");
+
+// Knex instance
+const knex: Knex = Knex((knexfile as IKnexFile).test);
 
 const serviceData: IServiceDatabaseObject[] = services as IServiceDatabaseObject[];
 
-describe("User service login page", function(): void {
-  this.timeout(4000);
+describe("User service login page", () => {
   let client: Wdio.Client<void>;
 
-  this.beforeEach(() => {
-    client = Wdio.remote({
-      desiredCapabilities: { browserName: "firefox", version: "60.0.1" }
-    });
-    client.deleteCookie("tekis_locale");
-    return client.init();
+  beforeEach(() => {
+    // The before hook ensures knex runs migrations and seeds the database every time
+    return new Promise((resolve) =>
+      knex.migrate.rollback().then(() => {
+        knex.migrate.latest().then(() => {
+          knex.seed.run().then(() => {
+            client = Wdio.remote({
+              desiredCapabilities: { browserName: "firefox", version: "60.0.1" }
+            });
+            resolve(client.init());
+          });
+        });
+      })
+    );
+  });
+
+  afterEach(() => {
+    return new Promise((resolve) =>
+      knex.migrate.rollback().then(() => {
+        resolve(client.end());
+      })
+    );
   });
 
   it("Login page is shown correctly (Finnish)", () => {
-    const filename: string = "screenshots/finnish_login_page__test.png";
+    const filename: string = "screenshots/finnish_login_page_test.png";
     return client
       .url("http://localhost:3010/lang/fi/" + serviceData[0].service_identifier)
       .saveScreenshot(filename)
@@ -222,8 +247,4 @@ describe("User service login page", function(): void {
         );
       });
   });
-
-  this.afterEach(() => {
-    return client.end();
-  });
-});
+}).timeout(5000);
