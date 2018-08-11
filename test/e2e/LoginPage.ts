@@ -149,6 +149,9 @@ describe("User service login page", () => {
       .setValue("#password", "wrong_password")
       .click(".accept")
       .saveScreenshot(filename)
+      .then((res: Buffer) => {
+        console.log("Saved snapshot to " + filename);
+      })
       .getText(".error-text")
       .then((msg: string) => {
         assert(msg === "Invalid username or password");
@@ -204,6 +207,9 @@ describe("User service login page", () => {
       .setValue("#password", "wrong_password")
       .click(".accept")
       .saveScreenshot(filename)
+      .then((res: Buffer) => {
+        console.log("Saved snapshot to " + filename);
+      })
       .getText(".error-text")
       .then((msg: string) => {
         assert(msg === "Invalid username or password");
