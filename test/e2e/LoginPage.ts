@@ -25,7 +25,7 @@ describe("User service login page", () => {
         knex.migrate.latest().then(() => {
           knex.seed.run().then(() => {
             client = Wdio.remote({
-              desiredCapabilities: { browserName: "firefox", version: "60.0.1" }
+              desiredCapabilities: { browserName: "chrome", version: "68.0" }
             });
             resolve(client.init());
           });
