@@ -3,7 +3,6 @@ import app from "./src/App";
 let express: any;
 const port: number = 3010;
 
-
 exports.config = {
   //
   // ==================
@@ -151,7 +150,7 @@ exports.config = {
    * @param {Object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  onPrepare(config, capabilities) {
+  onPrepare(config: object, capabilities: object[]) {
     express = app.listen(port, () => {
       console.log("Back-end listeting on port %d", port);
     });
@@ -171,8 +170,12 @@ exports.config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that are to be run
    */
-  // before: function (capabilities, specs) {
-  // },
+  before(capabilities: object[], specs: string[]) {
+    const chai = require("chai");
+    // @ts-ignore
+    global.expect = chai.expect;
+    chai.Should();
+  },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {String} commandName hook command name
@@ -250,7 +253,7 @@ exports.config = {
    * @param {Object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  onComplete(exitCode, config, capabilities) {
+  onComplete(exitCode: object, config: object, capabilities: object[]) {
     if (express) {
       express.close();
     }

@@ -264,7 +264,8 @@ export default class LoginController implements IController {
         service,
         errors: [e.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -280,7 +281,8 @@ export default class LoginController implements IController {
         service,
         errors: ["Authentication failure: User ID is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -324,7 +326,8 @@ export default class LoginController implements IController {
         service,
         errors: [err.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
     // Set login step
