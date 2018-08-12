@@ -9,6 +9,7 @@ coverage
 yarn-error.log
 package-json.lock
 .DS_Store
+errorShots
 screenshots/*.png
 screenshots/errors/*.png
 screenshots/errors/*.jpg
