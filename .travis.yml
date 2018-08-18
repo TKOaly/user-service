@@ -1,6 +1,9 @@
 dist: trusty
+
 addons:
-  chrome: beta
+  apt:
+    packages:
+      - google-chrome-stable
 
 sudo: required
 
