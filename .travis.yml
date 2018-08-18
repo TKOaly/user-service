@@ -1,11 +1,12 @@
+dist: trusty
+addons:
+  chrome: stable
+
 sudo: required
 
 language: node_js
 node_js:
   - '9.2'
-
-addons:
-  chrome: stable
 
 services:
   - mysql
@@ -16,7 +17,7 @@ addons:
   - uolevi.tko-aly.fi
 
 before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=3010 http://localhost
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=3010 http://localhost &
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
   - npm install -g codecov
