@@ -25,6 +25,7 @@ install:
 script:
   - yarn lint
   - yarn test
+  - yarn browser-test
 
 after_success:
   - codecov
