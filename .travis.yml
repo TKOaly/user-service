@@ -1,9 +1,7 @@
 dist: trusty
 
 addons:
-  apt:
-    packages:
-      - google-chrome-stable
+  chrome: beta
 
 sudo: required
 
@@ -20,6 +18,7 @@ addons:
   - uolevi.tko-aly.fi
 
 before_install:
+  - which google-chrome
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
   - npm install -g codecov
