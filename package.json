@@ -112,6 +112,9 @@
       "**/*.js",
       "knexfile.ts",
       "src/App.ts",
+      "src/index.ts",
+      "wdio.conf.ts",
+      "src/i18n.config.ts",
       "node_modules"
     ],
     "reporter": [

@@ -1,6 +1,7 @@
+import { Server } from "http";
 import app from "./src/App";
 
-let express: any;
+let express: Server;
 const port: number = 3010;
 
 exports.config = {

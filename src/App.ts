@@ -88,7 +88,7 @@ app.use(
   sassMiddleware({
     src: Path.join(__dirname, "..", "scss"),
     dest: Path.join(__dirname, "..", "public", "styles"),
-    debug: true,
+    debug: false,
     outputStyle: "compressed",
     response: true
   })

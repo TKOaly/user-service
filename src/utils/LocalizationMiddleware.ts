@@ -1,6 +1,10 @@
 import * as Express from "express";
 
-const localizationMiddleware = (
+const localizationMiddleware: (
+  req: Express.Request,
+  res: Express.Response,
+  next: Express.NextFunction
+) => void = (
   req: Express.Request,
   res: Express.Response,
   next: Express.NextFunction
