@@ -17,7 +17,6 @@ addons:
   - uolevi.tko-aly.fi
 
 before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=3010 http://localhost &
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
   - npm install -g codecov
