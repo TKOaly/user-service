@@ -7,8 +7,8 @@ i18n.configure({
   cookie: "tkoaly_locale",
   directory: path.resolve(path.join(__dirname, "..", "locales")),
   api: {
-    __: "t", //now req.__ becomes req.t
-    __n: "tn" //and req.__n can be called as req.tn
+    __: "t",
+    __n: "tn"
   }
 });
 

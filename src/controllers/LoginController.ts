@@ -119,6 +119,14 @@ export default class LoginController implements IController {
     }
   }
 
+  /**
+   * Sets the language of the page.
+   *
+   * @param {(Express.Request & IASRequest)} req
+   * @param {(Express.Response & any)} res
+   * @returns {(Promise<express.Response | void>)}
+   * @memberof LoginController
+   */
   public setLanguage(
     req: Express.Request & IASRequest,
     res: Express.Response & any
@@ -256,7 +264,8 @@ export default class LoginController implements IController {
         service,
         errors: [e.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -272,7 +281,8 @@ export default class LoginController implements IController {
         service,
         errors: ["Authentication failure: User ID is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -316,7 +326,8 @@ export default class LoginController implements IController {
         service,
         errors: [err.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
     // Set login step

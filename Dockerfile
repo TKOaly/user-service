@@ -1,7 +1,7 @@
-FROM node:9.2-slim
+FROM node:10.8-alpine
 
-RUN apt-get update -q && \
-apt-get dist-upgrade -y
+RUN apk --no-cache add --virtual native-deps \
+  g++ gcc libgcc libstdc++ linux-headers make python
 
 RUN npm install --global yarn@1.7.0
 

@@ -17,9 +17,10 @@
     "url": "https://github.com/TKOaly/user-service"
   },
   "scripts": {
-    "start": "ts-node src/App.ts",
+    "start": "ts-node src/index.ts",
     "watch": "nodemon start",
     "test": "nyc mocha",
+    "browser-test": "wdio wdio.conf.js",
     "create-uuid": "ts-node scripts/create_uuid.ts",
     "generate-doc": "typedoc --ignoreCompilerErrors --out ./doc/ src/**/*.ts",
     "migrate": "knex migrate:latest",
@@ -71,8 +72,10 @@
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
     "@types/validator": "^9.4.1",
+    "@types/webdriverio": "^4.10.3",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "chromedriver": "^2.41.0",
     "husky": "^1.0.0-rc.9",
     "mocha": "^5.1.1",
     "nodemon": "^1.17.3",
@@ -81,7 +84,11 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "wdio-mocha-framework": "^0.6.2",
+    "wdio-selenium-standalone-service": "0.0.10",
+    "wdio-spec-reporter": "^0.1.5",
+    "webdriverio": "^4.13.1"
   },
   "engines": {
     "node": ">=8.9",
@@ -116,7 +123,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint && yarn test"
+      "pre-commit": "yarn lint && yarn test && yarn browser-test"
     }
   }
 }

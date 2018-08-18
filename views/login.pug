@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title #{t("login_Login")} #{service.displayName} - TKO-äly ry
+    title #{t("login_Login_to")} #{service.displayName} - TKO-äly ry
     link(rel='stylesheet', href='/reset.css')
     link(rel='stylesheet', href='/common.css')
     meta(name='viewport', content='width=device-width, initial-scale=1')
@@ -23,21 +23,21 @@ html(lang="en")
               span.error-text=error
         form#loginForm(action='/login', method='POST')
           .form-group
-            label(for='username') #{t("login_UsernameLabel")}
+            label(for='username', class='usernameLabel') #{t("login_UsernameLabel")}
             - let unameVal = loggedUser || '';
             input.input(required type='text', value=unameVal name='username', id='username' placeholder=t("login_UsernamePlaceholder"))
           .form-group
-            label(for='password') #{t("login_PasswordLabel")}
+            label(for='password', class='passwordLabel') #{t("login_PasswordLabel")}
             input.input(required type='password', name='password', id='password' placeholder=t("login_PasswordPlaceholder"))
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           input(type='hidden', name='loginRedirect', value=loginRedirect)
           .form-group
             input.input.accept(type='submit', name='accept', value=t("login_LoginButton"))
             p
-              a(href='https://members.tko-aly.fi/users/add') #{t("login_RegisterToServiceText")}
+              a(href='https://members.tko-aly.fi/users/add', class='applyToBeAMember') #{t("login_RegisterToServiceText")}
             p 
              if (currentLocale === "fi")
-              a(href='/lang/en/' + service.serviceIdentifier) #{t("login_InEnglish")}
+              a(href='/lang/en/' + service.serviceIdentifier, class='loginInEnglish') #{t("login_InEnglish")}
              else
-              a(href='/lang/fi/' + service.serviceIdentifier) #{t("login_InFinnish")}
+              a(href='/lang/fi/' + service.serviceIdentifier, class='loginInFinnish') #{t("login_InFinnish")}
     include partials/footer.pug
