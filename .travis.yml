@@ -19,6 +19,7 @@ addons:
 
 before_install:
   - which google-chrome
+  - google-chrome --version
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
   - npm install -g yarn
   - npm install -g codecov
