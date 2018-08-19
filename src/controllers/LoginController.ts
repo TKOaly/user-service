@@ -136,7 +136,7 @@ export default class LoginController implements IController {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       domain: process.env.COOKIE_DOMAIN
     });
-    return res.redirect("/?serviceIdentifier=" + req.params.serviceIdentifier);
+    return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
   /**
@@ -503,7 +503,7 @@ export default class LoginController implements IController {
       this.logOut.bind(this)
     );
     this.route.get(
-      "/lang/:language/:serviceIdentifier",
+      "/lang/:language/:serviceIdentifier?",
       this.setLanguage.bind(this.setLanguage)
     );
     return this.route;
