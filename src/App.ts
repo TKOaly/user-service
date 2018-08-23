@@ -47,6 +47,15 @@ const app: express.Application = express();
 // Helmet
 app.use(helmet());
 
+// Disable cross-domain checks for now
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    next();
+  }
+);
+
 // Cookie parser
 app.use(cookieParser());
 
