@@ -1,6 +1,10 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+if (!process.env.NODE_ENV) {
+  throw new Error("NODE_ENV environment variable must be set.");
+}
+
 import * as Raven from "raven";
 
 import * as cookieParser from "cookie-parser";
