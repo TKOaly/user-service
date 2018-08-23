@@ -30,6 +30,9 @@ const prod: Knex.Config = {
   },
   migrations: {
     tableName: "knex_migrations"
+  },
+  seeds: {
+    directory: "do_not_seed_prod_db"
   }
 };
 
