@@ -47,6 +47,14 @@ Microservice for authenticating users of members.tko-aly.fi.
 4.  Run `yarn test` to run unit & API tests. Run `yarn browser-test` to run E2E tests.
 5.  Run `yarn start` or `yarn watch``
 
+## Pushing to TKO-äly's Docker registry
+
+1. Clone the repo
+2. Copy `.env.deploy.example` to `.env.deploy` and set your Docker credentials
+3. Run `chmod +x ./scripts/deploy.sh` and after that, run `./scripts/deploy.sh`
+
+This will build the image and push it to `registry.tko-aly.fi` Docker registry.
+
 ### Docker
 
 1. Copy `.env.example` to `.env` and set environment variables
