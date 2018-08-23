@@ -26,5 +26,8 @@
 	"privacypolicy_Decline": "Decline",
 	"privacypolicy_Accept": "Accept",
 	"error_Title": "Error",
-	"login_InFinnish": "Suomeksi"
+	"login_InFinnish": "Suomeksi",
+	"logout_Title": "Logged out",
+	"logout_YouHaveBeenLoggedOutFrom": "You have been logged out from ",
+	"logout_ReturnTo": "Return to "
 }

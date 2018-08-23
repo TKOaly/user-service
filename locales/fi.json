@@ -24,5 +24,8 @@
 	"privacypolicy_IfYouDecline_2": "-palvelun tietosuojaselosteen mukaisen henkilötietojen käyttämisen, et voi käyttää palvelua. Voit kuitenkin palata hyväksymään henkilötietojen käyttämisen myöhemmin.",
 	"privacypolicy_Decline": "Hylkää",
 	"privacypolicy_Accept": "Hyväksy",
-	"login_InEnglish": "In English"
+	"login_InEnglish": "In English",
+	"logout_Title": "Uloskirjautuminen",
+	"logout_YouHaveBeenLoggedOutFrom": "Sinut on kirjattu ulos palvelusta ",
+	"logout_ReturnTo": "Palaa osoitteeseen "
 }
