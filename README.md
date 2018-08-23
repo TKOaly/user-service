@@ -20,8 +20,8 @@ Test coverage (dev) [![codecov](https://codecov.io/gh/TKOaly/user-service/branch
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/TKOaly/user-service.svg)
 ![GitHub issues](https://img.shields.io/github/issues/TKOaly/user-service.svg)
 
-
 Microservice for authenticating users of members.tko-aly.fi.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -44,8 +44,16 @@ Microservice for authenticating users of members.tko-aly.fi.
 1.  Clone the repo
 2.  Run `yarn install`
 3.  Copy `.env.example` to `.env` and set environment variables
-4.  Run `yarn test`to run tests
+4.  Run `yarn test` to run unit & API tests. Run `yarn browser-test` to run E2E tests.
 5.  Run `yarn start` or `yarn watch``
+
+## Pushing to TKO-äly's Docker registry
+
+1. Clone the repo
+2. Copy `.env.deploy.example` to `.env.deploy` and set your Docker credentials
+3. Run `chmod +x ./scripts/deploy.sh` and after that, run `./scripts/deploy.sh`
+
+This will build the image and push it to `registry.tko-aly.fi` Docker registry.
 
 ### Docker
 

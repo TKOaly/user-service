@@ -109,13 +109,34 @@ export default class LoginController implements IController {
         service,
         loggedUser: req.authorization ? req.authorization.user.username : null,
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     } catch (err) {
       return res.status(400).render("serviceError", {
         error: err.message
       });
     }
+  }
+
+  /**
+   * Sets the language of the page.
+   *
+   * @param {(Express.Request & IASRequest)} req
+   * @param {(Express.Response & any)} res
+   * @returns {(Promise<express.Response | void>)}
+   * @memberof LoginController
+   */
+  public setLanguage(
+    req: Express.Request & IASRequest,
+    res: Express.Response & any
+  ): Promise<express.Response | void> {
+    res.clearCookie("tkoaly_locale");
+    res.cookie("tkoaly_locale", req.params.language, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: process.env.COOKIE_DOMAIN
+    });
+    return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
   /**
@@ -243,7 +264,8 @@ export default class LoginController implements IController {
         service,
         errors: [e.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -259,7 +281,8 @@ export default class LoginController implements IController {
         service,
         errors: ["Authentication failure: User ID is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
 
@@ -303,7 +326,8 @@ export default class LoginController implements IController {
         service,
         errors: [err.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
-        loginRedirect: req.query.loginRedirect || undefined
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale()
       });
     }
     // Set login step
@@ -477,6 +501,10 @@ export default class LoginController implements IController {
         .authorize(false)
         .bind(this.authorizationMiddleware),
       this.logOut.bind(this)
+    );
+    this.route.get(
+      "/lang/:language/:serviceIdentifier?",
+      this.setLanguage.bind(this.setLanguage)
     );
     return this.route;
   }

@@ -14,39 +14,39 @@ export default class PrivacyPolicy implements IPrivacyPolicyDatabaseObject {
    * @type {number}
    * @memberof PrivacyPolicy
    */
-  public id: number;
+  public id?: number;
   /**
    * Name
    *
    * @type {number}
    * @memberof PrivacyPolicy
    */
-  public service_id: number;
+  public service_id?: number;
   /**
    * Service
    *
    * @type {string}
    * @memberof PrivacyPolicy
    */
-  public text: string;
+  public text?: string;
   /**
    * Modified
    *
    * @type {Date}
    * @memberof PrivacyPolicy
    */
-  public modified: Date;
+  public modified?: Date;
   /**
    * Created
    *
    * @type {Date}
    * @memberof PrivacyPolicy
    */
-  public created: Date;
+  public created?: Date;
 
-  constructor(payment: IPrivacyPolicyDatabaseObject) {
-    Object.keys(payment).forEach((key: string) => {
-      this[key] = payment[key];
+  constructor(privacyPolicy: IPrivacyPolicyDatabaseObject) {
+    Object.keys(privacyPolicy).forEach((key: string) => {
+      this[key] = privacyPolicy[key];
     });
   }
 }

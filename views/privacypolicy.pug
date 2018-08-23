@@ -1,7 +1,7 @@
 doctype html
 html(lang="en")
   head
-    title #{serviceDisplayName} -palvelun tietosuojaseloste - TKO-äly ry
+    title #{serviceDisplayName} #{t("privacypolicy_Title")} - TKO-äly ry
     link(rel='stylesheet', href='reset.css')
     link(rel='stylesheet', href='common.css')
     link(rel='stylesheet', href='termsAndConditions.css')
@@ -12,17 +12,17 @@ html(lang="en")
         #logo-container
           img.img(src='/svg/tkoaly.svg')
         #title-container
-          div#title #{serviceDisplayName} -palvelun tietosuojaseloste
+          div#title #{serviceDisplayName} #{t("privacypolicy_Title")}
       #content
         p
-          small Tietosuojaseloste on päivitetty viimeksi #{policyUpdateDate}
+          small #{t("privacypolicy_UpdatedAt")} #{policyUpdateDate}
         #termsAndConditions #{policy}
-        p Sinut ohjataan hyväksymisen jälkeen eteenpäin.
-        p Jos hylkäät #{serviceDisplayName} -palvelun tietosuojaselosteen mukaisen henkilötietojen käyttämisen, et voi käyttää palvelua. Voit kuitenkin palata hyväksymään henkilötietojen käyttämisen myöhemmin.
+        p.privacyPolicyRedirect #{t("privacypolicy_YouWillBeRedirected")}
+        p.privacyPolicyDeclineMessage #{t("privacypolicy_IfYouDecline_1")} #{serviceDisplayName}#{t("privacypolicy_IfYouDecline_2")}
       #confirmation
         form(id='formSubmitReject', action='/privacypolicy_confirm', method='POST')
-          input.cancel(type='submit', name='cancel', value='Hylkää')
+          input.cancel(type='submit', name='cancel', value=t("privacypolicy_Decline"))
         form(id='formSubmitAccept', action='/privacypolicy_confirm', method='POST')
           input(type='hidden', name='accept', value='yes')
-          input.accept(type='submit', name='accept', value='Hyväksy')
+          input.accept(type='submit', name='accept', value=t("privacypolicy_Accept"))
     include partials/footer.pug

@@ -30,6 +30,9 @@ import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
 import ConsentService from "./services/ConsentService";
 import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
+import i18n from "./i18n.config";
+import LocalizationMiddleware from "./utils/LocalizationMiddleware";
+
 // Config raven (only in production)
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();
@@ -44,6 +47,24 @@ const app: express.Application = express();
 // Helmet
 app.use(helmet());
 
+// Disable cross-domain checks for now
+app.use(
+  (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    next();
+  }
+);
+
+// Cookie parser
+app.use(cookieParser());
+
+// Localization middleware ensures the correct language
+app.use(LocalizationMiddleware);
+
+// Localization
+app.use(i18n.init);
+
 // Raven
 app.use(Raven.requestHandler());
 
@@ -54,9 +75,6 @@ app.use(
     extended: true
   })
 );
-
-// Cookie parser
-app.use(cookieParser());
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -79,7 +97,7 @@ app.use(
   sassMiddleware({
     src: Path.join(__dirname, "..", "scss"),
     dest: Path.join(__dirname, "..", "public", "styles"),
-    debug: true,
+    debug: false,
     outputStyle: "compressed",
     response: true
   })
@@ -165,23 +183,6 @@ app.use("/", loginController.createRoutes());
 app.use(
   ApiRoute.generateApiRoute("policy"),
   privacyPolicyController.createRoutes()
-);
-
-// Service port
-const port: number = Number(process.env.USERSERVICE_PORT || 3000);
-
-// Start server
-app.listen(port, () => {
-  // @ts-ignore
-  console.log(
-    "User service listening on port %d",
-    port
-  );
-});
-
-// Privacy policy directory
-export const privacyPolicyDir: string = Path.resolve(
-  Path.join(__dirname, "../", "privacy_policy/")
 );
 
 export default app;
