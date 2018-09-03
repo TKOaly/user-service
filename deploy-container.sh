@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Pushing container image to registry.tko-aly.fi"
 source .env.deploy
 echo $DEPLOY_PASSWORD | docker login registry.tko-aly.fi -u $DEPLOY_USERNAME --password-stdin
 docker build . -t user-service

@@ -1,6 +1,17 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+if (!process.env.NODE_ENV) {
+  throw new Error("NODE_ENV environment variable must be specified.");
+} else {
+  const envs: string[] = ["development", "test", "production", "staging"];
+  if (!(envs.indexOf(process.env.NODE_ENV) > -1)) {
+    throw new Error(
+      "NODE_ENV is set to an invalid value. It should be either development, test, production or staging."
+    );
+  }
+}
+
 import * as Knex from "knex";
 
 const prod: Knex.Config = {
@@ -19,6 +30,9 @@ const prod: Knex.Config = {
   },
   migrations: {
     tableName: "knex_migrations"
+  },
+  seeds: {
+    directory: "do_not_seed_prod_db"
   }
 };
 
