@@ -51,7 +51,7 @@ Microservice for authenticating users of members.tko-aly.fi.
 
 1. Clone the repo
 2. Copy `.env.deploy.example` to `.env.deploy` and set your Docker credentials
-3. Run `chmod +x ./scripts/deploy.sh` and after that, run `./scripts/deploy.sh`
+3. Run `chmod +x ./deploy-container.sh` and after that, run `./deploy-container.sh`
 
 This will build the image and push it to `registry.tko-aly.fi` Docker registry.
 
