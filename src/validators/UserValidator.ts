@@ -48,12 +48,11 @@ const allowedSelfEdit: string[] = [
 ];
 
 // Colums allowed to be edited by jäsenvirkailija
-const allowedJVEdit: string[] = [...allowedSelfEdit];
-allowedJVEdit.push("name", "username", "membership");
+const allowedJVEdit: string[] = [...allowedSelfEdit, "name", "username", "membership"];
 
 // Colums allowed to be edited by admin
-const allowedAdminEdit: string[] = [...allowedJVEdit];
-allowedAdminEdit.push("role", "createdAt");
+const allowedAdminEdit: string[] = [...allowedJVEdit, "role", "createdAt"];
+
 /**
  * User validator.
  *
