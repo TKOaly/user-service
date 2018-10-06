@@ -3,16 +3,17 @@ dist: trusty
 sudo: required
 
 language: node_js
+
 node_js:
-  - '9.2'
+  - "9.2"
 
 services:
   - mysql
 
 addons:
   ssh_known_hosts:
-  - maija.tko-aly.fi
-  - uolevi.tko-aly.fi
+    - maija.tko-aly.fi
+    - uolevi.tko-aly.fi
 
 before_install:
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -28,9 +29,16 @@ install:
   - yarn migrate
   - yarn seed
 
-script:
-  - yarn lint
-  - yarn test
-
 after_success:
   - codecov
+
+jobs:
+  include:
+    - stage: run tests
+      script:
+        - yarn lint
+        - yarn test
+    - stage: build & push docker image to https://registry.tko-aly.fi
+      script: 
+        - chmod +x ./deploy-container.sh
+        - ./deploy-container.sh
