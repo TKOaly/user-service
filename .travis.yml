@@ -7,39 +7,30 @@ language: node_js
 node_js:
   - "9.2"
 
-services:
-  - mysql
-
-addons:
-  ssh_known_hosts:
-    - maija.tko-aly.fi
-    - uolevi.tko-aly.fi
-
-before_install:
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
-  - which google-chrome
-  - google-chrome --version
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
-  - npm install -g yarn
-  - npm install -g codecov
-
-install:
-  - yarn install --dev
-  - yarn migrate
-  - yarn seed
-
-after_success:
-  - codecov
-
 jobs:
   include:
     - stage: test
+      services:
+        - mysql
+      before_install:
+        - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        - sudo dpkg -i google-chrome*.deb
+        - which google-chrome
+        - google-chrome --version
+        - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
+        - npm install -g yarn
+        - npm install -g codecov
+      install:
+        - yarn install --dev
+        - yarn migrate
+        - yarn seed
+      after_success:
+        - codecov
       script:
         - yarn lint
         - yarn test
     - stage: deploy
-      script: 
+      script:
         - bash ./deploy-container.sh
 
 stages:
