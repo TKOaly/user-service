@@ -34,11 +34,15 @@ after_success:
 
 jobs:
   include:
-    - stage: run tests
+    - stage: test
       script:
         - yarn lint
         - yarn test
-    - stage: build & push docker image to https://registry.tko-aly.fi
+    - stage: deploy
       script: 
-        - chmod +x ./deploy-container.sh
-        - ./deploy-container.sh
+        - bash ./deploy-container.sh
+
+stages:
+  - test
+  - name: deploy
+    if: branch = master
