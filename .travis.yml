@@ -30,6 +30,7 @@ jobs:
         - yarn lint
         - yarn test
     - stage: deploy
+      install: skip
       script:
         - bash ./deploy-container.sh
 
