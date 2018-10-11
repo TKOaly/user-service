@@ -5,7 +5,7 @@ if (!process.env.NODE_ENV) {
   throw new Error("NODE_ENV environment variable must be set.");
 }
 
-import * as Raven from "raven";
+import Raven from "raven";
 
 import cookieParser from "cookie-parser";
 import express from "express";
