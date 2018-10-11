@@ -26,11 +26,14 @@ jobs:
         - docker-compose run web yarn lint
         - docker-compose run web yarn test
     - stage: deploy
-      install: skip
-      script:
-        - bash ./deploy-container.sh
+      script: skip
+      deploy:
+        provider: script
+        script: bash ./deploy-container.sh
+        skip_cleanup: true
+        on:
+          branch: master
 
 stages:
   - test
-  - name: deploy
-    if: branch = master
+  - deploy
