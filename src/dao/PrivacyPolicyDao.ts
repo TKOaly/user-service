@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+import Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
@@ -17,7 +17,7 @@ export default class PrivacyPolicyDao
    * @param {Knex} knex
    * @memberof PrivacyPolicyDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds one privacy policy.

@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+import Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import { IPayment, IPaymentListing } from "../models/Payment";
@@ -16,7 +16,7 @@ export default class PaymentDao implements IDao<IPayment> {
    * @param {Knex} knex
    * @memberof PaymentDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single payment.

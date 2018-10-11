@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 import { IKnexFile } from "../../knexfile";
 // Knexfile
@@ -140,7 +140,7 @@ describe("AuthController", () => {
 
     it(
       "POST /api/auth/authenticate : Returns an error when trying to" +
-        " authenticate with a nonexistent service",
+      " authenticate with a nonexistent service",
       (done: Mocha.Done) => {
         chai
           .request(app)
@@ -166,7 +166,7 @@ describe("AuthController", () => {
   describe("Service check", () => {
     it(
       "POST /api/auth/authenticate : " +
-        "Checks that the correct service has been authenticated to",
+      "Checks that the correct service has been authenticated to",
       (done: Mocha.Done) => {
         // The default credentials authenticate to KJYR
         chai
@@ -206,7 +206,7 @@ describe("AuthController", () => {
 
     it(
       "POST /api/auth/authenticate : " +
-        "Check that the user has not been authenticated to an incorrect service",
+      "Check that the user has not been authenticated to an incorrect service",
       (done: Mocha.Done) => {
         // The default credentials authenticate to KJYR
         chai

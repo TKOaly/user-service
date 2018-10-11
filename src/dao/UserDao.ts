@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+import Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import IUserDatabaseObject, {
@@ -18,7 +18,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @param {Knex} knex
    * @memberof UserDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single user.

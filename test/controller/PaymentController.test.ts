@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import * as JWT from "jsonwebtoken";
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 import { IKnexFile } from "../../knexfile";
 import payments = require("../../seeds/seedData/payments");

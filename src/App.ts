@@ -7,12 +7,12 @@ if (!process.env.NODE_ENV) {
 
 import * as Raven from "raven";
 
-import * as cookieParser from "cookie-parser";
-import * as express from "express";
-import * as session from "express-session";
-import * as helmet from "helmet";
-import * as Knex from "knex";
-import * as sassMiddleware from "node-sass-middleware";
+import cookieParser from "cookie-parser";
+import express from "express";
+import session from "express-session";
+import helmet from "helmet";
+import Knex from "knex";
+import sassMiddleware from "node-sass-middleware";
 import * as Path from "path";
 
 import AuthController from "./controllers/AuthController";

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as express from "express";
-import * as moment from "moment";
+import moment from "moment";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IController from "../interfaces/IController";
 import Consent from "../models/Consent";

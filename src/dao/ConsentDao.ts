@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+import Promise from "bluebird";
 import * as Knex from "knex";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IConsentDatabaseObject from "../interfaces/IConsentDatabaseObject";
@@ -14,7 +14,7 @@ const tableName: string = "privacy_policy_consent_data";
  * @implements {IDao<IConsentDatabaseObject>}
  */
 export default class ConsentDao implements IDao<IConsentDatabaseObject> {
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single consent.
