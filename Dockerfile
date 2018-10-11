@@ -1,7 +1,8 @@
 FROM node:10.8-alpine
 
 RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python
+  g++ gcc libgcc libstdc++ linux-headers make python \
+  chromium chromium-chromedriver
 
 RUN npm install --global yarn@1.7.0
 
