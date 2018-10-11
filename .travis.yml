@@ -1,34 +1,17 @@
 dist: trusty
-
 sudo: required
-
-language: node_js
-
-node_js:
-  - "9.2"
 
 jobs:
   include:
     - stage: test
-      services:
-        - mysql
-      before_install:
-        - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        - sudo dpkg -i google-chrome*.deb
-        - which google-chrome
-        - google-chrome --version
-        - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
-        - npm install -g yarn
-        - npm install -g codecov
       install:
-        - yarn install --dev
-        - yarn migrate
-        - yarn seed
+        - docker-compose build
+        - docker-compose run web yarn db:init
       after_success:
         - codecov
       script:
-        - yarn lint
-        - yarn test
+        - docker-compose run web yarn lint
+        - docker-compose run web yarn test
     - stage: deploy
       install: skip
       script:
