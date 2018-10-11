@@ -14,6 +14,7 @@ RUN yarn --dev
 COPY knexfile.ts ./
 COPY nodemon.json ./
 COPY tsconfig.json ./
+COPY tslint.json ./
 COPY seeds ./seeds
 COPY migrations ./migrations
 COPY src ./src
