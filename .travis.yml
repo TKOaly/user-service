@@ -31,9 +31,8 @@ jobs:
         provider: script
         script: bash ./deploy-container.sh
         skip_cleanup: true
-        on:
-          branch: master
 
 stages:
   - test
-  - deploy
+  - name: deploy
+    if: (NOT type IN (pull_request)) AND (branch = master)
