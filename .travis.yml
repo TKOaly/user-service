@@ -15,7 +15,7 @@ jobs:
         - docker-compose --version
       install:
         - docker-compose build
-        - docker-compose start mysql
+        - docker-compose up -d mysql
         - sleep 5
         - docker-compose run web yarn db:init
       after_script:
