@@ -1,15 +1,17 @@
 FROM node:10.8-alpine
 
+ENV YARN_CACHE_FOLDER=/dev/shm/yarn-cache
+
 WORKDIR /app
 
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python \
   chromium chromium-chromedriver
 
-RUN npm install --global yarn@1.7.0
+RUN npm install --global yarn@1.10.1
 
 COPY yarn.lock package.json /app/
-RUN yarn --dev
+RUN yarn --dev --frozen-lockfile
 
 COPY . /app/
 
