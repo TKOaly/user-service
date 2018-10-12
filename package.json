@@ -61,6 +61,7 @@
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/express-session": "^1.15.9",
+    "@types/helmet": "^0.0.42",
     "@types/i18n": "^0.8.3",
     "@types/jsonwebtoken": "^7.2.8",
     "@types/knex": "^0.14.16",
