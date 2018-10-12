@@ -94,7 +94,7 @@ export default class Payment implements IPayment {
    * @memberof Payment
    */
   constructor(payment: IPayment) {
-    Object.keys(payment).forEach((key: string) => {
+    Object.keys(payment).forEach((key: keyof IPayment) => {
       this[key] = payment[key];
     });
   }

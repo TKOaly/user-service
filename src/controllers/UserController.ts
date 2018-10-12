@@ -186,7 +186,7 @@ export default class UserController implements IController {
     res: express.Response
   ): Promise<express.Response> {
     if (
-      compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0
+      compareRoles(req.authorization.user.role as UserRoleString, UserRoleString.Kayttaja) <= 0
     ) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }

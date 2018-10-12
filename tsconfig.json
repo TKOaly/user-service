@@ -23,7 +23,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "test/**/*"
+    "test/**/*",
+    "knexfile.ts"
   ],
   "exclude": [
     "node_modules",
