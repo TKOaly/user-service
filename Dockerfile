@@ -1,28 +1,16 @@
 FROM node:10.8-alpine
 
+WORKDIR /app
+
 RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python \
   chromium chromium-chromedriver
 
 RUN npm install --global yarn@1.7.0
 
-WORKDIR /app
-COPY yarn.lock ./
-COPY package.json ./
+COPY yarn.lock package.json /app/
 RUN yarn --dev
 
-COPY knexfile.ts ./
-COPY nodemon.json ./
-COPY tsconfig.json ./
-COPY tslint.json ./
-COPY seeds ./seeds
-COPY migrations ./migrations
-COPY src ./src
-COPY test ./test
-COPY views ./views
-COPY scripts ./scripts
-COPY public ./public
-COPY scss ./scss
-COPY locales ./locales
+COPY . /app/
 
 CMD ["yarn", "start"]
