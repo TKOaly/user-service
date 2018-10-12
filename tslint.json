@@ -1,35 +1,26 @@
 {
   "defaultSeverity": "warning",
-  "extends": ["tslint:recommended"],
+  "extends": [
+    "tslint:recommended"
+  ],
   "jsRules": {
     "object-literal-sort-keys": false
   },
   "rules": {
     "no-var-requires": false,
     "trailing-comma": false,
-    "no-console": false,
     "no-bitwise": false,
     "object-literal-sort-keys": false,
     "typeof-compare": true,
-    "typedef": [
-      true,
-      "call-signature",
-      "arrow-call-signature",
-      "parameter",
-      "arrow-parameter",
-      "property-declaration",
-      "variable-declaration",
-      "member-variable-declaration",
-      "object-destructuring",
-      "array-destructuring"
-    ],
+    "typedef": false,
+    "interface-name": false,
     "no-shadowed-variable": false,
     "variable-name": false,
     "only-arrow-functions": false,
     "arrow-return-shorthand": true,
     "class-name": true,
     "use-isnan": true,
-    "completed-docs": true,
+    "completed-docs": false,
     "no-any": true
   },
   "rulesDirectory": []
