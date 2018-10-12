@@ -317,7 +317,7 @@ describe("UserController", () => {
                   delete user.createdAt;
                   delete user.modifiedAt;
 
-                  const allFields: string[] = Object.keys(user);
+                  const allFields = Object.keys(user) as Array<keyof User>;
 
                   const required: string[] = Object.keys(
                     user_2

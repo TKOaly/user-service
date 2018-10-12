@@ -121,7 +121,7 @@ describe("ServiceDao", () => {
               delete newService.created;
               delete dbService.modified;
               delete dbService.created;
-              Object.keys(newService).forEach((key: string) => {
+              Object.keys(newService).forEach((key: keyof IServiceDatabaseObject) => {
                 should.exist(dbService[key]);
                 dbService[key].should.equal(newService[key]);
               });
@@ -142,7 +142,7 @@ describe("ServiceDao", () => {
         // We can't compare modified and created dates
         delete dbService.modified;
         delete dbService.created;
-        Object.keys(dbService).forEach((key: string) => {
+        Object.keys(dbService).forEach((key: keyof IServiceDatabaseObject) => {
           should.exist(dbService[key]);
           dbService[key].should.equal(seedService[key]);
         });
@@ -162,7 +162,7 @@ describe("ServiceDao", () => {
         delete dbService.modified;
         delete dbService.created;
 
-        Object.keys(dbService).forEach((key: string) => {
+        Object.keys(dbService).forEach((key: keyof IServiceDatabaseObject) => {
           should.exist(dbService[key]);
           dbService[key].should.equal(seedService[key]);
         });

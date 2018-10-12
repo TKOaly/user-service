@@ -170,7 +170,7 @@ export default class User {
    */
   public removeNonRequestedData(dataRequest: number): User {
     Object.keys(this.removeSensitiveInformation()).forEach(
-      (key: string, i: number) => {
+      (key: keyof User, i: number) => {
         const val: number = Math.pow(2, i);
         if (val === null || (val & dataRequest) !== val) {
           delete this[key];
