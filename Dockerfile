@@ -1,7 +1,8 @@
 FROM node:10.8-alpine
 
 RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python
+  g++ gcc libgcc libstdc++ linux-headers make python \
+  chromium chromium-chromedriver
 
 RUN npm install --global yarn@1.7.0
 
@@ -13,6 +14,7 @@ RUN yarn --dev
 COPY knexfile.ts ./
 COPY nodemon.json ./
 COPY tsconfig.json ./
+COPY tslint.json ./
 COPY seeds ./seeds
 COPY migrations ./migrations
 COPY src ./src

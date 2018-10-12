@@ -1,40 +1,38 @@
 dist: trusty
-
 sudo: required
-
-language: node_js
-
-node_js:
-  - "9.2"
 
 jobs:
   include:
     - stage: test
-      services:
-        - mysql
+      env:
+        - DOCKER_COMPOSE_VERSION=1.22.0
       before_install:
-        - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        - sudo dpkg -i google-chrome*.deb
-        - which google-chrome
-        - google-chrome --version
-        - mysql -e 'CREATE DATABASE IF NOT EXISTS `tkoaly-user-service_test`;'
-        - npm install -g yarn
-        - npm install -g codecov
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+        - docker --version
+        - docker-compose --version
       install:
-        - yarn install --dev
-        - yarn migrate
-        - yarn seed
+        - docker-compose build
+        - docker-compose up -d mysql
+        - sleep 5
+        - docker-compose run web yarn db:init
+      after_script:
+        - docker-compose down
       after_success:
         - codecov
       script:
-        - yarn lint
-        - yarn test
+        - docker-compose run web yarn lint
+        - docker-compose run web yarn test
     - stage: deploy
-      install: skip
-      script:
-        - bash ./deploy-container.sh
+      script: skip
+      deploy:
+        provider: script
+        script: bash ./deploy-container.sh
+        skip_cleanup: true
 
 stages:
   - test
   - name: deploy
-    if: branch = master
+    if: (NOT type IN (pull_request)) AND (branch = master)

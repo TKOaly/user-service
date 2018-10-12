@@ -15,6 +15,9 @@ services:
       - "8080:8080"
     depends_on:
       - mysql
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
     environment:
       USERSERVICE_PORT: 8080
       NODE_ENV: development
