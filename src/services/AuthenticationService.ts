@@ -1,7 +1,7 @@
-import * as bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 // Ignore sha1 as it has no types
 // @ts-ignore
-import * as sha1 from "sha1";
+import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../models/Service";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
