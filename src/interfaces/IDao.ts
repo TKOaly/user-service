@@ -15,14 +15,14 @@ export default interface IDao<T> {
    * @returns {Promise<T>} A single entity
    * @memberof IDao
    */
-  findOne(id: number): Promise<T>;
+  findOne(id: number): PromiseLike<T>;
   /**
    * Returns all entities.
    *
    * @returns {Promise<T[]>} All entities
    * @memberof IDao
    */
-  findAll(): Promise<T[]>;
+  findAll(): PromiseLike<T[]>;
   /**
    * Removes an entity.
    *
@@ -30,7 +30,7 @@ export default interface IDao<T> {
    * @returns {Promise<boolean>} Did the remove complete or not
    * @memberof IDao
    */
-  remove(id: number): Promise<boolean>;
+  remove(id: number): PromiseLike<boolean>;
   /**
    * Updates an entity.
    *
@@ -38,7 +38,7 @@ export default interface IDao<T> {
    * @returns {Promise<number[]>} Affected row(s)
    * @memberof IDao
    */
-  update(entityId: number, entity: T): Promise<number>;
+  update(entityId: number, entity: T): PromiseLike<number>;
   /**
    * Saves an entity.
    *
@@ -46,5 +46,5 @@ export default interface IDao<T> {
    * @returns {Promise<number[]>} Inserted id(s)
    * @memberof IDao
    */
-  save(entity: T): Promise<number[]>;
+  save(entity: T): PromiseLike<number[]>;
 }
