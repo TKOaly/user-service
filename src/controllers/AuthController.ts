@@ -1,4 +1,4 @@
-import * as express from "express";
+import express from "express";
 import IController from "../interfaces/IController";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";

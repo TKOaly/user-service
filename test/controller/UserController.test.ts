@@ -1,6 +1,6 @@
 process.env.NODE_ENV = "test";
 
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 import app from "../../src/App";
 
@@ -252,7 +252,7 @@ describe("UserController", () => {
 
     it(
       "GET /api/users/me: Trying to get information from" +
-        " a service the user is not authenticated to",
+      " a service the user is not authenticated to",
       (done: Mocha.Done) => {
         chai
           .request(app)
@@ -273,7 +273,7 @@ describe("UserController", () => {
 
     it(
       "GET /api/users/me : Removes unwanted information" +
-        " and returns my information from every service",
+      " and returns my information from every service",
       (done: Mocha.Done) => {
         authService
           .getServices()

@@ -1,6 +1,6 @@
 process.env.NODE_ENV = "test";
 
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 import UserDao from "../../src/dao/UserDao";
 import UserService from "../../src/services/UserService";
@@ -53,7 +53,7 @@ describe("UserValidator", () => {
     it("Too long email address returns false", () => {
       const valid: boolean = userValidator.checkEmailValidity(
         "testtesttesttesttesttesttesttesttesttesttesttesttestt" +
-          "esttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@email.com"
+        "esttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@email.com"
       );
       valid.should.equal(false);
     });
@@ -205,7 +205,7 @@ describe("UserValidator", () => {
           password1: "testpassword",
           password2: "testpassword"
         } as any)
-        .then(function() {
+        .then(function () {
           done();
         })
         .catch((err) => {
@@ -240,7 +240,7 @@ describe("UserValidator", () => {
 
     it(
       "Throws a service error when an elevated user" +
-        " tries to set email address to an already used email address",
+      " tries to set email address to an already used email address",
       (done: Mocha.Done) => {
         userDao
           .findOne(2)
@@ -267,7 +267,7 @@ describe("UserValidator", () => {
 
     it(
       "Throws a service error when an elevated user" +
-        " tries to set a malformed used email address",
+      " tries to set a malformed used email address",
       (done: Mocha.Done) => {
         userDao
           .findOne(2)
@@ -294,7 +294,7 @@ describe("UserValidator", () => {
 
     it(
       "Throws a service error when a user" +
-        " tries to set a new password that doesn't match",
+      " tries to set a new password that doesn't match",
       (done: Mocha.Done) => {
         userDao
           .findOne(1)
@@ -324,7 +324,7 @@ describe("UserValidator", () => {
 
     it(
       "Throws a service error when a jasenvirkailija tries to" +
-        " modify another user with a forbidden value",
+      " modify another user with a forbidden value",
       (done: Mocha.Done) => {
         // Seed user #3 is a jasenvirkailija and wants to update a user.
         userDao
@@ -352,7 +352,7 @@ describe("UserValidator", () => {
 
     it(
       "Succeeds when jasenvirkailija tries to" +
-        " modify another user with a valid value",
+      " modify another user with a valid value",
       (done: Mocha.Done) => {
         userDao
           .findOne(3)
@@ -378,7 +378,7 @@ describe("UserValidator", () => {
 
     it(
       "Throws a service error when a user" +
-        " with an unknown set of permissions tries to modify another user",
+      " with an unknown set of permissions tries to modify another user",
       (done: Mocha.Done) => {
         // Seed user #4 is a tenttiarkistovirkailija
         userDao

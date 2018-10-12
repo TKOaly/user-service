@@ -1,4 +1,4 @@
-import * as Promise from "bluebird";
+import Promise from "bluebird";
 import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import { IServiceDatabaseObject } from "../models/Service";
@@ -16,7 +16,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
    * @param {Knex} knex
    * @memberof ServiceDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single service.

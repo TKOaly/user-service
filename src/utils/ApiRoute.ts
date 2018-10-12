@@ -1,4 +1,4 @@
-import * as Express from "express";
+import Express from "express";
 
 /**
  * Generates an API route in the format /api/{API_VERSION}/{ENDPOINT_NAME} or /api/{ENDPOINT_NAME}

@@ -1,7 +1,7 @@
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 import { IKnexFile } from "../../knexfile";
 // Knexfile

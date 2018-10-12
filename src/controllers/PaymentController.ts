@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as Raven from "raven";
+import Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";

@@ -10,9 +10,23 @@
     "noUnusedLocals": true,
     "noImplicitAny": false,
     "outDir": "./dist/",
-    "rootDirs": ["./src"],
-    "lib": ["es6", "dom", "esnext"]
+    "rootDirs": [
+      "./src"
+    ],
+    "lib": [
+      "es6",
+      "dom",
+      "esnext"
+    ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*.ts",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

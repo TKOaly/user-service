@@ -4,7 +4,7 @@ import { By } from "selenium-webdriver";
 import { cleanupDriver, prepareDriver } from "../WebDriver";
 
 import chai = require("chai");
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 
 // Knexfile
@@ -77,7 +77,7 @@ describe("Privacy policy page", () => {
   for (const service of serviceData) {
     it(
       "On successful login, privacy policy page is shown for new users (Finnish) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/fi/" + service.service_identifier
@@ -120,9 +120,9 @@ describe("Privacy policy page", () => {
           .getText();
         privacyPolicyDeclined.should.equal(
           fi.privacypolicy_IfYouDecline_1 +
-            " " +
-            service.display_name +
-            fi.privacypolicy_IfYouDecline_2
+          " " +
+          service.display_name +
+          fi.privacypolicy_IfYouDecline_2
         );
       }
     );
@@ -131,7 +131,7 @@ describe("Privacy policy page", () => {
   for (const service of serviceData) {
     it(
       "On successful login, privacy policy page is shown for new users (English) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/en/" + service.service_identifier
@@ -174,8 +174,8 @@ describe("Privacy policy page", () => {
           .getText();
         privacyPolicyDeclined.should.equal(
           en.privacypolicy_IfYouDecline_1 +
-            service.display_name +
-            en.privacypolicy_IfYouDecline_2
+          service.display_name +
+          en.privacypolicy_IfYouDecline_2
         );
       }
     );
@@ -184,7 +184,7 @@ describe("Privacy policy page", () => {
   for (const service of serviceData) {
     it(
       "On successful login, user salt should be rehashed with bcrypt (Finnish) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/fi/" + service.service_identifier
@@ -251,9 +251,9 @@ describe("Privacy policy page", () => {
           .getText();
         privacyPolicyDeclined.should.equal(
           fi.privacypolicy_IfYouDecline_1 +
-            " " +
-            service.display_name +
-            fi.privacypolicy_IfYouDecline_2
+          " " +
+          service.display_name +
+          fi.privacypolicy_IfYouDecline_2
         );
       }
     );
@@ -262,7 +262,7 @@ describe("Privacy policy page", () => {
   for (const service of serviceData) {
     it(
       "On successful login, user salt should be rehashed with bcrypt (English) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/en/" + service.service_identifier
@@ -329,8 +329,8 @@ describe("Privacy policy page", () => {
           .getText();
         privacyPolicyDeclined.should.equal(
           en.privacypolicy_IfYouDecline_1 +
-            service.display_name +
-            en.privacypolicy_IfYouDecline_2
+          service.display_name +
+          en.privacypolicy_IfYouDecline_2
         );
       }
     );

@@ -1,5 +1,5 @@
-import * as Promise from "bluebird";
-import * as Knex from "knex";
+import Promise from "bluebird";
+import Knex from "knex";
 import IDao from "../interfaces/IDao";
 import IUserDatabaseObject, {
   IUserPaymentDatabaseObject
@@ -18,7 +18,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @param {Knex} knex
    * @memberof UserDao
    */
-  constructor(private readonly knex: Knex) {}
+  constructor(private readonly knex: Knex) { }
 
   /**
    * Finds a single user.
@@ -163,7 +163,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * @returns {Promise<boolean>}
    * @memberof UserDao
    */
-  public remove(id: number): Promise<boolean> {
+  public remove(id: number): PromiseLike<boolean> {
     // First, delete consents
     return this.knex("privacy_policy_consent_data")
       .delete()

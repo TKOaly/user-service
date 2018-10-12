@@ -4,7 +4,7 @@ import { By } from "selenium-webdriver";
 import { cleanupDriver, prepareDriver } from "../WebDriver";
 
 import chai = require("chai");
-import * as Knex from "knex";
+import Knex from "knex";
 import "mocha";
 
 // Knexfile
@@ -234,7 +234,7 @@ describe("Login page", () => {
   for (const service of serviceData) {
     it(
       "On invalid username or password, shows correct error message (Finnish) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/fi/" + service.service_identifier
@@ -300,7 +300,7 @@ describe("Login page", () => {
   for (const service of serviceData) {
     it(
       "On invalid username or password, shows correct error message (English) - " +
-        service.display_name,
+      service.display_name,
       async () => {
         await browser.get(
           "http://localhost:3010/lang/en/" + service.service_identifier
