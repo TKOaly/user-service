@@ -10,7 +10,9 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
   web:
-    build: .
+    build:
+      context: .
+      shm_size: 1G
     ports:
       - "8080:8080"
     depends_on:
