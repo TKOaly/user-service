@@ -24,8 +24,7 @@ async function createTables(): Promise<void> {
       const currentDbName = `${dbName}_${env}`;
       console.log("Creating database %s", currentDbName);
       await con.execute(
-        "CREATE DATABASE IF NOT EXISTS `?` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci",
-        [currentDbName]
+        `CREATE DATABASE ${currentDbName} IF NOT EXISTS  DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci`,
       );
     }
     process.exit(0);
