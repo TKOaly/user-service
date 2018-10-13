@@ -277,12 +277,22 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
   integrity sha512-lAVp+Kj54ui/vLUFxsJTMtWvZraZxum3w3Nwkble2dNuV5VnPA+Mi2oGX9XYJAaIvZi3tn3cbjS/qcJXRb6Bww==
 
+"@types/mysql2@https://github.com/types/mysql2.git":
+  version "1.0.0"
+  resolved "https://github.com/types/mysql2.git#e2be194d8db7a1a64612e5f645d5cad8223328ab"
+  dependencies:
+    "@types/mysql" types/mysql#v2.0.0
+
 "@types/mysql@^2.15.5":
   version "2.15.5"
   resolved "https://registry.yarnpkg.com/@types/mysql/-/mysql-2.15.5.tgz#6d75afb5cc018c9d66b2f37a046924e397f85430"
   integrity sha512-4QAISTUGZbcFh7bqdndo08xRdES5OTU+JODy8VCZbe1yiXyGjqw1H83G43XjQ3IbC10wn9xlGd44A5RXJwNh0Q==
   dependencies:
     "@types/node" "*"
+
+"@types/mysql@types/mysql#v2.0.0":
+  version "2.0.0"
+  resolved "https://codeload.github.com/types/mysql/tar.gz/da645a82afd66419ed439dddf174648aa68ba1f9"
 
 "@types/node-sass-middleware@^0.0.30":
   version "0.0.30"
