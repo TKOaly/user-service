@@ -4,8 +4,7 @@ import chai = require("chai");
 import Knex from "knex";
 import "mocha";
 // Knexfile
-import * as knexfile from "../../knexfile";
-import { IKnexFile } from "../../knexfile";
+import knexfile from "../../knexfile";
 import userFile = require("../../seeds/seedData/users");
 import UserDao from "../../src/dao/UserDao";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
@@ -13,7 +12,7 @@ import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 const dbUsers: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
 const should: Chai.Should = chai.should();
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const userDao: UserDao = new UserDao(knex);
 

@@ -4,16 +4,15 @@ import chai = require("chai");
 import * as JWT from "jsonwebtoken";
 import Knex from "knex";
 import "mocha";
-import { IKnexFile } from "../../knexfile";
 import payments = require("../../seeds/seedData/payments");
 import app from "../../src/App";
 import { IPayment } from "../../src/models/Payment";
 
 // Knexfile
-import * as knexfile from "../../knexfile";
+import knexfile from "../../knexfile";
 
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const should: Chai.Should = chai.should();
 const chaiHttp: any = require("chai-http");

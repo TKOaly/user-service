@@ -13,12 +13,11 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 
 // Knexfile
-import * as knexfile from "../../knexfile";
+import knexfile from "../../knexfile";
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 import chai = require("chai");
-import { IKnexFile } from "../../knexfile";
 import ServiceDao from "../../src/dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../../src/models/Service";
 const should: Chai.Should = chai.should();

@@ -3,9 +3,8 @@ process.env.NODE_ENV = "test";
 import chai = require("chai");
 import Knex from "knex";
 import "mocha";
-import { IKnexFile } from "../../knexfile";
 // Knexfile
-import * as knexfile from "../../knexfile";
+import knexfile from "../../knexfile";
 import serviceFile = require("../../seeds/seedData/services");
 import ServiceDao from "../../src/dao/ServiceDao";
 import { IServiceDatabaseObject } from "../../src/models/Service";
@@ -14,7 +13,7 @@ const dbServices: IServiceDatabaseObject[] = serviceFile as IServiceDatabaseObje
 const should: Chai.Should = chai.should();
 
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const serviceDao: ServiceDao = new ServiceDao(knex);
 
