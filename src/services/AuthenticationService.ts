@@ -7,28 +7,9 @@ import Service, { IServiceDatabaseObject } from "../models/Service";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
-/**
- * Authentication service.
- *
- * @export
- * @class AuthenticationService
- */
 export default class AuthenticationService {
-  /**
-   * Creates an instance of AuthenticationService.
-   * @param {UserDao} userDao UserDao
-   * @param {ServiceDao} serviceDao ServiceDao
-   * @memberof AuthenticationService
-   */
-  constructor(private readonly serviceDao: ServiceDao) {}
+  constructor(private readonly serviceDao: ServiceDao) { }
 
-  /**
-   * Returns a single service by its name.
-   *
-   * @param {string} serviceName
-   * @returns {Promise<Service>}
-   * @memberof AuthenticationService
-   */
   public async getService(serviceName: string): Promise<Service> {
     const service: IServiceDatabaseObject = await this.serviceDao.findByName(
       serviceName
@@ -41,10 +22,6 @@ export default class AuthenticationService {
 
   /**
    * Returns a single service by its identifier.
-   *
-   * @param {string} service_identifier
-   * @returns {Promise<Service>}
-   * @memberof AuthenticationService
    */
   public async getServiceWithIdentifier(
     service_identifier: string
@@ -58,12 +35,6 @@ export default class AuthenticationService {
     return new Service(service);
   }
 
-  /**
-   * Returns all services.
-   *
-   * @returns {Promise<Service[]>}
-   * @memberof AuthenticationService
-   */
   public async getServices(): Promise<Service[]> {
     const services: IServiceDatabaseObject[] = await this.serviceDao.findAll();
 
@@ -74,11 +45,6 @@ export default class AuthenticationService {
 
   /**
    * Appends a new service to the authentication token.
-   *
-   * @param {(string | ServiceToken)} oldToken
-   * @param {string} newServiceName
-   * @returns {string}
-   * @memberof AuthenticationService
    */
   public appendNewServiceAuthenticationToToken(
     oldToken: string | ServiceToken,
@@ -106,14 +72,6 @@ export default class AuthenticationService {
     }
   }
 
-  /**
-   * Remove a service from the authentication token.
-   *
-   * @param {(string | ServiceToken)} oldToken
-   * @param {string} serviceToRemove
-   * @returns {string}
-   * @memberof AuthenticationService
-   */
   public removeServiceAuthenticationToToken(
     oldToken: string | ServiceToken,
     serviceToRemove: string
@@ -142,14 +100,6 @@ export default class AuthenticationService {
     }
   }
 
-  /**
-   * Creates token.
-   *
-   * @param {number} userId
-   * @param {string[]} authenticatedTo
-   * @returns {string}
-   * @memberof AuthenticationService
-   */
   public createToken(userId: number, authenticatedTo: string[]): string {
     try {
       return new ServiceToken(userId, authenticatedTo, new Date()).toString();
@@ -159,15 +109,6 @@ export default class AuthenticationService {
   }
 }
 
-/**
- * Validates password.
- *
- * @export
- * @param {string} password
- * @param {string} salt
- * @param {string} hashedPassword
- * @returns {Promise<boolean>}
- */
 export async function validatePassword(
   password: string,
   salt: string,

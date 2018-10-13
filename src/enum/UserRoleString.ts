@@ -1,8 +1,5 @@
 /**
  * User role enumerator.
- *
- * @export
- * @enum {number}
  */
 enum UserRoleString {
   Kayttaja = "kayttaja",

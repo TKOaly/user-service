@@ -6,32 +6,12 @@ import UserService from "../services/UserService";
 import ServiceError from "../utils/ServiceError";
 import { stringToBoolean } from "../utils/UserHelpers";
 
-/**
- * Additional user data.
- *
- * @interface IAdditionalUserData
- */
 export interface IAdditionalUserData {
-  /**
-   * Password.
-   *
-   * @type {string} Password
-   * @memberof IAdditionalUserData
-   */
   password1: string;
   /**
    * Password (typed again).
-   *
-   * @type {string} Password
-   * @memberof IAdditionalUserData
    */
   password2: string;
-  /**
-   * Is the user deleted or not.
-   *
-   * @type {boolean}
-   * @memberof IAdditionalUserData
-   */
   deleted: boolean;
 }
 
@@ -53,27 +33,9 @@ const allowedJVEdit: string[] = [...allowedSelfEdit, "name", "username", "member
 // Colums allowed to be edited by admin
 const allowedAdminEdit: string[] = [...allowedJVEdit, "role", "createdAt"];
 
-/**
- * User validator.
- *
- * @export
- * @class UserValidator
- * @implements {IValidator<User>}
- */
 export default class UserValidator implements IValidator<User> {
-  /**
-   * Creates an instance of UserValidator.
-   * @param {UserService} userService
-   * @memberof UserValidator
-   */
   constructor(private userService: UserService) { }
 
-  /**
-   * Validates user creation.
-   *
-   * @param {(User & IAdditionalUserData)} newUser
-   * @memberof UserValidator
-   */
   public async validateCreate(
     newUser: User & IAdditionalUserData
   ): Promise<void> {
@@ -114,16 +76,6 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
-  /**
-   * Validates user update.
-   *
-   * @param {number} userId User ID
-   * @param {(User & IAdditionalUserData)} newUser User data
-   * @param {User} modifier Modifier
-   * @returns {Promise<void>}
-   * @throws {ServiceError}
-   * @memberof UserValidator
-   */
   public async validateUpdate(
     userId: number,
     newUser: User & IAdditionalUserData,
@@ -181,13 +133,6 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
-  /**
-   * Checks for username availability.
-   *
-   * @param {User} newUser User object
-   * @returns {Promise<void>}
-   * @throws {ServiceError}
-   */
   public async checkUsernameAvailability(newUser: User): Promise<void> {
     if (newUser.username) {
       // Test username
@@ -200,13 +145,6 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
-  /**
-   * Checks for email availability.
-   *
-   * @param {User} newUser User object
-   * @returns {Promise<void>}
-   * @throws {ServiceError}
-   */
   public async checkEmailAvailability(newUser: User): Promise<void> {
     if (newUser.email) {
       // Test email
@@ -219,14 +157,6 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
-  /**
-   * Checks for email address validity.
-   *
-   * @private
-   * @param {string} email Email address
-   * @returns {boolean} True if the email is valid
-   * @memberof UserValidator
-   */
   public checkEmailValidity(email: string): boolean {
     if (
       !email ||
@@ -243,13 +173,6 @@ export default class UserValidator implements IValidator<User> {
   }
 }
 
-/**
- * Checks modify permission.
- *
- * @param {User} user User
- * @param {string[]} allowedEdits Allowed edits
- * @throws {ServiceError}
- */
 export function checkModifyPermission(
   user: User,
   allowedEdits: string[]

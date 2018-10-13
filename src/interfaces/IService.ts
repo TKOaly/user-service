@@ -1,9 +1,5 @@
 /**
  * Service interface. All services must implement this interface.
- *
- * @export
- * @interface IService
- * @template T
  */
 export default interface IService<T> {
   findOne(id: number): Promise<T>;

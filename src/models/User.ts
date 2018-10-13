@@ -1,126 +1,49 @@
 import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 import UserRoleString from "../enum/UserRoleString";
 
-/**
- * User object.
- *
- * @export
- * @class User
- */
 export default class User {
-  /**
-   * User id
-   *
-   * @type {number}
-   * @memberof User
-   */
+
   public id: number;
-  /**
-   * Username
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public username: string;
-  /**
-   * Name
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public name: string;
-  /**
-   * Screen name
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public screenName: string;
-  /**
-   * Email
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public email: string;
-  /**
-   * Residence
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public residence: string;
-  /**
-   * Phone
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public phone: string;
-  /**
-   * Is the user a HYY member or not
-   *
-   * @type {boolean}
-   * @memberof User
-   */
+
   public isHYYMember: boolean;
+
   /**
    * Membership status
-   *
-   * @type {string}
-   * @memberof User
    */
   public membership: string;
 
   public role: UserRoleString;
-  /**
-   * Salt
-   *
-   * @type {string}
-   * @memberof User
-   */
+
   public salt: string;
-  /**
-   * Password hash (sha1 or BCrypt)
-   *
-   * @type {string}
-   * @memberof User
-   */
-  public hashedPassword: string;
-  /**
-   * Date when the user was created at.
-   *
-   * @type {Date}
-   * @memberof User
-   */
-  public createdAt: Date;
-  /**
-   * Date when the user was last modified.
-   *
-   * @type {Date}
-   * @memberof User
-   */
-  public modifiedAt: Date;
-  /**
-   * Is the user a TKTL member or not.
-   *
-   * @type {boolean}
-   * @memberof User
-   */
-  public isTKTL: boolean;
-  /**
-   * Is the user deleted or not.
-   *
-   * @type {boolean}
-   * @memberof User
-   */
-  public isDeleted: boolean;
 
   /**
-   * Creates an instance of User.
-   * @param {IUserDatabaseObject} userDatabaseObject User database object
-   * @memberof User
+   * Password hash (sha1 or BCrypt)
    */
+  public hashedPassword: string;
+
+  public createdAt: Date;
+
+  public modifiedAt: Date;
+
+  /**
+   * Is the user a TKTL member or not.
+   */
+  public isTKTL: boolean;
+
+  public isDeleted: boolean;
+
   constructor(userDatabaseObject: IUserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;
@@ -149,25 +72,12 @@ export default class User {
         : Boolean(userDatabaseObject.deleted);
   }
 
-  /**
-   * Removes sensitive information from a user.
-   *
-   * @returns User object with sensitive information removed
-   * @memberof User
-   */
   public removeSensitiveInformation(): User {
     delete this.salt;
     delete this.hashedPassword;
     return this;
   }
 
-  /**
-   * Removes non-requested user data.
-   *
-   * @param {number} dataRequest Data request export number
-   * @returns
-   * @memberof User User with non-requested data removed
-   */
   public removeNonRequestedData(dataRequest: number): User {
     Object.keys(this.removeSensitiveInformation()).forEach(
       (key: keyof User, i: number) => {
@@ -180,12 +90,6 @@ export default class User {
     return this;
   }
 
-  /**
-   * Returns a database object.
-   *
-   * @returns {IUserDatabaseObject} User database object
-   * @memberof User
-   */
   public getDatabaseObject(): IUserDatabaseObject {
     return {
       id: this.id,

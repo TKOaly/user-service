@@ -5,28 +5,9 @@ import IService from "../interfaces/IService";
 import Consent from "../models/Consent";
 import ServiceError from "../utils/ServiceError";
 
-/**
- * Consent service.
- *
- * @export
- * @class ConsentService
- * @implements {IService<Consent>}
- */
 export default class ConsentService implements IService<Consent> {
-  /**
-   * Creates an instance of ConsentService.
-   * @param {ConsentDao} consentDao
-   * @memberof ConsentService
-   */
-  constructor(private readonly consentDao: ConsentDao) {}
+  constructor(private readonly consentDao: ConsentDao) { }
 
-  /**
-   * Finds a single consent.
-   *
-   * @param {number} id Consent ID
-   * @returns {Promise<Consent>} Consent
-   * @memberof ConsentService
-   */
   public async findOne(id: number): Promise<Consent> {
     const consent: IConsentDatabaseObject = await this.consentDao.findOne(id);
     if (!consent) {
@@ -37,10 +18,6 @@ export default class ConsentService implements IService<Consent> {
 
   /**
    * Resets all consents to unknown in a service (That have not been declined.)
-   *
-   * @param {number} service_id Service ID
-   * @returns {Promise<number[]>}
-   * @memberof ConsentService
    */
   public async resetAllAcceptedByService(
     service_id: number
@@ -51,12 +28,6 @@ export default class ConsentService implements IService<Consent> {
     return res;
   }
 
-  /**
-   * Finds all consents.
-   *
-   * @returns {Promise<Consent[]>} All consents
-   * @memberof ConsentService
-   */
   public async findAll(): Promise<Consent[]> {
     const consents: IConsentDatabaseObject[] = await this.consentDao.findAll();
     return consents.map(
@@ -64,38 +35,16 @@ export default class ConsentService implements IService<Consent> {
     );
   }
 
-  /**
-   * Updates a consent.
-   *
-   * @param {number} entity_id Consent ID
-   * @param {Consent} entity Consent
-   * @returns {Promise<boolean>}
-   * @memberof ConsentService
-   */
   public async update(entity_id: number, entity: Consent): Promise<number> {
     const res: number = await this.consentDao.update(entity_id, entity);
     return res;
   }
 
-  /**
-   * Deletes a consent.
-   *
-   * @param {number} entity_id Consent ID
-   * @returns {Promise<boolean>}
-   * @memberof ConsentService
-   */
   public async delete(entity_id: number): Promise<boolean> {
     const res: boolean = await this.consentDao.remove(entity_id);
     return res;
   }
 
-  /**
-   * Creates a consent.
-   *
-   * @param {Consent} entity
-   * @returns {Promise<number[]>}
-   * @memberof ConsentService
-   */
   public async create(entity: Consent): Promise<number[]> {
     const res: number[] = await this.consentDao.save(entity);
     return res;
@@ -104,11 +53,6 @@ export default class ConsentService implements IService<Consent> {
   /**
    * Declines a privacy policy for a service.
    * If a consent's value is undefined, update it to "declined"
-   *
-   * @param {number} user_id User ID
-   * @param {number} service_id Service ID
-   * @returns {Promise<number[]>}
-   * @memberof ConsentService
    */
   public async declineConsent(
     user_id: number,
@@ -149,14 +93,6 @@ export default class ConsentService implements IService<Consent> {
     }
   }
 
-  /**
-   * Finds a consent by user and a service.
-   *
-   * @param {number} user_id User id
-   * @param {number} service_id Service id
-   * @returns {Promise<Consent>}
-   * @memberof ConsentService
-   */
   public async findByUserAndService(
     user_id: number,
     service_id: number
@@ -175,11 +111,6 @@ export default class ConsentService implements IService<Consent> {
    * Accepts a privacy policy for a service.
    * If a consent is declined, throw an error.
    * If a consent is undefined, update it to "accepted"
-   *
-   * @param {number} user_id User ID
-   * @param {number} service_id Service ID
-   * @returns {Promise<number[]>}
-   * @memberof ConsentService
    */
   public async acceptConsent(
     user_id: number,
