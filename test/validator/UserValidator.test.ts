@@ -2,6 +2,7 @@ process.env.NODE_ENV = "test";
 
 import Knex from "knex";
 import "mocha";
+import knexfile from "../../knexfile";
 import UserDao from "../../src/dao/UserDao";
 import UserService from "../../src/services/UserService";
 import ServiceError from "../../src/utils/ServiceError";
@@ -10,7 +11,6 @@ import UserValidator, {
 } from "../../src/validators/UserValidator";
 
 // Knexfile
-const knexfile: IKnexFile = require("../../knexfile");
 // Knex instance
 const knex: Knex = Knex(knexfile.test);
 
@@ -18,7 +18,6 @@ let userValidator: UserValidator;
 const userDao: UserDao = new UserDao(knex);
 
 import chai = require("chai");
-import { IKnexFile } from "../../knexfile";
 import UserRoleString from "../../src/enum/UserRoleString";
 import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
 import User from "../../src/models/User";
