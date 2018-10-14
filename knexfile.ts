@@ -99,7 +99,7 @@ export interface IKnexFile {
   test: Knex.Config;
 }
 
-export default {
+module.exports = {
   development: dev,
   staging,
   production: prod,
