@@ -14,3 +14,5 @@ errorShots
 screenshots/*.png
 screenshots/errors/*.png
 screenshots/errors/*.jpg
+client-key.pem
+deploy-keys/key.pem
