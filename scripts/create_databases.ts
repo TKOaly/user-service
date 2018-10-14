@@ -9,9 +9,9 @@ const dbName: string = process.env.DB_NAME;
 async function createTables(): Promise<void> {
   // Create connection
   console.log("Creating connection..");
-  const con: any = await createConnection({
+  const con = await createConnection({
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    port: parseInt(process.env.DB_PORT, 10),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD
   });
@@ -19,38 +19,18 @@ async function createTables(): Promise<void> {
 
   try {
     // Create databases
-    console.log("Creating production database named %s", dbName);
-    await con.execute(
-      "CREATE DATABASE IF NOT EXISTS `" +
-        dbName +
-        "` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
-    );
-    console.log("Creating staging database named %s", dbName + "_staging");
-    await con.execute(
-      "CREATE DATABASE IF NOT EXISTS `" +
-        dbName +
-        "_staging`" +
-        " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
-    );
-    console.log("Creating development database named %s", dbName + "_dev");
-    await con.execute(
-      "CREATE DATABASE IF NOT EXISTS `" +
-        dbName +
-        "_dev`" +
-        " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
-    );
-
-    console.log("Creating testing database named %s", dbName + "_test");
-    await con.execute(
-      "CREATE DATABASE IF NOT EXISTS `" +
-        dbName +
-        "_test`" +
-        " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci"
-    );
-    console.log("Created development, test, stating and production databases.");
+    const environments = ["test", "dev", "staging"];
+    for (const env of environments) {
+      const currentDbName = `${dbName}_${env}`;
+      console.log("Creating database %s", currentDbName);
+      await con.execute(
+        `CREATE DATABASE IF NOT EXISTS \`${currentDbName}\` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci`,
+      );
+    }
     process.exit(0);
   } catch (err) {
     console.error(err);
+    process.exit(1);
   }
 }
 

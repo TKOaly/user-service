@@ -45,7 +45,7 @@ export default class PrivacyPolicy implements IPrivacyPolicyDatabaseObject {
   public created?: Date;
 
   constructor(privacyPolicy: IPrivacyPolicyDatabaseObject) {
-    Object.keys(privacyPolicy).forEach((key: string) => {
+    Object.keys(privacyPolicy).forEach((key: keyof IPrivacyPolicyDatabaseObject) => {
       this[key] = privacyPolicy[key];
     });
   }

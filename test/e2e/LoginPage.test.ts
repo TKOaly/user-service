@@ -8,8 +8,7 @@ import Knex from "knex";
 import "mocha";
 
 // Knexfile
-import * as knexfile from "../../knexfile";
-import { IKnexFile } from "../../knexfile";
+import knexfile from "../../knexfile";
 import { IServiceDatabaseObject } from "../../src/models/Service";
 
 import { WebDriver } from "selenium-webdriver";
@@ -22,7 +21,7 @@ import app from "../../src/App";
 const should: Chai.Should = chai.should();
 
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const serviceData: IServiceDatabaseObject[] = services as IServiceDatabaseObject[];
 

@@ -8,8 +8,7 @@ import Knex from "knex";
 import "mocha";
 
 // Knexfile
-import * as knexfile from "../../knexfile";
-import { IKnexFile } from "../../knexfile";
+import knexfile from "../../knexfile";
 import { IServiceDatabaseObject } from "../../src/models/Service";
 
 import { WebDriver } from "selenium-webdriver";
@@ -25,7 +24,7 @@ import UserService from "../../src/services/UserService";
 const should: Chai.Should = chai.should();
 
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const userService: UserService = new UserService(new UserDao(knex));
 

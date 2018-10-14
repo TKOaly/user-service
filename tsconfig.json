@@ -8,7 +8,7 @@
     "sourceMap": true,
     "removeComments": true,
     "noUnusedLocals": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "outDir": "./dist/",
     "rootDirs": [
       "./src"
@@ -23,7 +23,8 @@
   },
   "include": [
     "src/**/*.ts",
-    "test/**/*"
+    "test/**/*",
+    "knexfile.ts"
   ],
   "exclude": [
     "node_modules",

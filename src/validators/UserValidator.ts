@@ -66,7 +66,7 @@ export default class UserValidator implements IValidator<User> {
    * @param {UserService} userService
    * @memberof UserValidator
    */
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   /**
    * Validates user creation.
@@ -131,7 +131,7 @@ export default class UserValidator implements IValidator<User> {
   ): Promise<void> {
     // Remove information that hasn't changed
     const oldUser: User = await this.userService.fetchUser(userId);
-    Object.keys(newUser).forEach((k: string) => {
+    Object.keys(newUser).forEach((k: keyof User) => {
       if (oldUser[k] !== undefined && oldUser[k] === newUser[k]) {
         delete newUser[k];
       }

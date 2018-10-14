@@ -4,13 +4,12 @@ import chai = require("chai");
 import chaiHttp = require("chai-http");
 import Knex from "knex";
 import "mocha";
-import { IKnexFile } from "../../knexfile";
 // Knexfile
-import * as knexfile from "../../knexfile";
+import knexfile from "../../knexfile";
 import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
 // Knex instance
-const knex: Knex = Knex((knexfile as IKnexFile).test);
+const knex: Knex = Knex(knexfile.test);
 
 const should: Chai.Should = chai.should();
 

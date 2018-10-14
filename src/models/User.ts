@@ -1,4 +1,5 @@
 import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import UserRoleString from "../enum/UserRoleString";
 
 /**
  * User object.
@@ -70,13 +71,8 @@ export default class User {
    * @memberof User
    */
   public membership: string;
-  /**
-   * Role
-   *
-   * @type {string}
-   * @memberof User
-   */
-  public role: string;
+
+  public role: UserRoleString;
   /**
    * Salt
    *
@@ -138,7 +134,7 @@ export default class User {
         ? undefined
         : Boolean(userDatabaseObject.hyy_member);
     this.membership = userDatabaseObject.membership;
-    this.role = userDatabaseObject.role;
+    this.role = userDatabaseObject.role as UserRoleString;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
     this.createdAt = userDatabaseObject.created;
@@ -174,7 +170,7 @@ export default class User {
    */
   public removeNonRequestedData(dataRequest: number): User {
     Object.keys(this.removeSensitiveInformation()).forEach(
-      (key: string, i: number) => {
+      (key: keyof User, i: number) => {
         const val: number = Math.pow(2, i);
         if (val === null || (val & dataRequest) !== val) {
           delete this[key];
@@ -214,10 +210,10 @@ export default class User {
   }
 }
 
-export enum RoleNumbers {
-  kayttaja = 1,
-  virkailija = 2,
-  tenttiarkistovirkailija = 2,
-  jasenvirkailija = 3,
-  yllapitaja = 4
-}
+export const RoleNumbers: Record<UserRoleString, number> = {
+  kayttaja: 1,
+  virkailija: 2,
+  tenttiarkistovirkailija: 2,
+  jasenvirkailija: 3,
+  yllapitaja: 4
+};

@@ -273,7 +273,7 @@ export default class LoginController implements IController {
     // We require user id and role every time, regardless of permissions in services
     keys = Object.keys(
       user.removeNonRequestedData(service.dataPermissions | 512 | 1)
-    ).map((key: string) => ({ name: key, value: user[key] }));
+    ).map((key: keyof User) => ({ name: key, value: user[key].toString() }));
 
     // Set session
     if (!user.id) {

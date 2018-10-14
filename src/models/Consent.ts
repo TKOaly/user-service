@@ -58,7 +58,7 @@ export default class Consent implements IConsentDatabaseObject {
    * @memberof Consent
    */
   constructor(consent: IConsentDatabaseObject) {
-    Object.keys(consent).forEach((key: string) => {
+    Object.keys(consent).forEach((key: keyof IConsentDatabaseObject) => {
       this[key] = consent[key];
     });
   }
