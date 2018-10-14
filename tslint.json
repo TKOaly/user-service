@@ -1,12 +1,11 @@
 {
   "defaultSeverity": "warning",
-  "extends": [
-    "tslint:recommended"
-  ],
+  "extends": ["prettier", "tslint:recommended"],
   "jsRules": {
     "object-literal-sort-keys": false
   },
   "rules": {
+    "no-console": false,
     "no-var-requires": false,
     "trailing-comma": false,
     "no-bitwise": false,
