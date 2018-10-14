@@ -19,7 +19,12 @@ services:
       - mysql
     volumes:
       - ./src:/app/src
+      - ./scss:/app/scss
+      - ./public:/app/public
       - ./test:/app/test
+      - ./seeds:/app/seeds
+      - ./migrations:/app/migrations
+      - ./knexfile.ts:/app/knexfile.ts
     environment:
       USERSERVICE_PORT: 8080
       NODE_ENV: development
