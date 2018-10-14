@@ -10,10 +10,10 @@ echo "Deploying staging"
 echo "Decrypting private key..."
 openssl aes-256-cbc -a -d -pass env:DOCKER_KEY_PASSPHRASE -in deploy-keys/key.pem.enc -out deploy-keys/key.pem
 
-DOCKER_CERT_PATH="deploy-keys"
-DOCKER_TLS=1
-DOCKER_TLS_VERIFY=1
-DOCKER_HOST="uolevi.tko-aly.fi:2376"
+export DOCKER_CERT_PATH="deploy-keys"
+export DOCKER_TLS=1
+export DOCKER_TLS_VERIFY=1
+export DOCKER_HOST="uolevi.tko-aly.fi:2376"
 
 docker service ls
 
