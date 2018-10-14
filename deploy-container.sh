@@ -8,7 +8,7 @@ docker push registry.tko-aly.fi/user-service:latest
 
 echo "Deploying staging"
 echo "Decrypting private key..."
-openssl aes256-cbc -a -d -pass env:DOCKER_KEY_PASSPHRASE -in deploy-keys/key.pem.enc -out deploy-keys/key.pem
+openssl aes-256-cbc -a -d -pass env:DOCKER_KEY_PASSPHRASE -in deploy-keys/key.pem.enc -out deploy-keys/key.pem
 
 DOCKER_CERT_PATH="deploy-keys"
 DOCKER_TLS=1
