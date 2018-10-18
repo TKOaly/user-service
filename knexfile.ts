@@ -7,14 +7,14 @@ if (!process.env.NODE_ENV) {
   const envs: string[] = ["development", "test", "production", "staging"];
   if (!(envs.indexOf(process.env.NODE_ENV) > -1)) {
     throw new Error(
-      "NODE_ENV is set to an invalid value. It should be either development, test, production or staging."
+      "NODE_ENV is set to an invalid value. It should be either development, test, production or staging.",
     );
   }
 }
 
 import * as Knex from "knex";
 
-const prod: Knex.Config = {
+export const prodction: Knex.Config = {
   dialect: "mysql2",
   version: "5.6",
   connection: {
@@ -22,21 +22,21 @@ const prod: Knex.Config = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
   },
   migrations: {
-    tableName: "knex_migrations"
+    tableName: "knex_migrations",
   },
   seeds: {
-    directory: "do_not_seed_prod_db"
-  }
+    directory: "do_not_seed_prod_db",
+  },
 };
 
-const staging: Knex.Config = {
+export const staging: Knex.Config = {
   dialect: "mysql2",
   version: "5.6",
   connection: {
@@ -44,17 +44,17 @@ const staging: Knex.Config = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_staging"
+    database: process.env.DB_NAME + "_staging",
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
   },
   migrations: {
-    tableName: "knex_migrations"
-  }
+    tableName: "knex_migrations",
+  },
 };
-const dev: Knex.Config = {
+export const development: Knex.Config = {
   dialect: "mysql2",
   version: "5.6",
   connection: {
@@ -62,18 +62,18 @@ const dev: Knex.Config = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_dev"
+    database: process.env.DB_NAME + "_dev",
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
   },
   migrations: {
-    tableName: "knex_migrations"
-  }
+    tableName: "knex_migrations",
+  },
 };
 
-const test: Knex.Config = {
+export const test: Knex.Config = {
   dialect: "mysql2",
   version: "5.6",
   connection: {
@@ -81,27 +81,13 @@ const test: Knex.Config = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_test"
+    database: process.env.DB_NAME + "_test",
   },
   pool: {
     min: 2,
-    max: 10
+    max: 10,
   },
   migrations: {
-    tableName: "knex_migrations"
-  }
-};
-
-export interface IKnexFile {
-  development: Knex.Config;
-  staging: Knex.Config;
-  production: Knex.Config;
-  test: Knex.Config;
-}
-
-module.exports = {
-  development: dev,
-  staging,
-  production: prod,
-  test
+    tableName: "knex_migrations",
+  },
 };
