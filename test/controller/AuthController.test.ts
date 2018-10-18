@@ -5,7 +5,7 @@ import chaiHttp = require("chai-http");
 import Knex from "knex";
 import "mocha";
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 import app from "../../src/App";
 
 // Knex instance
@@ -20,12 +20,12 @@ const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
 const correctCreds: { [value: string]: string } = {
   username: "test_user",
   password: "test_user",
-  serviceIdentifier: kjyrIdentifier
+  serviceIdentifier: kjyrIdentifier,
 };
 const incorrectCreds: { [value: string]: string } = {
   username: "test_user",
   password: "testuser",
-  serviceIdentifier: kjyrIdentifier
+  serviceIdentifier: kjyrIdentifier,
 };
 
 describe("AuthController", () => {
@@ -86,7 +86,7 @@ describe("AuthController", () => {
         .post(authUrl + "/authenticate")
         .send({
           password: "test",
-          serviceIdentifier: kjyrIdentifier
+          serviceIdentifier: kjyrIdentifier,
         })
         .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
@@ -105,7 +105,7 @@ describe("AuthController", () => {
         .post(authUrl + "/authenticate")
         .send({
           username: "test",
-          serviceIdentifier: kjyrIdentifier
+          serviceIdentifier: kjyrIdentifier,
         })
         .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
@@ -124,7 +124,7 @@ describe("AuthController", () => {
         .post(authUrl + "/authenticate")
         .send({
           username: "test",
-          password: "test"
+          password: "test",
         })
         .end((err: any, res: ChaiHttp.Response) => {
           should.not.exist(err);
@@ -138,8 +138,7 @@ describe("AuthController", () => {
     });
 
     it(
-      "POST /api/auth/authenticate : Returns an error when trying to" +
-      " authenticate with a nonexistent service",
+      "POST /api/auth/authenticate : Returns an error when trying to" + " authenticate with a nonexistent service",
       (done: Mocha.Done) => {
         chai
           .request(app)
@@ -147,7 +146,7 @@ describe("AuthController", () => {
           .send({
             username: "test",
             password: "test",
-            serviceIdentifier: "invalidServiceIdentifier"
+            serviceIdentifier: "invalidServiceIdentifier",
           })
           .end((err: any, res: ChaiHttp.Response) => {
             should.not.exist(err);
@@ -158,14 +157,13 @@ describe("AuthController", () => {
             res.body.message.should.equal("Service not found");
             done();
           });
-      }
+      },
     );
   });
 
   describe("Service check", () => {
     it(
-      "POST /api/auth/authenticate : " +
-      "Checks that the correct service has been authenticated to",
+      "POST /api/auth/authenticate : " + "Checks that the correct service has been authenticated to",
       (done: Mocha.Done) => {
         // The default credentials authenticate to KJYR
         chai
@@ -200,12 +198,11 @@ describe("AuthController", () => {
                 done();
               });
           });
-      }
+      },
     );
 
     it(
-      "POST /api/auth/authenticate : " +
-      "Check that the user has not been authenticated to an incorrect service",
+      "POST /api/auth/authenticate : " + "Check that the user has not been authenticated to an incorrect service",
       (done: Mocha.Done) => {
         // The default credentials authenticate to KJYR
         chai
@@ -240,7 +237,7 @@ describe("AuthController", () => {
                 done();
               });
           });
-      }
+      },
     );
 
     it("GET /api/auth/check : Can authenticate to multiple services", (done: Mocha.Done) => {

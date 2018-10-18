@@ -13,7 +13,7 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 // Knex instance
 const knex: Knex = Knex(knexfile.test);
 
@@ -27,9 +27,7 @@ chai.use(chaiHttp);
 const url: string = "/api/users";
 
 // Service dao
-const authService: AuthenticationService = new AuthenticationService(
-  new ServiceDao(knex)
-);
+const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
 
 describe("UserController", () => {
   // Roll back
@@ -86,9 +84,7 @@ describe("UserController", () => {
           res.body.ok.should.equal(true);
 
           res.body.payload.forEach((payloadObject: User, i: number) => {
-            const user_2: User = new User(
-              users.find((usr: User) => usr.id === payloadObject.id)
-            );
+            const user_2: User = new User(users.find((usr: User) => usr.id === payloadObject.id));
 
             should.exist(payloadObject.id);
             payloadObject.id.should.equal(user_2.id);
@@ -164,9 +160,7 @@ describe("UserController", () => {
           should.exist(res.body.message);
           res.body.message.should.equal("Success");
 
-          const user_2: User = new User(
-            users.find((user: IUserDatabaseObject) => user.id === 1)
-          );
+          const user_2: User = new User(users.find((user: IUserDatabaseObject) => user.id === 1));
 
           should.exist(user_2);
 
@@ -250,8 +244,7 @@ describe("UserController", () => {
     });
 
     it(
-      "GET /api/users/me: Trying to get information from" +
-      " a service the user is not authenticated to",
+      "GET /api/users/me: Trying to get information from" + " a service the user is not authenticated to",
       (done: Mocha.Done) => {
         chai
           .request(app)
@@ -267,18 +260,17 @@ describe("UserController", () => {
             res.status.should.equal(403);
             done();
           });
-      }
+      },
     );
 
     it(
-      "GET /api/users/me : Removes unwanted information" +
-      " and returns my information from every service",
+      "GET /api/users/me : Removes unwanted information" + " and returns my information from every service",
       (done: Mocha.Done) => {
         authService
           .getServices()
           .then((dbServices: Service[]) => {
-            const services: IServiceDatabaseObject[] = dbServices.map(
-              (dbService: Service) => dbService.getDatabaseObject()
+            const services: IServiceDatabaseObject[] = dbServices.map((dbService: Service) =>
+              dbService.getDatabaseObject(),
             );
             // Loop through services
             for (const service of services) {
@@ -288,10 +280,7 @@ describe("UserController", () => {
               chai
                 .request(app)
                 .get(url + "/me")
-                .set(
-                  "Authorization",
-                  "Bearer " + generateToken(1, [serviceIdentifier])
-                )
+                .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier]))
                 .set("Service", serviceIdentifier)
                 .end((err: any, res: ChaiHttp.Response) => {
                   res.status.should.equal(200);
@@ -301,17 +290,13 @@ describe("UserController", () => {
                   should.exist(res.body.message);
                   res.body.message.should.equal("Success");
 
-                  const user_2: User = new User(
-                    users.find((user: IUserDatabaseObject) => user.id === 1)
-                  );
+                  const user_2: User = new User(users.find((user: IUserDatabaseObject) => user.id === 1));
 
                   should.exist(user_2);
 
                   const payloadObject: User = res.body.payload;
 
-                  const user: User = new User(
-                    user_2.getDatabaseObject()
-                  ).removeSensitiveInformation();
+                  const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
 
                   delete user.createdAt;
                   delete user.modifiedAt;
@@ -319,16 +304,10 @@ describe("UserController", () => {
                   const allFields = Object.keys(user) as Array<keyof User>;
 
                   const required: string[] = Object.keys(
-                    user_2
-                      .removeSensitiveInformation()
-                      .removeNonRequestedData(permissionNumber)
+                    user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber),
                   );
                   for (const field of allFields) {
-                    if (
-                      required.find(
-                        (requiredField: string) => requiredField === field
-                      )
-                    ) {
+                    if (required.find((requiredField: string) => requiredField === field)) {
                       // Should expect and equal
                       should.exist(payloadObject[field]);
                       payloadObject[field].should.equal(user_2[field]);
@@ -341,8 +320,8 @@ describe("UserController", () => {
             }
             done();
           })
-          .catch((err) => console.error(err));
-      }
+          .catch(err => console.error(err));
+      },
     );
   });
 });

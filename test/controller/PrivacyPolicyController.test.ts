@@ -5,7 +5,7 @@ import chaiHttp = require("chai-http");
 import Knex from "knex";
 import "mocha";
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
 // Knex instance

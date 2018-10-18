@@ -2,13 +2,11 @@ process.env.NODE_ENV = "test";
 
 import Knex from "knex";
 import "mocha";
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 import UserDao from "../../src/dao/UserDao";
 import UserService from "../../src/services/UserService";
 import ServiceError from "../../src/utils/ServiceError";
-import UserValidator, {
-  IAdditionalUserData
-} from "../../src/validators/UserValidator";
+import UserValidator, { IAdditionalUserData } from "../../src/validators/UserValidator";
 
 // Knexfile
 // Knex instance
@@ -52,7 +50,7 @@ describe("UserValidator", () => {
     it("Too long email address returns false", () => {
       const valid: boolean = userValidator.checkEmailValidity(
         "testtesttesttesttesttesttesttesttesttesttesttesttestt" +
-        "esttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@email.com"
+          "esttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@email.com",
       );
       valid.should.equal(false);
     });
@@ -75,15 +73,13 @@ describe("UserValidator", () => {
     });
 
     it("Throws a service error when missing required information #2", (done: Mocha.Done) => {
-      userValidator
-        .validateCreate({ username: "test", email: "test@test.com" } as any)
-        .catch((err: ServiceError) => {
-          should.exist(err.message);
-          err.message.should.equal("Missing required information");
-          should.exist(err.httpErrorCode);
-          err.httpErrorCode.should.equal(400);
-          done();
-        });
+      userValidator.validateCreate({ username: "test", email: "test@test.com" } as any).catch((err: ServiceError) => {
+        should.exist(err.message);
+        err.message.should.equal("Missing required information");
+        should.exist(err.httpErrorCode);
+        err.httpErrorCode.should.equal(400);
+        done();
+      });
     });
 
     it("Throws a service error when username is already taken", (done: Mocha.Done) => {
@@ -96,7 +92,7 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword"
+          password2: "testpassword",
         } as any)
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -117,7 +113,7 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword"
+          password2: "testpassword",
         } as any)
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -138,7 +134,7 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword"
+          password2: "testpassword",
         } as any)
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -160,7 +156,7 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword"
+          password2: "testpassword",
         } as any)
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -181,7 +177,7 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword1"
+          password2: "testpassword1",
         } as any)
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -202,12 +198,12 @@ describe("UserValidator", () => {
           residence: "123",
           phone: "12345",
           password1: "testpassword",
-          password2: "testpassword"
+          password2: "testpassword",
         } as any)
-        .then(function () {
+        .then(function() {
           done();
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     });
@@ -219,11 +215,7 @@ describe("UserValidator", () => {
         .findOne(1)
         .then((user: IUserDatabaseObject) => {
           userValidator
-            .validateUpdate(
-              user.id,
-              { username: "test_user_123" } as User & IAdditionalUserData,
-              new User(user)
-            )
+            .validateUpdate(user.id, { username: "test_user_123" } as User & IAdditionalUserData, new User(user))
             .catch((err: ServiceError) => {
               should.exist(err.message);
               err.message.should.equal("Forbidden modify action");
@@ -232,24 +224,19 @@ describe("UserValidator", () => {
               done();
             });
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     });
 
     it(
-      "Throws a service error when an elevated user" +
-      " tries to set email address to an already used email address",
+      "Throws a service error when an elevated user" + " tries to set email address to an already used email address",
       (done: Mocha.Done) => {
         userDao
           .findOne(2)
           .then((user: IUserDatabaseObject) => {
             userValidator
-              .validateUpdate(
-                1,
-                { email: "admin@user.com" } as User & IAdditionalUserData,
-                new User(user)
-              )
+              .validateUpdate(1, { email: "admin@user.com" } as User & IAdditionalUserData, new User(user))
               .catch((err: ServiceError) => {
                 should.exist(err.message);
                 err.message.should.equal("Email address already taken");
@@ -258,25 +245,20 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
-      }
+      },
     );
 
     it(
-      "Throws a service error when an elevated user" +
-      " tries to set a malformed used email address",
+      "Throws a service error when an elevated user" + " tries to set a malformed used email address",
       (done: Mocha.Done) => {
         userDao
           .findOne(2)
           .then((user: IUserDatabaseObject) => {
             userValidator
-              .validateUpdate(
-                1,
-                { email: "test123" } as User & IAdditionalUserData,
-                new User(user)
-              )
+              .validateUpdate(1, { email: "test123" } as User & IAdditionalUserData, new User(user))
               .catch((err: ServiceError) => {
                 should.exist(err.message);
                 err.message.should.equal("Malformed email");
@@ -285,56 +267,47 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
-      }
+      },
     );
 
-    it(
-      "Throws a service error when a user" +
-      " tries to set a new password that doesn't match",
-      (done: Mocha.Done) => {
-        userDao
-          .findOne(1)
-          .then((user: IUserDatabaseObject) => {
-            userValidator
-              .validateUpdate(
-                1,
-                {
-                  password1: "test_password",
-                  password2: "test_password2"
-                } as User & IAdditionalUserData,
-                new User(user)
-              )
-              .catch((err: ServiceError) => {
-                should.exist(err.message);
-                err.message.should.equal("Passwords do not match");
-                should.exist(err.httpErrorCode);
-                err.httpErrorCode.should.equal(400);
-                done();
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    );
+    it("Throws a service error when a user" + " tries to set a new password that doesn't match", (done: Mocha.Done) => {
+      userDao
+        .findOne(1)
+        .then((user: IUserDatabaseObject) => {
+          userValidator
+            .validateUpdate(
+              1,
+              {
+                password1: "test_password",
+                password2: "test_password2",
+              } as User & IAdditionalUserData,
+              new User(user),
+            )
+            .catch((err: ServiceError) => {
+              should.exist(err.message);
+              err.message.should.equal("Passwords do not match");
+              should.exist(err.httpErrorCode);
+              err.httpErrorCode.should.equal(400);
+              done();
+            });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
 
     it(
-      "Throws a service error when a jasenvirkailija tries to" +
-      " modify another user with a forbidden value",
+      "Throws a service error when a jasenvirkailija tries to" + " modify another user with a forbidden value",
       (done: Mocha.Done) => {
         // Seed user #3 is a jasenvirkailija and wants to update a user.
         userDao
           .findOne(3)
           .then((user: IUserDatabaseObject) => {
             userValidator
-              .validateUpdate(
-                2,
-                { role: UserRoleString.Kayttaja } as User & IAdditionalUserData,
-                new User(user)
-              )
+              .validateUpdate(2, { role: UserRoleString.Kayttaja } as User & IAdditionalUserData, new User(user))
               .catch((err: ServiceError) => {
                 should.exist(err.message);
                 err.message.should.equal("Forbidden modify action");
@@ -343,52 +316,39 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
-      }
+      },
     );
 
-    it(
-      "Succeeds when jasenvirkailija tries to" +
-      " modify another user with a valid value",
-      (done: Mocha.Done) => {
-        userDao
-          .findOne(3)
-          .then((user: IUserDatabaseObject) => {
-            userValidator
-              .validateUpdate(
-                2,
-                { username: "tester" } as User & IAdditionalUserData,
-                new User(user)
-              )
-              .then((res) => {
-                done();
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    );
+    it("Succeeds when jasenvirkailija tries to" + " modify another user with a valid value", (done: Mocha.Done) => {
+      userDao
+        .findOne(3)
+        .then((user: IUserDatabaseObject) => {
+          userValidator
+            .validateUpdate(2, { username: "tester" } as User & IAdditionalUserData, new User(user))
+            .then(res => {
+              done();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
 
     it(
-      "Throws a service error when a user" +
-      " with an unknown set of permissions tries to modify another user",
+      "Throws a service error when a user" + " with an unknown set of permissions tries to modify another user",
       (done: Mocha.Done) => {
         // Seed user #4 is a tenttiarkistovirkailija
         userDao
           .findOne(4)
           .then((user: IUserDatabaseObject) => {
             userValidator
-              .validateUpdate(
-                1,
-                { email: "test123" } as User & IAdditionalUserData,
-                new User(user)
-              )
+              .validateUpdate(1, { email: "test123" } as User & IAdditionalUserData, new User(user))
               .catch((err: ServiceError) => {
                 should.exist(err.message);
                 err.message.should.equal("Forbidden modify action");
@@ -397,10 +357,10 @@ describe("UserValidator", () => {
                 done();
               });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
-      }
+      },
     );
   });
 });

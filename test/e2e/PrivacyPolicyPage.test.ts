@@ -8,7 +8,7 @@ import Knex from "knex";
 import "mocha";
 
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 import { IServiceDatabaseObject } from "../../src/models/Service";
 
 import { WebDriver } from "selenium-webdriver";
@@ -75,119 +75,81 @@ describe("Privacy policy page", () => {
 
   for (const service of serviceData) {
     it(
-      "On successful login, privacy policy page is shown for new users (Finnish) - " +
-      service.display_name,
+      "On successful login, privacy policy page is shown for new users (Finnish) - " + service.display_name,
       async () => {
-        await browser.get(
-          "http://localhost:3010/lang/fi/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/fi/" + service.service_identifier);
         await browser.findElement(By.id("username")).sendKeys("admin_user");
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser
-          .findElement(By.id("title"))
-          .getText();
-        containerTitle.should.equal(
-          service.display_name + " " + fi.privacypolicy_Title
-        );
+        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        containerTitle.should.equal(service.display_name + " " + fi.privacypolicy_Title);
 
         const title: string = await browser.getTitle();
-        title.should.equal(
-          service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry"
-        );
+        title.should.equal(service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser
-          .findElement(By.className("cancel"))
-          .getAttribute("value");
+        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(fi.privacypolicy_Decline);
 
-        const acceptVal: string = await browser
-          .findElement(By.className("accept"))
-          .getAttribute("value");
+        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(fi.privacypolicy_Accept);
 
         const privacyPolicyRedirect: string = await browser
           .findElement(By.className("privacyPolicyRedirect"))
           .getText();
-        privacyPolicyRedirect.should.equal(
-          fi.privacypolicy_YouWillBeRedirected
-        );
+        privacyPolicyRedirect.should.equal(fi.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined: string = await browser
           .findElement(By.className("privacyPolicyDeclineMessage"))
           .getText();
         privacyPolicyDeclined.should.equal(
-          fi.privacypolicy_IfYouDecline_1 +
-          " " +
-          service.display_name +
-          fi.privacypolicy_IfYouDecline_2
+          fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2,
         );
-      }
+      },
     );
   }
 
   for (const service of serviceData) {
     it(
-      "On successful login, privacy policy page is shown for new users (English) - " +
-      service.display_name,
+      "On successful login, privacy policy page is shown for new users (English) - " + service.display_name,
       async () => {
-        await browser.get(
-          "http://localhost:3010/lang/en/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
         await browser.findElement(By.id("username")).sendKeys("admin_user");
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser
-          .findElement(By.id("title"))
-          .getText();
-        containerTitle.should.equal(
-          service.display_name + en.privacypolicy_Title
-        );
+        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        containerTitle.should.equal(service.display_name + en.privacypolicy_Title);
 
         const title: string = await browser.getTitle();
-        title.should.equal(
-          service.display_name + en.privacypolicy_Title + " - TKO-äly ry"
-        );
+        title.should.equal(service.display_name + en.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser
-          .findElement(By.className("cancel"))
-          .getAttribute("value");
+        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(en.privacypolicy_Decline);
 
-        const acceptVal: string = await browser
-          .findElement(By.className("accept"))
-          .getAttribute("value");
+        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(en.privacypolicy_Accept);
 
         const privacyPolicyRedirect: string = await browser
           .findElement(By.className("privacyPolicyRedirect"))
           .getText();
-        privacyPolicyRedirect.should.equal(
-          en.privacypolicy_YouWillBeRedirected
-        );
+        privacyPolicyRedirect.should.equal(en.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined: string = await browser
           .findElement(By.className("privacyPolicyDeclineMessage"))
           .getText();
         privacyPolicyDeclined.should.equal(
-          en.privacypolicy_IfYouDecline_1 +
-          service.display_name +
-          en.privacypolicy_IfYouDecline_2
+          en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2,
         );
-      }
+      },
     );
   }
 
   for (const service of serviceData) {
     it(
-      "On successful login, user salt should be rehashed with bcrypt (Finnish) - " +
-      service.display_name,
+      "On successful login, user salt should be rehashed with bcrypt (Finnish) - " + service.display_name,
       async () => {
-        await browser.get(
-          "http://localhost:3010/lang/fi/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/fi/" + service.service_identifier);
 
         const userBefore: User = await userService.fetchUser(2);
         should.exist(userBefore.salt);
@@ -203,9 +165,7 @@ describe("Privacy policy page", () => {
         userAfter.salt.should.equal("0");
 
         // Relogin to verify that login works with newly hashed password
-        await browser.get(
-          "http://localhost:3010/lang/fi/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/fi/" + service.service_identifier);
 
         // Recheck salt
         const userAfter2: User = await userService.fetchUser(2);
@@ -216,56 +176,38 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser
-          .findElement(By.id("title"))
-          .getText();
-        containerTitle.should.equal(
-          service.display_name + " " + fi.privacypolicy_Title
-        );
+        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        containerTitle.should.equal(service.display_name + " " + fi.privacypolicy_Title);
 
         const title: string = await browser.getTitle();
-        title.should.equal(
-          service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry"
-        );
+        title.should.equal(service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser
-          .findElement(By.className("cancel"))
-          .getAttribute("value");
+        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(fi.privacypolicy_Decline);
 
-        const acceptVal: string = await browser
-          .findElement(By.className("accept"))
-          .getAttribute("value");
+        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(fi.privacypolicy_Accept);
 
         const privacyPolicyRedirect: string = await browser
           .findElement(By.className("privacyPolicyRedirect"))
           .getText();
-        privacyPolicyRedirect.should.equal(
-          fi.privacypolicy_YouWillBeRedirected
-        );
+        privacyPolicyRedirect.should.equal(fi.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined: string = await browser
           .findElement(By.className("privacyPolicyDeclineMessage"))
           .getText();
         privacyPolicyDeclined.should.equal(
-          fi.privacypolicy_IfYouDecline_1 +
-          " " +
-          service.display_name +
-          fi.privacypolicy_IfYouDecline_2
+          fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2,
         );
-      }
+      },
     );
   }
 
   for (const service of serviceData) {
     it(
-      "On successful login, user salt should be rehashed with bcrypt (English) - " +
-      service.display_name,
+      "On successful login, user salt should be rehashed with bcrypt (English) - " + service.display_name,
       async () => {
-        await browser.get(
-          "http://localhost:3010/lang/en/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
 
         const userBefore: User = await userService.fetchUser(2);
         should.exist(userBefore.salt);
@@ -281,9 +223,7 @@ describe("Privacy policy page", () => {
         userAfter.salt.should.equal("0");
 
         // Relogin to verify that login works with newly hashed password
-        await browser.get(
-          "http://localhost:3010/lang/en/" + service.service_identifier
-        );
+        await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
 
         // Recheck salt
         const userAfter2: User = await userService.fetchUser(2);
@@ -294,44 +234,30 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser
-          .findElement(By.id("title"))
-          .getText();
-        containerTitle.should.equal(
-          service.display_name + en.privacypolicy_Title
-        );
+        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        containerTitle.should.equal(service.display_name + en.privacypolicy_Title);
 
         const title: string = await browser.getTitle();
-        title.should.equal(
-          service.display_name + en.privacypolicy_Title + " - TKO-äly ry"
-        );
+        title.should.equal(service.display_name + en.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser
-          .findElement(By.className("cancel"))
-          .getAttribute("value");
+        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(en.privacypolicy_Decline);
 
-        const acceptVal: string = await browser
-          .findElement(By.className("accept"))
-          .getAttribute("value");
+        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(en.privacypolicy_Accept);
 
         const privacyPolicyRedirect: string = await browser
           .findElement(By.className("privacyPolicyRedirect"))
           .getText();
-        privacyPolicyRedirect.should.equal(
-          en.privacypolicy_YouWillBeRedirected
-        );
+        privacyPolicyRedirect.should.equal(en.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined: string = await browser
           .findElement(By.className("privacyPolicyDeclineMessage"))
           .getText();
         privacyPolicyDeclined.should.equal(
-          en.privacypolicy_IfYouDecline_1 +
-          service.display_name +
-          en.privacypolicy_IfYouDecline_2
+          en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2,
         );
-      }
+      },
     );
   }
 }).timeout(5000);

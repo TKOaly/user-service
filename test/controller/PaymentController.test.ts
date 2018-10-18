@@ -9,7 +9,7 @@ import app from "../../src/App";
 import { IPayment } from "../../src/models/Payment";
 
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 
 // Knex instance
 const knex: Knex = Knex(knexfile.test);
@@ -25,15 +25,15 @@ const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
 const generateToken: any = (
   userId: number,
   authenticatedTo: string[] = [kjyrIdentifier, calendarIdentifier],
-  createdAt: Date = new Date()
+  createdAt: Date = new Date(),
 ): string =>
   JWT.sign(
     {
       userId,
       authenticatedTo: authenticatedTo.join(","),
-      createdAt
+      createdAt,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
   );
 
 describe("PaymentController", () => {
@@ -85,27 +85,15 @@ describe("PaymentController", () => {
             const payment_2: IPayment = payments[i];
             res.body.payload[i].id.should.equal(payment_2.id);
             res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
-            res.body.payload[i].confirmer_id.should.equal(
-              payment_2.confirmer_id
-            );
-            Date.parse(res.body.payload[i].created).should.equal(
-              Date.parse(payment_2.created.toLocaleDateString())
-            );
-            res.body.payload[i].reference_number.should.equal(
-              payment_2.reference_number
-            );
-            parseFloat(res.body.payload[i].amount).should.equal(
-              payment_2.amount
-            );
+            res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
+            Date.parse(res.body.payload[i].created).should.equal(Date.parse(payment_2.created.toLocaleDateString()));
+            res.body.payload[i].reference_number.should.equal(payment_2.reference_number);
+            parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
             Date.parse(res.body.payload[i].valid_until).should.equal(
-              Date.parse(payment_2.valid_until.toLocaleDateString())
+              Date.parse(payment_2.valid_until.toLocaleDateString()),
             );
-            Date.parse(res.body.payload[i].paid).should.equal(
-              Date.parse(payment_2.paid.toLocaleDateString())
-            );
-            res.body.payload[i].payment_type.should.equal(
-              payment_2.payment_type
-            );
+            Date.parse(res.body.payload[i].paid).should.equal(Date.parse(payment_2.paid.toLocaleDateString()));
+            res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
           }
           done();
         });
@@ -152,19 +140,11 @@ describe("PaymentController", () => {
           res.body.payload.id.should.equal(payment_2.id);
           res.body.payload.payer_id.should.equal(payment_2.payer_id);
           res.body.payload.confirmer_id.should.equal(payment_2.confirmer_id);
-          Date.parse(res.body.payload.created).should.equal(
-            Date.parse(payment_2.created.toLocaleDateString())
-          );
-          res.body.payload.reference_number.should.equal(
-            payment_2.reference_number
-          );
+          Date.parse(res.body.payload.created).should.equal(Date.parse(payment_2.created.toLocaleDateString()));
+          res.body.payload.reference_number.should.equal(payment_2.reference_number);
           parseFloat(res.body.payload.amount).should.equal(payment_2.amount);
-          Date.parse(res.body.payload.valid_until).should.equal(
-            Date.parse(payment_2.valid_until.toLocaleDateString())
-          );
-          Date.parse(res.body.payload.paid).should.equal(
-            Date.parse(payment_2.paid.toLocaleDateString())
-          );
+          Date.parse(res.body.payload.valid_until).should.equal(Date.parse(payment_2.valid_until.toLocaleDateString()));
+          Date.parse(res.body.payload.paid).should.equal(Date.parse(payment_2.paid.toLocaleDateString()));
           res.body.payload.payment_type.should.equal(payment_2.payment_type);
           done();
         });
@@ -195,7 +175,7 @@ describe("PaymentController", () => {
         amount: 44.44,
         valid_until: new Date(2018, 1, 1),
         paid: new Date(2013, 1, 1),
-        payment_type: "jasenmaksu"
+        payment_type: "jasenmaksu",
       };
       chai
         .request(app)
@@ -217,7 +197,7 @@ describe("PaymentController", () => {
         payer_id: 2,
         amount: 44.44,
         valid_until: "2018-05-28 22:25:4",
-        payment_type: "jasenmaksu"
+        payment_type: "jasenmaksu",
       };
       chai
         .request(app)
@@ -274,24 +254,18 @@ describe("PaymentController", () => {
                 const payment_2: IPayment = payments[i];
                 res.body.payload[i].id.should.equal(payment_2.id);
                 res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
-                res.body.payload[i].confirmer_id.should.equal(
-                  payment_2.confirmer_id
-                );
+                res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
                 /*Date.parse(res.body.payload[i].created).should.equal(
                   Date.parse(payment_2.created.toLocaleDateString())
                 );*/
-                parseFloat(res.body.payload[i].amount).should.equal(
-                  payment_2.amount
-                );
+                parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
                 /*Date.parse(res.body.payload[i].valid_until).should.equal(
                   Date.parse(payment_2.valid_until.toLocaleDateString())
                 );
                 Date.parse(res.body.payload[i].paid).should.equal(
                   Date.parse(payment_2.paid.toLocaleDateString())
                 );*/
-                res.body.payload[i].payment_type.should.equal(
-                  payment_2.payment_type
-                );
+                res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
               }
 
               // New entry
@@ -335,8 +309,8 @@ describe("PaymentController", () => {
             .send(
               Object.assign({}, payment, {
                 reference_number: newRefNum,
-                payment_type: newPaymentType
-              })
+                payment_type: newPaymentType,
+              }),
             )
             .end((err: any, res: ChaiHttp.Response) => {
               should.exist(res.body.ok);
@@ -370,7 +344,7 @@ describe("PaymentController", () => {
         amount: 44.44,
         valid_until: new Date(2018, 1, 1),
         paid: new Date(2013, 1, 1),
-        payment_type: "jasenmaksu"
+        payment_type: "jasenmaksu",
       };
       chai
         .request(app)
@@ -403,7 +377,7 @@ describe("PaymentController", () => {
             payer_id: res.body.payload.payer_id,
             payment_type: res.body.payload.payment_type,
             reference_number: res.body.payload.payment_type,
-            valid_until: res.body.payload.valid_until
+            valid_until: res.body.payload.valid_until,
           };
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
@@ -420,8 +394,8 @@ describe("PaymentController", () => {
             .send(
               Object.assign({}, payment, {
                 reference_number: newRefNum,
-                payment_type: newPaymentType
-              })
+                payment_type: newPaymentType,
+              }),
             )
             .end((err: any, res: ChaiHttp.Response) => {
               should.exist(res.body.ok);
@@ -429,9 +403,7 @@ describe("PaymentController", () => {
               should.not.exist(res.body.payload);
               res.status.should.equal(400);
               res.body.ok.should.equal(false);
-              res.body.message.should.equal(
-                "Failed to modify payment: missing request parameters"
-              );
+              res.body.message.should.equal("Failed to modify payment: missing request parameters");
               done();
             });
         });

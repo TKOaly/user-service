@@ -4,7 +4,7 @@ import chai = require("chai");
 import Knex from "knex";
 import "mocha";
 // Knexfile
-import knexfile from "../../knexfile";
+import * as knexfile from "../../knexfile";
 import serviceFile = require("../../seeds/seedData/services");
 import ServiceDao from "../../src/dao/ServiceDao";
 import { IServiceDatabaseObject } from "../../src/models/Service";
@@ -44,15 +44,12 @@ describe("ServiceDao", () => {
         services.length.should.equal(dbServices.length);
         services.forEach((dbService: IServiceDatabaseObject) => {
           const seedService: IServiceDatabaseObject = dbServices.find(
-            (seedSrv: IServiceDatabaseObject) =>
-              dbService.service_identifier === seedSrv.service_identifier
+            (seedSrv: IServiceDatabaseObject) => dbService.service_identifier === seedSrv.service_identifier,
           );
 
           should.exist(seedService);
 
-          dbService.service_identifier.should.equal(
-            seedService.service_identifier
-          );
+          dbService.service_identifier.should.equal(seedService.service_identifier);
 
           should.exist(dbService.service_name);
           dbService.service_name.should.equal(seedService.service_name);
@@ -75,7 +72,7 @@ describe("ServiceDao", () => {
 
         done();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
   });
@@ -102,7 +99,7 @@ describe("ServiceDao", () => {
       id: 3,
       redirect_url: "https://google.fi",
       service_identifier: "a123b456",
-      service_name: "TestServicce"
+      service_name: "TestServicce",
     };
 
     serviceDao
@@ -112,20 +109,18 @@ describe("ServiceDao", () => {
         res[0].should.equal(3);
         serviceDao.findAll().then((services: IServiceDatabaseObject[]) => {
           services.length.should.equal(dbServices.length + 1);
-          serviceDao
-            .findByIdentifier(newService.service_identifier)
-            .then((dbService: IServiceDatabaseObject) => {
-              delete newService.id;
-              delete newService.modified;
-              delete newService.created;
-              delete dbService.modified;
-              delete dbService.created;
-              Object.keys(newService).forEach((key: keyof IServiceDatabaseObject) => {
-                should.exist(dbService[key]);
-                dbService[key].should.equal(newService[key]);
-              });
-              done();
+          serviceDao.findByIdentifier(newService.service_identifier).then((dbService: IServiceDatabaseObject) => {
+            delete newService.id;
+            delete newService.modified;
+            delete newService.created;
+            delete dbService.modified;
+            delete dbService.created;
+            Object.keys(newService).forEach((key: keyof IServiceDatabaseObject) => {
+              should.exist(dbService[key]);
+              dbService[key].should.equal(newService[key]);
             });
+            done();
+          });
         });
       })
       .catch((err: any) => {
@@ -176,38 +171,28 @@ describe("ServiceDao", () => {
     const updatedService: IServiceDatabaseObject = {
       id: 2,
       service_name: "test_service",
-      data_permissions: 7768
+      data_permissions: 7768,
     };
-    serviceDao
-      .findOne(updatedService.id)
-      .then((oldService: IServiceDatabaseObject) => {
-        new Promise((r) => setTimeout(r, 4000)).then(() => {
-          serviceDao
-            .update(updatedService.id, updatedService)
-            .then((res: number) => {
-              should.exist(res);
-              res.should.equal(1);
-              serviceDao
-                .findOne(updatedService.id)
-                .then((service: IServiceDatabaseObject) => {
-                  service.modified
-                    .toISOString()
-                    .should.not.equal(oldService.modified.toISOString());
-                  service.created
-                    .toISOString()
-                    .should.equal(oldService.created.toISOString());
-                  service.id.should.equal(updatedService.id);
-                  service.service_name.should.equal(
-                    updatedService.service_name
-                  );
-                  service.data_permissions.should.equal(7768);
-                  done();
-                });
-            })
-            .catch((err: any) => {
-              console.error(err);
+    serviceDao.findOne(updatedService.id).then((oldService: IServiceDatabaseObject) => {
+      new Promise(r => setTimeout(r, 4000)).then(() => {
+        serviceDao
+          .update(updatedService.id, updatedService)
+          .then((res: number) => {
+            should.exist(res);
+            res.should.equal(1);
+            serviceDao.findOne(updatedService.id).then((service: IServiceDatabaseObject) => {
+              service.modified.toISOString().should.not.equal(oldService.modified.toISOString());
+              service.created.toISOString().should.equal(oldService.created.toISOString());
+              service.id.should.equal(updatedService.id);
+              service.service_name.should.equal(updatedService.service_name);
+              service.data_permissions.should.equal(7768);
+              done();
             });
-        });
+          })
+          .catch((err: any) => {
+            console.error(err);
+          });
       });
+    });
   });
 });
