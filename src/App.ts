@@ -27,7 +27,7 @@ import PaymentService from "./services/PaymentService";
 import UserService from "./services/UserService";
 import ApiRoute from "./utils/ApiRoute";
 
-import knexfile from "../knexfile";
+import * as knexfile from "../knexfile";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
 import ConsentDao from "./dao/ConsentDao";
 import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
@@ -110,9 +110,10 @@ app.use(
 // Set static folder
 app.use(express.static(Path.join(__dirname, "..", "public")));
 
-type Environment = "development" | "staging" | "test" | "production";
+export type Environment = "development" | "staging" | "test" | "production";
 
 // Knex instance
+// @ts-ignore
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV! as Environment]);
 
 // Initialize services here
