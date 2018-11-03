@@ -3,6 +3,8 @@ import UserDao from "../dao/UserDao";
 import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 import User from "../models/User";
 import { UserPayment } from "../models/UserPayment";
+import crypto from "crypto";
+import sha1 from "sha1";
 
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
@@ -66,9 +68,7 @@ export default class UserService {
    * @memberof UserService
    */
   public async searchUsers(searchTerm: string): Promise<User[]> {
-    const results: IUserDatabaseObject[] = await this.userDao.findWhere(
-      searchTerm
-    );
+    const results: IUserDatabaseObject[] = await this.userDao.findWhere(searchTerm);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
@@ -84,10 +84,7 @@ export default class UserService {
    * @returns {Promise<User[]>} List of users.
    * @memberof UserService
    */
-  public async fetchAllWithSelectedFields(
-    fields: string[],
-    conditions?: string[]
-  ): Promise<UserPayment[]> {
+  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<UserPayment[]> {
     let conditionQuery: string[] = null;
     if (conditions) {
       conditionQuery = [];
@@ -114,10 +111,7 @@ export default class UserService {
       });
     }
 
-    const results: IUserPaymentDatabaseObject[]  = await this.userDao.findAll(
-      fields,
-      conditionQuery
-    );
+    const results: IUserPaymentDatabaseObject[] = await this.userDao.findAll(fields, conditionQuery);
     if (!results.length) {
       throw new ServiceError(404, "No results returned");
     }
@@ -133,36 +127,18 @@ export default class UserService {
    * @returns {Promise<User>} User
    * @memberof UserService
    */
-  public async getUserWithUsernameAndPassword(
-    username: string,
-    password: string
-  ): Promise<User> {
-    const dbUser: IUserDatabaseObject = await this.userDao.findByUsername(
-      username
-    );
+  public async getUserWithUsernameAndPassword(username: string, password: string): Promise<User> {
+    const dbUser: IUserDatabaseObject = await this.userDao.findByUsername(username);
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
 
     const user: User = new User(dbUser);
-    const isPasswordCorrect: boolean = await validatePassword(
-      password,
-      user.salt,
-      user.hashedPassword
-    );
+    const isPasswordCorrect: boolean = await validatePassword(password, user.salt, user.hashedPassword);
     if (isPasswordCorrect) {
-      // Recrypt password to bcrypt
-      if (user.salt !== "0") {
-        await this.updateUser(
-          user.id,
-          new User({
-            salt: "0"
-          }),
-          password
-        );
-      }
       return user;
     }
+
     throw new ServiceError(401, "Invalid username or password");
   }
 
@@ -174,9 +150,7 @@ export default class UserService {
    * @memberof UserService
    */
   public async checkUsernameAvailability(username: string): Promise<boolean> {
-    const user: IUserDatabaseObject = await this.userDao.findByUsername(
-      username
-    );
+    const user: IUserDatabaseObject = await this.userDao.findByUsername(username);
     return user === undefined;
   }
 
@@ -200,13 +174,13 @@ export default class UserService {
    * @returns {Promise<number[]>}
    * @memberof UserService
    */
-  public async createUser(user: User, password: string): Promise<number> {
-    user.hashedPassword = await bcrypt.hash(password, 13);
+  public async createUser(user: User, rawPassword: string): Promise<number> {
     let newUser: User = new User({});
+    const { password, salt } = await mkHashedPassword(rawPassword);
     newUser = Object.assign(newUser, user);
-    const insertIds: number[] = await this.userDao.save(
-      newUser.getDatabaseObject()
-    );
+    user.hashedPassword = password;
+    user.salt = salt;
+    const insertIds: number[] = await this.userDao.save(newUser.getDatabaseObject());
     return insertIds[0];
   }
 
@@ -219,22 +193,10 @@ export default class UserService {
    * @returns {Promise<number[]>} Affected rows.
    * @memberof UserService
    */
-  public async updateUser(
-    userId: number,
-    udpatedUser: User,
-    password?: string
-  ): Promise<number> {
-    // re-crypt password
-    if (password) {
-      udpatedUser.hashedPassword = await bcrypt.hash(password, 13);
-      udpatedUser.salt = "0";
-    }
+  public async updateUser(userId: number, udpatedUser: User, password?: string): Promise<number> {
     let newUser: User = new User({});
     newUser = Object.assign(newUser, udpatedUser);
-    const affectedRows: number = await this.userDao.update(
-      userId,
-      newUser.getDatabaseObject()
-    );
+    const affectedRows: number = await this.userDao.update(userId, newUser.getDatabaseObject());
 
     return affectedRows;
   }
@@ -246,11 +208,16 @@ export default class UserService {
    * @returns {Promise<boolean>}
    * @memberof UserService
    */
-  public async deleteUser(
-    userId: number
-  ): Promise<boolean> {
-    return this
-      .userDao
-      .remove(userId);
+  public async deleteUser(userId: number): Promise<boolean> {
+    return this.userDao.remove(userId);
   }
+}
+
+async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; password: string }> {
+  const salt = crypto.randomBytes(16).toString("hex");
+  // The passwords are first hashed according to the legacy format
+  // to ensure backwards compability
+  const compatPassword = sha1(`${salt}kekbUr${rawPassword}`);
+  const password = await bcrypt.hash(compatPassword, 13);
+  return { salt, password };
 }
