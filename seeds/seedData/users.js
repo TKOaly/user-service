@@ -1,5 +1,6 @@
 const sha1 = require("sha1");
-const encryptPassword = (password, salt) => sha1(salt + "kekbUr" + password);
+const bcrypt = require("bcrypt");
+const encryptPassword = (password, salt) => bcrypt.hashSync(sha1(salt + "kekbUr" + password), 13);
 
 module.exports = [
   {
@@ -18,7 +19,7 @@ module.exports = [
     salt: "12345",
     role: "jasen",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 2,
@@ -36,7 +37,7 @@ module.exports = [
     salt: "12345",
     role: "yllapitaja",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 3,
@@ -54,7 +55,7 @@ module.exports = [
     salt: "12345",
     role: "jasenvirkailija",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 4,
@@ -72,6 +73,6 @@ module.exports = [
     salt: "12345",
     role: "tenttiarkistovirkailija",
     tktl: 1,
-    deleted: 0
-  }
+    deleted: 0,
+  },
 ];
