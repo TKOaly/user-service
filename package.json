@@ -48,6 +48,8 @@
     "node-sass-middleware": "^0.11.0",
     "pug": "^2.0.3",
     "raven": "^2.6.3",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
     "sha1": "^1.1.1",
     "typedoc": "^0.11.1",
     "validator": "^10.2.0"
@@ -71,6 +73,8 @@
     "@types/node": "^10.5.1",
     "@types/node-sass-middleware": "^0.0.30",
     "@types/raven": "^2.5.1",
+    "@types/react": "^16.4.18",
+    "@types/react-dom": "^16.0.9",
     "@types/selenium-webdriver": "^3.0.10",
     "@types/sha1": "^1.1.1",
     "@types/uuid": "^3.4.3",
