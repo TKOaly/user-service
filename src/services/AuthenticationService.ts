@@ -1,6 +1,5 @@
-import bcrypt from "bcrypt";
-// Ignore sha1 as it has no types
 // @ts-ignore
+import compare from "secure-compare";
 import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../models/Service";
@@ -147,5 +146,5 @@ export default class AuthenticationService {
  * @returns {Promise<boolean>}
  */
 export async function validatePassword(password: string, salt: string, hashedPassword: string): Promise<boolean> {
-  return await bcrypt.compare(sha1(`${salt}kekbUr${password}`), hashedPassword);
+  return await compare(sha1(`${salt}kekbUr${password}`), hashedPassword);
 }

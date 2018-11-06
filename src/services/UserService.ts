@@ -1,10 +1,9 @@
-import * as bcrypt from "bcrypt";
+import crypto from "crypto";
+import sha1 from "sha1";
 import UserDao from "../dao/UserDao";
 import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 import User from "../models/User";
 import { UserPayment } from "../models/UserPayment";
-import crypto from "crypto";
-import sha1 from "sha1";
 
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
@@ -217,7 +216,6 @@ async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; pa
   const salt = crypto.randomBytes(16).toString("hex");
   // The passwords are first hashed according to the legacy format
   // to ensure backwards compability
-  const compatPassword = sha1(`${salt}kekbUr${rawPassword}`);
-  const password = await bcrypt.hash(compatPassword, 13);
+  const password = sha1(`${salt}kekbUr${rawPassword}`) as string;
   return { salt, password };
 }

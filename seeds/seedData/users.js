@@ -1,6 +1,5 @@
 const sha1 = require("sha1");
-const bcrypt = require("bcrypt");
-const encryptPassword = (password, salt) => bcrypt.hashSync(sha1(salt + "kekbUr" + password), 13);
+const encryptPassword = (password, salt) => sha1(salt + "kekbUr" + password);
 
 module.exports = [
   {
