@@ -18,7 +18,7 @@ module.exports = [
     salt: "12345",
     role: "jasen",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ module.exports = [
     salt: "12345",
     role: "yllapitaja",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 3,
@@ -54,7 +54,7 @@ module.exports = [
     salt: "12345",
     role: "jasenvirkailija",
     tktl: 1,
-    deleted: 0
+    deleted: 0,
   },
   {
     id: 4,
@@ -72,6 +72,6 @@ module.exports = [
     salt: "12345",
     role: "tenttiarkistovirkailija",
     tktl: 1,
-    deleted: 0
-  }
+    deleted: 0,
+  },
 ];

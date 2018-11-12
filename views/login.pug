@@ -31,6 +31,7 @@ html(lang="en")
             input.input(required type='password', name='password', id='password' placeholder=t("login_PasswordPlaceholder"))
           input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
           input(type='hidden', name='loginRedirect', value=loginRedirect)
+          input(type='hidden', name='_csrf', value=csrfToken)
           .form-group
             input.input.accept(type='submit', name='accept', value=t("login_LoginButton"))
             p

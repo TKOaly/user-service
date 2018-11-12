@@ -1,6 +1,5 @@
-import bcrypt from "bcrypt";
-// Ignore sha1 as it has no types
 // @ts-ignore
+import compare from "secure-compare";
 import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
 import Service, { IServiceDatabaseObject } from "../models/Service";
@@ -30,9 +29,7 @@ export default class AuthenticationService {
    * @memberof AuthenticationService
    */
   public async getService(serviceName: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await this.serviceDao.findByName(
-      serviceName
-    );
+    const service: IServiceDatabaseObject = await this.serviceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -46,12 +43,8 @@ export default class AuthenticationService {
    * @returns {Promise<Service>}
    * @memberof AuthenticationService
    */
-  public async getServiceWithIdentifier(
-    service_identifier: string
-  ): Promise<Service> {
-    const service: IServiceDatabaseObject = await this.serviceDao.findByIdentifier(
-      service_identifier
-    );
+  public async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
+    const service: IServiceDatabaseObject = await this.serviceDao.findByIdentifier(service_identifier);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -67,9 +60,7 @@ export default class AuthenticationService {
   public async getServices(): Promise<Service[]> {
     const services: IServiceDatabaseObject[] = await this.serviceDao.findAll();
 
-    return services.map(
-      (service: IServiceDatabaseObject) => new Service(service)
-    );
+    return services.map((service: IServiceDatabaseObject) => new Service(service));
   }
 
   /**
@@ -80,19 +71,12 @@ export default class AuthenticationService {
    * @returns {string}
    * @memberof AuthenticationService
    */
-  public appendNewServiceAuthenticationToToken(
-    oldToken: string | ServiceToken,
-    newServiceName: string
-  ): string {
+  public appendNewServiceAuthenticationToToken(oldToken: string | ServiceToken, newServiceName: string): string {
     let token: ServiceToken;
     if (typeof oldToken === "string") {
       token = stringToServiceToken(oldToken);
     } else {
-      token = new ServiceToken(
-        oldToken.userId,
-        oldToken.authenticatedTo,
-        oldToken.createdAt
-      );
+      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt);
     }
     if (token.authenticatedTo) {
       token.authenticatedTo.push(newServiceName);
@@ -114,19 +98,12 @@ export default class AuthenticationService {
    * @returns {string}
    * @memberof AuthenticationService
    */
-  public removeServiceAuthenticationToToken(
-    oldToken: string | ServiceToken,
-    serviceToRemove: string
-  ): string {
+  public removeServiceAuthenticationToToken(oldToken: string | ServiceToken, serviceToRemove: string): string {
     let token: ServiceToken;
     if (typeof oldToken === "string") {
       token = stringToServiceToken(oldToken);
     } else {
-      token = new ServiceToken(
-        oldToken.userId,
-        oldToken.authenticatedTo,
-        oldToken.createdAt
-      );
+      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt);
     }
     const newServiceList: string[] = [];
     token.authenticatedTo.forEach((s: string) => {
@@ -151,11 +128,7 @@ export default class AuthenticationService {
    * @memberof AuthenticationService
    */
   public createToken(userId: number, authenticatedTo: string[]): string {
-    try {
-      return new ServiceToken(userId, authenticatedTo, new Date()).toString();
-    } catch (e) {
-      throw e;
-    }
+    return new ServiceToken(userId, authenticatedTo, new Date()).toString();
   }
 }
 
@@ -168,14 +141,6 @@ export default class AuthenticationService {
  * @param {string} hashedPassword
  * @returns {Promise<boolean>}
  */
-export async function validatePassword(
-  password: string,
-  salt: string,
-  hashedPassword: string
-): Promise<boolean> {
-  if ((salt === "0" || !salt) && hashedPassword) {
-    return await bcrypt.compare(password, hashedPassword);
-  } else {
-    return sha1(`${salt}kekbUr${password}`) === hashedPassword;
-  }
+export async function validatePassword(password: string, salt: string, hashedPassword: string): Promise<boolean> {
+  return await compare(sha1(`${salt}kekbUr${password}`), hashedPassword);
 }

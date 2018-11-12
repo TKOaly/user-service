@@ -9,6 +9,7 @@
     "removeComments": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
+    "strictNullChecks": false,
     "outDir": "./dist/",
     "rootDirs": [
       "./src"

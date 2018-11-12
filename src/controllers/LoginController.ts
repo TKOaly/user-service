@@ -17,6 +17,7 @@ import AuthorizeMiddleware, {
 } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
+import csrf from "csurf";
 
 /**
  * Login controller.
@@ -41,6 +42,8 @@ export default class LoginController implements IController {
    */
   public authorizationMiddleware: AuthorizeMiddleware;
 
+  public csrfMiddleware: express.RequestHandler;
+
   /**
    * Creates an instance of LoginController.
    * @param {AuthenticationService} authService
@@ -55,6 +58,9 @@ export default class LoginController implements IController {
   ) {
     this.route = Router();
     this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
+    this.csrfMiddleware = csrf({
+      cookie: true
+    });
   }
 
   /**
@@ -70,18 +76,18 @@ export default class LoginController implements IController {
     res: express.Response
   ): Promise<express.Response | void> {
     // Delete login step
-    if (req.session.loginStep) {
-      req.session.loginStep = null;
+    if (req.session && req.session.loginStep) {
+      req.session.loginStep = undefined;
     }
 
     // Delete keys
-    if (req.session.keys) {
-      req.session.keys = null;
+    if (req.session && req.session.keys) {
+      req.session.keys = [];
     }
 
     // Delete user
-    if (req.session.user) {
-      req.session.user = null;
+    if (req.session && req.session.user) {
+      req.session.user = undefined;
     }
 
     if (!req.query.serviceIdentifier) {
@@ -110,7 +116,8 @@ export default class LoginController implements IController {
         loggedUser: req.authorization ? req.authorization.user.username : null,
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale()
+        currentLocale: res.getLocale(),
+        csrfToken: req.csrfToken()
       });
     } catch (err) {
       return res.status(400).render("serviceError", {
@@ -265,7 +272,8 @@ export default class LoginController implements IController {
         errors: [e.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale()
+        currentLocale: res.getLocale(),
+        csrfToken: req.csrfToken()
       });
     }
 
@@ -282,7 +290,8 @@ export default class LoginController implements IController {
         errors: ["Authentication failure: User ID is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale()
+        currentLocale: res.getLocale(),
+        csrfToken: req.csrfToken()
       });
     }
 
@@ -318,7 +327,8 @@ export default class LoginController implements IController {
         return res.render("privacypolicy", {
           serviceDisplayName: service.displayName,
           policy: policy.text,
-          policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm")
+          policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm"),
+          csrfToken: req.csrfToken()
         });
       }
     } catch (err) {
@@ -327,13 +337,15 @@ export default class LoginController implements IController {
         errors: [err.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale()
+        currentLocale: res.getLocale(),
+        csrfToken: req.csrfToken()
       });
     }
     // Set login step
     req.session.loginStep = LoginStep.GDPR;
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
+      csrfToken: req.csrfToken(),
       personalInformation: keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect
@@ -456,6 +468,7 @@ export default class LoginController implements IController {
     req.session.loginStep = LoginStep.GDPR;
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
+      csrfToken: req.csrfToken(),
       personalInformation: req.session.keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect
@@ -473,24 +486,28 @@ export default class LoginController implements IController {
   public createRoutes(): express.Router {
     this.route.get(
       "/",
+      this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.getLoginView.bind(this)
     );
     this.route.post(
       "/login",
+      this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.login.bind(this)
     );
     this.route.post(
       "/privacypolicy_confirm",
+      this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.privacyPolicyConfirm.bind(this)
     );
     this.route.post(
       "/login_confirm",
+      this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
       this.loginConfirm.bind(this)
