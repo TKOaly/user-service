@@ -14,7 +14,7 @@ if (!process.env.NODE_ENV) {
 
 import * as Knex from "knex";
 
-export const prodction: Knex.Config = {
+export const production: Knex.Config = {
   dialect: "mysql2",
   version: "5.6",
   connection: {
