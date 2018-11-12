@@ -128,11 +128,7 @@ export default class AuthenticationService {
    * @memberof AuthenticationService
    */
   public createToken(userId: number, authenticatedTo: string[]): string {
-    try {
-      return new ServiceToken(userId, authenticatedTo, new Date()).toString();
-    } catch (e) {
-      throw e;
-    }
+    return new ServiceToken(userId, authenticatedTo, new Date()).toString();
   }
 }
 

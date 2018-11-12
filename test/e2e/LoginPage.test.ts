@@ -130,6 +130,9 @@ describe("Login page", () => {
 
       const applyToBeAMember: string = await browser.findElement(By.className("applyToBeAMember")).getText();
       applyToBeAMember.should.equal(fi.login_RegisterToServiceText);
+
+      const csrf: string = await browser.findElement(By.name("_csrf")).getAttribute("value");
+      csrf.should.not.equal("");
     });
   }
 
@@ -162,6 +165,9 @@ describe("Login page", () => {
 
       const applyToBeAMember: string = await browser.findElement(By.className("applyToBeAMember")).getText();
       applyToBeAMember.should.equal(en.login_RegisterToServiceText);
+
+      const csrf: string = await browser.findElement(By.name("_csrf")).getAttribute("value");
+      csrf.should.not.equal("");
     });
   }
 
@@ -208,6 +214,7 @@ describe("Login page", () => {
   for (const service of serviceData) {
     it("On invalid username or password, shows correct error message (English) - " + service.display_name, async () => {
       await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
+
       await browser.findElement(By.id("username")).sendKeys("test_user");
       await browser.findElement(By.id("password")).sendKeys("wrong_password");
       await browser.findElement(By.className("accept")).click();

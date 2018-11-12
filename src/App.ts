@@ -52,13 +52,11 @@ const app: express.Application = express();
 app.use(helmet());
 
 // Disable cross-domain checks for now
-app.use(
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "*");
-    next();
-  }
-);
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  next();
+});
 
 // Cookie parser
 app.use(cookieParser());
@@ -76,8 +74,8 @@ app.use(Raven.requestHandler());
 app.use(express.json());
 app.use(
   express.urlencoded({
-    extended: true
-  })
+    extended: true,
+  }),
 );
 
 // Trust proxy
@@ -89,8 +87,8 @@ app.use(
     cookie: { secure: "auto", maxAge: 60000 },
     resave: false,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET
-  })
+    secret: process.env.SESSION_SECRET || "unsafe",
+  }),
 );
 
 // Set view engine
@@ -103,8 +101,8 @@ app.use(
     dest: Path.join(__dirname, "..", "public", "styles"),
     debug: false,
     outputStyle: "compressed",
-    response: true
-  })
+    response: true,
+  }),
 );
 
 // Set static folder
@@ -125,51 +123,35 @@ const userService: UserService = new UserService(new UserDao(knex));
 const paymentService: PaymentService = new PaymentService(new PaymentDao(knex));
 
 // Authentication service
-const authService: AuthenticationService = new AuthenticationService(
-  new ServiceDao(knex)
-);
+const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
 
 // Consent service
 const consentService: ConsentService = new ConsentService(new ConsentDao(knex));
 
 // Privacy policy service
-const privacyPolicyService: PrivacyPolicyService = new PrivacyPolicyService(
-  new PrivacyPolicyDao(knex)
-);
+const privacyPolicyService: PrivacyPolicyService = new PrivacyPolicyService(new PrivacyPolicyDao(knex));
 
 // Initialize controllers here
 
 // Authentication controller
-const authController: AuthController = new AuthController(
-  userService,
-  authService
-);
+const authController: AuthController = new AuthController(userService, authService);
 
 // User controller
-const userController: UserController = new UserController(
-  userService,
-  authService,
-  paymentService
-);
+const userController: UserController = new UserController(userService, authService, paymentService);
 
 // Login controller
 const loginController: LoginController = new LoginController(
   authService,
   userService,
   consentService,
-  privacyPolicyService
+  privacyPolicyService,
 );
 
 // Payment controller
-const paymentController: PaymentController = new PaymentController(
-  userService,
-  paymentService
-);
+const paymentController: PaymentController = new PaymentController(userService, paymentService);
 
 // Privacy policy controller
-const privacyPolicyController: PrivacyPolicyController = new PrivacyPolicyController(
-  new PrivacyPolicyDao(knex)
-);
+const privacyPolicyController: PrivacyPolicyController = new PrivacyPolicyController(new PrivacyPolicyDao(knex));
 
 /*
 API routes
@@ -180,16 +162,19 @@ app.use(ApiRoute.generateApiRoute("auth"), authController.createRoutes());
 // Users route
 app.use(ApiRoute.generateApiRoute("users"), userController.createRoutes());
 // Payments route
-app.use(
-  ApiRoute.generateApiRoute("payments"),
-  paymentController.createRoutes()
-);
+app.use(ApiRoute.generateApiRoute("payments"), paymentController.createRoutes());
 // Login route
 app.use("/", loginController.createRoutes());
 // Privacy policy route
-app.use(
-  ApiRoute.generateApiRoute("policy"),
-  privacyPolicyController.createRoutes()
-);
+app.use(ApiRoute.generateApiRoute("policy"), privacyPolicyController.createRoutes());
+// CSRF
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err.code !== "EBADCSRFTOKEN") {
+    return next(err);
+  }
+  return res.status(403).render("serviceError", {
+    error: "Invalid CSRF token",
+  });
+});
 
 export default app;
