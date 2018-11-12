@@ -23,6 +23,7 @@ services:
       - ./public:/app/public
       - ./test:/app/test
       - ./seeds:/app/seeds
+      - ./views:/app/views
       - ./migrations:/app/migrations
       - ./knexfile.ts:/app/knexfile.ts
     environment:
@@ -34,3 +35,5 @@ services:
       DB_PASSWORD: unsecure
       DB_NAME: user-service
       SESSION_SECRET: unsecure
+      JWT_SECRET: unsecure
+      DEFAULT_LOCALE: fi
