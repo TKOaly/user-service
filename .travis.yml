@@ -2,6 +2,11 @@ dist: trusty
 sudo: required
 language: generic
 
+addons:
+  apt:
+    packages:
+      - docker-ce
+
 jobs:
   include:
     - stage: test
