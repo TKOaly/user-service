@@ -2,7 +2,7 @@
 set -e
 TAG=$TRAVIS_COMMIT
 echo "Building Docker image..."
-docker login registry.tko-aly.fi --username $DEPLOY_USERNAME --password $DEPLOY_PASSWORD
+echo "$DEPLOY_PASSWORD" | docker login --username "$DEPLOY_USERNAME" --password-stdin registry.tko-aly.fi
 docker build . -t user-service --shm-size 1G
 docker tag user-service:latest registry.tko-aly.fi/user-service:latest
 docker tag user-service:latest registry.tko-aly.fi/user-service:$TAG
