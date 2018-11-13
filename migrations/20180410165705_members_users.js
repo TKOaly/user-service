@@ -9,15 +9,18 @@ exports.up = function(knex, Promise) {
         table.string("email", 255);
         table.string("residence", 255);
         table.string("phone", 255);
-        table.specificType('hyy_member', 'tinyint(1) DEFAULT NULL');
+        table.specificType("hyy_member", "tinyint(1) DEFAULT NULL");
         table.string("membership", 20);
         table.datetime("created");
         table.datetime("modified");
-        table.specificType('hashed_password', 'char(40) DEFAULT NULL');
+        table.specificType("hashed_password", "char(40) DEFAULT NULL");
         table.string("salt", 20);
         table.string("role", 40);
-        table.specificType('tktl', 'tinyint(1) DEFAULT NULL');
-        table.specificType('deleted', 'tinyint(1) DEFAULT NULL');
+        table.specificType("tktl", "tinyint(1) DEFAULT NULL");
+        table.specificType("deleted", "tinyint(1) DEFAULT NULL");
+        table.unique("id");
+        table.index("username");
+        table.index("deleted");
       });
     }
   });
