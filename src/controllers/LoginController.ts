@@ -18,6 +18,7 @@ import AuthorizeMiddleware, {
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import csrf from "csurf";
+import Raven from "raven";
 
 /**
  * Login controller.
@@ -120,6 +121,7 @@ export default class LoginController implements IController {
         csrfToken: req.csrfToken()
       });
     } catch (err) {
+      Raven.captureException(err);
       return res.status(400).render("serviceError", {
         error: err.message
       });
@@ -175,6 +177,7 @@ export default class LoginController implements IController {
         req.query.serviceIdentifier
       );
     } catch (e) {
+      Raven.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
         error: e.message
       });
@@ -376,6 +379,7 @@ export default class LoginController implements IController {
     }
 
     if (req.session.loginStep !== LoginStep.GDPR) {
+      Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
         error: "Server error"
       });
@@ -395,6 +399,7 @@ export default class LoginController implements IController {
         ]);
       }
     } catch (e) {
+      Raven.captureException(e);
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
 
@@ -431,6 +436,7 @@ export default class LoginController implements IController {
       req.body;
 
     if (req.session.loginStep !== LoginStep.PrivacyPolicy) {
+      Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
         error: "Server error"
       });
