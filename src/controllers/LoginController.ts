@@ -335,6 +335,7 @@ export default class LoginController implements IController {
         });
       }
     } catch (err) {
+      Raven.captureException(err);
       return res.status(500).render("login", {
         service,
         errors: [err.message],
@@ -455,6 +456,7 @@ export default class LoginController implements IController {
         );
         return res.redirect("https://members.tko-aly.fi");
       } catch (ex) {
+        Raven.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer." + ex.message
         });
@@ -466,6 +468,7 @@ export default class LoginController implements IController {
           service.id
         );
       } catch (ex) {
+        Raven.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer: " + ex.message
         });
