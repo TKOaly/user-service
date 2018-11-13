@@ -1,6 +1,8 @@
+import csrf from "csurf";
 import { Router } from "express";
 import * as express from "express";
 import moment from "moment";
+import Raven from "raven";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IController from "../interfaces/IController";
 import Consent from "../models/Consent";
@@ -17,8 +19,6 @@ import AuthorizeMiddleware, {
 } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
-import csrf from "csurf";
-import Raven from "raven";
 
 /**
  * Login controller.
