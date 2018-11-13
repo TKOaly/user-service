@@ -6,10 +6,11 @@ exports.up = async function(knex: Knex): Promise<void> {
     await knex.schema.createTable(
       "privacy_policies",
       (t: Knex.CreateTableBuilder) => {
-        t.increments("id");
+        t.increments("id").primary();
         t.integer("service_id")
           .unsigned()
           .unique()
+          .notNullable()
           .index()
           .references("id")
           .inTable("services");
