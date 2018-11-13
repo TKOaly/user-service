@@ -37,6 +37,7 @@
     "csurf": "^1.9.0",
     "dotenv": "^6.0.0",
     "express": "4.16.3",
+    "express-mysql-session": "^2.0.1",
     "express-session": "^1.15.6",
     "helmet": "^3.11.0",
     "i18n": "^0.8.3",
@@ -54,6 +55,7 @@
     "validator": "^10.2.0"
   },
   "devDependencies": {
+    "@types/express-mysql-session": "^1.2.2",
     "@types/bluebird": "^3.5.22",
     "@types/chai": "^4.1.4",
     "@types/chai-http": "^3.0.5",

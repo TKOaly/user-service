@@ -148,6 +148,10 @@
   version "1.2.0"
   resolved "http://registry.npmjs.org/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"
 
+"@types/express-mysql-session@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@types/express-mysql-session/-/express-mysql-session-1.2.2.tgz#439bb4ab1fbbf860c05ea63a33f1c94d1352b62c"
+
 "@types/express-serve-static-core@*":
   version "4.16.0"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.16.0.tgz#fdfe777594ddc1fe8eb8eccce52e261b496e43e7"
@@ -1396,7 +1400,16 @@ expect-ct@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.1.1.tgz#de84476a2dbcb85000d5903737e9bc8a5ba7b897"
 
-express-session@^1.15.6:
+express-mysql-session@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/express-mysql-session/-/express-mysql-session-2.0.1.tgz#27c11a83d3b0843d0ee48f0df51b86cb969355ef"
+  dependencies:
+    debug "3.1.0"
+    express-session "1.15.6"
+    mysql "2.16.0"
+    underscore "1.9.1"
+
+express-session@1.15.6, express-session@^1.15.6:
   version "1.15.6"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.15.6.tgz#47b4160c88f42ab70fe8a508e31cbff76757ab0a"
   dependencies:
@@ -3063,7 +3076,7 @@ mysql2@^1.5.3:
     seq-queue "0.0.5"
     sqlstring "2.3.1"
 
-mysql@^2.15.0:
+mysql@2.16.0, mysql@^2.15.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.16.0.tgz#b23b22ab5de44fc2d5d32bd4f5af6653fc45e2ba"
   dependencies:
@@ -4757,6 +4770,10 @@ undefsafe@^2.0.2:
   resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.2.tgz#225f6b9e0337663e0d8e7cfd686fc2836ccace76"
   dependencies:
     debug "^2.2.0"
+
+underscore@1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
 
 union-value@^1.0.0:
   version "1.0.0"

@@ -37,6 +37,8 @@ import PrivacyPolicyService from "./services/PrivacyPolicyService";
 import i18n from "./i18n.config";
 import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 
+import MySQLSessionStore from "express-mysql-session";
+
 // Config raven (only in production)
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();
@@ -44,6 +46,10 @@ if (process.env.NODE_ENV === "production") {
   console.log("Skipping raven");
   Raven.config("").install();
 }
+
+// Knex instance
+// @ts-ignore
+const knex: Knex = Knex(knexfile[process.env.NODE_ENV! as Environment]);
 
 // Express application instance
 const app: express.Application = express();
@@ -81,13 +87,18 @@ app.use(
 // Trust proxy
 app.set("trust proxy", 1);
 
+// MySQL session store
+// @ts-ignore
+const store: session.Store = new MySQLSessionStore((knexfile[process.env.NODE_ENV! as Environment].connection as MySQLSessionStore.Options))
+
 // Session
 app.use(
   session({
     cookie: { secure: "auto", maxAge: 60000 },
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
+    store,
   }),
 );
 
@@ -109,10 +120,6 @@ app.use(
 app.use(express.static(Path.join(__dirname, "..", "public")));
 
 export type Environment = "development" | "staging" | "test" | "production";
-
-// Knex instance
-// @ts-ignore
-const knex: Knex = Knex(knexfile[process.env.NODE_ENV! as Environment]);
 
 // Initialize services here
 
