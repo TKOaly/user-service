@@ -5,21 +5,14 @@ exports.up = async function(knex: Knex): Promise<void> {
   if (!hasTable) {
     await knex.schema.createTable("privacy_policy_consent_data", (t: Knex.CreateTableBuilder) => {
       t.increments("id").primary();
-      t.integer("user_id")
-        .unsigned()
-        .notNullable()
-        .index()
-        .references("id")
-        .inTable("users");
-      t.integer("service_id")
-        .unsigned()
-        .notNullable()
-        .index()
-        .references("id")
-        .inTable("services");
+      t.specificType("user_id", "int(10) unsigned DEFAULT NULL");
+      t.specificType("service_id", "int(10) unsigned DEFAULT NULL");
       t.enum("consent", ["unknown", "accepted", "declined"]).defaultTo("unknown");
       t.dateTime("created");
       t.dateTime("modified");
+
+      t.foreign("user_id").references("id").inTable("users");
+      t.foreign("service_id").references("id").inTable("services");
     });
   }
 };
