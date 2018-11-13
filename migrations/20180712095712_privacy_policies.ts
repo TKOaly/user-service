@@ -7,11 +7,16 @@ exports.up = async function(knex: Knex): Promise<void> {
       "privacy_policies",
       (t: Knex.CreateTableBuilder) => {
         t.increments("id").primary();
-        t.specificType("service_id", "int(10) unsigned DEFAULT NULL");
+        t.integer("service_id")
+          .unsigned()
+          .unique()
+          .notNullable()
+          .index()
+          .references("id")
+          .inTable("services");
         t.string("text", 15000).notNullable();
         t.dateTime("created");
         t.dateTime("modified");
-        t.foreign("service_id").references("id").inTable("services");
       }
     );
   }
