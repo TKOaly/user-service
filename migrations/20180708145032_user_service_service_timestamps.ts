@@ -2,8 +2,8 @@ import Knex from "knex";
 
 exports.up = function (knex: Knex): PromiseLike<void> {
   return knex.schema.table("services", (t: Knex.AlterTableBuilder) => {
-    t.dateTime("created").defaultTo(knex.fn.now());
-    t.dateTime("modified").defaultTo(knex.fn.now());
+    t.dateTime("created");
+    t.dateTime("modified");
   });
 };
 

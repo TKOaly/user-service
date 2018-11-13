@@ -5,7 +5,9 @@ module.exports = [
     service_name: "event_calendar",
     display_name: "Event calendar",
     redirect_url: "https://calendar.tko-aly.fi",
-    data_permissions: 6143
+    data_permissions: 6143,
+    created: new Date(),
+    modified: new Date()
   },
   {
     id: 2,
@@ -13,6 +15,8 @@ module.exports = [
     service_name: "kjyr",
     display_name: "KJYR",
     redirect_url: "https://kjyr.tko-aly.fi",
-    data_permissions: 89
+    data_permissions: 89,
+    created: new Date(),
+    modified: new Date()
   }
 ];
