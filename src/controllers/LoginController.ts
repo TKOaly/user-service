@@ -190,7 +190,7 @@ export default class LoginController implements IController {
 
     // this token had one service left which was remove -> clear token
     if (req.authorization.token.authenticatedTo.length === 1) {
-      res.clearCookie("token");
+      res.clearCookie("token", {domain: process.env.COOKIE_DOMAIN});
     } else {
       res.cookie("token", token, {
         maxAge: 1000 * 60 * 60 * 24 * 7,
