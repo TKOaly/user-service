@@ -29,6 +29,7 @@ services:
       - ./test:/app/test
       - ./seeds:/app/seeds
       - ./views:/app/views
+      - ./locales:/app/locales
       - ./migrations:/app/migrations
       - ./knexfile.ts:/app/knexfile.ts
     environment:

@@ -29,5 +29,6 @@
 	"login_InFinnish": "Suomeksi",
 	"logout_Title": "Logged out",
 	"logout_YouHaveBeenLoggedOutFrom": "You have been logged out from ",
-	"logout_ReturnTo": "Return to "
+	"logout_ReturnTo": "Return to ",
+	"login_LoggedInAs": "Logged in as "
 }
