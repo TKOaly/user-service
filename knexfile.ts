@@ -15,7 +15,7 @@ if (!process.env.NODE_ENV) {
 import * as Knex from "knex";
 
 export const production: Knex.Config = {
-  dialect: "mysql2",
+  client: "mysql2",
   version: "5.5",
   connection: {
     host: process.env.DB_HOST,
@@ -37,7 +37,7 @@ export const production: Knex.Config = {
 };
 
 export const staging: Knex.Config = {
-  dialect: "mysql2",
+  client: "mysql2",
   version: "5.5",
   connection: {
     host: process.env.DB_HOST,
@@ -55,7 +55,7 @@ export const staging: Knex.Config = {
   },
 };
 export const development: Knex.Config = {
-  dialect: "mysql2",
+  client: "mysql2",
   version: "5.5",
   connection: {
     host: process.env.DB_HOST,
@@ -74,7 +74,7 @@ export const development: Knex.Config = {
 };
 
 export const test: Knex.Config = {
-  dialect: "mysql2",
+  client: "mysql2",
   version: "5.5",
   connection: {
     host: process.env.DB_HOST,
