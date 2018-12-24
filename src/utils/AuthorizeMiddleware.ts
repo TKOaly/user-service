@@ -5,102 +5,36 @@ import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 
-/**
- * IASRequest interface.
- *
- * @interface IASRequest
- * @extends {express.Request}
- */
 export interface IASRequest extends express.Request {
-  /**
-   * Authorization data.
-   * @memberof IASRequest
-   */
   authorization: {
-    /**
-     * User
-     *
-     * @type {User}
-     */
     user: User;
-    /**
-     * Service token
-     *
-     * @type {ServiceToken}
-     */
     token: ServiceToken;
   };
 
-  /**
-   * Session
-   *
-   * @type {ISession}
-   */
   session?: ISession;
 }
+
 /**
  * ISession interface adds support for new keys in the Express.Session interface.
- *
- * @interface ISession
- * @extends {Express.Session}
  */
 interface ISession extends Express.Session {
-  /**
-   * User
-   *
-   * @type {ISessionUser}
-   * @memberof ISession
-   */
   user?: ISessionUser;
-  /**
-   * Current login step
-   *
-   * @type {LoginStep}
-   * @memberof ISession
-   */
   loginStep?: LoginStep;
   /**
    * User requested keys
-   *
-   * @type {Array<{ name: string; value: string }>}
-   * @memberof IASRequest
    */
   keys: Array<{ name: string; value: string }>;
 }
 
-/**
- * Login step enum.
- *
- * @export
- * @enum {number}
- */
 export enum LoginStep {
   PrivacyPolicy,
   GDPR,
   Login
 }
 
-/**
- * Authorize middleware.
- *
- * @export
- * @class AuthorizeMiddleware
- */
 export default class AuthorizeMiddleware {
-  /**
-   * Creates an instance of AuthorizeMiddleware.
-   * @param {UserService} userService User service
-   * @memberof AuthorizeMiddleware
-   */
   constructor(private userService: UserService) {}
 
-  /**
-   * Authorizes the user.
-   *
-   * @param {boolean} returnAsJson Return as JSON
-   *
-   * @memberof AuthorizeMiddleware
-   */
   public authorize = (
     returnAsJson: boolean
   ): ((
@@ -168,15 +102,6 @@ export default class AuthorizeMiddleware {
     }
   }
 
-  /**
-   * Loads the token.
-   *
-   * @param {IASRequest} req
-   * @param {express.Response} res
-   * @param {express.NextFunction} next
-   * @returns
-   * @memberof AuthorizeMiddleware
-   */
   public async loadToken(
     req: IASRequest,
     res: express.Response,
