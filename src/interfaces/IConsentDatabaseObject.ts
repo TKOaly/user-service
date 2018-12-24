@@ -1,11 +1,5 @@
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 
-/**
- * Privacy policy interface.
- *
- * @export
- * @interface IConsentDatabaseObject
- */
 export default interface IConsentDatabaseObject {
   id?: number;
   user_id?: number;
