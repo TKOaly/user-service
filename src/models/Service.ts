@@ -1,74 +1,15 @@
-/**
- * Service object.
- *
- * @export
- * @class Service
- */
 export default class Service {
-  /**
-   * Service id.
-   *
-   * @type {number}
-   * @memberof Service
-   */
   public id: number;
-  /**
-   * Service name.
-   *
-   * @type {string}
-   * @memberof Service
-   */
   public serviceName: string;
-  /**
-   * Service identifier.
-   *
-   * @type {string}
-   * @memberof Service
-   */
   public serviceIdentifier: string;
-  /**
-   * Display name.
-   *
-   * @type {string}
-   * @memberof Service
-   */
   public displayName: string;
-  /**
-   * Redirect url.
-   *
-   * @type {string}
-   * @memberof Service
-   */
   public redirectUrl: string;
-  /**
-   * Data permissions.
-   *
-   * @type {number}
-   * @memberof Service
-   */
   public dataPermissions: number;
 
-  /**
-   * Created at date.
-   *
-   * @type {Date}
-   * @memberof Service
-   */
   public createdAt: Date;
 
-  /**
-   * Modified at date.
-   *
-   * @type {Date}
-   * @memberof Service
-   */
   public modifiedAt: Date;
 
-  /**
-   * Creates an instance of Service.
-   * @param {ServiceDatabaseObject} databaseObject
-   * @memberof Service
-   */
   constructor(databaseObject: IServiceDatabaseObject) {
     this.id = databaseObject.id;
     this.serviceName = databaseObject.service_name;
@@ -80,12 +21,6 @@ export default class Service {
     this.createdAt = databaseObject.created;
   }
 
-  /**
-   * Returns the database object of the service.
-   *
-   * @returns {IServiceDatabaseObject} Database object of the service.
-   * @memberof Service
-   */
   public getDatabaseObject(): IServiceDatabaseObject {
     return {
       id: this.id,
@@ -100,11 +35,6 @@ export default class Service {
   }
 }
 
-/**
- * Service database object.
- *
- * @interface ServiceDatabaseObject
- */
 export interface IServiceDatabaseObject {
   id?: number;
   service_name?: string;
