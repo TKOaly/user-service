@@ -6,23 +6,9 @@ import IDao from "../interfaces/IDao";
 
 const tableName: string = "privacy_policy_consent_data";
 
-/**
- * Consent Dao.
- *
- * @export
- * @class ConsentDao
- * @implements {IDao<IConsentDatabaseObject>}
- */
 export default class ConsentDao implements IDao<IConsentDatabaseObject> {
   constructor(private readonly knex: Knex) { }
 
-  /**
-   * Finds a single consent.
-   *
-   * @param {number} id Consent ID
-   * @returns {Promise<IConsentDatabaseObject>} A single consent
-   * @memberof ConsentDao
-   */
   public findOne(id: number): Promise<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
@@ -30,22 +16,11 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
         .first()
     );
   }
-  /**
-   * Finds all consents.
-   *
-   * @returns {Promise<IConsentDatabaseObject[]>} All consents
-   * @memberof ConsentDao
-   */
+
   public findAll(): Promise<IConsentDatabaseObject[]> {
     return Promise.resolve(this.knex(tableName).select());
   }
-  /**
-   * Removes a consent.
-   *
-   * @param {number} id Consent id
-   * @returns {Promise<boolean>}
-   * @memberof ConsentDao
-   */
+
   public remove(id: number): Promise<boolean> {
     return Promise.resolve(
       this.knex(tableName)
@@ -53,14 +28,7 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
         .where({ id })
     );
   }
-  /**
-   * Updates a consent.
-   *
-   * @param {number} entityId Consent ID
-   * @param {IConsentDatabaseObject} entity Consent
-   * @returns {Promise<number>}
-   * @memberof ConsentDao
-   */
+
   public update(
     entityId: number,
     entity: IConsentDatabaseObject
@@ -73,11 +41,9 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
         .where({ id: entityId })
     );
   }
+
   /**
    * Resets privacy policy consent for all users that have accepted it, for a single service.
-   *
-   * @returns {Promise<number[]>}
-   * @memberof ConsentDao
    */
   public resetAllAcceptedByService(service_id: number): Promise<number[]> {
     return Promise.resolve(
@@ -87,13 +53,6 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     );
   }
 
-  /**
-   * Finds all consents by service.
-   *
-   * @param {number} service_id Service id
-   * @returns {Promise<IConsentDatabaseObject[]>} Consents by service
-   * @memberof ConsentDao
-   */
   public findAllByServiceId(
     service_id: number
   ): Promise<IConsentDatabaseObject[]> {
@@ -104,13 +63,6 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     );
   }
 
-  /**
-   * Finds all consents by user.
-   *
-   * @param {number} service_id Service id
-   * @returns {Promise<IConsentDatabaseObject[]>} Consents by service
-   * @memberof ConsentDao
-   */
   public findAllByUserId(user_id: number): Promise<IConsentDatabaseObject[]> {
     return Promise.resolve(
       this.knex(tableName)
@@ -119,14 +71,6 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     );
   }
 
-  /**
-   * Finds a consent by a user and a service.
-   *
-   * @param {number} user_id User ID
-   * @param {number} service_id Service ID
-   * @returns {Promise<IConsentDatabaseObject>}
-   * @memberof ConsentDao
-   */
   public findByUserAndService(
     user_id: number,
     service_id: number
@@ -139,12 +83,6 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     );
   }
 
-  /**
-   * Finds all declined consents.
-   *
-   * @returns {Promise<IConsentDatabaseObject[]>} Declined consents
-   * @memberof ConsentDao
-   */
   public findAllDeclined(): Promise<IConsentDatabaseObject[]> {
     return Promise.resolve(
       this.knex(tableName)
@@ -153,13 +91,6 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     );
   }
 
-  /**
-   * Saves a new consent.
-   *
-   * @param {IConsentDatabaseObject} entity Consent
-   * @returns {Promise<number[]>}
-   * @memberof ConsentDao
-   */
   public save(entity: IConsentDatabaseObject): Promise<number[]> {
     entity.created = new Date();
     entity.modified = new Date();
