@@ -4,39 +4,13 @@ import IController from "../interfaces/IController";
 import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
 import ServiceResponse from "../utils/ServiceResponse";
 
-/**
- * Privacy Policy controller.
- *
- * @export
- * @class PrivacyPolicyController
- * @implements {IController}
- */
 export default class PrivacyPolicyController implements IController {
-  /**
-   * Router
-   *
-   * @private
-   * @type {express.Router}
-   * @memberof PaymentController
-   */
   private route: Express.Router;
 
-  /**
-   * Creates an instance of PrivacyPolicyController.
-   * @memberof PrivacyPolicyController
-   */
   constructor(private readonly privacyPolicyDao: PrivacyPolicyDao) {
     this.route = Express.Router();
   }
 
-  /**
-   * Returns a privacy policy.
-   *
-   * @param {Express.Request} req
-   * @param {Express.Response} res
-   * @returns {Promise<Express.Response>}
-   * @memberof PrivacyPolicyController
-   */
   public async GetPrivacyPolicy(
     req: Express.Request,
     res: Express.Response
@@ -61,12 +35,6 @@ export default class PrivacyPolicyController implements IController {
     }
   }
 
-  /**
-   * Creates routes
-   *
-   * @returns {Express.Router}
-   * @memberof PrivacyPolicyController
-   */
   public createRoutes(): Express.Router {
     this.route.get("/:serviceIdentifier", this.GetPrivacyPolicy.bind(this));
 
