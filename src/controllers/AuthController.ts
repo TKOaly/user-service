@@ -6,36 +6,10 @@ import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-/**
- * Authentication controller.
- *
- * @export
- * @class AuthController
- * @implements {IController}
- */
 export default class AuthController implements IController {
-  /**
-   * Router
-   *
-   * @private
-   * @type {express.Router}
-   * @memberof AuthController
-   */
   private route: express.Router;
-  /**
-   * Authorization middleware
-   *
-   * @private
-   * @type {AuthorizeMiddleware}
-   * @memberof AuthController
-   */
   private authorizeMiddleware: AuthorizeMiddleware;
 
-  /**
-   * Creates an instance of AuthController.
-   * @param {UserService} userService
-   * @memberof AuthController
-   */
   constructor(
     private userService: UserService,
     private authService: AuthenticationService
@@ -44,14 +18,6 @@ export default class AuthController implements IController {
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
-  /**
-   * Used to check authorization to a specified service.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {Promise<express.Response>}
-   * @memberof AuthController
-   */
   public async check(
     req: express.Request & IASRequest,
     res: express.Response
@@ -73,14 +39,6 @@ export default class AuthController implements IController {
     }
   }
 
-  /**
-   * Authenticates the user.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {Promise<express.Response>}
-   * @memberof AuthController
-   */
   public async authenticateUser(
     req: express.Request & IASRequest,
     res: express.Response
@@ -140,11 +98,6 @@ export default class AuthController implements IController {
 
   /**
    * Renders a view to calculate service permissions.
-   *
-   * @param {(express.Request)} req
-   * @param {express.Response} res
-   * @returns {void}
-   * @memberof AuthController
    */
   public calcPermissions(req: express.Request, res: express.Response): void {
     const dummyObject: User = new User({
@@ -172,11 +125,6 @@ export default class AuthController implements IController {
 
   /**
    * Calculates service permissions.
-   *
-   * @param {(express.Request)} req
-   * @param {express.Response} res
-   * @returns {void}
-   * @memberof AuthController
    */
   public calcPermissionsPost(
     req: express.Request,
@@ -237,9 +185,6 @@ export default class AuthController implements IController {
 
   /**
    * Creates routes for authentication controller.
-   *
-   * @returns
-   * @memberof AuthController
    */
   public createRoutes(): express.Router {
     this.route.get(
