@@ -11,46 +11,11 @@ import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
 
-/**
- * Payment controller.
- *
- * @export
- * @class PaymentController
- * @implements {IController}
- */
 export default class PaymentController implements IController {
-  /**
-   * Router
-   *
-   * @private
-   * @type {express.Router}
-   * @memberof PaymentController
-   */
   private route: express.Router;
-  /**
-   * Authorize middleware
-   *
-   * @private
-   * @type {AuthorizeMiddleware}
-   * @memberof PaymentController
-   */
   private authorizeMiddleware: AuthorizeMiddleware;
-  /**
-   * Payment validator
-   *
-   * @private
-   * @type {PaymentValidator}
-   * @memberof PaymentController
-   */
   private paymentValidator: PaymentValidator;
 
-  /**
-   * Creates an instance of PaymentController.
-   * @param {UserService} userService
-   * @param {PaymentService} paymentService
-   * @param {AuthenticationService} authenticationService
-   * @memberof PaymentController
-   */
   constructor(
     private userService: UserService,
     private paymentService: PaymentService
@@ -60,14 +25,6 @@ export default class PaymentController implements IController {
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
-  /**
-   * Creates a payment.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async createPayment(
     req: express.Request,
     res: express.Response
@@ -99,14 +56,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Modifies a payment.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async modifyPayment(
     req: express.Request,
     res: express.Response
@@ -160,14 +109,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Returns all payments.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async getAllPayments(
     req: express.Request & IASRequest,
     res: express.Response
@@ -202,14 +143,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Returns a single payment.
-   *
-   * @param {express.Request & IASRequest} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async getSinglePayment(
     req: express.Request & IASRequest,
     res: express.Response
@@ -238,14 +171,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Marks payments as paid.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async markPaymentAsPaid(
     req: express.Request & IASRequest,
     res: express.Response
@@ -278,14 +203,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Marks payments as paid.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof PaymentController
-   */
   public async deletePayment(
     req: express.Request & IASRequest,
     res: express.Response
@@ -310,12 +227,6 @@ export default class PaymentController implements IController {
     }
   }
 
-  /**
-   * Creates routes for payment controller.
-   *
-   * @returns
-   * @memberof PaymentController
-   */
   public createRoutes(): express.Router {
     this.route.get(
       "/:id(\\d+)/",
