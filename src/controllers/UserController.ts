@@ -14,42 +14,11 @@ import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import UserValidator from "../validators/UserValidator";
 
-/**
- * User controller.
- *
- * @export
- * @class UserController
- * @implements {IController}
- */
 export default class UserController implements IController {
-  /**
-   * Router
-   *
-   * @type {express.Router}
-   * @memberof UserController
-   */
   public route: express.Router;
-  /**
-   * Authorize middleware
-   *
-   * @type {AuthorizeMiddleware}
-   * @memberof UserController
-   */
   public authorizeMiddleware: AuthorizeMiddleware;
-  /**
-   * User validator
-   *
-   * @type {UserValidator}
-   * @memberof UserController
-   */
   public userValidator: UserValidator;
 
-  /**
-   * Creates an instance of UserController.
-   * @param {UserService} userService
-   * @param {AuthenticationService} authenticationService
-   * @memberof UserController
-   */
   constructor(
     private userService: UserService,
     private authenticationService: AuthenticationService,
@@ -62,11 +31,6 @@ export default class UserController implements IController {
 
   /**
    * Returns the currently logged in user's data.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
    */
   public async getMe(
     req: express.Request & IASRequest,
@@ -111,14 +75,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Returns a single user.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
-   */
   public async getUser(
     req: express.Request & IASRequest,
     res: express.Response
@@ -175,11 +131,6 @@ export default class UserController implements IController {
 
   /**
    * Returns all users.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
    */
   public async getAllUsers(
     req: express.Request & IASRequest,
@@ -242,14 +193,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Returns all unpaid users.
-   *
-   * @param {express.Request & IASRequest} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
-   */
   public async getAllUnpaidUsers(
     req: express.Request & IASRequest,
     res: express.Response
@@ -272,14 +215,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Modifies a user.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
-   */
   public async modifyUser(
     req: express.Request & IASRequest,
     res: express.Response
@@ -319,11 +254,6 @@ export default class UserController implements IController {
 
   /**
    * Modifies a user (me).
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
    */
   public async modifyMe(
     req: express.Request & IASRequest,
@@ -356,14 +286,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Creates a user.
-   *
-   * @param {express.Request} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof UserController
-   */
   public async createUser(
     req: express.Request,
     res: express.Response
@@ -391,10 +313,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Finds payments for user
-   *
-   */
   public async findUserPayment(
     req: express.Request & IASRequest,
     res: express.Response
@@ -431,10 +349,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Finds payments for current user
-   *
-   */
   public async findMePayment(
     req: express.Request & IASRequest,
     res: express.Response
@@ -461,14 +375,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Sets user membership.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {Promise<express.Response>}
-   * @memberof UserController
-   */
   public async setUserMembership(
     req: express.Request & IASRequest,
     res: express.Response
@@ -524,14 +430,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Deletes a user.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {Promise<express.Response>}
-   * @memberof UserController
-   */
   public async deleteUser(
     req: express.Request & IASRequest,
     res: express.Response
@@ -560,12 +458,6 @@ export default class UserController implements IController {
     }
   }
 
-  /**
-   * Creates routes for UserController.
-   *
-   * @returns
-   * @memberof UserController
-   */
   public createRoutes(): express.Router {
     this.route.get(
       "/:id",

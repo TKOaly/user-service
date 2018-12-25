@@ -5,28 +5,9 @@ import IUserDatabaseObject, {
   IUserPaymentDatabaseObject
 } from "../interfaces/IUserDatabaseObject";
 
-/**
- * User dao.
- *
- * @export
- * @class UserDao
- * @implements {Dao<User>}
- */
 export default class UserDao implements IDao<IUserDatabaseObject> {
-  /**
-   * Creates an instance of UserDao.
-   * @param {Knex} knex
-   * @memberof UserDao
-   */
   constructor(private readonly knex: Knex) { }
 
-  /**
-   * Finds a single user.
-   *
-   * @param {number} id User id
-   * @returns {Promise<IUserDatabaseObject>}
-   * @memberof UserDao
-   */
   public findOne(id: number): Promise<IUserDatabaseObject> {
     return Promise.resolve(
       this.knex("users")
@@ -36,13 +17,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  /**
-   * Finds a single user by its username.
-   *
-   * @param {string} username Username
-   * @returns {Promise<IUserDatabaseObject>} User
-   * @memberof UserDao
-   */
   public findByUsername(username: string): Promise<IUserDatabaseObject> {
     return Promise.resolve(
       this.knex("users")
@@ -52,13 +26,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  /**
-   * Finds a single user by its email address.
-   *
-   * @param {string} email Email address
-   * @returns {Promise<IUserDatabaseObject>} User
-   * @memberof UserDao
-   */
   public findByEmail(email: string): Promise<IUserDatabaseObject> {
     return Promise.resolve(
       this.knex("users")
@@ -70,10 +37,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
 
   /**
    * Finds a single user who hasn't paid his/her bill.
-   *
-   * @param {number} id User id
-   * @returns {Promise<IUserDatabaseObject>} User
-   * @memberof UserDao
    */
   public findByUnpaidPayment(id: number): Promise<IUserDatabaseObject> {
     return Promise.resolve(
@@ -88,9 +51,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
 
   /**
    * Finds all users who haven't paid their bill.
-   *
-   * @returns {Promise<IUserDatabaseObject[]>} List of users
-   * @memberof UserDao
    */
   public findAllByUnpaidPayment(): Promise<IUserDatabaseObject[]> {
     return Promise.resolve(
@@ -101,12 +61,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  /**
-   * Finds all users.
-   *
-   * @returns {Promise<IUserDatabaseObject[]>}
-   * @memberof UserDao
-   */
   public findAll(
     fields?: string[],
     conditions?: string[]
@@ -137,10 +91,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
 
   /**
    * Search the user table with the specified search term.
-   *
-   * @param {string} searchTerm Search term
-   * @returns {Promise<IUserDatabaseObject[]>}
-   * @memberof UserDao
    */
   public findWhere(searchTerm: string): Promise<IUserDatabaseObject[]> {
     return Promise.resolve(
@@ -158,10 +108,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
    * Removes a single user.
    *
    * Note: You need to remove payments of the user first.
-   *
-   * @param {number} id User id
-   * @returns {Promise<boolean>}
-   * @memberof UserDao
    */
   public remove(id: number): PromiseLike<boolean> {
     // First, delete consents
@@ -175,14 +121,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       });
   }
 
-  /**
-   * Updates a single user.
-   *
-   * @param {number} entityId User id
-   * @param {IUserDatabaseObject} entity Entity
-   * @returns {Promise<number[]>} Affected rows
-   * @memberof UserDao
-   */
   public update(
     entityId: number,
     entity: IUserDatabaseObject
@@ -198,13 +136,6 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  /**
-   * Saves a single user.
-   *
-   * @param {IUserDatabaseObject} entity
-   * @returns {Promise<number[]>} Inserted ID(s)
-   * @memberof UserDao
-   */
   public save(entity: IUserDatabaseObject): Promise<number[]> {
     // Delete id because it's auto-assigned
     if (entity.id) {

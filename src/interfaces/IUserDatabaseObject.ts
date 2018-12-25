@@ -1,8 +1,3 @@
-/**
- * User database object.
- *
- * @interface IUserDatabaseObject
- */
 export default interface IUserDatabaseObject {
   id?: number;
   username?: string;
@@ -24,8 +19,6 @@ export default interface IUserDatabaseObject {
 
 /**
  * User database object with additional payment information
- *
- * @interface IUserPaymentDatabaseObject
  */
 export interface IUserPaymentDatabaseObject extends IUserDatabaseObject {
   paid?: Date;

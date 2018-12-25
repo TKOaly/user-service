@@ -1,9 +1,3 @@
-/**
- * IPayment interface.
- *
- * @export
- * @interface IPayment
- */
 export interface IPayment {
   id?: number;
   payer_id?: number;
@@ -16,94 +10,23 @@ export interface IPayment {
   payment_type?: string;
 }
 
-/**
- * Payment class.
- *
- * @export
- * @class Payment
- * @implements {IPayment}
- */
 export default class Payment implements IPayment {
-  /**
-   * ID
-   *
-   * @type {number}
-   * @memberof Payment
-   */
   public id: number;
-  /**
-   * Payer ID
-   *
-   * @type {number}
-   * @memberof Payment
-   */
   public payer_id: number;
-  /**
-   * Confirmer ID
-   *
-   * @type {number}
-   * @memberof Payment
-   */
   public confirmer_id: number;
-  /**
-   * Creation date
-   *
-   * @type {Date}
-   * @memberof Payment
-   */
   public created: Date;
-  /**
-   * Reference number
-   *
-   * @type {string}
-   * @memberof Payment
-   */
   public reference_number: string;
-  /**
-   * Amount
-   *
-   * @type {number}
-   * @memberof Payment
-   */
   public amount: number;
-  /**
-   * Valid until -date
-   *
-   * @type {Date}
-   * @memberof Payment
-   */
   public valid_until: Date;
-  /**
-   * Paid date
-   *
-   * @type {Date}
-   * @memberof Payment
-   */
   public paid: Date;
-  /**
-   * Payment type
-   *
-   * @type {string}
-   * @memberof Payment
-   */
   public payment_type: string;
 
-  /**
-   * Creates an instance of Payment.
-   * @param {IPayment} payment
-   * @memberof Payment
-   */
   constructor(payment: IPayment) {
     Object.keys(payment).forEach((key: keyof IPayment) => {
       this[key] = payment[key];
     });
   }
 
-  /**
-   * Generates a reference number.
-   *
-   * @memberof Payment
-   */
   public generateReferenceNumber(): void {
     const baseNumber: string = "10" + String(this.id);
     if (baseNumber.length < 3 || baseNumber.length > 19) {

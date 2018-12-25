@@ -1,9 +1,3 @@
-/**
- * Privacy policy interface.
- *
- * @export
- * @interface IPrivacyPolicy
- */
 export default interface IPrivacyPolicyDatabaseObject {
   id?: number;
   service_id?: number;

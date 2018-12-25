@@ -20,37 +20,12 @@ import AuthorizeMiddleware, {
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-/**
- * Login controller.
- *
- * @export
- * @class LoginController
- * @implements {IController}
- */
 export default class LoginController implements IController {
-  /**
-   * Router.
-   *
-   * @type {Router}
-   * @memberof LoginController
-   */
   public route: Router;
-  /**
-   * Authorization middleware.
-   *
-   * @type {AuthorizeMiddleware}
-   * @memberof LoginController
-   */
   public authorizationMiddleware: AuthorizeMiddleware;
 
   public csrfMiddleware: express.RequestHandler;
 
-  /**
-   * Creates an instance of LoginController.
-   * @param {AuthenticationService} authService
-   * @param {UserService} userService
-   * @memberof LoginController
-   */
   constructor(
     private authService: AuthenticationService,
     private userService: UserService,
@@ -64,14 +39,6 @@ export default class LoginController implements IController {
     });
   }
 
-  /**
-   * Returns the login view.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {(Promise<express.Response | void>)}
-   * @memberof LoginController
-   */
   public async getLoginView(
     req: express.Request & IASRequest,
     res: express.Response
@@ -130,11 +97,6 @@ export default class LoginController implements IController {
 
   /**
    * Sets the language of the page.
-   *
-   * @param {(Express.Request & IASRequest)} req
-   * @param {(Express.Response & any)} res
-   * @returns {(Promise<express.Response | void>)}
-   * @memberof LoginController
    */
   public setLanguage(
     req: Express.Request & IASRequest,
@@ -148,14 +110,6 @@ export default class LoginController implements IController {
     return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
-  /**
-   * Logs the user out.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof LoginController
-   */
   public async logOut(
     req: express.Request & IASRequest,
     res: express.Response
@@ -190,7 +144,7 @@ export default class LoginController implements IController {
 
     // this token had one service left which was remove -> clear token
     if (req.authorization.token.authenticatedTo.length === 1) {
-      res.clearCookie("token", {domain: process.env.COOKIE_DOMAIN});
+      res.clearCookie("token", { domain: process.env.COOKIE_DOMAIN });
     } else {
       res.cookie("token", token, {
         maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -204,14 +158,6 @@ export default class LoginController implements IController {
     return res.render("logout", { serviceName: service.displayName });
   }
 
-  /**
-   * Logs the user in.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof LoginController
-   */
   public async login(
     req: express.Request & IASRequest,
     res: express.Response
@@ -360,11 +306,6 @@ export default class LoginController implements IController {
 
   /**
    * Handles GDPR template and redirects the user forward
-   *
-   * @param {(express.Request | IASRequest)} req
-   * @param {express.Response} res
-   * @returns
-   * @memberof LoginController
    */
   public async loginConfirm(
     req: express.Request & IASRequest,
@@ -421,11 +362,6 @@ export default class LoginController implements IController {
 
   /**
    * Handles privacy policy confirmation.
-   *
-   * @param {(express.Request & IASRequest)} req
-   * @param {express.Response} res
-   * @returns {(Promise<express.Response | void>)}
-   * @memberof LoginController
    */
   public async privacyPolicyConfirm(
     req: express.Request & IASRequest,
@@ -486,12 +422,6 @@ export default class LoginController implements IController {
     });
   }
 
-  /**
-   * Create routes for login controller.
-   *
-   * @returns
-   * @memberof LoginController
-   */
   public createRoutes(): express.Router {
     this.route.get(
       "/",
@@ -536,11 +466,6 @@ export default class LoginController implements IController {
   }
 }
 
-/**
- * Session user interface.
- *
- * @interface ISessionUser
- */
 export interface ISessionUser {
   userId: number;
   username: string;

@@ -1,26 +1,14 @@
 import User from "../models/User";
 
-/**
- * IValidator interface.
- *
- * @export
- * @interface IValidator
- * @template T
- */
 export default interface IValidator<T> {
   /**
    * Validates entity creation.
-   *
-   * @param {T} bodyData Entity
-   * @memberof IValidator
+   * TODO: Document how the actual validation occurs here
    */
   validateCreate(bodyData: T): void;
   /**
    * Validates entity update.
-   *
-   * @param {number} dataId
-   * @param {T} newData New data
-   * @memberof IValidator
+   * TODO: Document how the actual validation occurs here
    */
   validateUpdate(dataId: number, newData: T, validator: User): void;
 }

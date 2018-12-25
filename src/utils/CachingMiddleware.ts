@@ -1,12 +1,9 @@
 import * as Express from "express";
 
 /**
- * Caching middleware.
- * Disables caching.
+ * A middleware which disables caching
  *
- * @param {Express.Request | any} req Express request
- * @param {Express.Response | any} res Express response
- * @param {Express.NextFunction | any} next Express NextFunction
+ * TODO: Remove `any` arguments
  */
 // tslint:disable-next-line:typedef
 const cachingMiddleware = (
