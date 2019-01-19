@@ -14,7 +14,7 @@ export default class UserService {
   public async fetchUser(userId: number): Promise<User> {
     const result: IUserDatabaseObject = await this.userDao.findOne(userId);
     if (!result) {
-      throw new ServiceError(404, "Not found");
+      throw new ServiceError(404, "User not found");
     }
 
     return new User(result);

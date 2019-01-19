@@ -12,7 +12,7 @@ export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
       id
     );
     if (!res) {
-      throw new ServiceError(404, "Not found");
+      throw new ServiceError(404, "Privacy policy not found");
     }
     return new PrivacyPolicy(res);
   }
@@ -24,7 +24,7 @@ export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
       serviceIdentifier
     );
     if (!res) {
-      throw new ServiceError(404, "Not found");
+      throw new ServiceError(404, "Privacy policy not found");
     }
     return new PrivacyPolicy(res);
   }

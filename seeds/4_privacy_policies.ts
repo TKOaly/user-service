@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 import privacyPolicies from "./seedData/privacy_policies";
 
 exports.seed = async function(knex: Knex): Promise<void> {

@@ -14,7 +14,7 @@ export default class PaymentService {
   public async fetchPayment(paymentId: number): Promise<Payment> {
     const result: IPayment = await this.paymentDao.findOne(paymentId);
     if (!result) {
-      throw new ServiceError(404, "Not found");
+      throw new ServiceError(404, "Payment not found");
     }
 
     return new Payment(result);
