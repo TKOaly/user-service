@@ -96,7 +96,7 @@ describe("ServiceDao", () => {
     const newService: IServiceDatabaseObject = {
       data_permissions: 666,
       display_name: "Test service",
-      id: 3,
+      id: 5,
       redirect_url: "https://google.fi",
       service_identifier: "a123b456",
       service_name: "TestServicce",
@@ -106,7 +106,7 @@ describe("ServiceDao", () => {
       .save(newService)
       .then((res: number[]) => {
         should.exist(res);
-        res[0].should.equal(3);
+        res[0].should.equal(5);
         serviceDao.findAll().then((services: IServiceDatabaseObject[]) => {
           services.length.should.equal(dbServices.length + 1);
           serviceDao.findByIdentifier(newService.service_identifier).then((dbService: IServiceDatabaseObject) => {

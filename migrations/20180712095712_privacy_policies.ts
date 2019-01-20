@@ -1,24 +1,21 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 exports.up = async function(knex: Knex): Promise<void> {
   const hasTable: boolean = await knex.schema.hasTable("privacy_policies");
   if (!hasTable) {
-    await knex.schema.createTable(
-      "privacy_policies",
-      (t: Knex.CreateTableBuilder) => {
-        t.increments("id").primary();
-        t.integer("service_id")
-          .unsigned()
-          .unique()
-          .notNullable()
-          .index()
-          .references("id")
-          .inTable("services");
-        t.string("text", 15000).notNullable();
-        t.dateTime("created");
-        t.dateTime("modified");
-      }
-    );
+    await knex.schema.createTable("privacy_policies", (t: Knex.CreateTableBuilder) => {
+      t.increments("id").primary();
+      t.integer("service_id")
+        .unsigned()
+        .unique()
+        .notNullable()
+        .index()
+        .references("id")
+        .inTable("services");
+      t.string("text", 15000).notNullable();
+      t.dateTime("created");
+      t.dateTime("modified");
+    });
   }
 };
 

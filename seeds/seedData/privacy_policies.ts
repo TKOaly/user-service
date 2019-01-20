@@ -14,6 +14,20 @@ const privacyPolicy: IPrivacyPolicyDatabaseObject[] = [
     text: "KJYR privacy policy",
     created: new Date(),
     modified: new Date()
+  },
+  {
+    id: 3,
+    service_id: 3,
+    text: "Tenttiarkisto privacy policy",
+    created: new Date(),
+    modified: new Date()
+  },
+  {
+    id: 4,
+    service_id: 4,
+    text: "Arkisto privacy policy",
+    created: new Date(),
+    modified: new Date()
   }
 ];
 

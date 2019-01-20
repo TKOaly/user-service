@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import Knex from "knex";
 
 exports.up = async function(knex: Knex): Promise<void> {
   const hasTable: boolean = await knex.schema.hasTable("privacy_policy_consent_data");
