@@ -25,8 +25,8 @@ const knex: Knex = Knex(knexfile.test);
 
 const serviceData: IServiceDatabaseObject[] = services as IServiceDatabaseObject[];
 
-const en: any = require("./../../locales/en.json");
-const fi: any = require("./../../locales/fi.json");
+import en from "../../locales/en.json";
+import fi from "../../locales/fi.json";
 
 const port: number = 3010;
 
