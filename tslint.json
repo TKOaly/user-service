@@ -1,6 +1,6 @@
 {
   "defaultSeverity": "warning",
-  "extends": ["prettier", "tslint:recommended"],
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "jsRules": {
     "object-literal-sort-keys": false
   },
