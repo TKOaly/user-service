@@ -89,7 +89,7 @@ export default class LoginController implements IController {
   /**
    * Sets the language of the page.
    */
-  public setLanguage(req: Express.Request & IASRequest, res: Express.Response & any): Promise<express.Response | void> {
+  public setLanguage(req: IASRequest, res: express.Response) {
     res.clearCookie("tkoaly_locale");
     res.cookie("tkoaly_locale", req.params.language, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
