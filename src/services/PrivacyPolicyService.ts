@@ -8,21 +8,15 @@ export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
   constructor(private readonly privacyPolicyDao: PrivacyPolicyDao) {}
 
   public async findOne(id: number): Promise<PrivacyPolicy> {
-    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findOne(
-      id
-    );
+    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findOne(id);
     if (!res) {
       throw new ServiceError(404, "Privacy policy not found");
     }
     return new PrivacyPolicy(res);
   }
 
-  public async findByServiceIdentifier(
-    serviceIdentifier: string
-  ): Promise<PrivacyPolicy> {
-    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findByServiceIdentifier(
-      serviceIdentifier
-    );
+  public async findByServiceIdentifier(serviceIdentifier: string): Promise<PrivacyPolicy> {
+    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findByServiceIdentifier(serviceIdentifier);
     if (!res) {
       throw new ServiceError(404, "Privacy policy not found");
     }

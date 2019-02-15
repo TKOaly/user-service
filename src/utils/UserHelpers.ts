@@ -1,16 +1,8 @@
-import { RoleNumbers } from "../models/User";
 import UserRoleString from "../enum/UserRoleString";
+import { RoleNumbers } from "../models/User";
 
 export function stringToBoolean(str: string | number | object | boolean): boolean {
-  return str === "0"
-    ? false
-    : str === "false"
-      ? false
-      : str === "1"
-        ? true
-        : str === "true"
-          ? true
-          : false;
+  return str === "0" ? false : str === "false" ? false : str === "1" ? true : str === "true" ? true : false;
 }
 
 export function compareRoles(a: UserRoleString, b: UserRoleString): number {

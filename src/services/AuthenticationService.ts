@@ -7,7 +7,7 @@ import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
 export default class AuthenticationService {
-  constructor(private readonly serviceDao: ServiceDao) { }
+  constructor(private readonly serviceDao: ServiceDao) {}
 
   public async getService(serviceName: string): Promise<Service> {
     const service: IServiceDatabaseObject = await this.serviceDao.findByName(serviceName);

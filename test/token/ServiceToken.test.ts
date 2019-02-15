@@ -10,18 +10,13 @@ const should: Chai.Should = chai.should();
 
 describe("ServiceToken", () => {
   it(
-    "Creates service token correctly, with corrent userId," +
-      " authentication list and creation date.",
+    "Creates service token correctly, with corrent userId," + " authentication list and creation date.",
     (done: Mocha.Done) => {
       const userId: number = 1;
       const authenticatedTo: string[] = [kjyrIdentifier, calendarIdentifier];
       const createdAt: Date = new Date();
 
-      const serviceToken: ServiceToken = new ServiceToken(
-        userId,
-        authenticatedTo,
-        createdAt
-      );
+      const serviceToken: ServiceToken = new ServiceToken(userId, authenticatedTo, createdAt);
       const token: string = serviceToken.toString();
 
       should.exist(token);
@@ -29,15 +24,12 @@ describe("ServiceToken", () => {
       token.should.not.be.empty;
 
       done();
-    }
+    },
   );
-  it(
-    "Should throw an exception when a malformed JWT is given",
-    (done: Mocha.Done) => {
-      // tslint:disable-next-line:no-unused-expression
-      chai.expect(stringToServiceToken).to.throw(JsonWebTokenError);
+  it("Should throw an exception when a malformed JWT is given", (done: Mocha.Done) => {
+    // tslint:disable-next-line:no-unused-expression
+    chai.expect(stringToServiceToken).to.throw(JsonWebTokenError);
 
-      done();
-    }
-  );
+    done();
+  });
 });

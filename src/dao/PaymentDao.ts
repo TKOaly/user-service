@@ -4,21 +4,18 @@ import IDao from "../interfaces/IDao";
 import { IPayment, IPaymentListing } from "../models/Payment";
 
 export default class PaymentDao implements IDao<IPayment> {
-  constructor(private readonly knex: Knex) { }
+  constructor(private readonly knex: Knex) {}
 
   public findOne(id: number): Promise<IPayment> {
     return Promise.resolve(
       this.knex("payments")
         .select()
         .where({ id })
-        .first()
+        .first(),
     );
   }
 
-  public findByPayer(
-    payer_id: number,
-    validPayment?: boolean
-  ): Promise<IPayment> {
+  public findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
     let query: Knex.QueryInterface = this.knex("payments")
       .select()
       .where({ payer_id });
@@ -35,7 +32,7 @@ export default class PaymentDao implements IDao<IPayment> {
       this.knex("payments")
         .select()
         .where({ confirmer_id })
-        .first()
+        .first(),
     );
   }
 
@@ -47,7 +44,7 @@ export default class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(
       this.knex("payments")
         .delete()
-        .where({ id })
+        .where({ id }),
     );
   }
 
@@ -55,7 +52,7 @@ export default class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(
       this.knex("payments")
         .where({ id: entityId })
-        .update(entity)
+        .update(entity),
     );
   }
 
@@ -67,21 +64,13 @@ export default class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(this.knex("payments").insert(entity));
   }
 
-  public findPaymentsByPaymentType(
-    payment_type: string
-  ): Promise<IPaymentListing[]> {
+  public findPaymentsByPaymentType(payment_type: string): Promise<IPaymentListing[]> {
     return Promise.resolve(
       this.knex("payments")
-        .select(
-          "payments.*",
-          "pu.name as payer_name",
-          "cu.name as confirmer_name"
-        )
+        .select("payments.*", "pu.name as payer_name", "cu.name as confirmer_name")
         .leftJoin(this.knex.raw("users as pu on (payments.payer_id = pu.id)"))
-        .leftJoin(
-          this.knex.raw("users as cu on (payments.confirmer_id = cu.id)")
-        )
-        .where({ payment_type })
+        .leftJoin(this.knex.raw("users as cu on (payments.confirmer_id = cu.id)"))
+        .where({ payment_type }),
     );
   }
 
@@ -94,36 +83,29 @@ export default class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(query);
   }
 
-  public confirmPayment(
-    payment_id: number,
-    confirmer_id: number
-  ): Promise<boolean> {
+  public confirmPayment(payment_id: number, confirmer_id: number): Promise<boolean> {
     return Promise.resolve(
       this.knex("payments")
         .update({
           paid: this.knex.fn.now(),
-          confirmer_id
+          confirmer_id,
         })
-        .where({ id: payment_id })
+        .where({ id: payment_id }),
     );
   }
 
   /**
    * Marks a payment paid by cash.
    */
-  public makePaid(
-    payment_id: number,
-    confirmer_id: number,
-    payment_type: string
-  ): Promise<boolean> {
+  public makePaid(payment_id: number, confirmer_id: number, payment_type: string): Promise<boolean> {
     return Promise.resolve(
       this.knex("payments")
         .update({
           payment_type,
           paid: this.knex.fn.now(),
-          confirmer_id
+          confirmer_id,
         })
-        .where({ id: payment_id })
+        .where({ id: payment_id }),
     );
   }
 
@@ -131,7 +113,7 @@ export default class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(
       this.knex("payments")
         .where({ id })
-        .del()
+        .del(),
     );
   }
 }

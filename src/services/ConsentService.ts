@@ -19,20 +19,14 @@ export default class ConsentService implements IService<Consent> {
   /**
    * Resets all consents to unknown in a service (That have not been declined.)
    */
-  public async resetAllAcceptedByService(
-    service_id: number
-  ): Promise<number[]> {
-    const res: number[] = await this.consentDao.resetAllAcceptedByService(
-      service_id
-    );
+  public async resetAllAcceptedByService(service_id: number): Promise<number[]> {
+    const res: number[] = await this.consentDao.resetAllAcceptedByService(service_id);
     return res;
   }
 
   public async findAll(): Promise<Consent[]> {
     const consents: IConsentDatabaseObject[] = await this.consentDao.findAll();
-    return consents.map(
-      (consent: IConsentDatabaseObject) => new Consent(consent)
-    );
+    return consents.map((consent: IConsentDatabaseObject) => new Consent(consent));
   }
 
   public async update(entity_id: number, entity: Consent): Promise<number> {
@@ -54,14 +48,8 @@ export default class ConsentService implements IService<Consent> {
    * Declines a privacy policy for a service.
    * If a consent's value is undefined, update it to "declined"
    */
-  public async declineConsent(
-    user_id: number,
-    service_id: number
-  ): Promise<number[]> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(
-      user_id,
-      service_id
-    );
+  public async declineConsent(user_id: number, service_id: number): Promise<number[]> {
+    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
     if (res) {
       // Consent exists, check for state
       if (res.consent === PrivacyPolicyConsent.Declined) {
@@ -71,13 +59,13 @@ export default class ConsentService implements IService<Consent> {
         // Accepted, update to declined.
         // Otherwise, the status is unknown.
         const updated: number = await this.consentDao.update(res.id, {
-          consent: PrivacyPolicyConsent.Declined
+          consent: PrivacyPolicyConsent.Declined,
         });
         return [updated];
       } else {
         // Otherwise, the status is unknown.
         const updated: number = await this.consentDao.update(res.id, {
-          consent: PrivacyPolicyConsent.Declined
+          consent: PrivacyPolicyConsent.Declined,
         });
         return [updated];
       }
@@ -86,21 +74,15 @@ export default class ConsentService implements IService<Consent> {
       const consentData: IConsentDatabaseObject = {
         user_id,
         service_id,
-        consent: PrivacyPolicyConsent.Declined
+        consent: PrivacyPolicyConsent.Declined,
       };
       const inserted: number[] = await this.consentDao.save(consentData);
       return inserted;
     }
   }
 
-  public async findByUserAndService(
-    user_id: number,
-    service_id: number
-  ): Promise<Consent> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(
-      user_id,
-      service_id
-    );
+  public async findByUserAndService(user_id: number, service_id: number): Promise<Consent> {
+    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
     if (!res) {
       return null;
     }
@@ -112,14 +94,8 @@ export default class ConsentService implements IService<Consent> {
    * If a consent is declined, throw an error.
    * If a consent is undefined, update it to "accepted"
    */
-  public async acceptConsent(
-    user_id: number,
-    service_id: number
-  ): Promise<number[]> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(
-      user_id,
-      service_id
-    );
+  public async acceptConsent(user_id: number, service_id: number): Promise<number[]> {
+    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
     if (res) {
       // Consent exists, check for state
       if (res.consent === PrivacyPolicyConsent.Accepted) {
@@ -128,7 +104,7 @@ export default class ConsentService implements IService<Consent> {
       } else {
         // Otherwise, the status is unknown or declined.
         const updated: number = await this.consentDao.update(res.id, {
-          consent: PrivacyPolicyConsent.Accepted
+          consent: PrivacyPolicyConsent.Accepted,
         });
         return [updated];
       }
@@ -137,7 +113,7 @@ export default class ConsentService implements IService<Consent> {
       const consentData: IConsentDatabaseObject = {
         user_id,
         service_id,
-        consent: PrivacyPolicyConsent.Accepted
+        consent: PrivacyPolicyConsent.Accepted,
       };
       const inserted: number[] = await this.consentDao.save(consentData);
       return inserted;

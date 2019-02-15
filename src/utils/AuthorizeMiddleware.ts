@@ -29,65 +29,53 @@ interface ISession extends Express.Session {
 export enum LoginStep {
   PrivacyPolicy,
   GDPR,
-  Login
+  Login,
 }
 
 export default class AuthorizeMiddleware {
   constructor(private userService: UserService) {}
 
   public authorize = (
-    returnAsJson: boolean
-  ): ((
+    returnAsJson: boolean,
+  ): ((req: IASRequest, res: express.Response, next: express.NextFunction) => void) => async (
     req: IASRequest,
     res: express.Response,
-    next: express.NextFunction
-  ) => void) => async (
-    req: IASRequest,
-    res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ): Promise<express.Response | void> => {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(
-          token.slice(7).toString()
-        );
+        const parsedToken: ServiceToken = stringToServiceToken(token.slice(7).toString());
         const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
-          user
+          user,
         };
         return next();
       } catch (e) {
         if (returnAsJson) {
-          return res
-            .status(e.httpStatusCode || 500)
-            .json(new ServiceResponse(null, e.message));
+          return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
         } else {
           return res.status(e.httpStatusCode || 500).render("serviceError", {
-            error: e.message
+            error: e.message,
           });
         }
       }
     } else if (req.cookies.token) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(
-          req.cookies.token
-        );
+        const parsedToken: ServiceToken = stringToServiceToken(req.cookies.token);
         const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
-          user
+          user,
         };
         return next();
       } catch (e) {
         if (returnAsJson) {
-          return res
-            .status(e.httpStatusCode || 500)
-            .json(new ServiceResponse(null, e.message));
+          return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
         } else {
           return res.status(e.httpStatusCode || 500).render("serviceError", {
-            error: e.message
+            error: e.message,
           });
         }
       }
@@ -96,51 +84,43 @@ export default class AuthorizeMiddleware {
         return res.status(401).json(new ServiceResponse(null, "Unauthorized"));
       } else {
         return res.status(401).render("serviceError", {
-          error: "Unauthorized"
+          error: "Unauthorized",
         });
       }
     }
-  }
+  };
 
   public async loadToken(
     req: IASRequest,
     res: express.Response,
-    next: express.NextFunction
+    next: express.NextFunction,
   ): Promise<express.Response | void> {
     const token: string = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(
-          token.slice(7).toString()
-        );
+        const parsedToken: ServiceToken = stringToServiceToken(token.slice(7).toString());
         const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
-          user
+          user,
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
 
     if (req.cookies.token) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(
-          req.cookies.token
-        );
+        const parsedToken: ServiceToken = stringToServiceToken(req.cookies.token);
         const user: User = await this.userService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
-          user
+          user,
         };
         return next();
       } catch (e) {
-        return res
-          .status(e.httpStatusCode || 500)
-          .json(new ServiceResponse(null, e.message));
+        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
     return next();

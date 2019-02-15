@@ -18,7 +18,7 @@ describe("Payment model", () => {
       payer_id: 1,
       payment_type: "jasenmaksu",
       reference_number: "12345678",
-      valid_until: new Date(2020, 1, 1)
+      valid_until: new Date(2020, 1, 1),
     });
     done();
   });
@@ -30,25 +30,16 @@ describe("Payment model", () => {
     payment.payer_id.should.equal(1);
     payment.payment_type.should.equal("jasenmaksu");
     payment.reference_number.should.equal("12345678");
-    payment.created
-      .toDateString()
-      .should
-      .equal(new Date(2018, 1, 1).toDateString());
-    payment.valid_until
-      .toDateString()
-      .should
-      .equal(new Date(2020, 1, 1).toDateString());
-    payment.paid
-      .toDateString()
-      .should
-      .equal(new Date(2018, 1, 1).toDateString());
+    payment.created.toDateString().should.equal(new Date(2018, 1, 1).toDateString());
+    payment.valid_until.toDateString().should.equal(new Date(2020, 1, 1).toDateString());
+    payment.paid.toDateString().should.equal(new Date(2018, 1, 1).toDateString());
     done();
   });
 
   it("Sets partial data correctly", (done: Mocha.Done) => {
     const payment2: Payment = new Payment({
       id: 55,
-      amount: 200
+      amount: 200,
     });
     payment2.id.should.equal(55);
     payment2.amount.should.equal(200);

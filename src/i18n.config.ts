@@ -8,8 +8,8 @@ i18n.configure({
   directory: path.resolve(path.join(__dirname, "..", "locales")),
   api: {
     __: "t",
-    __n: "tn"
-  }
+    __n: "tn",
+  },
 });
 
 export default i18n;

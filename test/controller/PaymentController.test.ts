@@ -1,28 +1,29 @@
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
+import chaiHttp from "chai-http";
 import * as JWT from "jsonwebtoken";
 import Knex from "knex";
 import "mocha";
-import payments = require("../../seeds/seedData/payments");
-import app from "../../src/App";
-import { IPayment } from "../../src/models/Payment";
-
 // Knexfile
 import * as knexfile from "../../knexfile";
+import payments from "../../seeds/seedData/payments";
+import app from "../../src/App";
+import { IPayment } from "../../src/models/Payment";
 
 // Knex instance
 const knex: Knex = Knex(knexfile.test);
 
 const should: Chai.Should = chai.should();
-const chaiHttp: any = require("chai-http");
+
 chai.use(chaiHttp);
 
 const url: string = "/api/payments";
 
 const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
 const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
-const generateToken: any = (
+
+const generateToken = (
   userId: number,
   authenticatedTo: string[] = [kjyrIdentifier, calendarIdentifier],
   createdAt: Date = new Date(),
@@ -61,7 +62,7 @@ describe("PaymentController", () => {
         .request(app)
         .get(url)
         .set("Authorization", "Bearer " + generateToken(2))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -103,7 +104,7 @@ describe("PaymentController", () => {
       chai
         .request(app)
         .get(url)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -121,7 +122,7 @@ describe("PaymentController", () => {
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           res.status.should.equal(200);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -154,7 +155,7 @@ describe("PaymentController", () => {
       chai
         .request(app)
         .get(url + "/1")
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -181,7 +182,7 @@ describe("PaymentController", () => {
         .request(app)
         .post(url)
         .send(newPayment)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -193,7 +194,7 @@ describe("PaymentController", () => {
     });
 
     it("POST /api/payments : As an authenticated user, adds a new payment", (done: Mocha.Done) => {
-      const newPayment: any = {
+      const newPayment = {
         payer_id: 2,
         amount: 44.44,
         valid_until: "2018-05-28 22:25:4",
@@ -204,7 +205,7 @@ describe("PaymentController", () => {
         .post(url)
         .set("Authorization", "Bearer " + generateToken(2))
         .send(newPayment)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           res.status.should.equal(201);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
@@ -227,7 +228,7 @@ describe("PaymentController", () => {
             .request(app)
             .get(url)
             .set("Authorization", "Bearer " + generateToken(2))
-            .end((err: any, res: ChaiHttp.Response) => {
+            .end((err, res) => {
               should.not.exist(err);
               should.exist(res.body.ok);
               should.exist(res.body.payload);
@@ -269,7 +270,7 @@ describe("PaymentController", () => {
               }
 
               // New entry
-              const payment_2: any = res.body.payload[2];
+              const payment_2 = res.body.payload[2];
               payment_2.id.should.equal(3);
               payment_2.payer_id.should.equal(newPayment.payer_id);
               /*Date.parse(payment_2.created).should.equal(
@@ -296,7 +297,7 @@ describe("PaymentController", () => {
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           const payment: IPayment = res.body.payload;
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
@@ -312,7 +313,7 @@ describe("PaymentController", () => {
                 payment_type: newPaymentType,
               }),
             )
-            .end((err: any, res: ChaiHttp.Response) => {
+            .end((_, res) => {
               should.exist(res.body.ok);
               should.exist(res.body.message);
               should.exist(res.body.payload);
@@ -350,7 +351,7 @@ describe("PaymentController", () => {
         .request(app)
         .patch(url + "/" + newPayment.id)
         .send(newPayment)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -367,7 +368,7 @@ describe("PaymentController", () => {
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((_, res) => {
           const payment: IPayment = {
             id: res.body.payload.id,
             amount: res.body.payload.amount,
@@ -397,7 +398,7 @@ describe("PaymentController", () => {
                 payment_type: newPaymentType,
               }),
             )
-            .end((err: any, res: ChaiHttp.Response) => {
+            .end((_, res) => {
               should.exist(res.body.ok);
               should.exist(res.body.message);
               should.not.exist(res.body.payload);

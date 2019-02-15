@@ -9,26 +9,14 @@
     "removeComments": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
+    "resolveJsonModule": true,
     "strictNullChecks": false,
     "outDir": "./dist/",
-    "rootDirs": [
-      "./src"
-    ],
-    "lib": [
-      "es6",
-      "dom",
-      "esnext"
-    ],
+    "rootDirs": ["./src"],
+    "lib": ["es6", "dom", "esnext"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*",
-    "knexfile.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "test/**/*", "knexfile.ts"],
+  "exclude": ["node_modules", "dist"]
 }

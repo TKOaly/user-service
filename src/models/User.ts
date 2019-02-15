@@ -1,5 +1,5 @@
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 import UserRoleString from "../enum/UserRoleString";
+import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
 
 export default class User {
   public id: number;
@@ -31,24 +31,15 @@ export default class User {
     this.email = userDatabaseObject.email;
     this.residence = userDatabaseObject.residence;
     this.phone = userDatabaseObject.phone;
-    this.isHYYMember =
-      userDatabaseObject.hyy_member == null
-        ? undefined
-        : Boolean(userDatabaseObject.hyy_member);
+    this.isHYYMember = userDatabaseObject.hyy_member == null ? undefined : Boolean(userDatabaseObject.hyy_member);
     this.membership = userDatabaseObject.membership;
     this.role = userDatabaseObject.role as UserRoleString;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
     this.createdAt = userDatabaseObject.created;
     this.modifiedAt = userDatabaseObject.modified;
-    this.isTKTL =
-      userDatabaseObject.tktl == null
-        ? undefined
-        : Boolean(userDatabaseObject.tktl);
-    this.isDeleted =
-      userDatabaseObject.deleted == null
-        ? undefined
-        : Boolean(userDatabaseObject.deleted);
+    this.isTKTL = userDatabaseObject.tktl == null ? undefined : Boolean(userDatabaseObject.tktl);
+    this.isDeleted = userDatabaseObject.deleted == null ? undefined : Boolean(userDatabaseObject.deleted);
   }
 
   public removeSensitiveInformation(): User {
@@ -61,14 +52,12 @@ export default class User {
    * Removes non-requested user data.
    */
   public removeNonRequestedData(dataRequest: number): User {
-    Object.keys(this.removeSensitiveInformation()).forEach(
-      (key: keyof User, i: number) => {
-        const val: number = Math.pow(2, i);
-        if (val === null || (val & dataRequest) !== val) {
-          delete this[key];
-        }
+    Object.keys(this.removeSensitiveInformation()).forEach((key: keyof User, i: number) => {
+      const val: number = Math.pow(2, i);
+      if (val === null || (val & dataRequest) !== val) {
+        delete this[key];
       }
-    );
+    });
     return this;
   }
 
@@ -81,9 +70,7 @@ export default class User {
       email: this.email,
       residence: this.residence,
       phone: this.phone,
-      hyy_member: isNaN(Number(this.isHYYMember))
-        ? undefined
-        : Number(this.isHYYMember),
+      hyy_member: isNaN(Number(this.isHYYMember)) ? undefined : Number(this.isHYYMember),
       tktl: isNaN(Number(this.isTKTL)) ? undefined : Number(this.isTKTL),
       membership: this.membership,
       role: this.role,
@@ -91,7 +78,7 @@ export default class User {
       hashed_password: this.hashedPassword,
       created: this.createdAt,
       modified: this.modifiedAt,
-      deleted: this.isDeleted
+      deleted: this.isDeleted,
     };
   }
 }
@@ -101,5 +88,5 @@ export const RoleNumbers: Record<UserRoleString, number> = {
   virkailija: 2,
   tenttiarkistovirkailija: 2,
   jasenvirkailija: 3,
-  yllapitaja: 4
+  yllapitaja: 4,
 };

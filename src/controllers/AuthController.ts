@@ -10,64 +10,36 @@ export default class AuthController implements IController {
   private route: express.Router;
   private authorizeMiddleware: AuthorizeMiddleware;
 
-  constructor(
-    private userService: UserService,
-    private authService: AuthenticationService
-  ) {
+  constructor(private userService: UserService, private authService: AuthenticationService) {
     this.route = express.Router();
     this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
-  public async check(
-    req: express.Request & IASRequest,
-    res: express.Response
-  ): Promise<express.Response> {
+  public async check(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     if (!req.get("service")) {
-      return res
-        .status(400)
-        .json(new ServiceResponse(null, "No service defined"));
+      return res.status(400).json(new ServiceResponse(null, "No service defined"));
     }
 
-    if (
-      req.authorization.token.authenticatedTo.indexOf(req.get("service")) > -1
-    ) {
+    if (req.authorization.token.authenticatedTo.indexOf(req.get("service")) > -1) {
       return res.status(200).json(new ServiceResponse(null, "Success"));
     } else {
-      return res
-        .status(403)
-        .json(new ServiceResponse(null, "Not authorized to service"));
+      return res.status(403).json(new ServiceResponse(null, "Not authorized to service"));
     }
   }
 
-  public async authenticateUser(
-    req: express.Request & IASRequest,
-    res: express.Response
-  ): Promise<express.Response> {
-    if (
-      !req.body.serviceIdentifier ||
-      !req.body.username ||
-      !req.body.password
-    ) {
-      return res
-        .status(400)
-        .json(new ServiceResponse(null, "Invalid request params"));
+  public async authenticateUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+    if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
+      return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
 
     try {
-      await this.authService.getServiceWithIdentifier(
-        req.body.serviceIdentifier
-      );
+      await this.authService.getServiceWithIdentifier(req.body.serviceIdentifier);
     } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
+      return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
     try {
-      const user: User = await this.userService.getUserWithUsernameAndPassword(
-        req.body.username,
-        req.body.password
-      );
+      const user: User = await this.userService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
 
       let token: string;
 
@@ -75,24 +47,18 @@ export default class AuthController implements IController {
         if (req.authorization) {
           token = this.authService.appendNewServiceAuthenticationToToken(
             req.authorization.token,
-            req.body.serviceIdentifier
+            req.body.serviceIdentifier,
           );
         } else {
-          token = this.authService.createToken(user.id, [
-            req.body.serviceIdentifier
-          ]);
+          token = this.authService.createToken(user.id, [req.body.serviceIdentifier]);
         }
 
-        return res
-          .status(200)
-          .json(new ServiceResponse({ token }, "Authenticated", true));
+        return res.status(200).json(new ServiceResponse({ token }, "Authenticated", true));
       } catch (e) {
         return res.status(500).json(new ServiceResponse(null, e.message));
       }
     } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
+      return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -116,24 +82,20 @@ export default class AuthController implements IController {
       salt: "",
       screen_name: "",
       tktl: 1,
-      username: ""
+      username: "",
     });
     return res.render("calcPermissions", {
-      userKeys: Object.keys(dummyObject)
+      userKeys: Object.keys(dummyObject),
     });
   }
 
   /**
    * Calculates service permissions.
    */
-  public calcPermissionsPost(
-    req: express.Request,
-    res: express.Response
-  ): void {
+  public calcPermissionsPost(req: express.Request, res: express.Response): void {
     const wantedPermissions: {
       [key: string]: string;
-    } =
-      req.body;
+    } = req.body;
     if (wantedPermissions.submit) {
       delete wantedPermissions.submit;
     }
@@ -154,32 +116,28 @@ export default class AuthController implements IController {
       salt: "",
       screen_name: "",
       tktl: 1,
-      username: ""
+      username: "",
     }).removeSensitiveInformation();
 
     let permissionInteger: number = 0;
 
-    Object.keys(dummyObject.removeSensitiveInformation()).forEach(
-      (value: string, i: number) => {
-        Object.keys(wantedPermissions).forEach(
-          (bodyValue: string, a: number) => {
-            if (value === bodyValue) {
-              if (permissionInteger === 0) {
-                permissionInteger = Math.pow(2, i);
-              } else {
-                permissionInteger = permissionInteger | Math.pow(2, i);
-              }
-              return;
-            }
+    Object.keys(dummyObject.removeSensitiveInformation()).forEach((value: string, i: number) => {
+      Object.keys(wantedPermissions).forEach((bodyValue: string, a: number) => {
+        if (value === bodyValue) {
+          if (permissionInteger === 0) {
+            permissionInteger = Math.pow(2, i);
+          } else {
+            permissionInteger = permissionInteger | Math.pow(2, i);
           }
-        );
-      }
-    );
+          return;
+        }
+      });
+    });
 
     return res.render("calcPermissions", {
       userKeys: Object.keys(dummyObject),
       wantedPermissions: Object.keys(wantedPermissions),
-      permissionInteger
+      permissionInteger,
     });
   }
 
@@ -190,12 +148,12 @@ export default class AuthController implements IController {
     this.route.get(
       "/check",
       this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.check.bind(this)
+      this.check.bind(this),
     );
     this.route.post(
       "/authenticate",
       this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
-      this.authenticateUser.bind(this)
+      this.authenticateUser.bind(this),
     );
     if (process.env.NODE_ENV !== "production") {
       this.route.get("/calcPermissions", this.calcPermissions.bind(this));

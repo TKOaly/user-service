@@ -12,7 +12,7 @@ describe("Service model", () => {
       display_name: "Test service",
       redirect_url: "https://localhost",
       service_identifier: "1-2-3-4-5",
-      service_name: "testService"
+      service_name: "testService",
     });
     done();
   });

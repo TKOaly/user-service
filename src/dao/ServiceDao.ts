@@ -4,25 +4,23 @@ import IDao from "../interfaces/IDao";
 import { IServiceDatabaseObject } from "../models/Service";
 
 export default class ServiceDao implements IDao<IServiceDatabaseObject> {
-  constructor(private readonly knex: Knex) { }
+  constructor(private readonly knex: Knex) {}
 
   public findOne(id: number): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
       this.knex("services")
         .select()
         .where({ id })
-        .first()
+        .first(),
     );
   }
 
-  public findByIdentifier(
-    service_identifier: string
-  ): Promise<IServiceDatabaseObject> {
+  public findByIdentifier(service_identifier: string): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
       this.knex("services")
         .select()
         .where({ service_identifier })
-        .first()
+        .first(),
     );
   }
 
@@ -31,7 +29,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
       this.knex("services")
         .select()
         .where({ service_name })
-        .first()
+        .first(),
     );
   }
 
@@ -53,14 +51,11 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
                 .delete()
                 .where({ id });
             });
-        })
+        }),
     );
   }
 
-  public update(
-    entityId: number,
-    entity: IServiceDatabaseObject
-  ): Promise<number> {
+  public update(entityId: number, entity: IServiceDatabaseObject): Promise<number> {
     // Update modified timestamp. Prevent updating created timestamp.
     if (entity.created) {
       delete entity.created;
@@ -69,7 +64,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
     return Promise.resolve(
       this.knex("services")
         .where({ id: entityId })
-        .update(entity)
+        .update(entity),
     );
   }
 

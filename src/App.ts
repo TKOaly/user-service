@@ -89,7 +89,8 @@ app.set("trust proxy", 1);
 
 // MySQL session store
 // @ts-ignore
-const store: session.Store = new MySQLSessionStore((knexfile[process.env.NODE_ENV! as Environment].connection as MySQLSessionStore.Options))
+const store: session.Store = new MySQLSessionStore(knexfile[process.env.NODE_ENV! as Environment]
+  .connection as MySQLSessionStore.Options);
 
 // Session
 app.use(
@@ -174,8 +175,9 @@ app.use(ApiRoute.generateApiRoute("payments"), paymentController.createRoutes())
 app.use("/", loginController.createRoutes());
 // Privacy policy route
 app.use(ApiRoute.generateApiRoute("policy"), privacyPolicyController.createRoutes());
+
 // CSRF
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }

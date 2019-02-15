@@ -4,14 +4,8 @@ import User from "../models/User";
 import ServiceError from "../utils/ServiceError";
 
 export default class PaymentValidator implements IValidator<Payment> {
-
   public validateCreate(bodyData: Payment): void {
-    if (
-      !bodyData.payer_id ||
-      !bodyData.amount ||
-      !bodyData.valid_until ||
-      !bodyData.payment_type
-    ) {
+    if (!bodyData.payer_id || !bodyData.amount || !bodyData.valid_until || !bodyData.payment_type) {
       throw new ServiceError(400, "Invalid POST data");
     }
 

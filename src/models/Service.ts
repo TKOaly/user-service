@@ -30,7 +30,7 @@ export default class Service {
       redirect_url: this.redirectUrl,
       service_identifier: this.serviceIdentifier,
       modified: this.modifiedAt,
-      created: this.createdAt
+      created: this.createdAt,
     } as IServiceDatabaseObject;
   }
 }

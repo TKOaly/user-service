@@ -24,7 +24,7 @@ const allowedSelfEdit: string[] = [
   "isHYYMember",
   "isTKTL",
   "password1",
-  "password2"
+  "password2",
 ];
 
 // Colums allowed to be edited by jäsenvirkailija
@@ -34,11 +34,9 @@ const allowedJVEdit: string[] = [...allowedSelfEdit, "name", "username", "member
 const allowedAdminEdit: string[] = [...allowedJVEdit, "role", "createdAt"];
 
 export default class UserValidator implements IValidator<User> {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
-  public async validateCreate(
-    newUser: User & IAdditionalUserData
-  ): Promise<void> {
+  public async validateCreate(newUser: User & IAdditionalUserData): Promise<void> {
     // Discard user id
     delete newUser.id;
 
@@ -76,11 +74,7 @@ export default class UserValidator implements IValidator<User> {
     }
   }
 
-  public async validateUpdate(
-    userId: number,
-    newUser: User & IAdditionalUserData,
-    modifier: User
-  ): Promise<void> {
+  public async validateUpdate(userId: number, newUser: User & IAdditionalUserData, modifier: User): Promise<void> {
     // Remove information that hasn't changed
     const oldUser: User = await this.userService.fetchUser(userId);
     Object.keys(newUser).forEach((k: keyof User) => {
@@ -94,16 +88,10 @@ export default class UserValidator implements IValidator<User> {
       // Self edit
       newUser.id = userId;
       checkModifyPermission(newUser, allowedSelfEdit);
-    } else if (
-      userId !== modifier.id &&
-      modifier.role === UserRoleString.Jasenvirkailija
-    ) {
+    } else if (userId !== modifier.id && modifier.role === UserRoleString.Jasenvirkailija) {
       // Jasenvirkailija edit
       checkModifyPermission(newUser, allowedJVEdit);
-    } else if (
-      userId !== modifier.id &&
-      modifier.role === UserRoleString.Yllapitaja
-    ) {
+    } else if (userId !== modifier.id && modifier.role === UserRoleString.Yllapitaja) {
       // Yllapitaja edit
       checkModifyPermission(newUser, allowedAdminEdit);
     } else {
@@ -136,9 +124,7 @@ export default class UserValidator implements IValidator<User> {
   public async checkUsernameAvailability(newUser: User): Promise<void> {
     if (newUser.username) {
       // Test username
-      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(
-        newUser.username.trim()
-      );
+      const usernameAvailable: boolean = await this.userService.checkUsernameAvailability(newUser.username.trim());
       if (!usernameAvailable) {
         throw new ServiceError(400, "Username already taken");
       }
@@ -148,9 +134,7 @@ export default class UserValidator implements IValidator<User> {
   public async checkEmailAvailability(newUser: User): Promise<void> {
     if (newUser.email) {
       // Test email
-      const emailAvailable: boolean = await this.userService.checkEmailAvailability(
-        newUser.email.trim()
-      );
+      const emailAvailable: boolean = await this.userService.checkEmailAvailability(newUser.email.trim());
       if (!emailAvailable) {
         throw new ServiceError(400, "Email address already taken");
       }
@@ -163,7 +147,7 @@ export default class UserValidator implements IValidator<User> {
       !validator.isEmail(email) ||
       !validator.isLength(email, {
         max: 255,
-        min: 1
+        min: 1,
       })
     ) {
       return false;
@@ -173,16 +157,10 @@ export default class UserValidator implements IValidator<User> {
   }
 }
 
-export function checkModifyPermission(
-  user: User,
-  allowedEdits: string[]
-): void {
+export function checkModifyPermission(user: User, allowedEdits: string[]): void {
   const error: string = "Forbidden modify action";
   Object.keys(user).forEach((key: string) => {
-    if (
-      !allowedEdits.find((allowedEdit: string) => allowedEdit === key) &&
-      key !== "id"
-    ) {
+    if (!allowedEdits.find((allowedEdit: string) => allowedEdit === key) && key !== "id") {
       throw new ServiceError(403, error);
     }
   });

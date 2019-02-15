@@ -1,16 +1,16 @@
 {
   "defaultSeverity": "warning",
-  "extends": ["prettier", "tslint:recommended"],
+  "extends": ["tslint:recommended", "tslint-plugin-prettier", "tslint-config-prettier"],
   "jsRules": {
     "object-literal-sort-keys": false
   },
   "rules": {
+    "prettier": true,
     "no-console": false,
     "no-var-requires": false,
     "trailing-comma": false,
     "no-bitwise": false,
     "object-literal-sort-keys": false,
-    "typeof-compare": true,
     "typedef": false,
     "interface-name": false,
     "no-shadowed-variable": false,
