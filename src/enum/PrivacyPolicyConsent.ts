@@ -1,7 +1,7 @@
 enum PrivacyPolicyConsent {
   Accepted = "accepted",
   Declined = "declined",
-  Unknown = "unknown"
+  Unknown = "unknown",
 }
 
 export default PrivacyPolicyConsent;

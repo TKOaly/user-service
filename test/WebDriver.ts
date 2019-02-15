@@ -7,18 +7,14 @@ export const prepareDriver: () => Promise<webdriver.WebDriver> = async (): Promi
   return await new webdriver.Builder()
     .disableEnvironmentOverrides()
     .forBrowser("chrome")
-    .setChromeOptions(
-      new chrome.Options()
-        .headless()
-        .addArguments("no-sandbox")
-    )
+    .setChromeOptions(new chrome.Options().headless().addArguments("no-sandbox"))
     .setLoggingPrefs({ browser: "ALL", driver: "ALL" })
     .build();
 };
 
-export const cleanupDriver: (
-  driver: webdriver.WebDriver
-) => Promise<void> = async (driver: webdriver.WebDriver): Promise<void> => {
+export const cleanupDriver: (driver: webdriver.WebDriver) => Promise<void> = async (
+  driver: webdriver.WebDriver,
+): Promise<void> => {
   if (driver) {
     await driver.quit();
   }

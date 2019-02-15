@@ -9,7 +9,7 @@ import * as Express from "express";
 const cachingMiddleware = (
   req: Express.Request | any,
   res: Express.Response | any,
-  next: Express.NextFunction | any
+  next: Express.NextFunction | any,
 ): void => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
   res.header("Expires", "-1");

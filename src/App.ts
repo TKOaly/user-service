@@ -89,7 +89,8 @@ app.set("trust proxy", 1);
 
 // MySQL session store
 // @ts-ignore
-const store: session.Store = new MySQLSessionStore((knexfile[process.env.NODE_ENV! as Environment].connection as MySQLSessionStore.Options))
+const store: session.Store = new MySQLSessionStore(knexfile[process.env.NODE_ENV! as Environment]
+  .connection as MySQLSessionStore.Options);
 
 // Session
 app.use(

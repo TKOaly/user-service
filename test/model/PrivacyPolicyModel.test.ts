@@ -16,7 +16,7 @@ describe("Privacy policy model", () => {
       created: new Date(2015, 1, 1),
       modified: new Date(2015, 1, 3),
       service_id: 22,
-      text: "Hello World"
+      text: "Hello World",
     };
     policyModel = new PrivacyPolicy(policy);
     done();
@@ -26,13 +26,9 @@ describe("Privacy policy model", () => {
     should.exist(policyModel.id);
     policyModel.id.should.equal(552);
     should.exist(policyModel.created);
-    policyModel.created
-      .toDateString()
-      .should.equal(new Date(2015, 1, 1).toDateString());
+    policyModel.created.toDateString().should.equal(new Date(2015, 1, 1).toDateString());
     should.exist(policyModel.modified);
-    policyModel.modified
-      .toDateString()
-      .should.equal(new Date(2015, 1, 3).toDateString());
+    policyModel.modified.toDateString().should.equal(new Date(2015, 1, 3).toDateString());
     should.exist(policyModel.service_id);
     policyModel.service_id.should.equal(22);
     should.exist(policyModel.text);
@@ -43,7 +39,7 @@ describe("Privacy policy model", () => {
   it("Sets partial data correctly (IPrivacyPolicyDatabaseObject)", (done: Mocha.Done) => {
     const policy2: PrivacyPolicy = {
       id: 225,
-      text: "Hello World 2"
+      text: "Hello World 2",
     };
 
     should.exist(policy2.id);
@@ -61,13 +57,9 @@ describe("Privacy policy model", () => {
     should.exist(policy.id);
     policy.id.should.equal(552);
     should.exist(policy.created);
-    policy.created
-      .toDateString()
-      .should.equal(new Date(2015, 1, 1).toDateString());
+    policy.created.toDateString().should.equal(new Date(2015, 1, 1).toDateString());
     should.exist(policy.modified);
-    policy.modified
-      .toDateString()
-      .should.equal(new Date(2015, 1, 3).toDateString());
+    policy.modified.toDateString().should.equal(new Date(2015, 1, 3).toDateString());
     should.exist(policy.service_id);
     policy.service_id.should.equal(22);
     should.exist(policy.text);
@@ -78,7 +70,7 @@ describe("Privacy policy model", () => {
   it("Sets partial data correctly (PrivacyPolicy)", (done: Mocha.Done) => {
     const policy2: PrivacyPolicy = {
       id: 225,
-      text: "Hello World 2"
+      text: "Hello World 2",
     };
 
     const policyModel: PrivacyPolicy = new PrivacyPolicy(policy2);

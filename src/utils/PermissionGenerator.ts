@@ -17,15 +17,12 @@ class PermissionGenerator {
     salt: Math.pow(2, 12),
     screen_name: Math.pow(2, 13),
     tktl: Math.pow(2, 14),
-    username: Math.pow(2, 15)
+    username: Math.pow(2, 15),
   };
 
   private PermissionByte = 0;
   private PermissionList: Array<keyof IUserDatabaseObject> = [];
-  constructor(
-    permissionByte?: number,
-    permissionList?: Array<keyof IUserDatabaseObject>
-  ) {
+  constructor(permissionByte?: number, permissionList?: Array<keyof IUserDatabaseObject>) {
     if (permissionByte !== undefined && permissionList !== undefined) {
       this.PermissionByte = permissionByte;
       this.PermissionList = permissionList;
@@ -107,20 +104,17 @@ class PermissionGenerator {
   public all() {
     let newGenerator = new PermissionGenerator(this.PermissionByte, this.PermissionList);
     Object.keys(newGenerator.PermissionModel).forEach(
-      (key: keyof IUserDatabaseObject) => newGenerator = newGenerator.helper(key)
+      (key: keyof IUserDatabaseObject) => (newGenerator = newGenerator.helper(key)),
     );
     return newGenerator;
   }
 
   private helper(key: keyof IUserDatabaseObject) {
     const newGenerator = new PermissionGenerator(this.PermissionByte, this.PermissionList);
-    if (!newGenerator.PermissionList.find((elem) => key === elem)) {
+    if (!newGenerator.PermissionList.find(elem => key === elem)) {
       newGenerator.PermissionList = [...newGenerator.PermissionList, key];
     }
-    if (
-      (newGenerator.PermissionModel[key] & newGenerator.PermissionByte) !==
-      newGenerator.PermissionModel[key]
-    ) {
+    if ((newGenerator.PermissionModel[key] & newGenerator.PermissionByte) !== newGenerator.PermissionModel[key]) {
       newGenerator.PermissionByte = newGenerator.PermissionByte | newGenerator.PermissionModel[key];
     }
 

@@ -3,7 +3,7 @@ enum UserRoleString {
   Virkailija = "virkailija",
   Tenttiarkistovirkailija = "tenttiarkistovirkailija",
   Jasenvirkailija = "jasenvirkailija",
-  Yllapitaja = "yllapitaja"
+  Yllapitaja = "yllapitaja",
 }
 
 export default UserRoleString;

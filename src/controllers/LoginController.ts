@@ -13,10 +13,7 @@ import AuthenticationService from "../services/AuthenticationService";
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, {
-  IASRequest,
-  LoginStep
-} from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
@@ -30,18 +27,18 @@ export default class LoginController implements IController {
     private authService: AuthenticationService,
     private userService: UserService,
     private consentService: ConsentService,
-    private privacyPolicyService: PrivacyPolicyService
+    private privacyPolicyService: PrivacyPolicyService,
   ) {
     this.route = Router();
     this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
     this.csrfMiddleware = csrf({
-      cookie: true
+      cookie: true,
     });
   }
 
   public async getLoginView(
     req: express.Request & IASRequest,
-    res: express.Response
+    res: express.Response,
   ): Promise<express.Response | void> {
     // Delete login step
     if (req.session && req.session.loginStep) {
@@ -60,21 +57,15 @@ export default class LoginController implements IController {
 
     if (!req.query.serviceIdentifier) {
       return res.status(400).render("serviceError", {
-        error: "Missing service identifier"
+        error: "Missing service identifier",
       });
     }
 
     try {
-      const service: Service = await this.authService.getServiceWithIdentifier(
-        req.query.serviceIdentifier
-      );
+      const service: Service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier);
 
       if (req.authorization) {
-        if (
-          req.authorization.token.authenticatedTo.indexOf(
-            service.serviceIdentifier
-          ) > -1
-        ) {
+        if (req.authorization.token.authenticatedTo.indexOf(service.serviceIdentifier) > -1) {
           return res.redirect(service.redirectUrl);
         }
       }
@@ -85,12 +76,12 @@ export default class LoginController implements IController {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
       });
     } catch (err) {
       Raven.captureException(err);
       return res.status(400).render("serviceError", {
-        error: err.message
+        error: err.message,
       });
     }
   }
@@ -98,25 +89,19 @@ export default class LoginController implements IController {
   /**
    * Sets the language of the page.
    */
-  public setLanguage(
-    req: Express.Request & IASRequest,
-    res: Express.Response & any
-  ): Promise<express.Response | void> {
+  public setLanguage(req: Express.Request & IASRequest, res: Express.Response & any): Promise<express.Response | void> {
     res.clearCookie("tkoaly_locale");
     res.cookie("tkoaly_locale", req.params.language, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: process.env.COOKIE_DOMAIN
+      domain: process.env.COOKIE_DOMAIN,
     });
     return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
-  public async logOut(
-    req: express.Request & IASRequest,
-    res: express.Response
-  ): Promise<express.Response | void> {
+  public async logOut(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
     if (!req.query.serviceIdentifier) {
       return res.status(400).render("serviceError", {
-        error: "Missing service identifier"
+        error: "Missing service identifier",
       });
     }
 
@@ -127,19 +112,17 @@ export default class LoginController implements IController {
 
     let service: Service;
     try {
-      service = await this.authService.getServiceWithIdentifier(
-        req.query.serviceIdentifier
-      );
+      service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier);
     } catch (e) {
       Raven.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
-        error: e.message
+        error: e.message,
       });
     }
 
     const token: string = this.authService.removeServiceAuthenticationToToken(
       req.authorization.token,
-      service.serviceIdentifier
+      service.serviceIdentifier,
     );
 
     // this token had one service left which was remove -> clear token
@@ -148,7 +131,7 @@ export default class LoginController implements IController {
     } else {
       res.cookie("token", token, {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        domain: process.env.COOKIE_DOMAIN
+        domain: process.env.COOKIE_DOMAIN,
       });
     }
 
@@ -158,37 +141,20 @@ export default class LoginController implements IController {
     return res.render("logout", { serviceName: service.displayName });
   }
 
-  public async login(
-    req: express.Request & IASRequest,
-    res: express.Response
-  ): Promise<express.Response | void> {
-    if (
-      !req.body.serviceIdentifier ||
-      !req.body.username ||
-      !req.body.password
-    ) {
-      return res
-        .status(400)
-        .json(new ServiceResponse(null, "Invalid request params"));
+  public async login(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+    if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
+      return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
 
     let service: Service;
     try {
-      service = await this.authService.getServiceWithIdentifier(
-        req.body.serviceIdentifier
-      );
+      service = await this.authService.getServiceWithIdentifier(req.body.serviceIdentifier);
     } catch (e) {
-      return res
-        .status(e.httpErrorCode)
-        .json(new ServiceResponse(null, e.message));
+      return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
     if (req.authorization) {
-      if (
-        req.authorization.token.authenticatedTo.indexOf(
-          req.body.serviceIdentifier
-        ) > -1
-      ) {
+      if (req.authorization.token.authenticatedTo.indexOf(req.body.serviceIdentifier) > -1) {
         return res.redirect(service.redirectUrl);
       }
     }
@@ -196,21 +162,11 @@ export default class LoginController implements IController {
     let keys: Array<{ name: string; value: string }> = [];
     let user: User;
     try {
-      user = await this.userService.getUserWithUsernameAndPassword(
-        req.body.username,
-        req.body.password
-      );
+      user = await this.userService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
 
       if (req.authorization && req.authorization.user) {
         if (user.id !== req.authorization.user.id) {
-          return res
-            .status(403)
-            .json(
-              new ServiceResponse(
-                null,
-                "Credentials not matching already authorized user"
-              )
-            );
+          return res.status(403).json(new ServiceResponse(null, "Credentials not matching already authorized user"));
         }
       } else {
         // Something is missing here..?
@@ -222,15 +178,16 @@ export default class LoginController implements IController {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
       });
     }
 
     // Removes data that are not needed when making a request
     // We require user id and role every time, regardless of permissions in services
-    keys = Object.keys(
-      user.removeNonRequestedData(service.dataPermissions | 512 | 1)
-    ).map((key: keyof User) => ({ name: key, value: user[key].toString() }));
+    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map((key: keyof User) => ({
+      name: key,
+      value: user[key].toString(),
+    }));
 
     // Set session
     if (!user.id) {
@@ -240,7 +197,7 @@ export default class LoginController implements IController {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
       });
     }
 
@@ -250,24 +207,19 @@ export default class LoginController implements IController {
       password: req.body.password,
       serviceIdentifier: service.serviceIdentifier,
       // Check for custom redirection url
-      redirectTo: req.body.loginRedirect
-        ? req.body.loginRedirect
-        : service.redirectUrl
+      redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
     };
 
     // Consent check here. If status is unknown, declined or the consent doesn't exist, redirect.
     try {
-      const consent: Consent = await this.consentService.findByUserAndService(
-        user.id,
-        service.id
-      );
+      const consent: Consent = await this.consentService.findByUserAndService(user.id, service.id);
       if (
         !consent ||
         consent.consent === PrivacyPolicyConsent.Declined ||
         consent.consent === PrivacyPolicyConsent.Unknown
       ) {
         const policy: PrivacyPolicy = await this.privacyPolicyService.findByServiceIdentifier(
-          service.serviceIdentifier
+          service.serviceIdentifier,
         );
         // Redirect to consent page
         // Login step detects that in what part the login process currently is
@@ -277,7 +229,7 @@ export default class LoginController implements IController {
           serviceDisplayName: service.displayName,
           policy: policy.text,
           policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm"),
-          csrfToken: req.csrfToken()
+          csrfToken: req.csrfToken(),
         });
       }
     } catch (err) {
@@ -288,7 +240,7 @@ export default class LoginController implements IController {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
       });
     }
     // Set login step
@@ -298,9 +250,7 @@ export default class LoginController implements IController {
       csrfToken: req.csrfToken(),
       personalInformation: keys,
       serviceDisplayName: service.displayName,
-      redirectTo: req.body.loginRedirect
-        ? req.body.loginRedirect
-        : service.redirectUrl
+      redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
     });
   }
 
@@ -309,12 +259,11 @@ export default class LoginController implements IController {
    */
   public async loginConfirm(
     req: express.Request & IASRequest,
-    res: express.Response
+    res: express.Response,
   ): Promise<express.Response | void> {
     const body: {
       permission: string;
-    } =
-      req.body;
+    } = req.body;
 
     if (!body.permission) {
       return res.redirect("https://members.tko-aly.fi");
@@ -323,7 +272,7 @@ export default class LoginController implements IController {
     if (req.session.loginStep !== LoginStep.GDPR) {
       Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
-        error: "Server error"
+        error: "Server error",
       });
     }
 
@@ -333,12 +282,10 @@ export default class LoginController implements IController {
       if (req.authorization) {
         token = this.authService.appendNewServiceAuthenticationToToken(
           req.authorization.token,
-          req.session.user.serviceIdentifier
+          req.session.user.serviceIdentifier,
         );
       } else {
-        token = this.authService.createToken(req.session.user.userId, [
-          req.session.user.serviceIdentifier
-        ]);
+        token = this.authService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
       }
     } catch (e) {
       Raven.captureException(e);
@@ -352,7 +299,7 @@ export default class LoginController implements IController {
 
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: process.env.COOKIE_DOMAIN
+      domain: process.env.COOKIE_DOMAIN,
     });
 
     res.set("Access-Control-Allow-Origin", "*");
@@ -365,48 +312,39 @@ export default class LoginController implements IController {
    */
   public async privacyPolicyConfirm(
     req: express.Request & IASRequest,
-    res: express.Response
+    res: express.Response,
   ): Promise<express.Response | void> {
     const body: {
       accept: string;
-    } =
-      req.body;
+    } = req.body;
 
     if (req.session.loginStep !== LoginStep.PrivacyPolicy) {
       Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
-        error: "Server error"
+        error: "Server error",
       });
     }
 
-    const service: Service = await this.authService.getServiceWithIdentifier(
-      req.session.user.serviceIdentifier
-    );
+    const service: Service = await this.authService.getServiceWithIdentifier(req.session.user.serviceIdentifier);
 
     if (!body.accept) {
       // Add new consent
       try {
-        await this.consentService.declineConsent(
-          req.session.user.userId,
-          service.id
-        );
+        await this.consentService.declineConsent(req.session.user.userId, service.id);
         return res.redirect("https://members.tko-aly.fi");
       } catch (ex) {
         Raven.captureException(ex);
         return res.status(500).render("serviceError", {
-          error: "Error saving your answer." + ex.message
+          error: "Error saving your answer." + ex.message,
         });
       }
     } else {
       try {
-        await this.consentService.acceptConsent(
-          req.session.user.userId,
-          service.id
-        );
+        await this.consentService.acceptConsent(req.session.user.userId, service.id);
       } catch (ex) {
         Raven.captureException(ex);
         return res.status(500).render("serviceError", {
-          error: "Error saving your answer: " + ex.message
+          error: "Error saving your answer: " + ex.message,
         });
       }
     }
@@ -416,9 +354,7 @@ export default class LoginController implements IController {
       csrfToken: req.csrfToken(),
       personalInformation: req.session.keys,
       serviceDisplayName: service.displayName,
-      redirectTo: req.body.loginRedirect
-        ? req.body.loginRedirect
-        : service.redirectUrl
+      redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
     });
   }
 
@@ -428,40 +364,35 @@ export default class LoginController implements IController {
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
-      this.getLoginView.bind(this)
+      this.getLoginView.bind(this),
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
-      this.login.bind(this)
+      this.login.bind(this),
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
-      this.privacyPolicyConfirm.bind(this)
+      this.privacyPolicyConfirm.bind(this),
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
       this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
-      this.loginConfirm.bind(this)
+      this.loginConfirm.bind(this),
     );
     this.route.get(
       "/logout",
-      this.authorizationMiddleware
-        .authorize(false)
-        .bind(this.authorizationMiddleware),
-      this.logOut.bind(this)
+      this.authorizationMiddleware.authorize(false).bind(this.authorizationMiddleware),
+      this.logOut.bind(this),
     );
-    this.route.get(
-      "/lang/:language/:serviceIdentifier?",
-      this.setLanguage.bind(this.setLanguage)
-    );
+    this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
     return this.route;
   }
 }

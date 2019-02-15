@@ -33,27 +33,7 @@ export default class Payment implements IPayment {
       throw new Error("baseNumber too long or short");
     }
 
-    const multipliers: number[] = [
-      7,
-      3,
-      1,
-      7,
-      3,
-      1,
-      7,
-      3,
-      1,
-      7,
-      3,
-      1,
-      7,
-      3,
-      1,
-      7,
-      3,
-      1,
-      7
-    ];
+    const multipliers: number[] = [7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7, 3, 1, 7];
     let sum: number = 0;
     let j: number = 0;
     baseNumber

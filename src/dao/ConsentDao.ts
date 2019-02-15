@@ -7,13 +7,13 @@ import IDao from "../interfaces/IDao";
 const tableName: string = "privacy_policy_consent_data";
 
 export default class ConsentDao implements IDao<IConsentDatabaseObject> {
-  constructor(private readonly knex: Knex) { }
+  constructor(private readonly knex: Knex) {}
 
   public findOne(id: number): Promise<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .where({ id })
-        .first()
+        .first(),
     );
   }
 
@@ -25,20 +25,17 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .delete()
-        .where({ id })
+        .where({ id }),
     );
   }
 
-  public update(
-    entityId: number,
-    entity: IConsentDatabaseObject
-  ): Promise<number> {
+  public update(entityId: number, entity: IConsentDatabaseObject): Promise<number> {
     delete entity.created;
     entity.modified = new Date();
     return Promise.resolve(
       this.knex(tableName)
         .update(entity)
-        .where({ id: entityId })
+        .where({ id: entityId }),
     );
   }
 
@@ -49,17 +46,15 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .update({ consent: PrivacyPolicyConsent.Unknown })
-        .where({ consent: PrivacyPolicyConsent.Accepted, service_id })
+        .where({ consent: PrivacyPolicyConsent.Accepted, service_id }),
     );
   }
 
-  public findAllByServiceId(
-    service_id: number
-  ): Promise<IConsentDatabaseObject[]> {
+  public findAllByServiceId(service_id: number): Promise<IConsentDatabaseObject[]> {
     return Promise.resolve(
       this.knex(tableName)
         .select()
-        .where({ service_id })
+        .where({ service_id }),
     );
   }
 
@@ -67,19 +62,16 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .select()
-        .where({ user_id })
+        .where({ user_id }),
     );
   }
 
-  public findByUserAndService(
-    user_id: number,
-    service_id: number
-  ): Promise<IConsentDatabaseObject> {
+  public findByUserAndService(user_id: number, service_id: number): Promise<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .select()
         .where({ user_id, service_id })
-        .first()
+        .first(),
     );
   }
 
@@ -87,7 +79,7 @@ export default class ConsentDao implements IDao<IConsentDatabaseObject> {
     return Promise.resolve(
       this.knex(tableName)
         .select()
-        .where({ consent: PrivacyPolicyConsent.Declined })
+        .where({ consent: PrivacyPolicyConsent.Declined }),
     );
   }
 

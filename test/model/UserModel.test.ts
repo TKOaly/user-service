@@ -29,7 +29,7 @@ describe("User model", () => {
       created: new Date(2017, 1, 1),
       modified: new Date(2017, 1, 1),
       tktl: 1,
-      deleted: 0
+      deleted: 0,
     });
     done();
   });
@@ -47,14 +47,8 @@ describe("User model", () => {
     user.role.should.equal("yllapitaja");
     user.salt.should.equal("12345");
     user.hashedPassword.should.equal("12345");
-    user.createdAt
-      .toDateString()
-      .should
-      .equal(new Date(2017, 1, 1).toDateString());
-    user.modifiedAt
-      .toDateString()
-      .should
-      .equal(new Date(2017, 1, 1).toDateString());
+    user.createdAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
+    user.modifiedAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
     user.isTKTL.should.equal(true);
     user.isDeleted.should.equal(false);
     done();
@@ -324,11 +318,10 @@ describe("User model", () => {
   });
 
   it(
-    "Requesting username, name, email and membership should" +
-      " only return username, name, email and membership",
+    "Requesting username, name, email and membership should" + " only return username, name, email and membership",
     (done: Mocha.Done) => {
       const newUser: User = user.removeNonRequestedData(
-        Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8)
+        Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8),
       );
       should.not.exist(newUser.id);
       should.exist(newUser.username);
@@ -343,7 +336,7 @@ describe("User model", () => {
       should.not.exist(newUser.salt);
       should.not.exist(newUser.hashedPassword);
       done();
-    }
+    },
   );
 
   describe("compareRoles()", () => {

@@ -35,11 +35,11 @@ describe("ApiRoute", () => {
       res: {
         setHeader: (name: string, val: string): void => {
           headers.push({ name, val });
-        }
+        },
       },
       next: (): void => {
         calledNext = true;
-      }
+      },
     };
 
     const middleware: any = ApiRoute.apiHeaderMiddleware(apiVersion);
@@ -60,7 +60,6 @@ describe("ApiRoute", () => {
   });
 
   it("Middleware sets API version header correctly", (done: Mocha.Done) => {
-
     const headers: Array<{ name: string; val: string }> = [];
 
     let calledNext: boolean = false;
@@ -71,11 +70,11 @@ describe("ApiRoute", () => {
       res: {
         setHeader: (name: string, val: string): void => {
           headers.push({ name, val });
-        }
+        },
       },
       next: (): void => {
         calledNext = true;
-      }
+      },
     };
 
     const middleware: any = ApiRoute.apiHeaderMiddleware();

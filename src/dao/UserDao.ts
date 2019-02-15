@@ -1,19 +1,17 @@
 import Promise from "bluebird";
 import Knex from "knex";
 import IDao from "../interfaces/IDao";
-import IUserDatabaseObject, {
-  IUserPaymentDatabaseObject
-} from "../interfaces/IUserDatabaseObject";
+import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 
 export default class UserDao implements IDao<IUserDatabaseObject> {
-  constructor(private readonly knex: Knex) { }
+  constructor(private readonly knex: Knex) {}
 
   public findOne(id: number): Promise<IUserDatabaseObject> {
     return Promise.resolve(
       this.knex("users")
         .select()
         .where({ id })
-        .first()
+        .first(),
     );
   }
 
@@ -22,7 +20,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       this.knex("users")
         .select()
         .where({ username })
-        .first()
+        .first(),
     );
   }
 
@@ -31,7 +29,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       this.knex("users")
         .select()
         .where({ email })
-        .first()
+        .first(),
     );
   }
 
@@ -45,7 +43,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
         .innerJoin("payments", "users.id", "payments.payer_id")
         .where("users.id", "=", id)
         .andWhere("payments.paid", null)
-        .first()
+        .first(),
     );
   }
 
@@ -57,23 +55,18 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       this.knex("users")
         .select("users.*")
         .innerJoin("payments", "users.id", "payments.payer_id")
-        .where("payments.paid", null)
+        .where("payments.paid", null),
     );
   }
 
-  public findAll(
-    fields?: string[],
-    conditions?: string[]
-  ): Promise<IUserDatabaseObject[]> {
+  public findAll(fields?: string[], conditions?: string[]): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
       const query: Knex.QueryBuilder = this.knex("users").select(fields);
 
       if (queryString.indexOf("Payment.")) {
         query.leftOuterJoin(
-          this.knex.raw(
-            "payments on (users.id = payments.payer_id and payments.valid_until > now())"
-          )
+          this.knex.raw("payments on (users.id = payments.payer_id and payments.valid_until > now())"),
         );
       }
 
@@ -100,7 +93,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
         .where("username", "like", `%${searchTerm}%`)
         .orWhere("name", "like", `%${searchTerm}%`)
         .orWhere("screen_name", "like", `%${searchTerm}%`)
-        .orWhere("email", "like", `%${searchTerm}%`)
+        .orWhere("email", "like", `%${searchTerm}%`),
     );
   }
 
@@ -121,10 +114,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
       });
   }
 
-  public update(
-    entityId: number,
-    entity: IUserDatabaseObject
-  ): Promise<number> {
+  public update(entityId: number, entity: IUserDatabaseObject): Promise<number> {
     if (entity.created) {
       delete entity.created;
     }
@@ -132,7 +122,7 @@ export default class UserDao implements IDao<IUserDatabaseObject> {
     return Promise.resolve(
       this.knex("users")
         .update(entity)
-        .where({ id: entityId })
+        .where({ id: entityId }),
     );
   }
 

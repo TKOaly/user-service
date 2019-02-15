@@ -11,27 +11,18 @@ export default class PrivacyPolicyController implements IController {
     this.route = Express.Router();
   }
 
-  public async GetPrivacyPolicy(
-    req: Express.Request,
-    res: Express.Response
-  ): Promise<Express.Response | void> {
+  public async GetPrivacyPolicy(req: Express.Request, res: Express.Response): Promise<Express.Response | void> {
     try {
       const privacyPolicy: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findByServiceIdentifier(
-        req.params.serviceIdentifier
+        req.params.serviceIdentifier,
       );
       if (privacyPolicy) {
-        return res
-          .status(200)
-          .json(new ServiceResponse(privacyPolicy, "Success", true));
+        return res.status(200).json(new ServiceResponse(privacyPolicy, "Success", true));
       } else {
-        return res
-          .status(404)
-          .json(new ServiceResponse(null, "Privacy policy not found", false));
+        return res.status(404).json(new ServiceResponse(null, "Privacy policy not found", false));
       }
     } catch (err) {
-      return res
-        .status(500)
-        .json(new ServiceResponse(null, "Server error", false));
+      return res.status(500).json(new ServiceResponse(null, "Server error", false));
     }
   }
 
