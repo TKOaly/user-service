@@ -11,7 +11,6 @@
     "trailing-comma": false,
     "no-bitwise": false,
     "object-literal-sort-keys": false,
-    "typeof-compare": true,
     "typedef": false,
     "interface-name": false,
     "no-shadowed-variable": false,
