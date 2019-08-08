@@ -8,6 +8,7 @@ export interface IPayment {
   valid_until?: Date;
   paid?: Date;
   payment_type?: string;
+  membership_applied_for?: string;
 }
 
 export default class Payment implements IPayment {
@@ -20,6 +21,7 @@ export default class Payment implements IPayment {
   public valid_until: Date;
   public paid: Date;
   public payment_type: string;
+  public membership_applied_for: string;
 
   constructor(payment: IPayment) {
     Object.keys(payment).forEach((key: keyof IPayment) => {

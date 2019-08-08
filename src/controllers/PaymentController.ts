@@ -55,7 +55,8 @@ export default class PaymentController implements IController {
           req.body.amount &&
           req.body.valid_until &&
           req.body.paid &&
-          req.body.payment_type
+          req.body.payment_type &&
+          req.body.membership_applied_for
         )
       ) {
         return res
