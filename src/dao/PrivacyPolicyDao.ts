@@ -1,14 +1,12 @@
 import Promise from "bluebird";
-import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
+import { knexInstance } from "../Db";
 
-export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObject> {
-  constructor(private readonly knex: Knex) {}
-
+class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObject> {
   public findOne(id: number): Promise<IPrivacyPolicyDatabaseObject> {
     return Promise.resolve(
-      this.knex
+      knexInstance
         .select()
         .from("privacy_policies")
         .where({ id })
@@ -21,7 +19,7 @@ export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObje
    */
   public findByServiceIdentifier(serviceIdentifier: string): Promise<IPrivacyPolicyDatabaseObject> {
     return Promise.resolve(
-      this.knex
+      knexInstance
         .select(
           "privacy_policies.id",
           "privacy_policies.service_id",
@@ -38,7 +36,7 @@ export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObje
 
   public findByName(name: string): Promise<IPrivacyPolicyDatabaseObject> {
     return Promise.resolve(
-      this.knex
+      knexInstance
         .select()
         .from("privacy_policies")
         .where({ name })
@@ -47,12 +45,12 @@ export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObje
   }
 
   public findAll(): Promise<IPrivacyPolicyDatabaseObject[]> {
-    return Promise.resolve(this.knex.select().from("privacy_policies"));
+    return Promise.resolve(knexInstance.select().from("privacy_policies"));
   }
 
   public remove(id: number): Promise<boolean> {
     return Promise.resolve(
-      this.knex
+      knexInstance
         .delete()
         .from("privacy_policies")
         .where({ id }),
@@ -65,7 +63,7 @@ export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObje
     }
     entity.modified = new Date();
     return Promise.resolve(
-      this.knex("privacy_policies")
+      knexInstance("privacy_policies")
         .update(entity)
         .where({ id: entityId }),
     );
@@ -78,6 +76,8 @@ export default class PrivacyPolicyDao implements IDao<IPrivacyPolicyDatabaseObje
     entity.created = new Date();
     entity.modified = new Date();
 
-    return Promise.resolve(this.knex("privacy_policies").insert(entity));
+    return Promise.resolve(knexInstance("privacy_policies").insert(entity));
   }
 }
+
+export default new PrivacyPolicyDao();

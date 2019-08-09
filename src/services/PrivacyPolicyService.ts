@@ -1,14 +1,11 @@
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
-import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
 import IService from "../interfaces/IService";
 import PrivacyPolicy from "../models/PrivacyPolicy";
 import ServiceError from "../utils/ServiceError";
 
-export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
-  constructor(private readonly privacyPolicyDao: PrivacyPolicyDao) {}
-
+class PrivacyPolicyService implements IService<PrivacyPolicy> {
   public async findOne(id: number): Promise<PrivacyPolicy> {
-    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findOne(id);
+    const res = await PrivacyPolicyDao.findOne(id);
     if (!res) {
       throw new ServiceError(404, "Privacy policy not found");
     }
@@ -16,7 +13,7 @@ export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
   }
 
   public async findByServiceIdentifier(serviceIdentifier: string): Promise<PrivacyPolicy> {
-    const res: IPrivacyPolicyDatabaseObject = await this.privacyPolicyDao.findByServiceIdentifier(serviceIdentifier);
+    const res = await PrivacyPolicyDao.findByServiceIdentifier(serviceIdentifier);
     if (!res) {
       throw new ServiceError(404, "Privacy policy not found");
     }
@@ -39,3 +36,5 @@ export default class PrivacyPolicyService implements IService<PrivacyPolicy> {
     throw new Error("Method not implemented.");
   }
 }
+
+export default new PrivacyPolicyService();

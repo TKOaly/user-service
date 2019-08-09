@@ -1,14 +1,12 @@
 import Promise from "bluebird";
-import * as Knex from "knex";
 import IDao from "../interfaces/IDao";
 import { IServiceDatabaseObject } from "../models/Service";
+import { knexInstance } from "../Db";
 
-export default class ServiceDao implements IDao<IServiceDatabaseObject> {
-  constructor(private readonly knex: Knex) {}
-
+class ServiceDao implements IDao<IServiceDatabaseObject> {
   public findOne(id: number): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      this.knex("services")
+      knexInstance("services")
         .select()
         .where({ id })
         .first(),
@@ -17,7 +15,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
 
   public findByIdentifier(service_identifier: string): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      this.knex("services")
+      knexInstance("services")
         .select()
         .where({ service_identifier })
         .first(),
@@ -26,7 +24,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
 
   public findByName(service_name: string): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      this.knex("services")
+      knexInstance("services")
         .select()
         .where({ service_name })
         .first(),
@@ -34,20 +32,20 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
   }
 
   public findAll(): Promise<IServiceDatabaseObject[]> {
-    return Promise.resolve(this.knex("services").select());
+    return Promise.resolve(knexInstance("services").select());
   }
 
   public remove(id: number): Promise<boolean> {
     return Promise.resolve(
-      this.knex("privacy_policy_consent_data")
+      knexInstance("privacy_policy_consent_data")
         .delete()
         .where({ service_id: id })
         .then<boolean>((result: boolean) => {
-          return this.knex("privacy_policies")
+          return knexInstance("privacy_policies")
             .delete()
             .where({ service_id: id })
             .then<boolean>((result: boolean) => {
-              return this.knex("services")
+              return knexInstance("services")
                 .delete()
                 .where({ id });
             });
@@ -62,7 +60,7 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
     }
     entity.modified = new Date();
     return Promise.resolve(
-      this.knex("services")
+      knexInstance("services")
         .where({ id: entityId })
         .update(entity),
     );
@@ -76,6 +74,8 @@ export default class ServiceDao implements IDao<IServiceDatabaseObject> {
     // Set timestamps
     entity.created = new Date();
     entity.modified = new Date();
-    return Promise.resolve(this.knex("services").insert(entity));
+    return Promise.resolve(knexInstance("services").insert(entity));
   }
 }
+
+export default new ServiceDao();

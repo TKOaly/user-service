@@ -5,11 +5,9 @@ import IService from "../interfaces/IService";
 import Consent from "../models/Consent";
 import ServiceError from "../utils/ServiceError";
 
-export default class ConsentService implements IService<Consent> {
-  constructor(private readonly consentDao: ConsentDao) {}
-
+class ConsentService implements IService<Consent> {
   public async findOne(id: number): Promise<Consent> {
-    const consent: IConsentDatabaseObject = await this.consentDao.findOne(id);
+    const consent = await ConsentDao.findOne(id);
     if (!consent) {
       throw new ServiceError(404, "Not found");
     }
@@ -20,27 +18,27 @@ export default class ConsentService implements IService<Consent> {
    * Resets all consents to unknown in a service (That have not been declined.)
    */
   public async resetAllAcceptedByService(service_id: number): Promise<number[]> {
-    const res: number[] = await this.consentDao.resetAllAcceptedByService(service_id);
+    const res = await ConsentDao.resetAllAcceptedByService(service_id);
     return res;
   }
 
   public async findAll(): Promise<Consent[]> {
-    const consents: IConsentDatabaseObject[] = await this.consentDao.findAll();
-    return consents.map((consent: IConsentDatabaseObject) => new Consent(consent));
+    const consents = await ConsentDao.findAll();
+    return consents.map(consent => new Consent(consent));
   }
 
   public async update(entity_id: number, entity: Consent): Promise<number> {
-    const res: number = await this.consentDao.update(entity_id, entity);
+    const res = await ConsentDao.update(entity_id, entity);
     return res;
   }
 
   public async delete(entity_id: number): Promise<boolean> {
-    const res: boolean = await this.consentDao.remove(entity_id);
+    const res = await ConsentDao.remove(entity_id);
     return res;
   }
 
   public async create(entity: Consent): Promise<number[]> {
-    const res: number[] = await this.consentDao.save(entity);
+    const res = await ConsentDao.save(entity);
     return res;
   }
 
@@ -49,8 +47,11 @@ export default class ConsentService implements IService<Consent> {
    * If a consent's value is undefined, update it to "declined"
    */
   public async declineConsent(user_id: number, service_id: number): Promise<number[]> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
+    const res = await ConsentDao.findByUserAndService(user_id, service_id);
     if (res) {
+      if (res.id === undefined) {
+        throw new Error("Consent ID is undefined");
+      }
       // Consent exists, check for state
       if (res.consent === PrivacyPolicyConsent.Declined) {
         // Already declined, do nothing
@@ -58,13 +59,13 @@ export default class ConsentService implements IService<Consent> {
       } else if (res.consent === PrivacyPolicyConsent.Accepted) {
         // Accepted, update to declined.
         // Otherwise, the status is unknown.
-        const updated: number = await this.consentDao.update(res.id, {
+        const updated = await ConsentDao.update(res.id, {
           consent: PrivacyPolicyConsent.Declined,
         });
         return [updated];
       } else {
         // Otherwise, the status is unknown.
-        const updated: number = await this.consentDao.update(res.id, {
+        const updated = await ConsentDao.update(res.id, {
           consent: PrivacyPolicyConsent.Declined,
         });
         return [updated];
@@ -76,13 +77,13 @@ export default class ConsentService implements IService<Consent> {
         service_id,
         consent: PrivacyPolicyConsent.Declined,
       };
-      const inserted: number[] = await this.consentDao.save(consentData);
+      const inserted = await ConsentDao.save(consentData);
       return inserted;
     }
   }
 
-  public async findByUserAndService(user_id: number, service_id: number): Promise<Consent> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
+  public async findByUserAndService(user_id: number, service_id: number): Promise<Consent | null> {
+    const res = await ConsentDao.findByUserAndService(user_id, service_id);
     if (!res) {
       return null;
     }
@@ -95,15 +96,18 @@ export default class ConsentService implements IService<Consent> {
    * If a consent is undefined, update it to "accepted"
    */
   public async acceptConsent(user_id: number, service_id: number): Promise<number[]> {
-    const res: IConsentDatabaseObject = await this.consentDao.findByUserAndService(user_id, service_id);
+    const res = await ConsentDao.findByUserAndService(user_id, service_id);
     if (res) {
+      if (res.id === undefined) {
+        throw new Error("Consent ID is undefined");
+      }
       // Consent exists, check for state
       if (res.consent === PrivacyPolicyConsent.Accepted) {
         // Already accepted, do nothing
         return [1];
       } else {
         // Otherwise, the status is unknown or declined.
-        const updated: number = await this.consentDao.update(res.id, {
+        const updated = await ConsentDao.update(res.id, {
           consent: PrivacyPolicyConsent.Accepted,
         });
         return [updated];
@@ -115,8 +119,10 @@ export default class ConsentService implements IService<Consent> {
         service_id,
         consent: PrivacyPolicyConsent.Accepted,
       };
-      const inserted: number[] = await this.consentDao.save(consentData);
+      const inserted = await ConsentDao.save(consentData);
       return inserted;
     }
   }
 }
+
+export default new ConsentService();

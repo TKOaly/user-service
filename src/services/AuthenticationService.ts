@@ -6,11 +6,9 @@ import Service, { IServiceDatabaseObject } from "../models/Service";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
-export default class AuthenticationService {
-  constructor(private readonly serviceDao: ServiceDao) {}
-
+class AuthenticationService {
   public async getService(serviceName: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await this.serviceDao.findByName(serviceName);
+    const service: IServiceDatabaseObject = await ServiceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -18,7 +16,7 @@ export default class AuthenticationService {
   }
 
   public async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await this.serviceDao.findByIdentifier(service_identifier);
+    const service: IServiceDatabaseObject = await ServiceDao.findByIdentifier(service_identifier);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -26,7 +24,7 @@ export default class AuthenticationService {
   }
 
   public async getServices(): Promise<Service[]> {
-    const services: IServiceDatabaseObject[] = await this.serviceDao.findAll();
+    const services: IServiceDatabaseObject[] = await ServiceDao.findAll();
 
     return services.map((service: IServiceDatabaseObject) => new Service(service));
   }
@@ -85,3 +83,5 @@ export default class AuthenticationService {
 export async function validatePassword(password: string, salt: string, hashedPassword: string): Promise<boolean> {
   return await compare(sha1(`${salt}kekbUr${password}`), hashedPassword);
 }
+
+export default new AuthenticationService();

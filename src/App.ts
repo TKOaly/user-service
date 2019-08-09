@@ -51,13 +51,13 @@ if (process.env.NODE_ENV === "production") {
 const knex: Knex = Knex(knexfile[process.env.NODE_ENV! as Environment]);
 
 // Express application instance
-const app: express.Application = express();
+const app = express();
 
 // Helmet
 app.use(helmet());
 
 // Disable cross-domain checks for now
-app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "*");
   next();
@@ -122,35 +122,30 @@ export type Environment = "development" | "staging" | "test" | "production";
 // Initialize services here
 
 // User service
-const userService: UserService = new UserService(new UserDao(knex));
+const userService = new UserService(new UserDao(knex));
 
 // Payment service
-const paymentService: PaymentService = new PaymentService(new PaymentDao(knex));
+const paymentService = new PaymentService(new PaymentDao(knex));
 
 // Authentication service
-const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
+const authService = new AuthenticationService(new ServiceDao(knex));
 
 // Consent service
-const consentService: ConsentService = new ConsentService(new ConsentDao(knex));
+const consentService = new ConsentService(new ConsentDao(knex));
 
 // Privacy policy service
-const privacyPolicyService: PrivacyPolicyService = new PrivacyPolicyService(new PrivacyPolicyDao(knex));
+const privacyPolicyService = new PrivacyPolicyService(new PrivacyPolicyDao(knex));
 
 // Initialize controllers here
 
 // Authentication controller
-const authController: AuthController = new AuthController(userService, authService);
+const authController = new AuthController(userService, authService);
 
 // User controller
-const userController: UserController = new UserController(userService, authService, paymentService);
+const userController = new UserController(userService, authService, paymentService);
 
 // Login controller
-const loginController: LoginController = new LoginController(
-  authService,
-  userService,
-  consentService,
-  privacyPolicyService,
-);
+const loginController = new LoginController(authService, userService, consentService, privacyPolicyService);
 
 // Payment controller
 const paymentController: PaymentController = new PaymentController(userService, paymentService);
