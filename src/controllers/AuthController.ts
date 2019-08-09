@@ -8,11 +8,9 @@ import ServiceResponse from "../utils/ServiceResponse";
 
 class AuthController implements IController {
   private route: express.Router;
-  private authorizeMiddleware: AuthorizeMiddleware;
 
   constructor() {
     this.route = express.Router();
-    this.authorizeMiddleware = new AuthorizeMiddleware(UserService);
   }
 
   public async check(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
@@ -147,14 +145,10 @@ class AuthController implements IController {
    * Creates routes for authentication controller.
    */
   public createRoutes(): express.Router {
-    this.route.get(
-      "/check",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.check.bind(this),
-    );
+    this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
     this.route.post(
       "/authenticate",
-      this.authorizeMiddleware.loadToken.bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.authenticateUser.bind(this),
     );
     if (process.env.NODE_ENV !== "production") {

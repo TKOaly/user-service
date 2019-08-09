@@ -32,9 +32,7 @@ export enum LoginStep {
   Login,
 }
 
-export default class AuthorizeMiddleware {
-  constructor(private userService: UserService) {}
-
+class AuthorizeMiddleware {
   public authorize = (
     returnAsJson: boolean,
   ): ((req: IASRequest, res: express.Response, next: express.NextFunction) => void) => async (
@@ -42,11 +40,11 @@ export default class AuthorizeMiddleware {
     res: express.Response,
     next: express.NextFunction,
   ): Promise<express.Response | void> => {
-    const token: string = req.get("authorization");
+    const token = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(token.slice(7).toString());
-        const user: User = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken = stringToServiceToken(token.slice(7).toString());
+        const user = await UserService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
           user,
@@ -63,8 +61,8 @@ export default class AuthorizeMiddleware {
       }
     } else if (req.cookies.token) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(req.cookies.token);
-        const user: User = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken = stringToServiceToken(req.cookies.token);
+        const user = await UserService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
           user,
@@ -95,11 +93,11 @@ export default class AuthorizeMiddleware {
     res: express.Response,
     next: express.NextFunction,
   ): Promise<express.Response | void> {
-    const token: string = req.get("authorization");
+    const token = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(token.slice(7).toString());
-        const user: User = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken = stringToServiceToken(token.slice(7).toString());
+        const user = await UserService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
           user,
@@ -112,8 +110,8 @@ export default class AuthorizeMiddleware {
 
     if (req.cookies.token) {
       try {
-        const parsedToken: ServiceToken = stringToServiceToken(req.cookies.token);
-        const user: User = await this.userService.fetchUser(parsedToken.userId);
+        const parsedToken = stringToServiceToken(req.cookies.token);
+        const user = await UserService.fetchUser(parsedToken.userId);
         req.authorization = {
           token: parsedToken,
           user,
@@ -126,3 +124,5 @@ export default class AuthorizeMiddleware {
     return next();
   }
 }
+
+export default new AuthorizeMiddleware();

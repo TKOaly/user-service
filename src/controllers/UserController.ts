@@ -16,35 +16,30 @@ import UserValidator from "../validators/UserValidator";
 
 export default class UserController implements IController {
   public route: express.Router;
-  public authorizeMiddleware: AuthorizeMiddleware;
   public userValidator: UserValidator;
 
-  constructor(
-    private userService: UserService,
-    private authenticationService: AuthenticationService,
-    private paymentService: PaymentService,
-  ) {
+  constructor() {
     this.route = express.Router();
-    this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
-    this.userValidator = new UserValidator(this.userService);
+    this.userValidator = new UserValidator(UserService);
   }
 
   /**
    * Returns the currently logged in user's data.
    */
   public async getMe(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
-    if (!req.header("service")) {
+    const serviceHeader = req.header("service");
+    if (!serviceHeader) {
       return res.status(400).json(new ServiceResponse(null, "No service defined"));
     }
 
-    if (req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0) {
+    if (req.authorization.token.authenticatedTo.indexOf(serviceHeader) < 0) {
       return res.status(403).json(new ServiceResponse(null, "User not authorized to service"));
     }
 
     try {
-      const service: Service = await this.authenticationService.getServiceWithIdentifier(req.header("service"));
-      const serviceDataPermissions: number = service.dataPermissions;
-      const user: User = await this.userService.fetchUser(req.authorization.user.id);
+      const service = await AuthenticationService.getServiceWithIdentifier(serviceHeader);
+      const serviceDataPermissions = service.dataPermissions;
+      const user = await UserService.fetchUser(req.authorization.user.id);
       return res
         .status(200)
         .json(
@@ -67,23 +62,27 @@ export default class UserController implements IController {
       }
     }
     if (req.params.id === "me") {
-      if (!req.header("service")) {
+      const serviceHeader = req.header("service");
+      if (!serviceHeader) {
         return res.status(400).json(new ServiceResponse(null, "No service defined"));
       }
 
-      if (req.authorization.token.authenticatedTo.indexOf(req.header("service")) < 0) {
+      if (req.authorization.token.authenticatedTo.indexOf(serviceHeader) < 0) {
         return res.status(403).json(new ServiceResponse(null, "User not authorized to service"));
       }
     }
 
     try {
-      let serviceDataPermissions: number = null;
+      let serviceDataPermissions: number | null = null;
       if (req.params.id === "me") {
-        serviceDataPermissions = (await this.authenticationService.getServiceWithIdentifier(req.header("service")))
-          .dataPermissions;
+        const serviceHeader = req.header("service");
+        if (!serviceHeader) {
+          return res.status(400).json(new ServiceResponse(null, "No service defined"));
+        }
+        serviceDataPermissions = (await AuthenticationService.getServiceWithIdentifier(serviceHeader)).dataPermissions;
         req.params.id = req.authorization.user.id;
       }
-      const user: User = await this.userService.fetchUser(req.params.id);
+      const user = await UserService.fetchUser(req.params.id);
       return res
         .status(200)
         .json(
@@ -110,8 +109,8 @@ export default class UserController implements IController {
     // Request is a search
     if (req.query.searchTerm) {
       try {
-        const users: User[] = await this.userService.searchUsers(req.query.searchTerm);
-        return res.status(200).json(new ServiceResponse(users.map((u: User) => u.removeSensitiveInformation())));
+        const users = await UserService.searchUsers(req.query.searchTerm);
+        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
         return res.status(500).json(new ServiceResponse(null, e.message));
       }
@@ -120,19 +119,16 @@ export default class UserController implements IController {
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        const users: UserPayment[] = await this.userService.fetchAllWithSelectedFields(
-          req.query.fields,
-          req.query.conditions || null,
-        );
-        return res.status(200).json(new ServiceResponse(users.map((u: UserPayment) => u.removeSensitiveInformation())));
+        const users = await UserService.fetchAllWithSelectedFields(req.query.fields, req.query.conditions || null);
+        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
         return res.status(500).json(new ServiceResponse(null, e.message));
       }
     }
 
     try {
-      const users: User[] = await this.userService.fetchAllUsers();
-      return res.status(200).json(new ServiceResponse(users.map((u: User) => u.removeSensitiveInformation())));
+      const users = await UserService.fetchAllUsers();
+      return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
     } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
@@ -144,8 +140,8 @@ export default class UserController implements IController {
     }
 
     try {
-      const users: User[] = await this.userService.fetchAllUnpaidUsers();
-      return res.status(200).json(new ServiceResponse(users.map((u: User) => u.removeSensitiveInformation())));
+      const users = await UserService.fetchAllUnpaidUsers();
+      return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
     } catch (e) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
@@ -154,7 +150,7 @@ export default class UserController implements IController {
   public async modifyUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
       await this.userValidator.validateUpdate(req.params.id, req.body, req.authorization.user);
-      const update: number = await this.userService.updateUser(req.params.id, req.body, req.body.password1 || null);
+      const update = await UserService.updateUser(req.params.id, req.body, req.body.password1 || null);
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));
       } else {
@@ -168,8 +164,8 @@ export default class UserController implements IController {
           modifierUserId: req.authorization.user.id,
         },
       });
-      res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
       Raven.captureException(err);
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
@@ -180,7 +176,7 @@ export default class UserController implements IController {
     // Edit me
     try {
       await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
-      await this.userService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
+      await UserService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
       return res.status(200).json(new ServiceResponse(req.body, "Success"));
     } catch (err) {
       Raven.captureBreadcrumb({
@@ -189,23 +185,23 @@ export default class UserController implements IController {
           userId: req.params.id,
         },
       });
-      res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
       Raven.captureException(err);
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
   public async createUser(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       await this.userValidator.validateCreate(req.body);
-      const userId: number = await this.userService.createUser(req.body, req.body.password1);
-      const user: User = await this.userService.fetchUser(userId);
+      const userId = await UserService.createUser(req.body, req.body.password1);
+      const user = await UserService.fetchUser(userId);
       return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), "Success"));
     } catch (err) {
       Raven.captureBreadcrumb({
         message: "Error creating user",
       });
-      res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
       Raven.captureBreadcrumb(err);
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
@@ -218,15 +214,15 @@ export default class UserController implements IController {
         id = Number(req.params.id);
       }
 
-      let payment: Payment = null;
+      let payment: Payment | null = null;
       if (req.query.query) {
         if (req.query.query === "validPayment") {
-          payment = await this.paymentService.fetchValidPaymentForUser(id);
+          payment = await PaymentService.fetchValidPaymentForUser(id);
         } else {
           return res.status(400).json(new ServiceResponse(null, "Bad query"));
         }
       } else {
-        payment = await this.paymentService.fetchPaymentByPayer(id);
+        payment = await PaymentService.fetchPaymentByPayer(id);
       }
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
@@ -239,15 +235,15 @@ export default class UserController implements IController {
     try {
       const id: number = req.authorization.user.id;
 
-      let payment: Payment = null;
+      let payment: Payment | null = null;
       if (req.query.query) {
         if (req.query.query === "validPayment") {
-          payment = await this.paymentService.fetchValidPaymentForUser(id);
+          payment = await PaymentService.fetchValidPaymentForUser(id);
         } else {
           return res.status(400).json(new ServiceResponse(null, "Bad query"));
         }
       } else {
-        payment = await this.paymentService.fetchPaymentByPayer(id);
+        payment = await PaymentService.fetchPaymentByPayer(id);
       }
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
@@ -261,17 +257,17 @@ export default class UserController implements IController {
       if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
-      const id: number = parseInt(req.params.id, 10);
-      const user: User = await this.userService.fetchUser(id);
-      const membership: string = req.body.membership;
+      const id = parseInt(req.params.id, 10);
+      const user = await UserService.fetchUser(id);
+      const membership = String(req.body.membership);
       if (!membership) {
         return res.status(400).json(new ServiceResponse(null, "Membership not set in request"));
       }
 
       if (membership === "hyvaksy") {
-        this.userService.updateUser(id, new User({ membership: user.isTKTL ? "jasen" : "ulkojasen" }));
+        UserService.updateUser(id, new User({ membership: user.isTKTL ? "jasen" : "ulkojasen" }));
       } else if (membership === "ei-jasen" || membership === "erotettu") {
-        this.userService.updateUser(
+        UserService.updateUser(
           id,
           new User({
             membership,
@@ -289,8 +285,8 @@ export default class UserController implements IController {
           modifierUserId: req.authorization.user.id,
         },
       });
-      res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
       Raven.captureException(err);
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
@@ -299,8 +295,13 @@ export default class UserController implements IController {
       if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) === 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
-      const id: number = parseInt(req.params.id, 10);
-      this.userService.deleteUser(id);
+      const id = parseInt(req.params.id, 10);
+      const result = await UserService.deleteUser(id);
+      if (result) {
+        return res.status(200).json(new ServiceResponse(null, "User deleted", true));
+      } else {
+        return res.status(500).json(new ServiceResponse(null, "Failed to delete user", false));
+      }
     } catch (err) {
       Raven.captureBreadcrumb({
         message: "Error deleting user",
@@ -309,60 +310,44 @@ export default class UserController implements IController {
           deleterUserId: req.authorization.user.id,
         },
       });
-      res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
       Raven.captureException(err);
+      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
 
   public createRoutes(): express.Router {
-    this.route.get(
-      "/:id",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.getUser.bind(this),
-    );
-    this.route.get(
-      "/me",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.getMe.bind(this),
-    );
-    this.route.get(
-      "/",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.getAllUsers.bind(this),
-    );
+    this.route.get("/:id", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getUser.bind(this));
+    this.route.get("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getMe.bind(this));
+    this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllUsers.bind(this));
     this.route.get(
       "/payments/unpaid",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.getAllUnpaidUsers.bind(this),
     );
     this.route.patch(
       "/:id(\\d+)",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.modifyUser.bind(this),
     );
-    this.route.patch(
-      "/me",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.modifyMe.bind(this),
-    );
+    this.route.patch("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.modifyMe.bind(this));
     this.route.get(
       "/:id(\\d+)/payments",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.findUserPayment.bind(this),
     );
     this.route.get(
       "/me/payments",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.findMePayment.bind(this),
     );
     this.route.put(
       "/:id(\\d+)/membership",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.setUserMembership.bind(this),
     );
     this.route.delete(
       "/:id(\\d+)",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.deleteUser.bind(this),
     );
     this.route.post("/", this.createUser.bind(this));

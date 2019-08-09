@@ -17,13 +17,11 @@ import ServiceResponse from "../utils/ServiceResponse";
 
 class LoginController implements IController {
   public route: Router;
-  public authorizationMiddleware: AuthorizeMiddleware;
 
   public csrfMiddleware: express.RequestHandler;
 
   constructor() {
     this.route = Router();
-    this.authorizationMiddleware = new AuthorizeMiddleware(UserService);
     this.csrfMiddleware = csrf({
       cookie: true,
     });
@@ -391,35 +389,31 @@ class LoginController implements IController {
       "/",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
-      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.getLoginView.bind(this),
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
-      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.login.bind(this),
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
-      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.privacyPolicyConfirm.bind(this),
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
       cachingMiddleware,
-      this.authorizationMiddleware.loadToken.bind(this.authorizationMiddleware),
+      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.loginConfirm.bind(this),
     );
-    this.route.get(
-      "/logout",
-      this.authorizationMiddleware.authorize(false).bind(this.authorizationMiddleware),
-      this.logOut.bind(this),
-    );
+    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this));
     this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
     return this.route;
   }

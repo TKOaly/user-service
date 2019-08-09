@@ -5,32 +5,29 @@ import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
 import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
-import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
 
-export default class PaymentController implements IController {
+class PaymentController implements IController {
   private route: express.Router;
-  private authorizeMiddleware: AuthorizeMiddleware;
   private paymentValidator: PaymentValidator;
 
-  constructor(private userService: UserService, private paymentService: PaymentService) {
+  constructor() {
     this.route = express.Router();
     this.paymentValidator = new PaymentValidator();
-    this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
   }
 
   public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       this.paymentValidator.validateCreate(req.body);
-      const paymentIds: number[] = await this.paymentService.createPayment(req.body);
-      const payment: Payment = await this.paymentService.fetchPayment(paymentIds[0]);
+      const paymentIds = await PaymentService.createPayment(req.body);
+      const payment = await PaymentService.fetchPayment(paymentIds[0]);
       if (payment.payment_type === "tilisiirto") {
         payment.generateReferenceNumber();
         // Set the generated reference number
-        await this.paymentService.updatePayment(payment.id, payment);
+        await PaymentService.updatePayment(payment.id, payment);
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
@@ -64,9 +61,9 @@ export default class PaymentController implements IController {
           .json(new ServiceResponse(null, "Failed to modify payment: missing request parameters", false));
       }
 
-      const affectedRow: number = await this.paymentService.updatePayment(req.params.id, req.body);
+      const affectedRow: number = await PaymentService.updatePayment(req.params.id, req.body);
       if (affectedRow === 1) {
-        const updatedPayment: Payment = await this.paymentService.fetchPayment(req.params.id);
+        const updatedPayment: Payment = await PaymentService.fetchPayment(req.params.id);
         return res.status(200).json(new ServiceResponse(updatedPayment, "Payment modified", true));
       } else {
         return res.status(400).json(new ServiceResponse(null, "Failed to modify payment"));
@@ -81,21 +78,21 @@ export default class PaymentController implements IController {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
-    let payments: Payment[] | PaymentListing[] = null;
+    let payments: Payment[] | PaymentListing[] | null = null;
 
     try {
       switch (req.query.filter) {
         case "unpaid":
-          payments = await this.paymentService.fetchUnpaidPayments();
+          payments = await PaymentService.fetchUnpaidPayments();
           break;
         case "bankPaid":
-          payments = await this.paymentService.findPaymentsPaidByBankTransfer();
+          payments = await PaymentService.findPaymentsPaidByBankTransfer();
           break;
         case "cashPaid":
-          payments = await this.paymentService.findPaymentsPaidByCash();
+          payments = await PaymentService.findPaymentsPaidByCash();
           break;
         default:
-          payments = await this.paymentService.fetchAllPayments();
+          payments = await PaymentService.fetchAllPayments();
       }
       return res.status(200).json(new ServiceResponse(payments, null, true));
     } catch (err) {
@@ -105,7 +102,7 @@ export default class PaymentController implements IController {
 
   public async getSinglePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      const payment: Payment = await this.paymentService.fetchPayment(req.params.id);
+      const payment: Payment = await PaymentService.fetchPayment(req.params.id);
 
       if (
         payment.payer_id !== req.authorization.user.id &&
@@ -129,10 +126,10 @@ export default class PaymentController implements IController {
 
     try {
       if (req.params.method === "bank") {
-        await this.paymentService.makeBankPaid(req.params.id, req.authorization.user.id);
+        await PaymentService.makeBankPaid(req.params.id, req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else if (req.params.method === "cash") {
-        await this.paymentService.makeCashPaid(req.params.id, req.authorization.user.id);
+        await PaymentService.makeCashPaid(req.params.id, req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else {
         return res.status(304);
@@ -146,8 +143,8 @@ export default class PaymentController implements IController {
           paymentMarkedByUserId: req.authorization.user.id,
         },
       });
-      res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       Raven.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -157,7 +154,7 @@ export default class PaymentController implements IController {
     }
 
     try {
-      await this.paymentService.deletePatyment(Number(req.params.id));
+      await PaymentService.deletePatyment(Number(req.params.id));
       return res.status(200);
     } catch (e) {
       Raven.captureBreadcrumb({
@@ -167,42 +164,36 @@ export default class PaymentController implements IController {
           paymentId: req.params.id,
         },
       });
-      res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       Raven.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
   public createRoutes(): express.Router {
     this.route.get(
       "/:id(\\d+)/",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.getSinglePayment.bind(this),
     );
-    this.route.get(
-      "/",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.getAllPayments.bind(this),
-    );
+    this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllPayments.bind(this));
     this.route.patch(
       "/:id(\\d+)/",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.modifyPayment.bind(this),
     );
     this.route.put(
       "/:id(\\d+)/pay/:method",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.markPaymentAsPaid.bind(this),
     );
     this.route.delete(
       "/:id(\\d+)",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
+      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.deletePayment.bind(this),
     );
-    this.route.post(
-      "/",
-      this.authorizeMiddleware.authorize(true).bind(this.authorizeMiddleware),
-      this.createPayment.bind(this),
-    );
+    this.route.post("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.createPayment.bind(this));
     return this.route;
   }
 }
+
+export default new PaymentController();

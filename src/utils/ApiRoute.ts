@@ -25,6 +25,9 @@ function apiHeaderMiddleware(
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
     }
+    if (process.env.API_VERSION === undefined) {
+      throw new Error("API_VERSION environment variable is not defined.");
+    }
     res.setHeader("X-API-version", process.env.API_VERSION);
     next();
   };
