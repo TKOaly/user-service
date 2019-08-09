@@ -126,10 +126,5 @@
       "lcov"
     ],
     "all": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint && yarn test"
-    }
   }
 }
