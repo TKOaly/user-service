@@ -17,3 +17,4 @@ screenshots/errors/*.jpg
 client-key.pem
 deploy-keys/key.pem
 aws-credentials.csv
+.sessions
