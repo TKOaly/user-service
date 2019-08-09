@@ -1,4 +1,4 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config();
 
 if (!process.env.NODE_ENV) {
@@ -10,10 +10,11 @@ import Raven from "raven";
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
+import SessionFileStore from "session-file-store";
 import helmet from "helmet";
 import Knex from "knex";
 import sassMiddleware from "node-sass-middleware";
-import * as Path from "path";
+import Path from "path";
 
 import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
@@ -36,8 +37,6 @@ import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 import i18n from "./i18n.config";
 import LocalizationMiddleware from "./utils/LocalizationMiddleware";
-
-import MySQLSessionStore from "express-mysql-session";
 
 // Config raven (only in production)
 if (process.env.NODE_ENV === "production") {
@@ -87,10 +86,8 @@ app.use(
 // Trust proxy
 app.set("trust proxy", 1);
 
-// MySQL session store
-// @ts-ignore
-const store: session.Store = new MySQLSessionStore(knexfile[process.env.NODE_ENV! as Environment]
-  .connection as MySQLSessionStore.Options);
+const fileStoreOptions: SessionFileStore.Options = { path: Path.resolve(__dirname, "..", ".sessions") };
+const FileStore = SessionFileStore(session);
 
 // Session
 app.use(
@@ -99,7 +96,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
-    store,
+    store: new FileStore(fileStoreOptions),
   }),
 );
 

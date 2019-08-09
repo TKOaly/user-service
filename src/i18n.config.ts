@@ -1,11 +1,11 @@
-import * as i18n from "i18n";
-import * as path from "path";
+import i18n from "i18n";
+import Path from "path";
 
 i18n.configure({
   locales: ["fi", "en"],
   defaultLocale: process.env.DEFAULT_LOCALE,
   cookie: "tkoaly_locale",
-  directory: path.resolve(path.join(__dirname, "..", "locales")),
+  directory: Path.resolve(Path.join(__dirname, "..", "locales")),
   api: {
     __: "t",
     __n: "tn",
