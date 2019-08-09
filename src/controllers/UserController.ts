@@ -3,9 +3,7 @@ import * as Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
 import IController from "../interfaces/IController";
 import Payment from "../models/Payment";
-import Service from "../models/Service";
 import User from "../models/User";
-import { UserPayment } from "../models/UserPayment";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
@@ -14,7 +12,7 @@ import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import UserValidator from "../validators/UserValidator";
 
-export default class UserController implements IController {
+class UserController implements IController {
   public route: express.Router;
   public userValidator: UserValidator;
 
@@ -354,3 +352,5 @@ export default class UserController implements IController {
     return this.route;
   }
 }
+
+export default new UserController();

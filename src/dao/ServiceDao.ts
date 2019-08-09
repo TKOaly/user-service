@@ -3,10 +3,12 @@ import IDao from "../interfaces/IDao";
 import { IServiceDatabaseObject } from "../models/Service";
 import { knexInstance } from "../Db";
 
+const tableName = "services";
+
 class ServiceDao implements IDao<IServiceDatabaseObject> {
   public findOne(id: number): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      knexInstance("services")
+      knexInstance(tableName)
         .select()
         .where({ id })
         .first(),
@@ -15,7 +17,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
 
   public findByIdentifier(service_identifier: string): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      knexInstance("services")
+      knexInstance(tableName)
         .select()
         .where({ service_identifier })
         .first(),
@@ -24,7 +26,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
 
   public findByName(service_name: string): Promise<IServiceDatabaseObject> {
     return Promise.resolve(
-      knexInstance("services")
+      knexInstance(tableName)
         .select()
         .where({ service_name })
         .first(),
@@ -32,7 +34,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
   }
 
   public findAll(): Promise<IServiceDatabaseObject[]> {
-    return Promise.resolve(knexInstance("services").select());
+    return Promise.resolve(knexInstance(tableName).select());
   }
 
   public remove(id: number): Promise<boolean> {
@@ -45,7 +47,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
             .delete()
             .where({ service_id: id })
             .then<boolean>((result: boolean) => {
-              return knexInstance("services")
+              return knexInstance(tableName)
                 .delete()
                 .where({ id });
             });
@@ -60,7 +62,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
     }
     entity.modified = new Date();
     return Promise.resolve(
-      knexInstance("services")
+      knexInstance(tableName)
         .where({ id: entityId })
         .update(entity),
     );
@@ -74,7 +76,7 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
     // Set timestamps
     entity.created = new Date();
     entity.modified = new Date();
-    return Promise.resolve(knexInstance("services").insert(entity));
+    return Promise.resolve(knexInstance(tableName).insert(entity));
   }
 }
 

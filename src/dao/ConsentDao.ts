@@ -4,7 +4,7 @@ import IConsentDatabaseObject from "../interfaces/IConsentDatabaseObject";
 import IDao from "../interfaces/IDao";
 import { knexInstance } from "../Db";
 
-const tableName: string = "privacy_policy_consent_data";
+const tableName = "privacy_policy_consent_data";
 
 class ConsentDao implements IDao<IConsentDatabaseObject> {
   public findOne(id: number): Promise<IConsentDatabaseObject> {

@@ -4,10 +4,12 @@ import IDao from "../interfaces/IDao";
 import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
 import { knexInstance } from "../Db";
 
+const tableName = "users";
+
 class UserDao implements IDao<IUserDatabaseObject> {
   public findOne(id: number): Promise<IUserDatabaseObject> {
     return Promise.resolve(
-      knexInstance("users")
+      knexInstance(tableName)
         .select()
         .where({ id })
         .first(),
@@ -16,7 +18,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
 
   public findByUsername(username: string): Promise<IUserDatabaseObject> {
     return Promise.resolve(
-      knexInstance("users")
+      knexInstance(tableName)
         .select()
         .where({ username })
         .first(),
@@ -25,7 +27,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
 
   public findByEmail(email: string): Promise<IUserDatabaseObject> {
     return Promise.resolve(
-      knexInstance("users")
+      knexInstance(tableName)
         .select()
         .where({ email })
         .first(),
@@ -37,10 +39,10 @@ class UserDao implements IDao<IUserDatabaseObject> {
    */
   public findByUnpaidPayment(id: number): Promise<IUserDatabaseObject> {
     return Promise.resolve(
-      knexInstance("users")
-        .select("users.*")
-        .innerJoin("payments", "users.id", "payments.payer_id")
-        .where("users.id", "=", id)
+      knexInstance(tableName)
+        .select(`${tableName}.*`)
+        .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
+        .where(`${tableName}.id`, "=", id)
         .andWhere("payments.paid", null)
         .first(),
     );
@@ -52,8 +54,8 @@ class UserDao implements IDao<IUserDatabaseObject> {
   public findAllByUnpaidPayment(): Promise<IUserDatabaseObject[]> {
     return Promise.resolve(
       knexInstance("users")
-        .select("users.*")
-        .innerJoin("payments", "users.id", "payments.payer_id")
+        .select(`${tableName}.*`)
+        .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
         .where("payments.paid", null),
     );
   }
@@ -61,11 +63,11 @@ class UserDao implements IDao<IUserDatabaseObject> {
   public findAll(fields?: string[], conditions?: string[]): Promise<IUserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
-      const query: Knex.QueryBuilder = knexInstance("users").select(fields);
+      const query: Knex.QueryBuilder = knexInstance(tableName).select(fields);
 
       if (queryString.indexOf("Payment.")) {
         query.leftOuterJoin(
-          knexInstance.raw("payments on (users.id = payments.payer_id and payments.valid_until > now())"),
+          knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
         );
       }
 
@@ -78,7 +80,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
       return Promise.resolve(query) as Promise<IUserPaymentDatabaseObject[]>;
     }
 
-    return Promise.resolve<IUserDatabaseObject[]>(knexInstance("users").select());
+    return Promise.resolve<IUserDatabaseObject[]>(knexInstance(tableName).select());
   }
 
   /**
@@ -88,7 +90,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
     return Promise.resolve(
       knexInstance
         .select()
-        .from("users")
+        .from(tableName)
         .where("username", "like", `%${searchTerm}%`)
         .orWhere("name", "like", `%${searchTerm}%`)
         .orWhere("screen_name", "like", `%${searchTerm}%`)
@@ -107,7 +109,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
       .delete()
       .where({ user_id: id })
       .then<boolean>((result: boolean) => {
-        return knexInstance("users")
+        return knexInstance(tableName)
           .delete()
           .where({ id });
       });
@@ -119,7 +121,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
     }
     entity.modified = new Date();
     return Promise.resolve(
-      knexInstance("users")
+      knexInstance(tableName)
         .update(entity)
         .where({ id: entityId }),
     );
@@ -132,7 +134,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
     }
     entity.created = new Date();
     entity.modified = new Date();
-    return Promise.resolve(knexInstance("users").insert(entity));
+    return Promise.resolve(knexInstance(tableName).insert(entity));
   }
 }
 
