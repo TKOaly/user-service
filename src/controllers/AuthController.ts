@@ -6,21 +6,23 @@ import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-export default class AuthController implements IController {
+class AuthController implements IController {
   private route: express.Router;
   private authorizeMiddleware: AuthorizeMiddleware;
 
-  constructor(private userService: UserService, private authService: AuthenticationService) {
+  constructor() {
     this.route = express.Router();
-    this.authorizeMiddleware = new AuthorizeMiddleware(this.userService);
+    this.authorizeMiddleware = new AuthorizeMiddleware(UserService);
   }
 
   public async check(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
-    if (!req.get("service")) {
+    const service = req.get("service");
+
+    if (service === undefined) {
       return res.status(400).json(new ServiceResponse(null, "No service defined"));
     }
 
-    if (req.authorization.token.authenticatedTo.indexOf(req.get("service")) > -1) {
+    if (req.authorization.token.authenticatedTo.indexOf(service) > -1) {
       return res.status(200).json(new ServiceResponse(null, "Success"));
     } else {
       return res.status(403).json(new ServiceResponse(null, "Not authorized to service"));
@@ -33,24 +35,24 @@ export default class AuthController implements IController {
     }
 
     try {
-      await this.authService.getServiceWithIdentifier(req.body.serviceIdentifier);
+      await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier);
     } catch (e) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
     try {
-      const user: User = await this.userService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
+      const user: User = await UserService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
 
       let token: string;
 
       try {
         if (req.authorization) {
-          token = this.authService.appendNewServiceAuthenticationToToken(
+          token = AuthenticationService.appendNewServiceAuthenticationToToken(
             req.authorization.token,
             req.body.serviceIdentifier,
           );
         } else {
-          token = this.authService.createToken(user.id, [req.body.serviceIdentifier]);
+          token = AuthenticationService.createToken(user.id, [req.body.serviceIdentifier]);
         }
 
         return res.status(200).json(new ServiceResponse({ token }, "Authenticated", true));
@@ -162,3 +164,5 @@ export default class AuthController implements IController {
     return this.route;
   }
 }
+
+export default new AuthController();

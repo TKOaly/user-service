@@ -5,8 +5,6 @@ import moment from "moment";
 import Raven from "raven";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import IController from "../interfaces/IController";
-import Consent from "../models/Consent";
-import PrivacyPolicy from "../models/PrivacyPolicy";
 import Service from "../models/Service";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
@@ -17,20 +15,15 @@ import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMi
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-export default class LoginController implements IController {
+class LoginController implements IController {
   public route: Router;
   public authorizationMiddleware: AuthorizeMiddleware;
 
   public csrfMiddleware: express.RequestHandler;
 
-  constructor(
-    private authService: AuthenticationService,
-    private userService: UserService,
-    private consentService: ConsentService,
-    private privacyPolicyService: PrivacyPolicyService,
-  ) {
+  constructor() {
     this.route = Router();
-    this.authorizationMiddleware = new AuthorizeMiddleware(this.userService);
+    this.authorizationMiddleware = new AuthorizeMiddleware(UserService);
     this.csrfMiddleware = csrf({
       cookie: true,
     });
@@ -62,7 +55,7 @@ export default class LoginController implements IController {
     }
 
     try {
-      const service: Service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier);
+      const service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier);
 
       if (req.authorization) {
         if (req.authorization.token.authenticatedTo.indexOf(service.serviceIdentifier) > -1) {
@@ -112,7 +105,7 @@ export default class LoginController implements IController {
 
     let service: Service;
     try {
-      service = await this.authService.getServiceWithIdentifier(req.query.serviceIdentifier);
+      service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier);
     } catch (e) {
       Raven.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
@@ -120,7 +113,7 @@ export default class LoginController implements IController {
       });
     }
 
-    const token: string = this.authService.removeServiceAuthenticationToToken(
+    const token = AuthenticationService.removeServiceAuthenticationToToken(
       req.authorization.token,
       service.serviceIdentifier,
     );
@@ -148,7 +141,7 @@ export default class LoginController implements IController {
 
     let service: Service;
     try {
-      service = await this.authService.getServiceWithIdentifier(req.body.serviceIdentifier);
+      service = await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier);
     } catch (e) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
@@ -162,7 +155,7 @@ export default class LoginController implements IController {
     let keys: Array<{ name: string; value: string }> = [];
     let user: User;
     try {
-      user = await this.userService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
+      user = await UserService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
 
       if (req.authorization && req.authorization.user) {
         if (user.id !== req.authorization.user.id) {
@@ -201,6 +194,18 @@ export default class LoginController implements IController {
       });
     }
 
+    if (req.session === undefined) {
+      Raven.captureException(new Error("Session is undefined."));
+      return res.status(500).render("login", {
+        service,
+        errors: ["Authentication failure: Session is undefined."],
+        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        loginRedirect: req.query.loginRedirect || undefined,
+        currentLocale: res.getLocale(),
+        csrfToken: req.csrfToken(),
+      });
+    }
+
     req.session.user = {
       userId: user.id,
       username: req.body.username,
@@ -212,15 +217,13 @@ export default class LoginController implements IController {
 
     // Consent check here. If status is unknown, declined or the consent doesn't exist, redirect.
     try {
-      const consent: Consent = await this.consentService.findByUserAndService(user.id, service.id);
+      const consent = await ConsentService.findByUserAndService(user.id, service.id);
       if (
         !consent ||
         consent.consent === PrivacyPolicyConsent.Declined ||
         consent.consent === PrivacyPolicyConsent.Unknown
       ) {
-        const policy: PrivacyPolicy = await this.privacyPolicyService.findByServiceIdentifier(
-          service.serviceIdentifier,
-        );
+        const policy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
         // Redirect to consent page
         // Login step detects that in what part the login process currently is
         req.session.loginStep = LoginStep.PrivacyPolicy;
@@ -269,6 +272,13 @@ export default class LoginController implements IController {
       return res.redirect("https://members.tko-aly.fi");
     }
 
+    if (req.session === undefined) {
+      Raven.captureException(new Error("Session is undefined"));
+      return res.status(500).render("serviceError", {
+        error: "Server error",
+      });
+    }
+
     if (req.session.loginStep !== LoginStep.GDPR) {
       Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
@@ -279,13 +289,17 @@ export default class LoginController implements IController {
     let token: string;
 
     try {
+      if (req.session.user === undefined) {
+        throw new Error("Session user is undefined.");
+      }
+
       if (req.authorization) {
-        token = this.authService.appendNewServiceAuthenticationToToken(
+        token = AuthenticationService.appendNewServiceAuthenticationToToken(
           req.authorization.token,
           req.session.user.serviceIdentifier,
         );
       } else {
-        token = this.authService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
+        token = AuthenticationService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
       }
     } catch (e) {
       Raven.captureException(e);
@@ -293,9 +307,9 @@ export default class LoginController implements IController {
     }
 
     const redirectTo: string = req.session.user.redirectTo;
-    req.session.user = null;
-    req.session.keys = null;
-    req.session.loginStep = null;
+    req.session.user = undefined;
+    req.session.keys = [];
+    req.session.loginStep = undefined;
 
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -318,6 +332,20 @@ export default class LoginController implements IController {
       accept: string;
     } = req.body;
 
+    if (req.session === undefined) {
+      Raven.captureException(new Error("Session is undefined."));
+      return res.status(500).render("serviceError", {
+        error: "Server error",
+      });
+    }
+
+    if (req.session.user === undefined) {
+      Raven.captureException(new Error("Session user is undefined."));
+      return res.status(500).render("serviceError", {
+        error: "Server error",
+      });
+    }
+
     if (req.session.loginStep !== LoginStep.PrivacyPolicy) {
       Raven.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
@@ -325,12 +353,12 @@ export default class LoginController implements IController {
       });
     }
 
-    const service: Service = await this.authService.getServiceWithIdentifier(req.session.user.serviceIdentifier);
+    const service = await AuthenticationService.getServiceWithIdentifier(req.session.user.serviceIdentifier);
 
     if (!body.accept) {
       // Add new consent
       try {
-        await this.consentService.declineConsent(req.session.user.userId, service.id);
+        await ConsentService.declineConsent(req.session.user.userId, service.id);
         return res.redirect("https://members.tko-aly.fi");
       } catch (ex) {
         Raven.captureException(ex);
@@ -340,7 +368,7 @@ export default class LoginController implements IController {
       }
     } else {
       try {
-        await this.consentService.acceptConsent(req.session.user.userId, service.id);
+        await ConsentService.acceptConsent(req.session.user.userId, service.id);
       } catch (ex) {
         Raven.captureException(ex);
         return res.status(500).render("serviceError", {
@@ -404,3 +432,5 @@ export interface ISessionUser {
   serviceIdentifier: string;
   redirectTo: string;
 }
+
+export default new LoginController();

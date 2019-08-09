@@ -20,20 +20,10 @@ import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
-import PaymentDao from "./dao/PaymentDao";
-import ServiceDao from "./dao/ServiceDao";
-import UserDao from "./dao/UserDao";
-import AuthenticationService from "./services/AuthenticationService";
-import PaymentService from "./services/PaymentService";
-import UserService from "./services/UserService";
 import ApiRoute from "./utils/ApiRoute";
 
 import * as knexfile from "../knexfile";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
-import ConsentDao from "./dao/ConsentDao";
-import PrivacyPolicyDao from "./dao/PrivacyPolicyDao";
-import ConsentService from "./services/ConsentService";
-import PrivacyPolicyService from "./services/PrivacyPolicyService";
 
 import i18n from "./i18n.config";
 import LocalizationMiddleware from "./utils/LocalizationMiddleware";
@@ -117,56 +107,20 @@ app.use(
 // Set static folder
 app.use(express.static(Path.join(__dirname, "..", "public")));
 
-export type Environment = "development" | "staging" | "test" | "production";
-
-// Initialize services here
-
-// User service
-const userService = new UserService(new UserDao(knex));
-
-// Payment service
-const paymentService = new PaymentService(new PaymentDao(knex));
-
-// Authentication service
-const authService = new AuthenticationService(new ServiceDao(knex));
-
-// Consent service
-const consentService = new ConsentService(new ConsentDao(knex));
-
-// Privacy policy service
-const privacyPolicyService = new PrivacyPolicyService(new PrivacyPolicyDao(knex));
-
-// Initialize controllers here
-
-// Authentication controller
-const authController = new AuthController(userService, authService);
-
-// User controller
-const userController = new UserController(userService, authService, paymentService);
-
-// Login controller
-const loginController = new LoginController(authService, userService, consentService, privacyPolicyService);
-
-// Payment controller
-const paymentController: PaymentController = new PaymentController(userService, paymentService);
-
-// Privacy policy controller
-const privacyPolicyController: PrivacyPolicyController = new PrivacyPolicyController(new PrivacyPolicyDao(knex));
-
 /*
 API routes
 */
 
 // Auth route
-app.use(ApiRoute.generateApiRoute("auth"), authController.createRoutes());
+app.use(ApiRoute.generateApiRoute("auth"), AuthController.createRoutes());
 // Users route
-app.use(ApiRoute.generateApiRoute("users"), userController.createRoutes());
+app.use(ApiRoute.generateApiRoute("users"), UserController.createRoutes());
 // Payments route
-app.use(ApiRoute.generateApiRoute("payments"), paymentController.createRoutes());
+app.use(ApiRoute.generateApiRoute("payments"), PaymentController.createRoutes());
 // Login route
-app.use("/", loginController.createRoutes());
+app.use("/", LoginController.createRoutes());
 // Privacy policy route
-app.use(ApiRoute.generateApiRoute("policy"), privacyPolicyController.createRoutes());
+app.use(ApiRoute.generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
 
 // CSRF
 app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
