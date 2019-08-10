@@ -1,20 +1,19 @@
-import * as webdriver from "selenium-webdriver";
-import * as chrome from "selenium-webdriver/chrome";
+import { Builder, WebDriver } from "selenium-webdriver";
+import { Options } from "selenium-webdriver/chrome";
 
-export const prepareDriver: () => Promise<webdriver.WebDriver> = async (): Promise<webdriver.WebDriver> => {
+export const prepareDriver: () => Promise<WebDriver> = async (): Promise<WebDriver> => {
+  // @ts-ignore
   process.on("beforeExit", () => this.browser && this.browser.quit());
 
-  return await new webdriver.Builder()
+  return await new Builder()
     .disableEnvironmentOverrides()
     .forBrowser("chrome")
-    .setChromeOptions(new chrome.Options().headless().addArguments("no-sandbox"))
+    .setChromeOptions(new Options().headless().addArguments("no-sandbox"))
     .setLoggingPrefs({ browser: "ALL", driver: "ALL" })
     .build();
 };
 
-export const cleanupDriver: (driver: webdriver.WebDriver) => Promise<void> = async (
-  driver: webdriver.WebDriver,
-): Promise<void> => {
+export const cleanupDriver: (driver: WebDriver) => Promise<void> = async (driver: WebDriver): Promise<void> => {
   if (driver) {
     await driver.quit();
   }

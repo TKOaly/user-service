@@ -10,7 +10,7 @@ export default class Service {
 
   public modifiedAt: Date;
 
-  constructor(databaseObject: IServiceDatabaseObject) {
+  constructor(databaseObject: ServiceDatabaseObject) {
     this.id = databaseObject.id;
     this.serviceName = databaseObject.service_name;
     this.displayName = databaseObject.display_name;
@@ -21,7 +21,7 @@ export default class Service {
     this.createdAt = databaseObject.created;
   }
 
-  public getDatabaseObject(): IServiceDatabaseObject {
+  public getDatabaseObject(): ServiceDatabaseObject {
     return {
       id: this.id,
       service_name: this.serviceName,
@@ -31,17 +31,17 @@ export default class Service {
       service_identifier: this.serviceIdentifier,
       modified: this.modifiedAt,
       created: this.createdAt,
-    } as IServiceDatabaseObject;
+    } as ServiceDatabaseObject;
   }
 }
 
-export interface IServiceDatabaseObject {
-  id?: number;
-  service_name?: string;
-  display_name?: string;
-  redirect_url?: string;
-  service_identifier?: string;
-  data_permissions?: number;
-  modified?: Date;
-  created?: Date;
+export interface ServiceDatabaseObject {
+  id: number;
+  service_name: string;
+  display_name: string;
+  redirect_url: string;
+  service_identifier: string;
+  data_permissions: number;
+  modified: Date;
+  created: Date;
 }

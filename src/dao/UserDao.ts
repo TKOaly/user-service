@@ -1,14 +1,13 @@
-import Promise from "bluebird";
 import Knex from "knex";
-import IDao from "../interfaces/IDao";
-import IUserDatabaseObject, { IUserPaymentDatabaseObject } from "../interfaces/IUserDatabaseObject";
+import Dao from "../interfaces/Dao";
+import UserDatabaseObject, { UserPaymentDatabaseObject } from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
 
 const tableName = "users";
 
-class UserDao implements IDao<IUserDatabaseObject> {
-  public findOne(id: number): Promise<IUserDatabaseObject> {
-    return Promise.resolve(
+class UserDao implements Dao<UserDatabaseObject> {
+  public findOne(id: number): PromiseLike<Required<UserDatabaseObject>> {
+    return Promise.resolve<UserDatabaseObject>(
       knexInstance(tableName)
         .select()
         .where({ id })
@@ -16,8 +15,8 @@ class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  public findByUsername(username: string): Promise<IUserDatabaseObject> {
-    return Promise.resolve(
+  public findByUsername(username: string): PromiseLike<UserDatabaseObject> {
+    return Promise.resolve<UserDatabaseObject>(
       knexInstance(tableName)
         .select()
         .where({ username })
@@ -25,8 +24,8 @@ class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  public findByEmail(email: string): Promise<IUserDatabaseObject> {
-    return Promise.resolve(
+  public findByEmail(email: string): PromiseLike<UserDatabaseObject> {
+    return Promise.resolve<UserDatabaseObject>(
       knexInstance(tableName)
         .select()
         .where({ email })
@@ -37,8 +36,8 @@ class UserDao implements IDao<IUserDatabaseObject> {
   /**
    * Finds a single user who hasn't paid his/her bill.
    */
-  public findByUnpaidPayment(id: number): Promise<IUserDatabaseObject> {
-    return Promise.resolve(
+  public findByUnpaidPayment(id: number): PromiseLike<UserDatabaseObject> {
+    return Promise.resolve<UserDatabaseObject>(
       knexInstance(tableName)
         .select(`${tableName}.*`)
         .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
@@ -51,8 +50,8 @@ class UserDao implements IDao<IUserDatabaseObject> {
   /**
    * Finds all users who haven't paid their bill.
    */
-  public findAllByUnpaidPayment(): Promise<IUserDatabaseObject[]> {
-    return Promise.resolve(
+  public findAllByUnpaidPayment(): PromiseLike<UserDatabaseObject[]> {
+    return Promise.resolve<UserDatabaseObject[]>(
       knexInstance("users")
         .select(`${tableName}.*`)
         .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
@@ -60,7 +59,7 @@ class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  public findAll(fields?: string[], conditions?: string[]): Promise<IUserDatabaseObject[]> {
+  public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
       const query: Knex.QueryBuilder = knexInstance(tableName).select(fields);
@@ -77,16 +76,16 @@ class UserDao implements IDao<IUserDatabaseObject> {
         });
       }
       // console.log(query.toString());
-      return Promise.resolve(query) as Promise<IUserPaymentDatabaseObject[]>;
+      return Promise.resolve<UserPaymentDatabaseObject[]>(query);
     }
 
-    return Promise.resolve<IUserDatabaseObject[]>(knexInstance(tableName).select());
+    return Promise.resolve<UserDatabaseObject[]>(knexInstance(tableName).select());
   }
 
   /**
    * Search the user table with the specified search term.
    */
-  public findWhere(searchTerm: string): Promise<IUserDatabaseObject[]> {
+  public findWhere(searchTerm: string): PromiseLike<UserDatabaseObject[]> {
     return Promise.resolve(
       knexInstance
         .select()
@@ -98,11 +97,6 @@ class UserDao implements IDao<IUserDatabaseObject> {
     );
   }
 
-  /**
-   * Removes a single user.
-   *
-   * Note: You need to remove payments of the user first.
-   */
   public remove(id: number): PromiseLike<boolean> {
     // First, delete consents
     return knexInstance("privacy_policy_consent_data")
@@ -115,26 +109,64 @@ class UserDao implements IDao<IUserDatabaseObject> {
       });
   }
 
-  public update(entityId: number, entity: IUserDatabaseObject): Promise<number> {
-    if (entity.created) {
-      delete entity.created;
-    }
-    entity.modified = new Date();
+  public update(
+    entityId: number,
+    entity: Partial<
+      Pick<
+        UserDatabaseObject,
+        | "username"
+        | "name"
+        | "screen_name"
+        | "email"
+        | "residence"
+        | "phone"
+        | "hyy_member"
+        | "membership"
+        | "role"
+        | "salt"
+        | "hashed_password"
+        | "tktl"
+        | "deleted"
+      >
+    >,
+  ): PromiseLike<number> {
+    const savedObj = {
+      ...entity,
+      modified: new Date(),
+    };
     return Promise.resolve(
       knexInstance(tableName)
-        .update(entity)
+        .update(savedObj)
         .where({ id: entityId }),
     );
   }
 
-  public save(entity: IUserDatabaseObject): Promise<number[]> {
-    // Delete id because it's auto-assigned
-    if (entity.id) {
-      delete entity.id;
-    }
-    entity.created = new Date();
-    entity.modified = new Date();
-    return Promise.resolve(knexInstance(tableName).insert(entity));
+  public save(
+    entity: Required<
+      Pick<
+        UserDatabaseObject,
+        | "username"
+        | "name"
+        | "screen_name"
+        | "email"
+        | "residence"
+        | "phone"
+        | "hyy_member"
+        | "membership"
+        | "role"
+        | "salt"
+        | "hashed_password"
+        | "tktl"
+        | "deleted"
+      >
+    >,
+  ): PromiseLike<number[]> {
+    const savedObj = {
+      ...entity,
+      created: new Date(),
+      modified: new Date(),
+    };
+    return Promise.resolve(knexInstance(tableName).insert(savedObj));
   }
 }
 

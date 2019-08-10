@@ -1,12 +1,11 @@
-import Promise from "bluebird";
-import IDao from "../interfaces/IDao";
-import { IServiceDatabaseObject } from "../models/Service";
+import Dao from "../interfaces/Dao";
+import { ServiceDatabaseObject } from "../models/Service";
 import { knexInstance } from "../Db";
 
 const tableName = "services";
 
-class ServiceDao implements IDao<IServiceDatabaseObject> {
-  public findOne(id: number): Promise<IServiceDatabaseObject> {
+class ServiceDao implements Dao<ServiceDatabaseObject> {
+  public findOne(id: number): PromiseLike<Required<ServiceDatabaseObject>> {
     return Promise.resolve(
       knexInstance(tableName)
         .select()
@@ -14,30 +13,11 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
         .first(),
     );
   }
-
-  public findByIdentifier(service_identifier: string): Promise<IServiceDatabaseObject> {
-    return Promise.resolve(
-      knexInstance(tableName)
-        .select()
-        .where({ service_identifier })
-        .first(),
-    );
-  }
-
-  public findByName(service_name: string): Promise<IServiceDatabaseObject> {
-    return Promise.resolve(
-      knexInstance(tableName)
-        .select()
-        .where({ service_name })
-        .first(),
-    );
-  }
-
-  public findAll(): Promise<IServiceDatabaseObject[]> {
+  public findAll(): PromiseLike<Required<ServiceDatabaseObject>[]> {
     return Promise.resolve(knexInstance(tableName).select());
   }
 
-  public remove(id: number): Promise<boolean> {
+  public remove(id: number): PromiseLike<boolean> {
     return Promise.resolve(
       knexInstance("privacy_policy_consent_data")
         .delete()
@@ -55,28 +35,58 @@ class ServiceDao implements IDao<IServiceDatabaseObject> {
     );
   }
 
-  public update(entityId: number, entity: IServiceDatabaseObject): Promise<number> {
-    // Update modified timestamp. Prevent updating created timestamp.
-    if (entity.created) {
-      delete entity.created;
-    }
-    entity.modified = new Date();
+  public update(
+    entityId: number,
+    entity: Partial<
+      Pick<
+        ServiceDatabaseObject,
+        "service_name" | "display_name" | "redirect_url" | "service_identifier" | "data_permissions"
+      >
+    >,
+  ): PromiseLike<number> {
+    const savedObj = {
+      ...entity,
+      modified: new Date(),
+    };
     return Promise.resolve(
       knexInstance(tableName)
         .where({ id: entityId })
-        .update(entity),
+        .update(savedObj),
     );
   }
 
-  public save(entity: IServiceDatabaseObject): Promise<number[]> {
-    // Delete id because it's auto-assigned
-    if (entity.id) {
-      delete entity.id;
-    }
-    // Set timestamps
-    entity.created = new Date();
-    entity.modified = new Date();
-    return Promise.resolve(knexInstance(tableName).insert(entity));
+  public save(
+    entity: Required<
+      Pick<
+        ServiceDatabaseObject,
+        "service_name" | "display_name" | "redirect_url" | "service_identifier" | "data_permissions"
+      >
+    >,
+  ): PromiseLike<number[]> {
+    const savedObj = {
+      ...entity,
+      created: new Date(),
+      modified: new Date(),
+    };
+    return Promise.resolve(knexInstance(tableName).insert(savedObj));
+  }
+
+  public findByIdentifier(service_identifier: string): PromiseLike<ServiceDatabaseObject> {
+    return Promise.resolve(
+      knexInstance(tableName)
+        .select()
+        .where({ service_identifier })
+        .first(),
+    );
+  }
+
+  public findByName(service_name: string): PromiseLike<ServiceDatabaseObject> {
+    return Promise.resolve(
+      knexInstance(tableName)
+        .select()
+        .where({ service_name })
+        .first(),
+    );
   }
 }
 

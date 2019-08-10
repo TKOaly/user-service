@@ -42,6 +42,9 @@ Microservice for authenticating users of members.tko-aly.fi.
 ## Installation instructions
 
 1.  Clone the repo
+
+(Optional: Run `nvm install` and `nvm use` to install the correct Node version. This requires Node Version Manager (NVM) to be installed)
+
 2.  Run `yarn install`
 3.  Copy `.env.example` to `.env` and set environment variables
 4.  Run `yarn test` to run unit & API tests. Run `yarn browser-test` to run E2E tests.

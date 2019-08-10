@@ -1,5 +1,5 @@
 import UserRoleString from "../enum/UserRoleString";
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 
 export default class User {
   public id: number;
@@ -22,8 +22,10 @@ export default class User {
   public modifiedAt: Date;
   public isTKTL: boolean;
   public isDeleted: boolean;
+  public isHyStaff: boolean;
+  public isHyStudent: boolean;
 
-  constructor(userDatabaseObject: IUserDatabaseObject) {
+  constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;
     this.name = userDatabaseObject.name;
@@ -31,15 +33,17 @@ export default class User {
     this.email = userDatabaseObject.email;
     this.residence = userDatabaseObject.residence;
     this.phone = userDatabaseObject.phone;
-    this.isHYYMember = userDatabaseObject.hyy_member == null ? undefined : Boolean(userDatabaseObject.hyy_member);
+    this.isHYYMember = userDatabaseObject.hyy_member === 1;
     this.membership = userDatabaseObject.membership;
     this.role = userDatabaseObject.role as UserRoleString;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
     this.createdAt = userDatabaseObject.created;
     this.modifiedAt = userDatabaseObject.modified;
-    this.isTKTL = userDatabaseObject.tktl == null ? undefined : Boolean(userDatabaseObject.tktl);
-    this.isDeleted = userDatabaseObject.deleted == null ? undefined : Boolean(userDatabaseObject.deleted);
+    this.isTKTL = userDatabaseObject.tktl === 1;
+    this.isDeleted = userDatabaseObject.deleted === 1;
+    this.isHyStaff = userDatabaseObject.hy_staff === 1;
+    this.isHyStudent = userDatabaseObject.hy_student === 1;
   }
 
   public removeSensitiveInformation(): User {
@@ -51,8 +55,8 @@ export default class User {
   /**
    * Removes non-requested user data.
    */
-  public removeNonRequestedData(dataRequest: number): User {
-    Object.keys(this.removeSensitiveInformation()).forEach((key: keyof User, i: number) => {
+  public removeNonRequestedData(dataRequest: number): Partial<User> {
+    Object.keys(this.removeSensitiveInformation()).forEach((key: keyof User, i) => {
       const val: number = Math.pow(2, i);
       if (val === null || (val & dataRequest) !== val) {
         delete this[key];
@@ -61,7 +65,7 @@ export default class User {
     return this;
   }
 
-  public getDatabaseObject(): IUserDatabaseObject {
+  public getDatabaseObject(): UserDatabaseObject {
     return {
       id: this.id,
       username: this.username,
@@ -70,15 +74,17 @@ export default class User {
       email: this.email,
       residence: this.residence,
       phone: this.phone,
-      hyy_member: isNaN(Number(this.isHYYMember)) ? undefined : Number(this.isHYYMember),
-      tktl: isNaN(Number(this.isTKTL)) ? undefined : Number(this.isTKTL),
+      hyy_member: this.isHYYMember ? 1 : 0,
+      tktl: this.isTKTL ? 1 : 0,
       membership: this.membership,
       role: this.role,
       salt: this.salt,
       hashed_password: this.hashedPassword,
       created: this.createdAt,
       modified: this.modifiedAt,
-      deleted: this.isDeleted,
+      deleted: this.isDeleted ? 1 : 0,
+      hy_staff: this.isHyStaff ? 1 : 0,
+      hy_student: this.isHyStudent ? 1 : 0,
     };
   }
 }

@@ -2,21 +2,19 @@ process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
-import Knex from "knex";
 import "mocha";
-// Knexfile
-import * as knexfile from "../../knexfile";
 import app from "../../src/App";
+import { knexInstance } from "../../src/Db";
 
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
-const should: Chai.Should = chai.should();
+const knex = knexInstance;
+const should = chai.should();
 
 chai.use(chaiHttp);
 
-const authUrl: string = "/api/auth";
-const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
-const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
+const authUrl = "/api/auth";
+const kjyrIdentifier = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
+const calendarIdentifier = "65a0058d-f9da-4e76-a00a-6013300cab5f";
 const correctCreds: { [value: string]: string } = {
   username: "test_user",
   password: "test_user",
@@ -30,7 +28,7 @@ const incorrectCreds: { [value: string]: string } = {
 
 describe("AuthController", () => {
   // Roll back
-  beforeEach("Knex migrate & seed", (done: Mocha.Done) => {
+  beforeEach("Knex migrate & seed", done => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -41,19 +39,19 @@ describe("AuthController", () => {
   });
 
   // After each
-  afterEach("Knex migrate rollback", (done: Mocha.Done) => {
+  afterEach("Knex migrate rollback", done => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Authentication", () => {
-    it("POST /api/auth/authenticate : Authenticates with correct credentials", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Authenticates with correct credentials", done => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -64,12 +62,12 @@ describe("AuthController", () => {
         });
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", done => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(incorrectCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -80,7 +78,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing username", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Does not authenticate with missing username", done => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -88,7 +86,7 @@ describe("AuthController", () => {
           password: "test",
           serviceIdentifier: kjyrIdentifier,
         })
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(400);
           should.not.exist(res.body.payload);
@@ -99,7 +97,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing password", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Does not authenticate with missing password", done => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -107,7 +105,7 @@ describe("AuthController", () => {
           username: "test",
           serviceIdentifier: kjyrIdentifier,
         })
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(400);
           should.not.exist(res.body.payload);
@@ -118,7 +116,7 @@ describe("AuthController", () => {
         });
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing service identifier", (done: Mocha.Done) => {
+    it("POST /api/auth/authenticate : Does not authenticate with missing service identifier", done => {
       chai
         .request(app)
         .post(authUrl + "/authenticate")
@@ -126,7 +124,7 @@ describe("AuthController", () => {
           username: "test",
           password: "test",
         })
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(400);
           should.not.exist(res.body.payload);
@@ -139,7 +137,7 @@ describe("AuthController", () => {
 
     it(
       "POST /api/auth/authenticate : Returns an error when trying to" + " authenticate with a nonexistent service",
-      (done: Mocha.Done) => {
+      done => {
         chai
           .request(app)
           .post(authUrl + "/authenticate")
@@ -148,7 +146,7 @@ describe("AuthController", () => {
             password: "test",
             serviceIdentifier: "invalidServiceIdentifier",
           })
-          .end((err: any, res: ChaiHttp.Response) => {
+          .end((err, res) => {
             should.not.exist(err);
             res.status.should.equal(404);
             should.not.exist(res.body.payload);
@@ -162,54 +160,51 @@ describe("AuthController", () => {
   });
 
   describe("Service check", () => {
-    it(
-      "POST /api/auth/authenticate : " + "Checks that the correct service has been authenticated to",
-      (done: Mocha.Done) => {
-        // The default credentials authenticate to KJYR
-        chai
-          .request(app)
-          .post(authUrl + "/authenticate")
-          .send(correctCreds)
-          .end((err: any, res: ChaiHttp.Response) => {
-            should.not.exist(err);
-            res.status.should.equal(200);
-            should.exist(res.body.payload);
-            should.exist(res.body.payload.token);
-            should.exist(res.body.ok);
-            res.body.ok.should.equal(true);
+    it("POST /api/auth/authenticate : " + "Checks that the correct service has been authenticated to", done => {
+      // The default credentials authenticate to KJYR
+      chai
+        .request(app)
+        .post(authUrl + "/authenticate")
+        .send(correctCreds)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.status.should.equal(200);
+          should.exist(res.body.payload);
+          should.exist(res.body.payload.token);
+          should.exist(res.body.ok);
+          res.body.ok.should.equal(true);
 
-            // Token to be passed forwards
-            const token: string = res.body.payload.token;
+          // Token to be passed forwards
+          const token: string = res.body.payload.token;
 
-            // Next, check that the user is authenticated to KJYR (as an example)
-            chai
-              .request(app)
-              .get(authUrl + "/check")
-              .set("Authorization", "Bearer " + token)
-              .set("service", kjyrIdentifier)
-              .end((err: any, res: ChaiHttp.Response) => {
-                should.not.exist(err);
-                res.status.should.equal(200);
-                should.exist(res.body.ok);
-                should.exist(res.body.message);
-                should.not.exist(res.body.payload);
-                res.body.ok.should.equal(true);
-                res.body.message.should.equal("Success");
-                done();
-              });
-          });
-      },
-    );
+          // Next, check that the user is authenticated to KJYR (as an example)
+          chai
+            .request(app)
+            .get(authUrl + "/check")
+            .set("Authorization", "Bearer " + token)
+            .set("service", kjyrIdentifier)
+            .end((err, res) => {
+              should.not.exist(err);
+              res.status.should.equal(200);
+              should.exist(res.body.ok);
+              should.exist(res.body.message);
+              should.not.exist(res.body.payload);
+              res.body.ok.should.equal(true);
+              res.body.message.should.equal("Success");
+              done();
+            });
+        });
+    });
 
     it(
       "POST /api/auth/authenticate : " + "Check that the user has not been authenticated to an incorrect service",
-      (done: Mocha.Done) => {
+      done => {
         // The default credentials authenticate to KJYR
         chai
           .request(app)
           .post(authUrl + "/authenticate")
           .send(correctCreds)
-          .end((err: any, res: ChaiHttp.Response) => {
+          .end((err, res) => {
             should.not.exist(err);
             res.status.should.equal(200);
             should.exist(res.body.payload);
@@ -226,7 +221,7 @@ describe("AuthController", () => {
               .get(authUrl + "/check")
               .set("Authorization", "Bearer " + token)
               .set("service", calendarIdentifier)
-              .end((err: any, res: ChaiHttp.Response) => {
+              .end((err, res) => {
                 res.status.should.equal(403);
                 should.exist(res.body.ok);
                 should.exist(res.body.message);
@@ -240,13 +235,13 @@ describe("AuthController", () => {
       },
     );
 
-    it("GET /api/auth/check : Can authenticate to multiple services", (done: Mocha.Done) => {
+    it("GET /api/auth/check : Can authenticate to multiple services", done => {
       // First, authenticate to KJYR
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -267,7 +262,7 @@ describe("AuthController", () => {
             .post(authUrl + "/authenticate")
             .set("Authorization", "Bearer " + token)
             .send(secondCreds)
-            .end((err: any, res: ChaiHttp.Response) => {
+            .end((err, res) => {
               should.not.exist(err);
               res.status.should.equal(200);
               should.exist(res.body.payload);
@@ -283,7 +278,7 @@ describe("AuthController", () => {
                 .get(authUrl + "/check")
                 .set("Authorization", "Bearer " + token2)
                 .set("service", kjyrIdentifier)
-                .end((err: any, res: ChaiHttp.Response) => {
+                .end((err, res) => {
                   should.not.exist(err);
                   res.status.should.equal(200);
                   should.exist(res.body.ok);
@@ -297,7 +292,7 @@ describe("AuthController", () => {
                     .get(authUrl + "/check")
                     .set("Authorization", "Bearer " + token2)
                     .set("service", calendarIdentifier)
-                    .end((err: any, res: ChaiHttp.Response) => {
+                    .end((err, res) => {
                       should.not.exist(err);
                       res.status.should.equal(200);
                       should.exist(res.body.ok);
@@ -312,13 +307,13 @@ describe("AuthController", () => {
         });
     });
 
-    it("GET /api/auth/check : Returns error if service is not defined", (done: Mocha.Done) => {
+    it("GET /api/auth/check : Returns error if service is not defined", done => {
       // First, authenticate to KJYR
       chai
         .request(app)
         .post(authUrl + "/authenticate")
         .send(correctCreds)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -334,7 +329,7 @@ describe("AuthController", () => {
             .request(app)
             .get(authUrl + "/check")
             .set("Authorization", "Bearer " + token)
-            .end((err: any, res: ChaiHttp.Response) => {
+            .end((err, res) => {
               should.not.exist(err);
               res.status.should.equal(400);
               should.exist(res.body.ok);

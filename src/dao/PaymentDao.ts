@@ -1,13 +1,12 @@
-import Promise from "bluebird";
 import * as Knex from "knex";
-import IDao from "../interfaces/IDao";
-import { IPayment, IPaymentListing } from "../models/Payment";
+import Dao from "../interfaces/Dao";
+import { PaymentDatabaseObject, PaymentListingDatabaseObject } from "../models/Payment";
 import { knexInstance } from "../Db";
 
 const tableName = "payments";
 
-class PaymentDao implements IDao<IPayment> {
-  public findOne(id: number): Promise<IPayment> {
+class PaymentDao implements Dao<PaymentDatabaseObject> {
+  public findOne(id: number): PromiseLike<PaymentDatabaseObject> {
     return Promise.resolve(
       knexInstance(tableName)
         .select()
@@ -16,7 +15,7 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public findByPayer(payer_id: number, validPayment?: boolean): Promise<IPayment> {
+  public findByPayer(payer_id: number, validPayment?: boolean): PromiseLike<PaymentDatabaseObject> {
     let query: Knex.QueryInterface = knexInstance(tableName)
       .select()
       .where({ payer_id });
@@ -28,7 +27,7 @@ class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(query.first());
   }
 
-  public findByConfirmer(confirmer_id: number): Promise<IPayment> {
+  public findByConfirmer(confirmer_id: number): PromiseLike<PaymentDatabaseObject> {
     return Promise.resolve(
       knexInstance(tableName)
         .select()
@@ -37,11 +36,11 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public findAll(): Promise<IPayment[]> {
+  public findAll(): PromiseLike<PaymentDatabaseObject[]> {
     return Promise.resolve(knexInstance(tableName).select());
   }
 
-  public remove(id: number): Promise<boolean> {
+  public remove(id: number): PromiseLike<boolean> {
     return Promise.resolve(
       knexInstance(tableName)
         .delete()
@@ -49,7 +48,9 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public update(entityId: number, entity: IPayment): Promise<number> {
+  public update(entityId: number, entity: Partial<PaymentDatabaseObject>): PromiseLike<number> {
+    delete entity.created;
+    // entity.modified = new Date();
     return Promise.resolve(
       knexInstance(tableName)
         .where({ id: entityId })
@@ -57,15 +58,19 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public save(entity: IPayment): Promise<number[]> {
+  public save(entity: Omit<PaymentDatabaseObject, "created" | "modified">): PromiseLike<number[]> {
     // Delete id because it's auto-assigned
     if (entity.id) {
       delete entity.id;
     }
-    return Promise.resolve(knexInstance(tableName).insert(entity));
+    const savedObj: PaymentDatabaseObject = {
+      ...entity,
+      created: new Date(),
+    };
+    return Promise.resolve(knexInstance(tableName).insert(savedObj));
   }
 
-  public findPaymentsByPaymentType(payment_type: string): Promise<IPaymentListing[]> {
+  public findPaymentsByPaymentType(payment_type: string): PromiseLike<PaymentListingDatabaseObject[]> {
     return Promise.resolve(
       knexInstance(tableName)
         .select(`${tableName}.*`, "pu.name as payer_name", "cu.name as confirmer_name")
@@ -75,7 +80,7 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public findUnpaid(): Promise<IPaymentListing[]> {
+  public findUnpaid(): PromiseLike<PaymentListingDatabaseObject[]> {
     const query: Knex.QueryBuilder = knexInstance(tableName)
       .select(`${tableName}.*`, "users.name as payer_name")
       .leftJoin(knexInstance.raw("users on (users.id = " + tableName + ".payer_id)"))
@@ -84,7 +89,7 @@ class PaymentDao implements IDao<IPayment> {
     return Promise.resolve(query);
   }
 
-  public confirmPayment(payment_id: number, confirmer_id: number): Promise<boolean> {
+  public confirmPayment(payment_id: number, confirmer_id: number): PromiseLike<boolean> {
     return Promise.resolve(
       knexInstance(tableName)
         .update({
@@ -98,7 +103,7 @@ class PaymentDao implements IDao<IPayment> {
   /**
    * Marks a payment paid by cash.
    */
-  public makePaid(payment_id: number, confirmer_id: number, payment_type: string): Promise<boolean> {
+  public makePaid(payment_id: number, confirmer_id: number, payment_type: string): PromiseLike<boolean> {
     return Promise.resolve(
       knexInstance(tableName)
         .update({
@@ -110,7 +115,7 @@ class PaymentDao implements IDao<IPayment> {
     );
   }
 
-  public deletePayment(id: number): Promise<boolean> {
+  public deletePayment(id: number): PromiseLike<boolean> {
     return Promise.resolve(
       knexInstance(tableName)
         .where({ id })

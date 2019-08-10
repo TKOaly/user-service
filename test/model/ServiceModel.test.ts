@@ -1,11 +1,11 @@
 process.env.NODE_ENV = "test";
 
 import "mocha";
-import Service, { IServiceDatabaseObject } from "../../src/models/Service";
+import Service from "../../src/models/Service";
 let service: Service;
 
 describe("Service model", () => {
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     service = new Service({
       id: 1,
       data_permissions: Math.pow(2, 6),
@@ -13,11 +13,13 @@ describe("Service model", () => {
       redirect_url: "https://localhost",
       service_identifier: "1-2-3-4-5",
       service_name: "testService",
+      created: new Date(2017, 1, 1),
+      modified: new Date(2017, 1, 1),
     });
     done();
   });
 
-  it("Sets data correctly", (done: Mocha.Done) => {
+  it("Sets data correctly", done => {
     service.id.should.equal(1);
     service.dataPermissions.should.equal(Math.pow(2, 6));
     service.displayName.should.equal("Test service");
@@ -27,14 +29,14 @@ describe("Service model", () => {
     done();
   });
 
-  it("getDatabaseObject() returns a correct object", (done: Mocha.Done) => {
-    const dbObj: IServiceDatabaseObject = service.getDatabaseObject();
-    dbObj.id.should.equal(service.id);
-    dbObj.data_permissions.should.equal(service.dataPermissions);
-    dbObj.display_name.should.equal(service.displayName);
-    dbObj.redirect_url.should.equal(service.redirectUrl);
-    dbObj.service_identifier.should.equal(service.serviceIdentifier);
-    dbObj.service_name.should.equal(service.serviceName);
+  it("getDatabaseObject() returns a correct object", done => {
+    const dbObj = service.getDatabaseObject();
+    dbObj.id!.should.equal(service.id);
+    dbObj.data_permissions!.should.equal(service.dataPermissions);
+    dbObj.display_name!.should.equal(service.displayName);
+    dbObj.redirect_url!.should.equal(service.redirectUrl);
+    dbObj.service_identifier!.should.equal(service.serviceIdentifier);
+    dbObj.service_name!.should.equal(service.serviceName);
     done();
   });
 });

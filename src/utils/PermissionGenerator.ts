@@ -1,7 +1,7 @@
-import IUserDatabaseObject from "../interfaces/IUserDatabaseObject";
+import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 
 class PermissionGenerator {
-  private PermissionModel: Record<keyof IUserDatabaseObject, number> = {
+  private PermissionModel: Record<keyof UserDatabaseObject, number> = {
     created: Math.pow(2, 0),
     deleted: Math.pow(2, 1),
     email: Math.pow(2, 2),
@@ -18,11 +18,13 @@ class PermissionGenerator {
     screen_name: Math.pow(2, 13),
     tktl: Math.pow(2, 14),
     username: Math.pow(2, 15),
+    hy_staff: Math.pow(2, 16),
+    hy_student: Math.pow(2, 16),
   };
 
   private PermissionByte = 0;
-  private PermissionList: Array<keyof IUserDatabaseObject> = [];
-  constructor(permissionByte?: number, permissionList?: Array<keyof IUserDatabaseObject>) {
+  private PermissionList: Array<keyof UserDatabaseObject> = [];
+  constructor(permissionByte?: number, permissionList?: Array<keyof UserDatabaseObject>) {
     if (permissionByte !== undefined && permissionList !== undefined) {
       this.PermissionByte = permissionByte;
       this.PermissionList = permissionList;
@@ -89,6 +91,14 @@ class PermissionGenerator {
     return this.helper("tktl");
   }
 
+  public hyStudent() {
+    return this.helper("hy_student");
+  }
+
+  public hyStaff() {
+    return this.helper("hy_staff");
+  }
+
   public username() {
     return this.helper("username");
   }
@@ -104,12 +114,12 @@ class PermissionGenerator {
   public all() {
     let newGenerator = new PermissionGenerator(this.PermissionByte, this.PermissionList);
     Object.keys(newGenerator.PermissionModel).forEach(
-      (key: keyof IUserDatabaseObject) => (newGenerator = newGenerator.helper(key)),
+      (key: keyof UserDatabaseObject) => (newGenerator = newGenerator.helper(key)),
     );
     return newGenerator;
   }
 
-  private helper(key: keyof IUserDatabaseObject) {
+  private helper(key: keyof UserDatabaseObject) {
     const newGenerator = new PermissionGenerator(this.PermissionByte, this.PermissionList);
     if (!newGenerator.PermissionList.find(elem => key === elem)) {
       newGenerator.PermissionList = [...newGenerator.PermissionList, key];
@@ -121,3 +131,5 @@ class PermissionGenerator {
     return newGenerator;
   }
 }
+
+export default PermissionGenerator;

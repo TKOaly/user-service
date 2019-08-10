@@ -13,5 +13,5 @@ export const generateToken: (userId: number, authenticatedTo?: string[], created
       authenticatedTo: authenticatedTo.join(","),
       createdAt,
     },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || "test",
   );

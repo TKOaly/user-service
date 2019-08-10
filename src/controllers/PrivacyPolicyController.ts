@@ -1,9 +1,9 @@
 import * as Express from "express";
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
-import IController from "../interfaces/IController";
+import Controller from "../interfaces/Controller";
 import ServiceResponse from "../utils/ServiceResponse";
 
-class PrivacyPolicyController implements IController {
+class PrivacyPolicyController implements Controller {
   private route: Express.Router;
 
   constructor() {

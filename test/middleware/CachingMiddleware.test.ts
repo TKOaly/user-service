@@ -27,7 +27,7 @@ const mockExpress = {
 };
 
 describe("CachingMiddleware", () => {
-  it("Sets headers correctly", (done: Mocha.Done) => {
+  it("Sets headers correctly", (done) => {
     CachingMiddleware(mockExpress.req, mockExpress.res, mockExpress.next);
     nextCount.should.equal(1);
     calledNext.should.equal(true);

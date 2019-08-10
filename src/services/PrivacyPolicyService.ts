@@ -1,9 +1,9 @@
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
-import IService from "../interfaces/IService";
+import Service from "../interfaces/Service";
 import PrivacyPolicy from "../models/PrivacyPolicy";
 import ServiceError from "../utils/ServiceError";
 
-class PrivacyPolicyService implements IService<PrivacyPolicy> {
+class PrivacyPolicyService implements Service<PrivacyPolicy> {
   public async findOne(id: number): Promise<PrivacyPolicy> {
     const res = await PrivacyPolicyDao.findOne(id);
     if (!res) {

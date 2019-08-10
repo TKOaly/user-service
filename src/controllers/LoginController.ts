@@ -4,7 +4,7 @@ import * as express from "express";
 import moment from "moment";
 import Raven from "raven";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
-import IController from "../interfaces/IController";
+import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
@@ -15,7 +15,7 @@ import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMi
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-class LoginController implements IController {
+class LoginController implements Controller {
   public route: Router;
 
   public csrfMiddleware: express.RequestHandler;

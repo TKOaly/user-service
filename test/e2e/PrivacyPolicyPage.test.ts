@@ -3,13 +3,10 @@ process.env.NODE_ENV = "test";
 import { By } from "selenium-webdriver";
 import { cleanupDriver, prepareDriver } from "../WebDriver";
 
-import chai = require("chai");
-import Knex from "knex";
 import "mocha";
+import { knexInstance } from "../../src/Db";
 
-// Knexfile
-import * as knexfile from "../../knexfile";
-import { IServiceDatabaseObject } from "../../src/models/Service";
+import { ServiceDatabaseObject } from "../../src/models/Service";
 
 import { WebDriver } from "selenium-webdriver";
 import services = require("../../seeds/seedData/services");
@@ -17,25 +14,22 @@ import services = require("../../seeds/seedData/services");
 import { Server } from "http";
 import app from "../../src/App";
 
-// @ts-ignore
-const should: Chai.Should = chai.should();
-
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex = knexInstance;
 
-const serviceData: IServiceDatabaseObject[] = services as IServiceDatabaseObject[];
+const serviceData = services as ServiceDatabaseObject[];
 
 import en from "../../locales/en.json";
 import fi from "../../locales/fi.json";
 
-const port: number = 3010;
+const port = 3010;
 
 describe("Privacy policy page", () => {
   let browser: WebDriver;
   let express: Server;
 
-  before((done: Mocha.Done) => {
-    prepareDriver().then((driver: WebDriver) => {
+  before(done => {
+    prepareDriver().then(driver => {
       browser = driver;
       express = app.listen(port, () => {
         done();
@@ -43,7 +37,7 @@ describe("Privacy policy page", () => {
     });
   });
 
-  after((done: Mocha.Done) => {
+  after(done => {
     cleanupDriver(browser).then(() => {
       express.close(() => {
         done();
@@ -51,7 +45,7 @@ describe("Privacy policy page", () => {
     });
   });
 
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     // The before hook ensures, that knex runs database migrations and seeds.
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
@@ -62,7 +56,7 @@ describe("Privacy policy page", () => {
     });
   });
 
-  afterEach((done: Mocha.Done) => {
+  afterEach(done => {
     knex.migrate.rollback().then(() => {
       done();
     });
@@ -77,26 +71,22 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        const containerTitle = await browser.findElement(By.id("title")).getText();
         containerTitle.should.equal(service.display_name + " " + fi.privacypolicy_Title);
 
-        const title: string = await browser.getTitle();
+        const title = await browser.getTitle();
         title.should.equal(service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
+        const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(fi.privacypolicy_Decline);
 
-        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
+        const acceptVal = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(fi.privacypolicy_Accept);
 
-        const privacyPolicyRedirect: string = await browser
-          .findElement(By.className("privacyPolicyRedirect"))
-          .getText();
+        const privacyPolicyRedirect = await browser.findElement(By.className("privacyPolicyRedirect")).getText();
         privacyPolicyRedirect.should.equal(fi.privacypolicy_YouWillBeRedirected);
 
-        const privacyPolicyDeclined: string = await browser
-          .findElement(By.className("privacyPolicyDeclineMessage"))
-          .getText();
+        const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
         privacyPolicyDeclined.should.equal(
           fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2,
         );
@@ -113,26 +103,22 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.id("password")).sendKeys("admin_user");
         await browser.findElement(By.className("accept")).click();
 
-        const containerTitle: string = await browser.findElement(By.id("title")).getText();
+        const containerTitle = await browser.findElement(By.id("title")).getText();
         containerTitle.should.equal(service.display_name + en.privacypolicy_Title);
 
-        const title: string = await browser.getTitle();
+        const title = await browser.getTitle();
         title.should.equal(service.display_name + en.privacypolicy_Title + " - TKO-äly ry");
 
-        const cancelVal: string = await browser.findElement(By.className("cancel")).getAttribute("value");
+        const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(en.privacypolicy_Decline);
 
-        const acceptVal: string = await browser.findElement(By.className("accept")).getAttribute("value");
+        const acceptVal = await browser.findElement(By.className("accept")).getAttribute("value");
         acceptVal.should.equal(en.privacypolicy_Accept);
 
-        const privacyPolicyRedirect: string = await browser
-          .findElement(By.className("privacyPolicyRedirect"))
-          .getText();
+        const privacyPolicyRedirect = await browser.findElement(By.className("privacyPolicyRedirect")).getText();
         privacyPolicyRedirect.should.equal(en.privacypolicy_YouWillBeRedirected);
 
-        const privacyPolicyDeclined: string = await browser
-          .findElement(By.className("privacyPolicyDeclineMessage"))
-          .getText();
+        const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
         privacyPolicyDeclined.should.equal(
           en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2,
         );

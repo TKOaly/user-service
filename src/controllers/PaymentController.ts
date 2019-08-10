@@ -1,7 +1,7 @@
 import * as express from "express";
 import Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
-import IController from "../interfaces/IController";
+import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
 import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
@@ -10,7 +10,7 @@ import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
 
-class PaymentController implements IController {
+class PaymentController implements Controller {
   private route: express.Router;
   private paymentValidator: PaymentValidator;
 

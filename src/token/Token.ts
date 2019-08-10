@@ -1,12 +1,15 @@
 import * as JWT from "jsonwebtoken";
-import IParsedTokenContents from "../interfaces/IParsedTokenContents";
+import ParsedTokenContents from "../interfaces/ParsedTokenContents";
 
 export default class ServiceToken {
   constructor(public userId: number, public authenticatedTo: string[], public createdAt: Date) {}
 
   public toString(): string {
+    if (process.env.JWT_SECRET === undefined) {
+      throw new Error("JWT_SECRET env variable is undefined.");
+    }
     try {
-      const parsedTokenContents: IParsedTokenContents = {
+      const parsedTokenContents: ParsedTokenContents = {
         userId: this.userId,
         authenticatedTo: this.authenticatedTo.join(","),
         createdAt: this.createdAt,
@@ -19,13 +22,16 @@ export default class ServiceToken {
 }
 
 export function stringToServiceToken(token: string): ServiceToken {
-  let parsedToken: string | object = null;
+  if (process.env.JWT_SECRET === undefined) {
+    throw new Error("JWT_SECRET env variable is undefined.");
+  }
+  let parsedToken: string | object | null = null;
   try {
     parsedToken = JWT.verify(token, process.env.JWT_SECRET);
   } catch (e) {
     throw e;
   }
-  const tokenContents: IParsedTokenContents = parsedToken as IParsedTokenContents;
+  const tokenContents = parsedToken as ParsedTokenContents;
   return new ServiceToken(
     tokenContents.userId,
     tokenContents.authenticatedTo.split(",").filter((id: string) => id.length !== 0),

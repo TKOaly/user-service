@@ -3,30 +3,28 @@ process.env.NODE_ENV = "test";
 import chai = require("chai");
 import chaiHttp from "chai-http";
 import * as JWT from "jsonwebtoken";
-import Knex from "knex";
 import "mocha";
-// Knexfile
-import * as knexfile from "../../knexfile";
 import payments from "../../seeds/seedData/payments";
 import app from "../../src/App";
-import { IPayment } from "../../src/models/Payment";
+import { PaymentDatabaseObject } from "../../src/models/Payment";
+import { knexInstance } from "../../src/Db";
 
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex = knexInstance;
 
-const should: Chai.Should = chai.should();
+const should = chai.should();
 
 chai.use(chaiHttp);
 
-const url: string = "/api/payments";
+const url = "/api/payments";
 
-const kjyrIdentifier: string = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
-const calendarIdentifier: string = "65a0058d-f9da-4e76-a00a-6013300cab5f";
+const kjyrIdentifier = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
+const calendarIdentifier = "65a0058d-f9da-4e76-a00a-6013300cab5f";
 
 const generateToken = (
   userId: number,
-  authenticatedTo: string[] = [kjyrIdentifier, calendarIdentifier],
-  createdAt: Date = new Date(),
+  authenticatedTo = [kjyrIdentifier, calendarIdentifier],
+  createdAt = new Date(),
 ): string =>
   JWT.sign(
     {
@@ -34,12 +32,12 @@ const generateToken = (
       authenticatedTo: authenticatedTo.join(","),
       createdAt,
     },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || "secret",
   );
 
 describe("PaymentController", () => {
   // Roll back
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -50,14 +48,14 @@ describe("PaymentController", () => {
   });
 
   // After each
-  afterEach((done: Mocha.Done) => {
+  afterEach(done => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Returns all payments", () => {
-    it("GET /api/payments : As an authenticated user, returns all payments", (done: Mocha.Done) => {
+    it("GET /api/payments : As an authenticated user, returns all payments", done => {
       chai
         .request(app)
         .get(url)
@@ -71,7 +69,7 @@ describe("PaymentController", () => {
           res.body.payload.length.should.equal(payments.length);
           res.body.ok.should.equal(true);
 
-          for (let i: number = 0; i < res.body.payload.length; i++) {
+          for (let i = 0; i < res.body.payload.length; i++) {
             should.exist(res.body.payload[i]);
             should.exist(res.body.payload[i].id);
             should.exist(res.body.payload[i].payer_id);
@@ -83,24 +81,24 @@ describe("PaymentController", () => {
             should.exist(res.body.payload[i].paid);
             should.exist(res.body.payload[i].payment_type);
 
-            const payment_2: IPayment = payments[i];
+            const payment_2: PaymentDatabaseObject = payments[i];
             res.body.payload[i].id.should.equal(payment_2.id);
             res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
             res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
-            Date.parse(res.body.payload[i].created).should.equal(Date.parse(payment_2.created.toLocaleDateString()));
+            Date.parse(res.body.payload[i].created).should.equal(Date.parse(payment_2.created!.toLocaleDateString()));
             res.body.payload[i].reference_number.should.equal(payment_2.reference_number);
             parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
             Date.parse(res.body.payload[i].valid_until).should.equal(
-              Date.parse(payment_2.valid_until.toLocaleDateString()),
+              Date.parse(payment_2.valid_until!.toLocaleDateString()),
             );
-            Date.parse(res.body.payload[i].paid).should.equal(Date.parse(payment_2.paid.toLocaleDateString()));
+            Date.parse(res.body.payload[i].paid).should.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
             res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
           }
           done();
         });
     });
 
-    it("GET /api/payments : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/payments : As an unauthenticated user, returns unauthorized", done => {
       chai
         .request(app)
         .get(url)
@@ -117,7 +115,7 @@ describe("PaymentController", () => {
   });
 
   describe("Returns a single payment", () => {
-    it("GET /api/payments/{id} : As an authenticated user, returns a single payment", (done: Mocha.Done) => {
+    it("GET /api/payments/{id} : As an authenticated user, returns a single payment", done => {
       chai
         .request(app)
         .get(url + "/1")
@@ -137,21 +135,23 @@ describe("PaymentController", () => {
           should.exist(res.body.payload.paid);
           should.exist(res.body.payload.payment_type);
           res.body.ok.should.equal(true);
-          const payment_2: IPayment = payments[0];
+          const payment_2: PaymentDatabaseObject = payments[0];
           res.body.payload.id.should.equal(payment_2.id);
           res.body.payload.payer_id.should.equal(payment_2.payer_id);
           res.body.payload.confirmer_id.should.equal(payment_2.confirmer_id);
-          Date.parse(res.body.payload.created).should.equal(Date.parse(payment_2.created.toLocaleDateString()));
+          Date.parse(res.body.payload.created).should.equal(Date.parse(payment_2.created!.toLocaleDateString()));
           res.body.payload.reference_number.should.equal(payment_2.reference_number);
           parseFloat(res.body.payload.amount).should.equal(payment_2.amount);
-          Date.parse(res.body.payload.valid_until).should.equal(Date.parse(payment_2.valid_until.toLocaleDateString()));
-          Date.parse(res.body.payload.paid).should.equal(Date.parse(payment_2.paid.toLocaleDateString()));
+          Date.parse(res.body.payload.valid_until).should.equal(
+            Date.parse(payment_2.valid_until!.toLocaleDateString()),
+          );
+          Date.parse(res.body.payload.paid).should.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
           res.body.payload.payment_type.should.equal(payment_2.payment_type);
           done();
         });
     });
 
-    it("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", done => {
       chai
         .request(app)
         .get(url + "/1")
@@ -168,8 +168,8 @@ describe("PaymentController", () => {
   });
 
   describe("Adds a new payment", () => {
-    it("POST /api/payments : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
-      const newPayment: IPayment = {
+    it("POST /api/payments : As an unauthenticated user, returns unauthorized", done => {
+      const newPayment: Omit<PaymentDatabaseObject, "id"> = {
         payer_id: 2,
         confirmer_id: 1,
         created: new Date(2013, 1, 1),
@@ -177,6 +177,8 @@ describe("PaymentController", () => {
         valid_until: new Date(2018, 1, 1),
         paid: new Date(2013, 1, 1),
         payment_type: "jasenmaksu",
+        membership_applied_for: "jasen",
+        reference_number: "123456789",
       };
       chai
         .request(app)
@@ -193,7 +195,7 @@ describe("PaymentController", () => {
         });
     });
 
-    it("POST /api/payments : As an authenticated user, adds a new payment", (done: Mocha.Done) => {
+    it("POST /api/payments : As an authenticated user, adds a new payment", done => {
       const newPayment = {
         payer_id: 2,
         amount: 44.44,
@@ -252,7 +254,7 @@ describe("PaymentController", () => {
                 should.exist(res.body.payload[i].paid);
                 should.exist(res.body.payload[i].payment_type);
 
-                const payment_2: IPayment = payments[i];
+                const payment_2: PaymentDatabaseObject = payments[i];
                 res.body.payload[i].id.should.equal(payment_2.id);
                 res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
                 res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
@@ -291,14 +293,14 @@ describe("PaymentController", () => {
   });
 
   describe("Modifies a payment", () => {
-    it("PATCH /api/payments/{id} : As an authenticated user, can modify a payment with valid information", (done: Mocha.Done) => {
+    it("PATCH /api/payments/{id} : As an authenticated user, can modify a payment with valid information", done => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
         .end((_, res) => {
-          const payment: IPayment = res.body.payload;
+          const payment: PaymentDatabaseObject = res.body.payload;
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";
           const newPaymentType: string = "HelloWorld";
@@ -335,8 +337,8 @@ describe("PaymentController", () => {
         });
     });
 
-    it("PATCH /api/payments/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
-      const newPayment: IPayment = {
+    it("PATCH /api/payments/{id} : As an unauthenticated user, returns unauthorized", done => {
+      const newPayment: PaymentDatabaseObject = {
         id: 1,
         payer_id: 2,
         confirmer_id: 1,
@@ -346,6 +348,7 @@ describe("PaymentController", () => {
         valid_until: new Date(2018, 1, 1),
         paid: new Date(2013, 1, 1),
         payment_type: "jasenmaksu",
+        membership_applied_for: "jasen",
       };
       chai
         .request(app)
@@ -362,14 +365,14 @@ describe("PaymentController", () => {
         });
     });
 
-    it("PATCH /api/payments/{id} : As an unauthenticated user, cannot modify a payment, with missing request parameters", (done: Mocha.Done) => {
+    it("PATCH /api/payments/{id} : As an unauthenticated user, cannot modify a payment, with missing request parameters", done => {
       // First, fetch a payment that will be modified.
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(1))
         .end((_, res) => {
-          const payment: IPayment = {
+          const payment: PaymentDatabaseObject = {
             id: res.body.payload.id,
             amount: res.body.payload.amount,
             confirmer_id: res.body.payload.confirmer_id,
@@ -379,6 +382,7 @@ describe("PaymentController", () => {
             payment_type: res.body.payload.payment_type,
             reference_number: res.body.payload.payment_type,
             valid_until: res.body.payload.valid_until,
+            membership_applied_for: res.body.payload.membership_applied_for,
           };
           // Set reference number and payment type, except them to be changed
           const newRefNum: string = "00000001111111";

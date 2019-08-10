@@ -1,30 +1,26 @@
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
-import Knex from "knex";
 import "mocha";
-// Knexfile
-import * as knexfile from "../../knexfile";
-import userFile = require("../../seeds/seedData/users");
+import users from "../../seeds/seedData/users";
 import UserDao from "../../src/dao/UserDao";
-import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
+import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
+import { knexInstance } from "../../src/Db";
 
-const dbUsers: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
-const should: Chai.Should = chai.should();
+const dbUsers = users;
+const should = chai.should();
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex = knexInstance;
 
-const userDao: UserDao = new UserDao(knex);
+const userDao = UserDao;
 
-// @ts-ignore
-const sha1: any = require("sha1");
-// @ts-ignore
+import sha1 from "sha1";
 const encryptPassword: (password: string, salt: string) => string = (password: string, salt: string): string =>
   sha1(salt + "kekbUr" + password);
 
 describe("UserDao", () => {
   // Roll back
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -35,22 +31,24 @@ describe("UserDao", () => {
   });
 
   // After each
-  afterEach((done: Mocha.Done) => {
+  afterEach(done => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
-  it("Returns all users with all fields", (done: Mocha.Done) => {
-    userDao.findAll().then((users: IUserDatabaseObject[]) => {
+  it("Returns all users with all fields", done => {
+    userDao.findAll().then(users => {
       should.exist(users.length);
       users.length.should.equal(dbUsers.length);
-      users.forEach((user: IUserDatabaseObject) => {
-        const dbUser: IUserDatabaseObject = user;
+      users.forEach(user => {
+        const dbUser = user;
 
-        const seedUser: IUserDatabaseObject = dbUsers.find(
-          (usr: IUserDatabaseObject) => usr.username === dbUser.username,
-        );
+        const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
+
+        if (seedUser === undefined) {
+          throw new Error("Seeded user not found");
+        }
 
         // Username
         should.exist(dbUser.username);
@@ -114,23 +112,29 @@ describe("UserDao", () => {
         // createdAt
         should.exist(dbUser.created);
         dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+
+        should.exist(dbUser.hy_staff);
+        dbUser.hy_staff.should.equal(seedUser.hy_staff);
+
+        should.exist(dbUser.hy_student);
+        dbUser.hy_student.should.equal(seedUser.hy_student);
       });
 
       done();
     });
   });
 
-  it("Returns all users with only a few fields requested", (done: Mocha.Done) => {
-    userDao.findAll(["username", "name", "email"]).then((users: IUserDatabaseObject[]) => {
+  it("Returns all users with only a few fields requested", done => {
+    userDao.findAll(["username", "name", "email"]).then(users => {
       should.exist(users.length);
       users.length.should.equal(dbUsers.length);
-      users.forEach((user: IUserDatabaseObject) => {
-        const dbUser: IUserDatabaseObject = user;
+      users.forEach(user => {
+        const dbUser = user;
 
-        const seedUser: IUserDatabaseObject = dbUsers.find(
-          (usr: IUserDatabaseObject) => usr.username === dbUser.username,
-        );
-
+        const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
+        if (seedUser === undefined) {
+          throw new Error("Seeded user not found");
+        }
         // Username
         should.exist(dbUser.username);
         dbUser.username.should.equal(seedUser.username);
@@ -181,24 +185,27 @@ describe("UserDao", () => {
 
         // createdAt
         should.not.exist(dbUser.created);
+
+        should.not.exist(dbUser.hy_staff);
+        should.not.exist(dbUser.hy_student);
       });
 
       done();
     });
   });
 
-  it("Removes a user", (done: Mocha.Done) => {
-    userDao.remove(dbUsers[0].id).then((res: boolean) => {
+  it("Removes a user", done => {
+    userDao.remove(dbUsers[0].id).then(res => {
       res.should.equal(1);
-      userDao.findAll().then((users: IUserDatabaseObject[]) => {
+      userDao.findAll().then(users => {
         users.length.should.equal(dbUsers.length - 1);
         done();
       });
     });
   });
 
-  it("Inserts a new user", (done: Mocha.Done) => {
-    const newUser: IUserDatabaseObject = {
+  it("Inserts a new user", done => {
+    const newUser: Omit<UserDatabaseObject, "id"> = {
       username: "testuser",
       name: "Test User",
       screen_name: "testuser",
@@ -209,18 +216,20 @@ describe("UserDao", () => {
       membership: "member",
       role: "yllapitaja",
       salt: "12345",
-      hashed_password: encryptPassword("12345", this.salt),
+      hashed_password: encryptPassword("12345", "test"),
       created: new Date(2017, 1, 1),
       modified: new Date(2017, 1, 1),
       tktl: 1,
       deleted: 0,
+      hy_staff: 1,
+      hy_student: 0,
     };
 
-    userDao.save(newUser).then((res: number[]) => {
+    userDao.save(newUser).then(res => {
       res.length.should.equal(1);
-      userDao.findAll().then((users: IUserDatabaseObject[]) => {
+      userDao.findAll().then(users => {
         users.length.should.equal(dbUsers.length + 1);
-        userDao.findByUsername(newUser.username).then((dbUser: IUserDatabaseObject) => {
+        userDao.findByUsername(newUser.username).then(dbUser => {
           dbUser.username.should.equal(newUser.username);
           dbUser.name.should.equal(newUser.name);
           dbUser.screen_name.should.equal(newUser.screen_name);
@@ -233,15 +242,96 @@ describe("UserDao", () => {
           dbUser.salt.should.equal(newUser.salt);
           dbUser.tktl.should.equal(newUser.tktl);
           dbUser.deleted.should.equal(newUser.deleted);
+          dbUser.hy_staff.should.equal(newUser.hy_staff);
+          dbUser.hy_student.should.equal(newUser.hy_student);
           done();
         });
       });
     });
   });
 
-  it("Returns a single user with findOne()", (done: Mocha.Done) => {
-    userDao.findOne(dbUsers[0].id).then((dbUser: IUserDatabaseObject) => {
-      const seedUser: IUserDatabaseObject = dbUsers[0];
+  it("Returns a single user with findOne()", done => {
+    userDao.findOne(dbUsers[0].id).then(dbUser => {
+      const seedUser = dbUsers[0];
+
+      // Username
+      should.exist(dbUser.username);
+      dbUser.username.should.equal(seedUser.username);
+
+      // Screen name
+      should.exist(dbUser.screen_name);
+      dbUser.screen_name.should.equal(seedUser.screen_name);
+
+      // Salt
+      should.exist(dbUser.salt);
+      dbUser.salt.should.equal(seedUser.salt);
+
+      // Role
+      should.exist(dbUser.role);
+      dbUser.role.should.equal(seedUser.role);
+
+      // Residence
+      should.exist(dbUser.residence);
+      dbUser.residence.should.equal(seedUser.residence);
+
+      // Phone
+      should.exist(dbUser.phone);
+      dbUser.phone.should.equal(seedUser.phone);
+
+      // Name
+      should.exist(dbUser.name);
+      dbUser.name.should.equal(seedUser.name);
+
+      // ModifiedAt
+      should.exist(dbUser.modified);
+
+      // Membership
+      should.exist(dbUser.membership);
+      dbUser.membership.should.equal(seedUser.membership);
+
+      // isTKTL
+      should.exist(dbUser.tktl);
+      dbUser.tktl.should.equal(seedUser.tktl);
+
+      // isHYYMember
+      should.exist(dbUser.hyy_member);
+      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+
+      // isDeleted
+      should.exist(dbUser.deleted);
+      dbUser.deleted.should.equal(seedUser.deleted);
+
+      // isHyStudent
+      should.exist(dbUser.hy_student);
+      dbUser.hy_student.should.equal(seedUser.hy_student);
+
+      // isHyStaff
+      should.exist(dbUser.hy_staff);
+      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+
+      // id
+      should.exist(dbUser.id);
+      dbUser.id.should.equal(seedUser.id);
+
+      // hashedPassword
+      should.exist(dbUser.hashed_password);
+      dbUser.hashed_password.should.equal(seedUser.hashed_password);
+
+      // email
+      should.exist(dbUser.email);
+      dbUser.email.should.equal(seedUser.email);
+
+      // createdAt
+      should.exist(dbUser.created);
+      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+
+      done();
+    });
+  });
+
+  it("Returns a single user with findByUsername()", done => {
+    userDao.findByUsername(dbUsers[0].username).then(dbUser => {
+      const seedUser = dbUsers[0];
 
       // Username
       should.exist(dbUser.username);
@@ -302,76 +392,13 @@ describe("UserDao", () => {
       should.exist(dbUser.email);
       dbUser.email.should.equal(seedUser.email);
 
-      // createdAt
-      should.exist(dbUser.created);
-      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+      // isHyStudent
+      should.exist(dbUser.hy_student);
+      dbUser.hy_student.should.equal(seedUser.hy_student);
 
-      done();
-    });
-  });
-
-  it("Returns a single user with findByUsername()", (done: Mocha.Done) => {
-    userDao.findByUsername(dbUsers[0].username).then((dbUser: IUserDatabaseObject) => {
-      const seedUser: IUserDatabaseObject = dbUsers[0];
-
-      // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
-
-      // Screen name
-      should.exist(dbUser.screen_name);
-      dbUser.screen_name.should.equal(seedUser.screen_name);
-
-      // Salt
-      should.exist(dbUser.salt);
-      dbUser.salt.should.equal(seedUser.salt);
-
-      // Role
-      should.exist(dbUser.role);
-      dbUser.role.should.equal(seedUser.role);
-
-      // Residence
-      should.exist(dbUser.residence);
-      dbUser.residence.should.equal(seedUser.residence);
-
-      // Phone
-      should.exist(dbUser.phone);
-      dbUser.phone.should.equal(seedUser.phone);
-
-      // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
-
-      // ModifiedAt
-      should.exist(dbUser.modified);
-
-      // Membership
-      should.exist(dbUser.membership);
-      dbUser.membership.should.equal(seedUser.membership);
-
-      // isTKTL
-      should.exist(dbUser.tktl);
-      dbUser.tktl.should.equal(seedUser.tktl);
-
-      // isHYYMember
-      should.exist(dbUser.hyy_member);
-      dbUser.hyy_member.should.equal(seedUser.hyy_member);
-
-      // isDeleted
-      should.exist(dbUser.deleted);
-      dbUser.deleted.should.equal(seedUser.deleted);
-
-      // id
-      should.exist(dbUser.id);
-      dbUser.id.should.equal(seedUser.id);
-
-      // hashedPassword
-      should.exist(dbUser.hashed_password);
-      dbUser.hashed_password.should.equal(seedUser.hashed_password);
-
-      // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+      // isHyStaff
+      should.exist(dbUser.hy_staff);
+      dbUser.hy_staff.should.equal(seedUser.hy_staff);
 
       // createdAt
       should.exist(dbUser.created);
@@ -381,12 +408,16 @@ describe("UserDao", () => {
     });
   });
 
-  it("Returns a single user with findWhere()", (done: Mocha.Done) => {
-    userDao.findWhere("Test User").then((dbUsers: IUserDatabaseObject[]) => {
-      const seedUser: IUserDatabaseObject = dbUsers.find((usr: IUserDatabaseObject) => usr.username === "test_user");
+  it("Returns a single user with findWhere()", done => {
+    userDao.findWhere("Test User").then(dbUsers => {
+      const seedUser = dbUsers.find(usr => usr.username === "test_user");
+      if (seedUser === undefined) {
+        throw new Error("Seeded user not found");
+      }
+
       dbUsers.length.should.equal(1);
 
-      const dbUser: IUserDatabaseObject = dbUsers[0];
+      const dbUser = dbUsers[0];
 
       // Username
       should.exist(dbUser.username);
@@ -435,6 +466,14 @@ describe("UserDao", () => {
       should.exist(dbUser.deleted);
       dbUser.deleted.should.equal(seedUser.deleted);
 
+      // isHyStudent
+      should.exist(dbUser.hy_student);
+      dbUser.hy_student.should.equal(seedUser.hy_student);
+
+      // isHyStaff
+      should.exist(dbUser.hy_staff);
+      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+
       // id
       should.exist(dbUser.id);
       dbUser.id.should.equal(seedUser.id);
@@ -455,34 +494,27 @@ describe("UserDao", () => {
     });
   });
 
-  it("Editing a user should update modifiedAt timestamp, but not createdAt", (done: Mocha.Done) => {
-    userDao
-      .findOne(1)
-      .then((user: IUserDatabaseObject) => {
-        const createdAt: Date = user.created;
-        const modifiedAt: Date = user.modified;
-        const createdAtString: string = createdAt.toISOString();
-        const modifiedAtString: string = modifiedAt.toISOString();
-        const updatedUsername: string = "testUsername";
-        // Add a bit of delay to make the timestamp update itself
-        new Promise(resolve => setTimeout(resolve, 3000)).then(f => {
-          userDao
-            .update(1, {
-              username: updatedUsername,
-            })
-            .then(rows => {
-              userDao
-                .findOne(1)
-                .then((user2: IUserDatabaseObject) => {
-                  createdAtString.should.equal(user2.created.toISOString());
-                  modifiedAtString.should.not.equal(user2.modified.toISOString());
-                  done();
-                })
-                .catch(err => console.error(err));
-            })
-            .catch(err => console.error(err));
-        });
-      })
-      .catch(err => console.error(err));
+  it("Editing a user should update modifiedAt timestamp, but not createdAt", done => {
+    userDao.findOne(1).then(user => {
+      const createdAt = user.created;
+      const modifiedAt = user.modified;
+      const createdAtString = createdAt.toISOString();
+      const modifiedAtString = modifiedAt.toISOString();
+      const updatedUsername = "testUsername";
+      // Add a bit of delay to make the timestamp update itself
+      new Promise(resolve => setTimeout(resolve, 3000)).then(f => {
+        userDao
+          .update(1, {
+            username: updatedUsername,
+          })
+          .then(rows => {
+            userDao.findOne(1).then(user2 => {
+              createdAtString.should.equal(user2.created.toISOString());
+              modifiedAtString.should.not.equal(user2.modified.toISOString());
+              done();
+            });
+          });
+      });
+    });
   });
 });

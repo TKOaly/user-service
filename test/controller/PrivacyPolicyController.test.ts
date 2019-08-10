@@ -2,24 +2,22 @@ process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
-import Knex from "knex";
 import "mocha";
-// Knexfile
-import * as knexfile from "../../knexfile";
 import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
+import { knexInstance } from "../../src/Db";
 // Knex instance
-const knex: Knex = Knex(knexfile.test);
+const knex = knexInstance;
 
-const should: Chai.Should = chai.should();
+const should = chai.should();
 
 chai.use(chaiHttp);
 
-const policyUrl: string = "/api/policy";
+const policyUrl = "/api/policy";
 
 describe("PrivacyPolicyController", () => {
   // Roll back
-  beforeEach("Knex migrate & seed", (done: Mocha.Done) => {
+  beforeEach("Knex migrate & seed", done => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -30,18 +28,18 @@ describe("PrivacyPolicyController", () => {
   });
 
   // After each
-  afterEach("Knex migrate rollback", (done: Mocha.Done) => {
+  afterEach("Knex migrate rollback", done => {
     knex.migrate.rollback().then(() => {
       done();
     });
   });
 
   describe("Privacy policy route", () => {
-    it("GET /api/policy/KJYR_SERVICE_IDENTIFIER : Returns an existing privacy policy for KJYR", (done: Mocha.Done) => {
+    it("GET /api/policy/KJYR_SERVICE_IDENTIFIER : Returns an existing privacy policy for KJYR", done => {
       chai
         .request(app)
         .get(policyUrl + "/" + kjyrIdentifier)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
           should.exist(res.body.payload);
@@ -59,11 +57,11 @@ describe("PrivacyPolicyController", () => {
         });
     });
 
-    it("GET /api/policy/something : Returns an error if the privacy policy is not found", (done: Mocha.Done) => {
+    it("GET /api/policy/something : Returns an error if the privacy policy is not found", done => {
       chai
         .request(app)
         .get(policyUrl + "/something")
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(404);
           should.not.exist(res.body.payload);

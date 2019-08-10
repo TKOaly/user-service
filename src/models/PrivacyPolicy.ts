@@ -1,15 +1,17 @@
-import IPrivacyPolicyDatabaseObject from "../interfaces/IPrivacyPolicyDatabaseObject";
+import PrivacyPolicyDatabaseObject from "../interfaces/PrivacyPolicyDatabaseObject";
 
-export default class PrivacyPolicy implements IPrivacyPolicyDatabaseObject {
-  public id?: number;
-  public service_id?: number;
-  public text?: string;
-  public modified?: Date;
-  public created?: Date;
+export default class PrivacyPolicy {
+  public id: number;
+  public service_id: number;
+  public text: string;
+  public modified: Date;
+  public created: Date;
 
-  constructor(privacyPolicy: IPrivacyPolicyDatabaseObject) {
-    Object.keys(privacyPolicy).forEach((key: keyof IPrivacyPolicyDatabaseObject) => {
-      this[key] = privacyPolicy[key];
-    });
+  constructor(privacyPolicy: PrivacyPolicyDatabaseObject) {
+    this.id = privacyPolicy.id;
+    this.service_id = privacyPolicy.service_id;
+    this.text = privacyPolicy.text;
+    this.modified = privacyPolicy.modified;
+    this.created = privacyPolicy.created;
   }
 }

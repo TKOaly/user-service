@@ -1,12 +1,12 @@
 import express from "express";
-import IController from "../interfaces/IController";
+import Controller from "../interfaces/Controller";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-class AuthController implements IController {
+class AuthController implements Controller {
   private route: express.Router;
 
   constructor() {
@@ -68,7 +68,7 @@ class AuthController implements IController {
   public calcPermissions(req: express.Request, res: express.Response): void {
     const dummyObject: User = new User({
       created: new Date(),
-      deleted: false,
+      deleted: 0,
       email: "",
       hashed_password: "",
       hyy_member: 1,
@@ -83,6 +83,8 @@ class AuthController implements IController {
       screen_name: "",
       tktl: 1,
       username: "",
+      hy_staff: 0,
+      hy_student: 0,
     });
     return res.render("calcPermissions", {
       userKeys: Object.keys(dummyObject),
@@ -102,7 +104,7 @@ class AuthController implements IController {
 
     const dummyObject: User = new User({
       created: new Date(),
-      deleted: false,
+      deleted: 0,
       email: "",
       hashed_password: "",
       hyy_member: 1,
@@ -117,6 +119,8 @@ class AuthController implements IController {
       screen_name: "",
       tktl: 1,
       username: "",
+      hy_staff: 0,
+      hy_student: 0,
     }).removeSensitiveInformation();
 
     let permissionInteger: number = 0;

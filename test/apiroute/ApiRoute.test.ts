@@ -4,30 +4,30 @@ process.env.API_VERSION = "v5";
 import chai = require("chai");
 import "mocha";
 import ApiRoute from "../../src/utils/ApiRoute";
-const should: Chai.Should = chai.should();
+const should = chai.should();
 
 describe("ApiRoute", () => {
-  it("Creates API route correctly, with API version and route", (done: Mocha.Done) => {
-    const apiVersion: string = "v2";
-    const route: string = "testroute";
-    const apiUrl: string = ApiRoute.generateApiRoute(route, apiVersion);
+  it("Creates API route correctly, with API version and route", done => {
+    const apiVersion = "v2";
+    const route = "testroute";
+    const apiUrl = ApiRoute.generateApiRoute(route, apiVersion);
     apiUrl.should.equal("/api/" + apiVersion + "/" + route);
     done();
   });
 
-  it("Creates API route correctly, with API route", (done: Mocha.Done) => {
-    const route: string = "testroute";
-    const apiUrl: string = ApiRoute.generateApiRoute(route);
+  it("Creates API route correctly, with API route", done => {
+    const route = "testroute";
+    const apiUrl = ApiRoute.generateApiRoute(route);
     apiUrl.should.equal("/api/" + route);
     done();
   });
 
-  it("Middleware sets route and API version headers correctly", (done: Mocha.Done) => {
-    const apiVersion: string = "v2";
+  it("Middleware sets route and API version headers correctly", done => {
+    const apiVersion = "v2";
 
     const headers: Array<{ name: string; val: string }> = [];
 
-    let calledNext: boolean = false;
+    let calledNext = false;
 
     // Mocked express
     const mockExpress: any = {
@@ -59,10 +59,10 @@ describe("ApiRoute", () => {
     done();
   });
 
-  it("Middleware sets API version header correctly", (done: Mocha.Done) => {
+  it("Middleware sets API version header correctly", done => {
     const headers: Array<{ name: string; val: string }> = [];
 
-    let calledNext: boolean = false;
+    let calledNext = false;
 
     // Mocked express
     const mockExpress: any = {

@@ -1,6 +1,6 @@
-import IPrivacyPolicyDatabaseObject from "../../src/interfaces/IPrivacyPolicyDatabaseObject";
+import PrivacyPolicyDatabaseObject from "../../src/interfaces/PrivacyPolicyDatabaseObject";
 
-const privacyPolicy: IPrivacyPolicyDatabaseObject[] = [
+const privacyPolicy: PrivacyPolicyDatabaseObject[] = [
   {
     id: 1,
     service_id: 1,

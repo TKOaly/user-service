@@ -1,5 +1,5 @@
 import PaymentDao from "../dao/PaymentDao";
-import Payment, { IPayment } from "../models/Payment";
+import Payment, { PaymentDatabaseObject } from "../models/Payment";
 import { PaymentListing } from "../models/PaymentListing";
 import ServiceError from "../utils/ServiceError";
 
@@ -28,7 +28,7 @@ class PaymentService {
   }
 
   public async fetchValidPaymentForUser(userId: number): Promise<Payment> {
-    const result: IPayment = await PaymentDao.findByPayer(userId, true);
+    const result: PaymentDatabaseObject = await PaymentDao.findByPayer(userId, true);
     if (!result) {
       throw new ServiceError(404, "Payment not found");
     }
@@ -41,23 +41,23 @@ class PaymentService {
   }
 
   public async createPayment(payment: Payment): Promise<number[]> {
-    return PaymentDao.save(payment as IPayment);
+    return PaymentDao.save(payment as PaymentDatabaseObject);
   }
 
   public async createBankPayment(payment: Payment): Promise<number[]> {
     return PaymentDao.save(Object.assign({}, payment, {
       payment_type: PaymentType.BankPayment,
-    }) as IPayment);
+    }) as PaymentDatabaseObject);
   }
 
   public async createCashPayment(payment: Payment): Promise<number[]> {
     return PaymentDao.save(Object.assign({}, payment, {
       payment_type: PaymentType.CashPayment,
-    }) as IPayment);
+    }) as PaymentDatabaseObject);
   }
 
   public async updatePayment(paymentId: number, updatedPayment: Payment): Promise<number> {
-    return PaymentDao.update(paymentId, updatedPayment as IPayment);
+    return PaymentDao.update(paymentId, updatedPayment as PaymentDatabaseObject);
   }
 
   public async findPaymentsPaidByCash(): Promise<PaymentListing[]> {
@@ -118,6 +118,7 @@ class PaymentService {
     membership: string,
   ): Promise<Payment> {
     // TO DO
+    // @ts-ignore
     return Promise.resolve(new Payment({}));
   }
 }

@@ -20,7 +20,8 @@
     "class-name": true,
     "use-isnan": true,
     "completed-docs": false,
-    "no-any": true
+    "no-any": true,
+    "interface-name": false
   },
   "rulesDirectory": []
 }

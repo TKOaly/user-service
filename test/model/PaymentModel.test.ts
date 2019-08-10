@@ -3,12 +3,11 @@ process.env.NODE_ENV = "test";
 import chai = require("chai");
 import "mocha";
 import Payment from "../../src/models/Payment";
-const should: Chai.Should = chai.should();
 
 let payment: Payment;
 
 describe("Payment model", () => {
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     payment = new Payment({
       id: 1,
       amount: 50.55,
@@ -19,11 +18,12 @@ describe("Payment model", () => {
       payment_type: "jasenmaksu",
       reference_number: "12345678",
       valid_until: new Date(2020, 1, 1),
+      membership_applied_for: "ulkojasen",
     });
     done();
   });
 
-  it("Sets data correctly", (done: Mocha.Done) => {
+  it("Sets data correctly", done => {
     payment.id.should.equal(1);
     payment.amount.should.equal(50.55);
     payment.confirmer_id.should.equal(2);
@@ -36,30 +36,13 @@ describe("Payment model", () => {
     done();
   });
 
-  it("Sets partial data correctly", (done: Mocha.Done) => {
-    const payment2: Payment = new Payment({
-      id: 55,
-      amount: 200,
-    });
-    payment2.id.should.equal(55);
-    payment2.amount.should.equal(200);
-    should.not.exist(payment2.confirmer_id);
-    should.not.exist(payment2.created);
-    should.not.exist(payment2.paid);
-    should.not.exist(payment2.payer_id);
-    should.not.exist(payment2.payment_type);
-    should.not.exist(payment2.reference_number);
-    should.not.exist(payment2.valid_until);
-    done();
-  });
-
-  it("Throws an exception when base number is too long", (done: Mocha.Done) => {
+  it("Throws an exception when base number is too long", done => {
     payment.id = 1111111111111111111111111111;
     chai.expect(payment.generateReferenceNumber.bind(payment)).to.throw("baseNumber too long or short");
     done();
   });
 
-  it("Generates a correct reference number", (done: Mocha.Done) => {
+  it("Generates a correct reference number", done => {
     payment.generateReferenceNumber();
     payment.reference_number.should.equal("1012");
 

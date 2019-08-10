@@ -6,8 +6,8 @@ export function stringToBoolean(str: string | number | object | boolean): boolea
 }
 
 export function compareRoles(a: UserRoleString, b: UserRoleString): number {
-  let aN: number = 0;
-  let bN: number = 0;
+  let aN = 0;
+  let bN = 0;
 
   if (RoleNumbers[a]) {
     aN = RoleNumbers[a];

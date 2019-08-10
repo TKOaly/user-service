@@ -5,6 +5,7 @@ import User from "../models/User";
 import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
 import { validatePassword } from "./AuthenticationService";
+import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -73,6 +74,8 @@ class UserService {
       throw new ServiceError(404, "No results returned");
     }
 
+    // @ts-ignore
+    // FIXME: Wrong typings
     return results.map(u => new UserPayment(u));
   }
 
@@ -101,20 +104,20 @@ class UserService {
     return user === undefined;
   }
 
-  public async createUser(user: User, rawPassword: string): Promise<number> {
-    let newUser = new User({});
+  public async createUser(userData: User, rawPassword: string): Promise<number> {
     const { password, salt } = await mkHashedPassword(rawPassword);
-    newUser = Object.assign(newUser, user);
-    user.hashedPassword = password;
-    user.salt = salt;
-    const insertIds = await UserDao.save(newUser.getDatabaseObject());
+    userData.hashedPassword = password;
+    userData.salt = salt;
+    const insertIds = await UserDao.save(userData.getDatabaseObject());
     return insertIds[0];
   }
 
-  public async updateUser(userId: number, udpatedUser: User, password?: string): Promise<number> {
-    let newUser: User = new User({});
-    newUser = Object.assign(newUser, udpatedUser);
-    const affectedRows = await UserDao.update(userId, newUser.getDatabaseObject());
+  public async updateUser(
+    userId: number,
+    updatedUser: Partial<UserDatabaseObject>,
+    password?: string,
+  ): Promise<number> {
+    const affectedRows = await UserDao.update(userId, updatedUser);
 
     return affectedRows;
   }

@@ -1,24 +1,23 @@
 import * as express from "express";
 import * as Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
-import IController from "../interfaces/IController";
+import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
-import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
-import UserValidator from "../validators/UserValidator";
+import UserValidator, { isValidUser } from "../validators/UserValidator";
 
-class UserController implements IController {
+class UserController implements Controller {
   public route: express.Router;
   public userValidator: UserValidator;
 
   constructor() {
     this.route = express.Router();
-    this.userValidator = new UserValidator(UserService);
+    this.userValidator = new UserValidator();
   }
 
   /**
@@ -190,9 +189,18 @@ class UserController implements IController {
 
   public async createUser(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
-      await this.userValidator.validateCreate(req.body);
-      const userId = await UserService.createUser(req.body, req.body.password1);
-      const user = await UserService.fetchUser(userId);
+      // Make sure request body is the correct type
+      const validatedBody = req.body;
+      if (!isValidUser(validatedBody)) {
+        return res.status(400).json(new ServiceResponse(null, "Missing required information"));
+      }
+      // Returns a validated user and password
+      const { user, password } = await this.userValidator.validateCreate(validatedBody);
+      const userId = await UserService.createUser(user, password);
+      const createdUser = await UserService.fetchUser(userId);
+      if (createdUser === undefined) {
+        return res.status(400).json(new ServiceResponse(null, "Error creating user"));
+      }
       return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), "Success"));
     } catch (err) {
       Raven.captureBreadcrumb({
@@ -263,15 +271,12 @@ class UserController implements IController {
       }
 
       if (membership === "hyvaksy") {
-        UserService.updateUser(id, new User({ membership: user.isTKTL ? "jasen" : "ulkojasen" }));
+        UserService.updateUser(id, { membership: user.isTKTL ? "jasen" : "ulkojasen" });
       } else if (membership === "ei-jasen" || membership === "erotettu") {
-        UserService.updateUser(
-          id,
-          new User({
-            membership,
-            role: "kayttaja",
-          }),
-        );
+        UserService.updateUser(id, {
+          membership,
+          role: "kayttaja",
+        });
       }
       return res.status(200).json(new ServiceResponse(null, "User updated", true));
     } catch (err) {

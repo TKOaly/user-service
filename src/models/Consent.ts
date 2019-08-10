@@ -1,7 +1,7 @@
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
-import IConsentDatabaseObject from "../interfaces/IConsentDatabaseObject";
+import ConsentDatabaseObject from "../interfaces/ConsentDatabaseObject";
 
-export default class Consent implements IConsentDatabaseObject {
+export default class Consent {
   public id: number;
   public user_id: number;
   public service_id: number;
@@ -9,9 +9,12 @@ export default class Consent implements IConsentDatabaseObject {
   public modified: Date;
   public created: Date;
 
-  constructor(consent: IConsentDatabaseObject) {
-    Object.keys(consent).forEach((key: keyof IConsentDatabaseObject) => {
-      this[key] = consent[key];
-    });
+  constructor(consent: ConsentDatabaseObject) {
+    this.id = consent.id;
+    this.user_id = consent.user_id;
+    this.service_id = consent.service_id;
+    this.consent = consent.consent;
+    this.modified = consent.modified;
+    this.created = consent.created;
   }
 }

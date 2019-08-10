@@ -2,13 +2,13 @@
 import compare from "secure-compare";
 import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
-import Service, { IServiceDatabaseObject } from "../models/Service";
+import Service from "../models/Service";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceError from "../utils/ServiceError";
 
 class AuthenticationService {
   public async getService(serviceName: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await ServiceDao.findByName(serviceName);
+    const service = await ServiceDao.findByName(serviceName);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -16,7 +16,7 @@ class AuthenticationService {
   }
 
   public async getServiceWithIdentifier(service_identifier: string): Promise<Service> {
-    const service: IServiceDatabaseObject = await ServiceDao.findByIdentifier(service_identifier);
+    const service = await ServiceDao.findByIdentifier(service_identifier);
     if (!service) {
       throw new ServiceError(404, "Service not found");
     }
@@ -24,9 +24,9 @@ class AuthenticationService {
   }
 
   public async getServices(): Promise<Service[]> {
-    const services: IServiceDatabaseObject[] = await ServiceDao.findAll();
+    const services = await ServiceDao.findAll();
 
-    return services.map((service: IServiceDatabaseObject) => new Service(service));
+    return services.map(service => new Service(service));
   }
 
   /**

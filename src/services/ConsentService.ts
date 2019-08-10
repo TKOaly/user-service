@@ -1,11 +1,11 @@
 import ConsentDao from "../dao/ConsentDao";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
-import IConsentDatabaseObject from "../interfaces/IConsentDatabaseObject";
-import IService from "../interfaces/IService";
+import ConsentDatabaseObject from "../interfaces/ConsentDatabaseObject";
+import Service from "../interfaces/Service";
 import Consent from "../models/Consent";
 import ServiceError from "../utils/ServiceError";
 
-class ConsentService implements IService<Consent> {
+class ConsentService implements Service<Consent> {
   public async findOne(id: number): Promise<Consent> {
     const consent = await ConsentDao.findOne(id);
     if (!consent) {
@@ -72,7 +72,7 @@ class ConsentService implements IService<Consent> {
       }
     } else {
       // Consent doesn't exist, create one
-      const consentData: IConsentDatabaseObject = {
+      const consentData: Pick<ConsentDatabaseObject, "user_id" | "service_id" | "consent"> = {
         user_id,
         service_id,
         consent: PrivacyPolicyConsent.Declined,
@@ -114,12 +114,11 @@ class ConsentService implements IService<Consent> {
       }
     } else {
       // Consent doesn't exist, create one
-      const consentData: IConsentDatabaseObject = {
+      const inserted = await ConsentDao.save({
         user_id,
         service_id,
         consent: PrivacyPolicyConsent.Accepted,
-      };
-      const inserted = await ConsentDao.save(consentData);
+      });
       return inserted;
     }
   }

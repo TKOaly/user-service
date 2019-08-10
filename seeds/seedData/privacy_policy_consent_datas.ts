@@ -1,7 +1,7 @@
 import PrivacyPolicyConsent from "../../src/enum/PrivacyPolicyConsent";
-import IConsentDatabaseObject from "../../src/interfaces/IConsentDatabaseObject";
+import ConsentDatabaseObject from "../../src/interfaces/ConsentDatabaseObject";
 
-const privacyPolicy: IConsentDatabaseObject[] = [
+const privacyPolicy: ConsentDatabaseObject[] = [
   {
     // Test user has accepted KJYR policy
     consent: PrivacyPolicyConsent.Accepted,

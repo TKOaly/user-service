@@ -37,7 +37,7 @@ const mockExpress = {
 };
 */
 describe("AuthorizeMiddleware", () => {
-  it("Example test", (done: Mocha.Done) => {
+  it("Example test", (done) => {
     done();
   });
 });

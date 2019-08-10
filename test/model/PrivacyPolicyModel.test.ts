@@ -2,15 +2,15 @@ process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import "mocha";
-import IPrivacyPolicyDatabaseObject from "../../src/interfaces/IPrivacyPolicyDatabaseObject";
+import PrivacyPolicyDatabaseObject from "../../src/interfaces/PrivacyPolicyDatabaseObject";
 import PrivacyPolicy from "../../src/models/PrivacyPolicy";
 const should: Chai.Should = chai.should();
 
-let policy: IPrivacyPolicyDatabaseObject;
+let policy: PrivacyPolicyDatabaseObject;
 let policyModel: PrivacyPolicy;
 
 describe("Privacy policy model", () => {
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     policy = {
       id: 552,
       created: new Date(2015, 1, 1),
@@ -22,7 +22,7 @@ describe("Privacy policy model", () => {
     done();
   });
 
-  it("Sets data correctly (IPrivacyPolicyDatabaseObject)", (done: Mocha.Done) => {
+  it("Sets data correctly (PrivacyPolicyDatabaseObject)", done => {
     should.exist(policyModel.id);
     policyModel.id.should.equal(552);
     should.exist(policyModel.created);
@@ -36,8 +36,8 @@ describe("Privacy policy model", () => {
     done();
   });
 
-  it("Sets partial data correctly (IPrivacyPolicyDatabaseObject)", (done: Mocha.Done) => {
-    const policy2: PrivacyPolicy = {
+  it("Sets partial data correctly (PrivacyPolicyDatabaseObject)", done => {
+    const policy2: Pick<PrivacyPolicy, "id" | "text"> = {
       id: 225,
       text: "Hello World 2",
     };
@@ -47,13 +47,16 @@ describe("Privacy policy model", () => {
     should.exist(policy2.text);
     policy2.text.should.equal("Hello World 2");
 
+    // @ts-ignore
     should.not.exist(policy2.created);
+    // @ts-ignore
     should.not.exist(policy2.modified);
+    // @ts-ignore
     should.not.exist(policy2.service_id);
     done();
   });
 
-  it("Sets data correctly (PrivacyPolicy)", (done: Mocha.Done) => {
+  it("Sets data correctly (PrivacyPolicy)", done => {
     should.exist(policy.id);
     policy.id.should.equal(552);
     should.exist(policy.created);
@@ -64,25 +67,6 @@ describe("Privacy policy model", () => {
     policy.service_id.should.equal(22);
     should.exist(policy.text);
     policy.text.should.equal("Hello World");
-    done();
-  });
-
-  it("Sets partial data correctly (PrivacyPolicy)", (done: Mocha.Done) => {
-    const policy2: PrivacyPolicy = {
-      id: 225,
-      text: "Hello World 2",
-    };
-
-    const policyModel: PrivacyPolicy = new PrivacyPolicy(policy2);
-
-    should.exist(policyModel.id);
-    policyModel.id.should.equal(225);
-    should.exist(policyModel.text);
-    policyModel.text.should.equal("Hello World 2");
-
-    should.not.exist(policyModel.created);
-    should.not.exist(policyModel.modified);
-    should.not.exist(policyModel.service_id);
     done();
   });
 });

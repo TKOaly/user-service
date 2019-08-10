@@ -1,37 +1,27 @@
 process.env.NODE_ENV = "test";
 
-import Knex from "knex";
 import "mocha";
 import app from "../../src/App";
-
-import userFile = require("../../seeds/seedData/users");
-const users: IUserDatabaseObject[] = userFile as IUserDatabaseObject[];
-
-import IUserDatabaseObject from "../../src/interfaces/IUserDatabaseObject";
+import users from "../../seeds/seedData/users";
 import User from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
-
-// Knexfile
-import * as knexfile from "../../knexfile";
-// Knex instance
-const knex: Knex = Knex(knexfile.test);
-
+import { knexInstance } from "../../src/Db";
 import chai = require("chai");
-import ServiceDao from "../../src/dao/ServiceDao";
-import Service, { IServiceDatabaseObject } from "../../src/models/Service";
-const should: Chai.Should = chai.should();
-const chaiHttp: any = require("chai-http");
+import Service, { ServiceDatabaseObject } from "../../src/models/Service";
+
+// Knex instance
+const knex = knexInstance;
+const should = chai.should();
+const chaiHttp = require("chai-http");
 chai.use(chaiHttp);
 
-const url: string = "/api/users";
-
-// Service dao
-const authService: AuthenticationService = new AuthenticationService(new ServiceDao(knex));
+const authService = AuthenticationService;
+const url = "/api/users";
 
 describe("UserController", () => {
   // Roll back
-  beforeEach((done: Mocha.Done) => {
+  beforeEach(done => {
     knex.migrate.rollback().then(() => {
       knex.migrate.latest().then(() => {
         knex.seed.run().then(() => {
@@ -42,7 +32,7 @@ describe("UserController", () => {
   });
 
   // After each
-  afterEach((done: Mocha.Done) => {
+  afterEach(done => {
     knex.migrate.rollback().then(() => {
       done();
     });
@@ -50,7 +40,7 @@ describe("UserController", () => {
 
   describe("Returns all users", () => {
     // Roll back
-    beforeEach((done: Mocha.Done) => {
+    beforeEach(done => {
       knex.migrate.rollback().then(() => {
         knex.migrate.latest().then(() => {
           knex.seed.run().then(() => {
@@ -61,18 +51,18 @@ describe("UserController", () => {
     });
 
     // After each
-    afterEach((done: Mocha.Done) => {
+    afterEach(done => {
       knex.migrate.rollback().then(() => {
         done();
       });
     });
 
-    it("GET /api/users : As an authenticated user, returns all users", (done: Mocha.Done) => {
+    it("GET /api/users : As an authenticated user, returns all users", done => {
       chai
         .request(app)
         .get(url)
         .set("Authorization", "Bearer " + generateToken(2))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.not.exist(err);
           should.exist(res.body.ok);
           res.body.ok.should.equal(true);
@@ -84,7 +74,7 @@ describe("UserController", () => {
           res.body.ok.should.equal(true);
 
           res.body.payload.forEach((payloadObject: User, i: number) => {
-            const user_2: User = new User(users.find((usr: User) => usr.id === payloadObject.id));
+            const user_2 = new User(users.find(usr => usr.id === payloadObject.id)!);
 
             should.exist(payloadObject.id);
             payloadObject.id.should.equal(user_2.id);
@@ -123,6 +113,12 @@ describe("UserController", () => {
             should.exist(payloadObject.isTKTL);
             payloadObject.isTKTL.should.equal(user_2.isTKTL);
 
+            should.exist(payloadObject.isHyStaff);
+            payloadObject.isHyStaff.should.equal(user_2.isHyStaff);
+
+            should.exist(payloadObject.isHyStudent);
+            payloadObject.isHyStudent.should.equal(user_2.isHyStudent);
+
             should.exist(payloadObject.username);
             payloadObject.username.should.equal(user_2.username);
           });
@@ -130,11 +126,11 @@ describe("UserController", () => {
         });
     });
 
-    it("GET /api/users : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/users : As an unauthenticated user, returns unauthorized", done => {
       chai
         .request(app)
         .get(url)
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -147,12 +143,12 @@ describe("UserController", () => {
   });
 
   describe("Returns a single user", () => {
-    it("GET /api/users/{id} : As an authenticated user, returns a single user", (done: Mocha.Done) => {
+    it("GET /api/users/{id} : As an authenticated user, returns a single user", done => {
       chai
         .request(app)
         .get(url + "/1")
         .set("Authorization", "Bearer " + generateToken(2))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           res.status.should.equal(200);
           should.exist(res.body.ok);
           res.body.ok.should.equal(true);
@@ -160,7 +156,7 @@ describe("UserController", () => {
           should.exist(res.body.message);
           res.body.message.should.equal("Success");
 
-          const user_2: User = new User(users.find((user: IUserDatabaseObject) => user.id === 1));
+          const user_2: User = new User(users.find(user => user.id === 1)!);
 
           should.exist(user_2);
 
@@ -206,15 +202,21 @@ describe("UserController", () => {
           should.exist(payloadObject.username);
           payloadObject.username.should.equal(user_2.username);
 
+          should.exist(payloadObject.isHyStaff);
+          payloadObject.isHyStaff.should.equal(user_2.isHyStaff);
+
+          should.exist(payloadObject.isHyStudent);
+          payloadObject.isHyStudent.should.equal(user_2.isHyStudent);
+
           done();
         });
     });
 
-    it("GET /api/users/{id} : As an unauthenticated user, returns unauthorized", (done: Mocha.Done) => {
+    it("GET /api/users/{id} : As an unauthenticated user, returns unauthorized", done => {
       chai
         .request(app)
         .get(url + "/1")
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -227,12 +229,12 @@ describe("UserController", () => {
   });
 
   describe("Returns my information", () => {
-    it("GET /api/users/me : Returns an error if no service is defined", (done: Mocha.Done) => {
+    it("GET /api/users/me : Returns an error if no service is defined", done => {
       chai
         .request(app)
         .get(url + "/me")
         .set("Authorization", "Bearer " + generateToken(1, [kjyrIdentifier]))
-        .end((err: any, res: ChaiHttp.Response) => {
+        .end((err, res) => {
           should.exist(res.body.ok);
           should.exist(res.body.message);
           should.not.exist(res.body.payload);
@@ -243,85 +245,79 @@ describe("UserController", () => {
         });
     });
 
-    it(
-      "GET /api/users/me: Trying to get information from" + " a service the user is not authenticated to",
-      (done: Mocha.Done) => {
-        chai
-          .request(app)
-          .get(url + "/me")
-          .set("Authorization", "Bearer " + generateToken(1, []))
-          .set("Service", kjyrIdentifier)
-          .end((err: any, res: ChaiHttp.Response) => {
-            should.exist(res.body.ok);
-            should.exist(res.body.message);
-            should.not.exist(res.body.payload);
-            res.body.ok.should.equal(false);
-            res.body.message.should.equal("User not authorized to service");
-            res.status.should.equal(403);
-            done();
-          });
-      },
-    );
+    it("GET /api/users/me: Trying to get information from" + " a service the user is not authenticated to", done => {
+      chai
+        .request(app)
+        .get(url + "/me")
+        .set("Authorization", "Bearer " + generateToken(1, []))
+        .set("Service", kjyrIdentifier)
+        .end((err, res) => {
+          should.exist(res.body.ok);
+          should.exist(res.body.message);
+          should.not.exist(res.body.payload);
+          res.body.ok.should.equal(false);
+          res.body.message.should.equal("User not authorized to service");
+          res.status.should.equal(403);
+          done();
+        });
+    });
 
-    it(
-      "GET /api/users/me : Removes unwanted information" + " and returns my information from every service",
-      (done: Mocha.Done) => {
-        authService
-          .getServices()
-          .then((dbServices: Service[]) => {
-            const services: IServiceDatabaseObject[] = dbServices.map((dbService: Service) =>
-              dbService.getDatabaseObject(),
-            );
-            // Loop through services
-            for (const service of services) {
-              const serviceIdentifier: string = service.service_identifier;
-              const permissionNumber: number = service.data_permissions;
+    it("GET /api/users/me : Removes unwanted information" + " and returns my information from every service", done => {
+      authService
+        .getServices()
+        .then((dbServices: Service[]) => {
+          const services: ServiceDatabaseObject[] = dbServices.map((dbService: Service) =>
+            dbService.getDatabaseObject(),
+          );
+          // Loop through services
+          for (const service of services) {
+            const serviceIdentifier = service.service_identifier;
+            const permissionNumber = service.data_permissions;
 
-              chai
-                .request(app)
-                .get(url + "/me")
-                .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier]))
-                .set("Service", serviceIdentifier)
-                .end((err: any, res: ChaiHttp.Response) => {
-                  res.status.should.equal(200);
-                  should.exist(res.body.ok);
-                  res.body.ok.should.equal(true);
-                  should.exist(res.body.payload);
-                  should.exist(res.body.message);
-                  res.body.message.should.equal("Success");
+            chai
+              .request(app)
+              .get(url + "/me")
+              .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier!]))
+              .set("Service", serviceIdentifier!)
+              .end((err, res) => {
+                res.status.should.equal(200);
+                should.exist(res.body.ok);
+                res.body.ok.should.equal(true);
+                should.exist(res.body.payload);
+                should.exist(res.body.message);
+                res.body.message.should.equal("Success");
 
-                  const user_2: User = new User(users.find((user: IUserDatabaseObject) => user.id === 1));
+                const user_2: User = new User(users.find(user => user.id === 1)!);
 
-                  should.exist(user_2);
+                should.exist(user_2);
 
-                  const payloadObject: User = res.body.payload;
+                const payloadObject: User = res.body.payload;
 
-                  const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
+                const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
 
-                  delete user.createdAt;
-                  delete user.modifiedAt;
+                delete user.createdAt;
+                delete user.modifiedAt;
 
-                  const allFields = Object.keys(user) as Array<keyof User>;
+                const allFields = Object.keys(user) as Array<keyof User>;
 
-                  const required: string[] = Object.keys(
-                    user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber),
-                  );
-                  for (const field of allFields) {
-                    if (required.find((requiredField: string) => requiredField === field)) {
-                      // Should expect and equal
-                      should.exist(payloadObject[field]);
-                      payloadObject[field].should.equal(user_2[field]);
-                    } else {
-                      // Should not exist
-                      should.not.exist(payloadObject[field]);
-                    }
+                const required: string[] = Object.keys(
+                  user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber!),
+                );
+                for (const field of allFields) {
+                  if (required.find((requiredField: string) => requiredField === field)) {
+                    // Should expect and equal
+                    should.exist(payloadObject[field]);
+                    payloadObject[field].should.equal(user_2[field]);
+                  } else {
+                    // Should not exist
+                    should.not.exist(payloadObject[field]);
                   }
-                });
-            }
-            done();
-          })
-          .catch(err => console.error(err));
-      },
-    );
+                }
+              });
+          }
+          done();
+        })
+        .catch(err => console.error(err));
+    });
   });
 });
