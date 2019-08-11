@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ServiceError | user-service</title>
+	<title>&quot;src/interfaces/Either&quot; | user-service</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,139 +56,96 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_utils_serviceerror_.html">&quot;src/utils/ServiceError&quot;</a>
-				</li>
-				<li>
-					<a href="_src_utils_serviceerror_.serviceerror.html">ServiceError</a>
+					<a href="_src_interfaces_either_.html">&quot;src/interfaces/Either&quot;</a>
 				</li>
 			</ul>
-			<h1>Class ServiceError</h1>
+			<h1>External module &quot;src/interfaces/Either&quot;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="tsd-signature-type">Error</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">ServiceError</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
+							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_utils_serviceerror_.serviceerror.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_utils_serviceerror_.serviceerror.html#httperrorcode" class="tsd-kind-icon">http<wbr>Error<wbr>Code</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_utils_serviceerror_.serviceerror.html#message" class="tsd-kind-icon">message</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_utils_serviceerror_.serviceerror.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_src_utils_serviceerror_.serviceerror.html#stack" class="tsd-kind-icon">stack</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_src_utils_serviceerror_.serviceerror.html#error" class="tsd-kind-icon">Error</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_src_interfaces_either_.html#either" class="tsd-kind-icon">Either</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module"><a href="_src_interfaces_either_.html#left" class="tsd-kind-icon">Left</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_src_interfaces_either_.html#right" class="tsd-kind-icon">Right</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Service<wbr>Error<span class="tsd-signature-symbol">(</span>httpErrorCode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_utils_serviceerror_.serviceerror.html" class="tsd-signature-type">ServiceError</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/utils/ServiceError.ts#L1">src/utils/ServiceError.ts:1</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>httpErrorCode: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>message: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_utils_serviceerror_.serviceerror.html" class="tsd-signature-type">ServiceError</a></h4>
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="either" class="tsd-anchor"></a>
+					<h3>Either</h3>
+					<div class="tsd-signature tsd-kind-icon">Either&lt;T&gt;<span class="tsd-signature-symbol">:</span> <a href="_src_interfaces_either_.html#left" class="tsd-signature-type">Left</a><span class="tsd-signature-symbol"> | </span><a href="_src_interfaces_either_.html#right" class="tsd-signature-type">Right</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/interfaces/Either.ts#L3">src/interfaces/Either.ts:3</a></li>
+						</ul>
+					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="httperrorcode" class="tsd-anchor"></a>
-					<h3>http<wbr>Error<wbr>Code</h3>
-					<div class="tsd-signature tsd-kind-icon">http<wbr>Error<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
+					<a name="left" class="tsd-anchor"></a>
+					<h3>Left</h3>
+					<div class="tsd-signature tsd-kind-icon">Left<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/utils/ServiceError.ts#L2">src/utils/ServiceError.ts:2</a></li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/interfaces/Either.ts#L1">src/interfaces/Either.ts:1</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"left"</span></h5>
+							</li>
+						</ul>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="message" class="tsd-anchor"></a>
-					<h3>message</h3>
-					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from Error.message</p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:974</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from Error.name</p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:973</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-					<a name="stack" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
-					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from Error.stack</p>
-						<p>Overrides Error.stack</p>
-						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:975</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="error" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Error</h3>
-					<div class="tsd-signature tsd-kind-icon">Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ErrorConstructor</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="right" class="tsd-anchor"></a>
+					<h3>Right</h3>
+					<div class="tsd-signature tsd-kind-icon">Right&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:984</li>
+							<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/interfaces/Either.ts#L2">src/interfaces/Either.ts:2</a></li>
 						</ul>
 					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
+						</li>
+					</ul>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>tag<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"right"</span></h5>
+							</li>
+						</ul>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -199,39 +156,21 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_src_utils_serviceerror_.html">"src/utils/<wbr>Service<wbr>Error"</a>
+						<a href="_src_interfaces_either_.html">"src/interfaces/<wbr>Either"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_src_utils_serviceerror_.serviceerror.html" class="tsd-kind-icon">Service<wbr>Error</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_src_utils_serviceerror_.serviceerror.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_utils_serviceerror_.serviceerror.html#httperrorcode" class="tsd-kind-icon">http<wbr>Error<wbr>Code</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_utils_serviceerror_.serviceerror.html#message" class="tsd-kind-icon">message</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_utils_serviceerror_.serviceerror.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_src_utils_serviceerror_.serviceerror.html#stack" class="tsd-kind-icon">stack</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_src_utils_serviceerror_.serviceerror.html#error" class="tsd-kind-icon">Error</a>
-							</li>
-						</ul>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_src_interfaces_either_.html#either" class="tsd-kind-icon">Either</a>
 					</li>
-				</ul>
-				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="_src_interfaces_either_.html#left" class="tsd-kind-icon">Left</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_src_interfaces_either_.html#right" class="tsd-kind-icon">Right</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

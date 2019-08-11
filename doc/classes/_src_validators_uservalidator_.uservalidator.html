@@ -80,7 +80,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_src_interfaces_validator_.validator.html" class="tsd-signature-type">Validator</a><span class="tsd-signature-symbol">&lt;</span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
+					<li><a href="../interfaces/_src_interfaces_validator_.validator.html" class="tsd-signature-type">Validator</a><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_validators_uservalidator_.html#usercreatemodel" class="tsd-signature-type">UserCreateModel</a><span class="tsd-signature-symbol">, </span><a href="../modules/_src_validators_uservalidator_.html#userupdatemodel" class="tsd-signature-type">UserUpdateModel</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -90,9 +90,6 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_validators_uservalidator_.uservalidator.html#checkemailavailability" class="tsd-kind-icon">check<wbr>Email<wbr>Availability</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_validators_uservalidator_.uservalidator.html#checkemailvalidity" class="tsd-kind-icon">check<wbr>Email<wbr>Validity</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_validators_uservalidator_.uservalidator.html#checkusernameavailability" class="tsd-kind-icon">check<wbr>Username<wbr>Availability</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_validators_uservalidator_.uservalidator.html#validatecreate" class="tsd-kind-icon">validate<wbr>Create</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_validators_uservalidator_.uservalidator.html#validateupdate" class="tsd-kind-icon">validate<wbr>Update</a></li>
 							</ul>
@@ -103,94 +100,25 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="checkemailavailability" class="tsd-anchor"></a>
-					<h3>check<wbr>Email<wbr>Availability</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">check<wbr>Email<wbr>Availability<span class="tsd-signature-symbol">(</span>newUser<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/54279af/src/validators/UserValidator.ts#L132">src/validators/UserValidator.ts:132</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>newUser: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="checkemailvalidity" class="tsd-anchor"></a>
-					<h3>check<wbr>Email<wbr>Validity</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">check<wbr>Email<wbr>Validity<span class="tsd-signature-symbol">(</span>email<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/54279af/src/validators/UserValidator.ts#L142">src/validators/UserValidator.ts:142</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>email: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="checkusernameavailability" class="tsd-anchor"></a>
-					<h3>check<wbr>Username<wbr>Availability</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">check<wbr>Username<wbr>Availability<span class="tsd-signature-symbol">(</span>newUser<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/54279af/src/validators/UserValidator.ts#L122">src/validators/UserValidator.ts:122</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>newUser: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="validatecreate" class="tsd-anchor"></a>
 					<h3>validate<wbr>Create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">validate<wbr>Create<span class="tsd-signature-symbol">(</span>newUser<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_src_validators_uservalidator_.additionaluserdata.html" class="tsd-signature-type">AdditionalUserData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Create<span class="tsd-signature-symbol">(</span>u<span class="tsd-signature-symbol">: </span><a href="../modules/_src_validators_uservalidator_.html#userdata" class="tsd-signature-type">UserData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/54279af/src/validators/UserValidator.ts#L37">src/validators/UserValidator.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/validators/UserValidator.ts#L242">src/validators/UserValidator.ts:242</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>newUser: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_src_validators_uservalidator_.additionaluserdata.html" class="tsd-signature-type">AdditionalUserData</a></h5>
+									<h5>u: <a href="../modules/_src_validators_uservalidator_.html#userdata" class="tsd-signature-type">UserData</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -198,13 +126,13 @@
 					<a name="validateupdate" class="tsd-anchor"></a>
 					<h3>validate<wbr>Update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">validate<wbr>Update<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, newUser<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_src_validators_uservalidator_.additionaluserdata.html" class="tsd-signature-type">AdditionalUserData</a>, modifier<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Update<span class="tsd-signature-symbol">(</span>userId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, newData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_validators_uservalidator_.html#userdata" class="tsd-signature-type">UserData</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithrole" class="tsd-signature-type">UserDataWithRole</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithmembership" class="tsd-signature-type">UserDataWithMembership</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatakeywithrole" class="tsd-signature-type">UserDataKeyWithRole</a><span class="tsd-signature-symbol"> &amp; </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithmembership" class="tsd-signature-type">UserDataWithMembership</a><span class="tsd-signature-symbol">&gt;</span>, modifiedBy<span class="tsd-signature-symbol">: </span><a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/54279af/src/validators/UserValidator.ts#L75">src/validators/UserValidator.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/TKOaly/user-service/blob/f147b2f/src/validators/UserValidator.ts#L289">src/validators/UserValidator.ts:289</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -213,13 +141,13 @@
 									<h5>userId: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5>newUser: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol"> &amp; </span><a href="../interfaces/_src_validators_uservalidator_.additionaluserdata.html" class="tsd-signature-type">AdditionalUserData</a></h5>
+									<h5>newData: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_validators_uservalidator_.html#userdata" class="tsd-signature-type">UserData</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithrole" class="tsd-signature-type">UserDataWithRole</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithmembership" class="tsd-signature-type">UserDataWithMembership</a><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_validators_uservalidator_.html#userdatakeywithrole" class="tsd-signature-type">UserDataKeyWithRole</a><span class="tsd-signature-symbol"> &amp; </span><a href="../modules/_src_validators_uservalidator_.html#userdatawithmembership" class="tsd-signature-type">UserDataWithMembership</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
-									<h5>modifier: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a></h5>
+									<h5>modifiedBy: <a href="_src_models_user_.user.html" class="tsd-signature-type">User</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -244,15 +172,6 @@
 						<a href="_src_validators_uservalidator_.uservalidator.html" class="tsd-kind-icon">User<wbr>Validator</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_validators_uservalidator_.uservalidator.html#checkemailavailability" class="tsd-kind-icon">check<wbr>Email<wbr>Availability</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_validators_uservalidator_.uservalidator.html#checkemailvalidity" class="tsd-kind-icon">check<wbr>Email<wbr>Validity</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_validators_uservalidator_.uservalidator.html#checkusernameavailability" class="tsd-kind-icon">check<wbr>Username<wbr>Availability</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_validators_uservalidator_.uservalidator.html#validatecreate" class="tsd-kind-icon">validate<wbr>Create</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -265,17 +184,77 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/_src_validators_uservalidator_.additionaluserdata.html" class="tsd-kind-icon">Additional<wbr>User<wbr>Data</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#admindatakey" class="tsd-kind-icon">Admin<wbr>Data<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#jvdatakey" class="tsd-kind-icon">JVData<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#selfeditkey" class="tsd-kind-icon">Self<wbr>Edit<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#usercreatemodel" class="tsd-kind-icon">User<wbr>Create<wbr>Model</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdata" class="tsd-kind-icon">User<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatakey" class="tsd-kind-icon">User<wbr>Data<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatakeywithmembership" class="tsd-kind-icon">User<wbr>Data<wbr>Key<wbr>With<wbr>Membership</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatakeywithrole" class="tsd-kind-icon">User<wbr>Data<wbr>Key<wbr>With<wbr>Role</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatawithmembership" class="tsd-kind-icon">User<wbr>Data<wbr>With<wbr>Membership</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatawithrole" class="tsd-kind-icon">User<wbr>Data<wbr>With<wbr>Role</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userupdatemodel" class="tsd-kind-icon">User<wbr>Update<wbr>Model</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_src_validators_uservalidator_.html#allowedadminedit" class="tsd-kind-icon">allowed<wbr>Admin<wbr>Edit</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_src_validators_uservalidator_.html#allowedjvedit" class="tsd-kind-icon">allowedJVEdit</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="../modules/_src_validators_uservalidator_.html#allowedselfedit" class="tsd-kind-icon">allowed<wbr>Self<wbr>Edit</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#userdatakeys" class="tsd-kind-icon">user<wbr>Data<wbr>Keys</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_src_validators_uservalidator_.html#booleantoint" class="tsd-kind-icon">boolean<wbr>ToInt</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#checkemailavailability" class="tsd-kind-icon">check<wbr>Email<wbr>Availability</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#checkemailvalidity" class="tsd-kind-icon">check<wbr>Email<wbr>Validity</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="../modules/_src_validators_uservalidator_.html#checkmodifypermission" class="tsd-kind-icon">check<wbr>Modify<wbr>Permission</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_src_validators_uservalidator_.html#checkusernameavailability" class="tsd-kind-icon">check<wbr>Username<wbr>Availability</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#hasforeignkeys" class="tsd-kind-icon">has<wbr>Foreign<wbr>Keys</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#isvalidpartialuser" class="tsd-kind-icon">is<wbr>Valid<wbr>Partial<wbr>User</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_validators_uservalidator_.html#isvaliduser" class="tsd-kind-icon">is<wbr>Valid<wbr>User</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_src_validators_uservalidator_.html#stringsareequal" class="tsd-kind-icon">strings<wbr>Are<wbr>Equal</a>
 					</li>
 				</ul>
 			</nav>
