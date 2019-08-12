@@ -1,4 +1,3 @@
-import * as Knex from "knex";
 import Dao from "../interfaces/Dao";
 import { PaymentDatabaseObject, PaymentListingDatabaseObject } from "../models/Payment";
 import { knexInstance } from "../Db";
@@ -81,11 +80,10 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public findUnpaid(): PromiseLike<PaymentListingDatabaseObject[]> {
-    const query: Knex.QueryBuilder = knexInstance<PaymentListingDatabaseObject>(tableName)
+    const query = knexInstance<PaymentListingDatabaseObject>(tableName)
       .select(`${tableName}.*`, "users.name as payer_name")
       .leftJoin(knexInstance.raw("users on (users.id = " + tableName + ".payer_id)"))
       .where({ paid: null });
-    // console.log(query.toString());
     return Promise.resolve(query);
   }
 
