@@ -15,7 +15,7 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
       modified: new Date(),
     };
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .update(savedObj)
         .where({ id: entityId }),
     );
@@ -28,12 +28,12 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
       created: new Date(),
       modified: new Date(),
     };
-    return Promise.resolve(knexInstance(tableName).insert(savedObj));
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).insert(savedObj));
   }
 
-  public findOne(id: number): PromiseLike<ConsentDatabaseObject> {
+  public findOne(id: number): PromiseLike<ConsentDatabaseObject | undefined> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .where({ id })
         .first(),
     );
@@ -43,9 +43,9 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
     return Promise.resolve(knexInstance(tableName).select());
   }
 
-  public remove(id: number): PromiseLike<boolean> {
+  public remove(id: number): PromiseLike<number> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .delete()
         .where({ id }),
     );
@@ -54,9 +54,9 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
   /**
    * Resets privacy policy consent for all users that have accepted it, for a single service.
    */
-  public resetAllAcceptedByService(service_id: number): PromiseLike<number[]> {
+  public resetAllAcceptedByService(service_id: number): PromiseLike<number> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .update({ consent: PrivacyPolicyConsent.Unknown })
         .where({ consent: PrivacyPolicyConsent.Accepted, service_id }),
     );
@@ -64,23 +64,23 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
 
   public findAllByServiceId(service_id: number): PromiseLike<ConsentDatabaseObject[]> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .select()
-        .where({ service_id }),
+        .where("service_id", service_id),
     );
   }
 
   public findAllByUserId(user_id: number): PromiseLike<ConsentDatabaseObject[]> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .select()
-        .where({ user_id }),
+        .where("user_id", user_id),
     );
   }
 
-  public findByUserAndService(user_id: number, service_id: number): PromiseLike<ConsentDatabaseObject> {
+  public findByUserAndService(user_id: number, service_id: number): PromiseLike<ConsentDatabaseObject | undefined> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .select()
         .where({ user_id, service_id })
         .first(),
@@ -89,9 +89,9 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
 
   public findAllDeclined(): PromiseLike<ConsentDatabaseObject[]> {
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<ConsentDatabaseObject>(tableName)
         .select()
-        .where({ consent: PrivacyPolicyConsent.Declined }),
+        .where("consent", PrivacyPolicyConsent.Declined),
     );
   }
 }

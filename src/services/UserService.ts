@@ -122,7 +122,7 @@ class UserService {
     return affectedRows;
   }
 
-  public async deleteUser(userId: number): Promise<boolean> {
+  public async deleteUser(userId: number): Promise<number> {
     return UserDao.remove(userId);
   }
 }

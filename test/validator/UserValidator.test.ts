@@ -327,6 +327,9 @@ describe("UserValidator", () => {
   describe("validateUpdate()", () => {
     it("Throws a service error when a normal user tries to modify a forbidden value", done => {
       userDao.findOne(1).then(user => {
+        if (user === undefined) {
+          throw new Error("User not found");
+        }
         userValidator
           .validateUpdate(user.id, { username: "test_user_123" }, new User(user))
           .catch((err: ServiceError) => {
@@ -343,6 +346,9 @@ describe("UserValidator", () => {
       "Throws a service error when an elevated user" + " tries to set email address to an already used email address",
       done => {
         userDao.findOne(2).then(user => {
+          if (user === undefined) {
+            throw new Error("User not found");
+          }
           userValidator.validateUpdate(1, { email: "admin@user.com" }, new User(user)).catch((err: ServiceError) => {
             should.exist(err.message);
             err.message.should.equal("Validation errors: Email address is already taken");
@@ -356,6 +362,9 @@ describe("UserValidator", () => {
 
     it("Throws a service error when an elevated user" + " tries to set a malformed used email address", done => {
       userDao.findOne(2).then(user => {
+        if (user === undefined) {
+          throw new Error("User not found");
+        }
         userValidator.validateUpdate(1, { email: "test123" }, new User(user)).catch((err: ServiceError) => {
           should.exist(err.message);
           err.message.should.equal("Validation errors: Email address is malformed");
@@ -368,12 +377,18 @@ describe("UserValidator", () => {
 
     it("Succeeds when an elevated user" + " tries to set his own used email address", done => {
       userDao.findOne(2).then(user => {
+        if (user === undefined) {
+          throw new Error("User not found");
+        }
         userValidator.validateUpdate(2, { email: "admin@user.com" }, new User(user)).then(res => done());
       });
     });
 
     it("Throws a service error when a user" + " tries to set a new password that doesn't match", done => {
       userDao.findOne(1).then(user => {
+        if (user === undefined) {
+          throw new Error("User not found");
+        }
         userValidator
           .validateUpdate(1, { password1: "test_password", password2: "test_password2" }, new User(user))
           .catch((err: ServiceError) => {
@@ -391,6 +406,9 @@ describe("UserValidator", () => {
         " tries to set a new password that doesn't match and a malformed email",
       done => {
         userDao.findOne(1).then(user => {
+          if (user === undefined) {
+            throw new Error("User not found");
+          }
           userValidator
             .validateUpdate(
               1,
@@ -413,6 +431,9 @@ describe("UserValidator", () => {
       done => {
         // Seed user #3 is a jasenvirkailija and wants to update a user.
         userDao.findOne(3).then(user => {
+          if (user === undefined) {
+            throw new Error("User not found");
+          }
           userValidator
             .validateUpdate(2, { role: UserRoleString.Kayttaja }, new User(user))
             .catch((err: ServiceError) => {
@@ -428,6 +449,9 @@ describe("UserValidator", () => {
 
     it("Succeeds when jasenvirkailija tries to" + " modify another user with a valid value", done => {
       userDao.findOne(3).then(user => {
+        if (user === undefined) {
+          throw new Error("User not found");
+        }
         userValidator
           .validateUpdate(2, { username: "tester" }, new User(user))
           .then(res => {
@@ -444,6 +468,9 @@ describe("UserValidator", () => {
       done => {
         // Seed user #4 is a tenttiarkistovirkailija
         userDao.findOne(4).then(user => {
+          if (user === undefined) {
+            throw new Error("User not found");
+          }
           userValidator.validateUpdate(1, { email: "test123" }, new User(user)).catch((err: ServiceError) => {
             should.exist(err.message);
             err.message.should.equal("Forbidden modify action");

@@ -28,7 +28,7 @@ class PrivacyPolicyService implements Service<PrivacyPolicy> {
     throw new Error("Method not implemented.");
   }
 
-  public delete(entity_id: number): Promise<boolean> {
+  public delete(entity_id: number): Promise<number> {
     throw new Error("Method not implemented.");
   }
 

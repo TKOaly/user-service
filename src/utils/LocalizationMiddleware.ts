@@ -1,10 +1,6 @@
-import * as Express from "express";
+import { RequestHandler } from "express";
 
-const localizationMiddleware: (req: Express.Request, res: Express.Response, next: Express.NextFunction) => void = (
-  req: Express.Request,
-  res: Express.Response,
-  next: Express.NextFunction,
-): void => {
+const localizationMiddleware: RequestHandler = (req, res, next): void => {
   if (req.cookies.tkoaly_locale === undefined) {
     res.cookie("tkoaly_locale", process.env.DEFAULT_LOCALE, {
       maxAge: 1000 * 60 * 60 * 24 * 7,

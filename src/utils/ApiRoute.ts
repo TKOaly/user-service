@@ -1,4 +1,4 @@
-import Express from "express";
+import { Request, Response, NextFunction } from "express";
 
 /**
  * Generates an API route in the format /api/{API_VERSION}/{ENDPOINT_NAME} or /api/{ENDPOINT_NAME}
@@ -7,21 +7,19 @@ import Express from "express";
  * @param apiVersion API version. Defaults to null, can be configured manually.
  * @returns API route, example: /api/v1/users
  */
-function generateApiRoute(endpointName: string, apiVersion?: string): string {
+function generateApiRoute(endpointName: string, apiVersion?: string) {
   if (!apiVersion) {
-    return "/api/" + endpointName;
+    return `/api/${endpointName}`;
   } else {
-    return "/api/" + apiVersion + "/" + endpointName;
+    return `/api/${apiVersion}/${endpointName}`;
   }
 }
 
 /**
  * API header middleware that sets headers.
  */
-function apiHeaderMiddleware(
-  apiVersion?: string,
-): (req: Express.Request, res: Express.Response, next: Express.NextFunction) => void {
-  return function(req: Express.Request, res: Express.Response, next: Express.NextFunction): void {
+function apiHeaderMiddleware(apiVersion?: string): (req: Request, res: Response, next: NextFunction) => void {
+  return function(req: Request, res: Response, next: NextFunction): void {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
     }
