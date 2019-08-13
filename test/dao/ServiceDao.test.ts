@@ -98,6 +98,9 @@ describe("ServiceDao", () => {
       serviceDao.findAll().then(services => {
         services.length.should.equal(dbServices.length + 1);
         serviceDao.findByIdentifier(newService.service_identifier).then(dbService => {
+          if (dbService === undefined) {
+            throw new Error("Service not found");
+          }
           should.exist(dbService.created);
           should.exist(dbService.modified);
           should.exist(dbService.data_permissions);
@@ -120,6 +123,9 @@ describe("ServiceDao", () => {
   it("Should return a single service with findOne()", done => {
     serviceDao.findOne(dbServices[0].id).then(dbService => {
       const seedService = dbServices[0];
+      if (dbService === undefined) {
+        throw new Error("Service not found");
+      }
       // We can't compare modified and created dates
       delete dbService.modified;
       delete dbService.created;
@@ -153,11 +159,17 @@ describe("ServiceDao", () => {
       data_permissions: 7768,
     };
     serviceDao.findOne(updatedService.id).then(oldService => {
+      if (oldService === undefined) {
+        throw new Error("Service not found");
+      }
       new Promise(r => setTimeout(r, 2000)).then(() => {
         serviceDao.update(updatedService.id, updatedService).then(res => {
           should.exist(res);
           res.should.equal(1);
           serviceDao.findOne(updatedService.id!).then(service => {
+            if (service === undefined) {
+              throw new Error("Service not found");
+            }
             service.modified.toISOString().should.not.equal(oldService.modified.toISOString());
             service.created.toISOString().should.equal(oldService.created.toISOString());
             service.id.should.equal(updatedService.id);
@@ -167,6 +179,13 @@ describe("ServiceDao", () => {
           });
         });
       });
+    });
+  });
+
+  it("should return undefined if service is not found", done => {
+    serviceDao.findOne(999).then(service => {
+      should.not.exist(service);
+      done();
     });
   });
 });

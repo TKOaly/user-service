@@ -24,11 +24,15 @@ class PaymentService {
   }
 
   public async fetchPaymentByPayer(payerId: number): Promise<Payment> {
-    return new Payment(await PaymentDao.findByPayer(payerId));
+    const payment = await PaymentDao.findByPayer(payerId);
+    if (!payment) {
+      throw new ServiceError(404, "Payment not found");
+    }
+    return new Payment(payment);
   }
 
   public async fetchValidPaymentForUser(userId: number): Promise<Payment> {
-    const result: PaymentDatabaseObject = await PaymentDao.findByPayer(userId, true);
+    const result = await PaymentDao.findByPayer(userId, true);
     if (!result) {
       throw new ServiceError(404, "Payment not found");
     }
@@ -79,8 +83,11 @@ class PaymentService {
    * Marks a cash payment paid.
    * TODO: Clarify naming?
    */
-  public async makeCashPaid(payment_id: number, confirmer_id: number): Promise<boolean> {
+  public async makeCashPaid(payment_id: number, confirmer_id: number): Promise<number> {
     const payment = await PaymentDao.findOne(payment_id);
+    if (!payment) {
+      throw new ServiceError(404, "Payment not found");
+    }
 
     if (payment.paid) {
       throw new Error("Error marking cash payment as paid");
@@ -93,11 +100,11 @@ class PaymentService {
    * Marks a bank payment paid.
    * TODO: Clarify naming?
    */
-  public async makeBankPaid(payment_id: number, confirmer_id: number): Promise<boolean> {
+  public async makeBankPaid(payment_id: number, confirmer_id: number): Promise<number> {
     const payment = await PaymentDao.findOne(payment_id);
 
     if (!payment) {
-      throw new ServiceError(400, "Payment doesn't exsist");
+      throw new ServiceError(400, "Payment not found");
     }
 
     if (payment.paid) {

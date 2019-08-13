@@ -17,7 +17,7 @@ class ConsentService implements Service<Consent> {
   /**
    * Resets all consents to unknown in a service (That have not been declined.)
    */
-  public async resetAllAcceptedByService(service_id: number): Promise<number[]> {
+  public async resetAllAcceptedByService(service_id: number): Promise<number> {
     const res = await ConsentDao.resetAllAcceptedByService(service_id);
     return res;
   }
@@ -32,7 +32,7 @@ class ConsentService implements Service<Consent> {
     return res;
   }
 
-  public async delete(entity_id: number): Promise<boolean> {
+  public async delete(entity_id: number): Promise<number> {
     const res = await ConsentDao.remove(entity_id);
     return res;
   }

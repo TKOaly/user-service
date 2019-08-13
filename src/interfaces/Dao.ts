@@ -2,15 +2,15 @@ export default interface Dao<T> {
   /**
    * Returns an entity by its id.
    */
-  findOne(id: number): PromiseLike<Required<T>>;
+  findOne(id: number): PromiseLike<T | undefined>;
   /**
    * Returns all entities.
    */
-  findAll(): PromiseLike<Required<T>[]>;
+  findAll(): PromiseLike<T[]>;
   /**
    * Removes an entity.
    */
-  remove(id: number): PromiseLike<boolean>;
+  remove(id: number): PromiseLike<number>;
   /**
    * Updates an entity.
    */

@@ -8,7 +8,7 @@ export default interface Service<T> {
 
   update(entity_id: number, entity: T): Promise<number>;
 
-  delete(entity_id: number): Promise<boolean>;
+  delete(entity_id: number): Promise<number>;
 
   create(entity: T): Promise<number[]>;
 }

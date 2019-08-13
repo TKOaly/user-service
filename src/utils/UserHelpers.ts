@@ -1,11 +1,24 @@
 import UserRoleString from "../enum/UserRoleString";
 import { RoleNumbers } from "../models/User";
 
-export function stringToBoolean(str: string | number | object | boolean): boolean {
-  return str === "0" ? false : str === "false" ? false : str === "1" ? true : str === "true" ? true : false;
-}
+export const stringToBoolean = (str: string | number | object | boolean) => {
+  if (typeof str === "string") {
+    if (str === "1" || str === "0") {
+      return str === "1";
+    } else if (str === "true" || str === "false") {
+      return str === "true";
+    }
+  } else if (typeof str === "number") {
+    if (str === 1 || str === 0) {
+      return str === 1;
+    }
+  } else if (typeof str === "boolean") {
+    return str;
+  }
+  return false;
+};
 
-export function compareRoles(a: UserRoleString, b: UserRoleString): number {
+export const compareRoles = (a: UserRoleString, b: UserRoleString) => {
   let aN = 0;
   let bN = 0;
 
@@ -24,4 +37,4 @@ export function compareRoles(a: UserRoleString, b: UserRoleString): number {
   } else {
     return 0;
   }
-}
+};

@@ -28,6 +28,7 @@ const mockExpress = {
 
 describe("CachingMiddleware", () => {
   it("Sets headers correctly", (done) => {
+    // @ts-ignore
     CachingMiddleware(mockExpress.req, mockExpress.res, mockExpress.next);
     nextCount.should.equal(1);
     calledNext.should.equal(true);

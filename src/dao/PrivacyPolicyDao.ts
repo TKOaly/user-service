@@ -14,7 +14,7 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
       modified: new Date(),
     };
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
         .update(savedObj)
         .where({ id: entityId }),
     );
@@ -25,13 +25,12 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
       created: new Date(),
       modified: new Date(),
     };
-    return Promise.resolve(knexInstance(tableName).insert(savedObj));
+    return Promise.resolve(knexInstance<PrivacyPolicyDatabaseObject>(tableName).insert(savedObj));
   }
-  public findOne(id: number): PromiseLike<PrivacyPolicyDatabaseObject> {
-    return Promise.resolve<PrivacyPolicyDatabaseObject>(
+  public findOne(id: number): PromiseLike<PrivacyPolicyDatabaseObject | undefined> {
+    return Promise.resolve(
       knexInstance
-        .select()
-        .from(tableName)
+        .select<PrivacyPolicyDatabaseObject>(tableName)
         .where({ id })
         .first(),
     );
@@ -40,9 +39,9 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
   /**
    * Finds privacy policy for a service, by the service's identifier.
    */
-  public findByServiceIdentifier(serviceIdentifier: string): PromiseLike<PrivacyPolicyDatabaseObject> {
-    return Promise.resolve<PrivacyPolicyDatabaseObject>(
-      knexInstance
+  public findByServiceIdentifier(serviceIdentifier: string): PromiseLike<PrivacyPolicyDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
         .select(
           tableName + ".id",
           tableName + ".service_id",
@@ -50,32 +49,29 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
           tableName + ".created",
           tableName + ".modified",
         )
-        .from(tableName)
         .innerJoin("services", tableName + ".service_id", "services.id")
         .where("services.service_identifier", serviceIdentifier)
         .first(),
     );
   }
 
-  public findByName(name: string): PromiseLike<PrivacyPolicyDatabaseObject> {
-    return Promise.resolve<PrivacyPolicyDatabaseObject>(
-      knexInstance
+  public findByName(name: string): PromiseLike<PrivacyPolicyDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
         .select()
-        .from(tableName)
         .where({ name })
         .first(),
     );
   }
 
   public findAll(): PromiseLike<PrivacyPolicyDatabaseObject[]> {
-    return Promise.resolve<PrivacyPolicyDatabaseObject[]>(knexInstance.select().from(tableName));
+    return Promise.resolve(knexInstance<PrivacyPolicyDatabaseObject>(tableName).select());
   }
 
-  public remove(id: number): PromiseLike<boolean> {
-    return Promise.resolve<boolean>(
-      knexInstance
+  public remove(id: number): PromiseLike<number> {
+    return Promise.resolve(
+      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
         .delete()
-        .from(tableName)
         .where({ id }),
     );
   }

@@ -6,27 +6,27 @@ import { knexInstance } from "../Db";
 const tableName = "users";
 
 class UserDao implements Dao<UserDatabaseObject> {
-  public findOne(id: number): PromiseLike<Required<UserDatabaseObject>> {
-    return Promise.resolve<UserDatabaseObject>(
-      knexInstance(tableName)
+  public findOne(id: number): PromiseLike<UserDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<UserDatabaseObject>(tableName)
         .select()
         .where({ id })
         .first(),
     );
   }
 
-  public findByUsername(username: string): PromiseLike<UserDatabaseObject> {
-    return Promise.resolve<UserDatabaseObject>(
-      knexInstance(tableName)
+  public findByUsername(username: string): PromiseLike<UserDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<UserDatabaseObject>(tableName)
         .select()
         .where({ username })
         .first(),
     );
   }
 
-  public findByEmail(email: string): PromiseLike<UserDatabaseObject> {
-    return Promise.resolve<UserDatabaseObject>(
-      knexInstance(tableName)
+  public findByEmail(email: string): PromiseLike<UserDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<UserDatabaseObject>(tableName)
         .select()
         .where({ email })
         .first(),
@@ -36,9 +36,9 @@ class UserDao implements Dao<UserDatabaseObject> {
   /**
    * Finds a single user who hasn't paid his/her bill.
    */
-  public findByUnpaidPayment(id: number): PromiseLike<UserDatabaseObject> {
-    return Promise.resolve<UserDatabaseObject>(
-      knexInstance(tableName)
+  public findByUnpaidPayment(id: number): PromiseLike<UserDatabaseObject | undefined> {
+    return Promise.resolve(
+      knexInstance<UserDatabaseObject>(tableName)
         .select(`${tableName}.*`)
         .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
         .where(`${tableName}.id`, "=", id)
@@ -51,8 +51,8 @@ class UserDao implements Dao<UserDatabaseObject> {
    * Finds all users who haven't paid their bill.
    */
   public findAllByUnpaidPayment(): PromiseLike<UserDatabaseObject[]> {
-    return Promise.resolve<UserDatabaseObject[]>(
-      knexInstance("users")
+    return Promise.resolve(
+      knexInstance<UserDatabaseObject>("users")
         .select(`${tableName}.*`)
         .innerJoin("payments", `${tableName}.id`, "payments.payer_id")
         .where("payments.paid", null),
@@ -62,7 +62,7 @@ class UserDao implements Dao<UserDatabaseObject> {
   public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
     if (fields) {
       const queryString: string = fields.join("`, ");
-      const query: Knex.QueryBuilder = knexInstance(tableName).select(fields);
+      const query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName).select(fields);
 
       if (queryString.indexOf("Payment.")) {
         query.leftOuterJoin(
@@ -87,9 +87,8 @@ class UserDao implements Dao<UserDatabaseObject> {
    */
   public findWhere(searchTerm: string): PromiseLike<UserDatabaseObject[]> {
     return Promise.resolve(
-      knexInstance
+      knexInstance<UserDatabaseObject>(tableName)
         .select()
-        .from(tableName)
         .where("username", "like", `%${searchTerm}%`)
         .orWhere("name", "like", `%${searchTerm}%`)
         .orWhere("screen_name", "like", `%${searchTerm}%`)
@@ -97,13 +96,13 @@ class UserDao implements Dao<UserDatabaseObject> {
     );
   }
 
-  public remove(id: number): PromiseLike<boolean> {
+  public remove(id: number): PromiseLike<number> {
     // First, delete consents
-    return knexInstance("privacy_policy_consent_data")
+    return knexInstance<UserDatabaseObject>("privacy_policy_consent_data")
       .delete()
       .where({ user_id: id })
-      .then<boolean>((result: boolean) => {
-        return knexInstance(tableName)
+      .then(result => {
+        return knexInstance<UserDatabaseObject>(tableName)
           .delete()
           .where({ id });
       });
@@ -135,7 +134,7 @@ class UserDao implements Dao<UserDatabaseObject> {
       modified: new Date(),
     };
     return Promise.resolve(
-      knexInstance(tableName)
+      knexInstance<UserDatabaseObject>(tableName)
         .update(savedObj)
         .where({ id: entityId }),
     );
@@ -166,7 +165,7 @@ class UserDao implements Dao<UserDatabaseObject> {
       created: new Date(),
       modified: new Date(),
     };
-    return Promise.resolve(knexInstance(tableName).insert(savedObj));
+    return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).insert(savedObj));
   }
 }
 

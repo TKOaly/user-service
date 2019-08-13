@@ -1,16 +1,10 @@
-import * as Express from "express";
+import { RequestHandler } from "express";
 
 /**
  * A middleware which disables caching
  *
- * TODO: Remove `any` arguments
  */
-// tslint:disable-next-line:typedef
-const cachingMiddleware = (
-  req: Express.Request | any,
-  res: Express.Response | any,
-  next: Express.NextFunction | any,
-): void => {
+const cachingMiddleware: RequestHandler = (req, res, next): void => {
   res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
   res.header("Expires", "-1");
   res.header("Pragma", "no-cache");

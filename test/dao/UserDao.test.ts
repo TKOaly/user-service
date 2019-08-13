@@ -230,6 +230,9 @@ describe("UserDao", () => {
       userDao.findAll().then(users => {
         users.length.should.equal(dbUsers.length + 1);
         userDao.findByUsername(newUser.username).then(dbUser => {
+          if (dbUser === undefined) {
+            throw new Error("User not found");
+          }
           dbUser.username.should.equal(newUser.username);
           dbUser.name.should.equal(newUser.name);
           dbUser.screen_name.should.equal(newUser.screen_name);
@@ -253,6 +256,9 @@ describe("UserDao", () => {
   it("Returns a single user with findOne()", done => {
     userDao.findOne(dbUsers[0].id).then(dbUser => {
       const seedUser = dbUsers[0];
+      if (dbUser === undefined) {
+        throw new Error("User not found");
+      }
 
       // Username
       should.exist(dbUser.username);
@@ -332,7 +338,9 @@ describe("UserDao", () => {
   it("Returns a single user with findByUsername()", done => {
     userDao.findByUsername(dbUsers[0].username).then(dbUser => {
       const seedUser = dbUsers[0];
-
+      if (dbUser === undefined) {
+        throw new Error("User not found");
+      }
       // Username
       should.exist(dbUser.username);
       dbUser.username.should.equal(seedUser.username);
@@ -496,6 +504,9 @@ describe("UserDao", () => {
 
   it("Editing a user should update modifiedAt timestamp, but not createdAt", done => {
     userDao.findOne(1).then(user => {
+      if (user === undefined) {
+        throw new Error("User not found");
+      }
       const createdAt = user.created;
       const modifiedAt = user.modified;
       const createdAtString = createdAt.toISOString();
@@ -509,12 +520,22 @@ describe("UserDao", () => {
           })
           .then(rows => {
             userDao.findOne(1).then(user2 => {
+              if (user2 === undefined) {
+                throw new Error("User not found");
+              }
               createdAtString.should.equal(user2.created.toISOString());
               modifiedAtString.should.not.equal(user2.modified.toISOString());
               done();
             });
           });
       });
+    });
+  });
+
+  it("should return undefined if user is not found", done => {
+    userDao.findOne(999).then(user => {
+      should.not.exist(user);
+      done();
     });
   });
 });
