@@ -12,10 +12,10 @@ jobs:
     - name: Build project
       run: docker-compose build
     - name: Setup test environment
-      run:
-        - docker-compose up -d mysql
-        - sleep 5
-        - docker-compose run web yarn db:init
+      run: |
+        docker-compose up -d mysql
+        sleep 5
+        docker-compose run web yarn db:init
     - name: Run linter
       run: docker-compose run web yarn lint
     - name: Run tests
