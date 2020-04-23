@@ -9,6 +9,8 @@
 	"login_PasswordPlaceholder": "Password",
 	"login_LoginButton": "Login",
 	"RegisterToServiceText": "Become a member of TKO-äly ry",
+	"login_ForgotUsername": "Forgot username?",
+	"login_ForgotPassword": "Forgot password?",
 	"gdpr_PersonalDataRequestTitle": "Data usage request",
 	"gdpr_PersonalDataRedirectMessage": "After accepting, you will be redirected to ",
 	"gdpr_PersonalDataReadPrivacyPolicy": "You can read the privacy policy of the user registry",

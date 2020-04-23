@@ -36,6 +36,10 @@ html(lang="en")
             input.input.accept(type='submit', name='accept', value=t("login_LoginButton"))
             p
               a(href='https://members.tko-aly.fi/users/add', class='applyToBeAMember') #{t("login_RegisterToServiceText")}
+            p
+              a(href='https://members.tko-aly.fi/forgotUsername', class='applyToBeAMember') #{t("login_ForgotUsername")}
+            p
+              a(href='https://members.tko-aly.fi/forgotPassword', class='applyToBeAMember') #{t("login_ForgotPassword")}
             p 
              if (currentLocale === "fi")
               a(href='/lang/en/' + service.serviceIdentifier, class='loginInEnglish') #{t("login_InEnglish")}
