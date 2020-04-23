@@ -8,6 +8,8 @@
 	"login_PasswordPlaceholder": "Salasana",
 	"login_LoginButton": "Kirjaudu sisään",
 	"login_RegisterToServiceText": "Liity TKO-älyn jäseneksi",
+	"login_ForgotUsername": "Unohtuiko käyttäjätunnus?",
+	"login_ForgotPassword": "Unohtuiko salasana?",
 	"gdpr_PersonalDataRequestTitle": "Henkilötietojen käyttöoikeuspyyntö",
 	"gdpr_PersonalDataRedirectMessage": "Sinut uudelleenohjataan hyväksymisen jälkeen osoitteeseen",
 	"gdpr_PersonalDataReadPrivacyPolicy": "Voit lukea jäsenrekisterin tietosuojaselosteen",
