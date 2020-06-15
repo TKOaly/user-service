@@ -33,7 +33,7 @@ class UserService {
   public async searchUsers(searchTerm: string): Promise<User[]> {
     const results = await UserDao.findWhere(searchTerm);
     if (!results.length) {
-      throw new ServiceError(404, "No results returned");
+      return this.fetchAllUsers();
     }
 
     return results.map(res => new User(res));
@@ -42,7 +42,7 @@ class UserService {
   /**
    * Fetches users with selected fields and those who match the conditions.
    */
-  public async fetchAllWithSelectedFields(fields: string[], conditions?: string[]): Promise<UserPayment[]> {
+  public async fetchAllWithSelectedFields(fields?: string[], conditions?: string[]): Promise<UserPayment[]> {
     let conditionQuery: string[] = [];
     if (conditions) {
       conditionQuery = [];

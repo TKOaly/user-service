@@ -53,7 +53,7 @@ class LoginController implements Controller {
     }
 
     try {
-      const service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier);
+      const service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier as string);
 
       if (req.authorization) {
         if (req.authorization.token.authenticatedTo.indexOf(service.serviceIdentifier) > -1) {
@@ -98,12 +98,12 @@ class LoginController implements Controller {
 
     if (req.query.serviceIdentifier === "*" && req.query.redirect) {
       res.clearCookie("token");
-      return res.redirect(req.query.redirect);
+      return res.redirect(req.query.redirect as string);
     }
 
     let service: Service;
     try {
-      service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier);
+      service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier as string);
     } catch (e) {
       Raven.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
@@ -139,7 +139,7 @@ class LoginController implements Controller {
 
     let service: Service;
     try {
-      service = await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier);
+      service = await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier as string);
     } catch (e) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }

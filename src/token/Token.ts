@@ -1,5 +1,6 @@
 import JWT from "jsonwebtoken";
 import ParsedTokenContents from "../interfaces/ParsedTokenContents";
+import ServiceError from "../utils/ServiceError";
 
 export default class ServiceToken {
   constructor(public userId: number, public authenticatedTo: string[], public createdAt: Date) {}
@@ -16,7 +17,7 @@ export default class ServiceToken {
       };
       return JWT.sign(parsedTokenContents, process.env.JWT_SECRET);
     } catch (e) {
-      throw e;
+      throw new ServiceError(500, "Failed to parse token");
     }
   }
 }
@@ -29,7 +30,7 @@ export function stringToServiceToken(token: string) {
   try {
     parsedToken = JWT.verify(token, process.env.JWT_SECRET);
   } catch (e) {
-    throw e;
+    throw new ServiceError(500, "Failed to parse token");
   }
   const tokenContents = parsedToken as ParsedTokenContents;
   return new ServiceToken(

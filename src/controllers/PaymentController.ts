@@ -61,9 +61,9 @@ class PaymentController implements Controller {
           .json(new ServiceResponse(null, "Failed to modify payment: missing request parameters", false));
       }
 
-      const affectedRow: number = await PaymentService.updatePayment(req.params.id, req.body);
+      const affectedRow: number = await PaymentService.updatePayment(Number(Number(req.params.id)), req.body);
       if (affectedRow === 1) {
-        const updatedPayment: Payment = await PaymentService.fetchPayment(req.params.id);
+        const updatedPayment: Payment = await PaymentService.fetchPayment(Number(req.params.id));
         return res.status(200).json(new ServiceResponse(updatedPayment, "Payment modified", true));
       } else {
         return res.status(400).json(new ServiceResponse(null, "Failed to modify payment"));
@@ -102,7 +102,7 @@ class PaymentController implements Controller {
 
   public async getSinglePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      const payment: Payment = await PaymentService.fetchPayment(req.params.id);
+      const payment: Payment = await PaymentService.fetchPayment(Number(req.params.id));
 
       if (
         payment.payer_id !== req.authorization.user.id &&
@@ -126,10 +126,10 @@ class PaymentController implements Controller {
 
     try {
       if (req.params.method === "bank") {
-        await PaymentService.makeBankPaid(req.params.id, req.authorization.user.id);
+        await PaymentService.makeBankPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else if (req.params.method === "cash") {
-        await PaymentService.makeCashPaid(req.params.id, req.authorization.user.id);
+        await PaymentService.makeCashPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else {
         return res.status(304);
@@ -138,7 +138,7 @@ class PaymentController implements Controller {
       Raven.captureBreadcrumb({
         message: "Error marking payment as paid",
         data: {
-          paymentId: req.params.id,
+          paymentId: Number(req.params.id),
           paymentMethod: req.params.method,
           paymentMarkedByUserId: req.authorization.user.id,
         },
@@ -154,14 +154,14 @@ class PaymentController implements Controller {
     }
 
     try {
-      await PaymentService.deletePatyment(Number(req.params.id));
+      await PaymentService.deletePatyment(Number(Number(req.params.id)));
       return res.status(200);
     } catch (e) {
       Raven.captureBreadcrumb({
         message: "Error deleting payment",
         errorMessage: e.message,
         data: {
-          paymentId: req.params.id,
+          paymentId: Number(req.params.id),
         },
       });
       Raven.captureException(e);

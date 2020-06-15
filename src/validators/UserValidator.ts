@@ -1,4 +1,4 @@
-import * as validator from "validator";
+import { isEmail, isLength, equals } from "validator";
 import UserRoleString from "../enum/UserRoleString";
 import Validator from "../interfaces/Validator";
 import User from "../models/User";
@@ -216,8 +216,8 @@ export const checkEmailAvailability = async (email: string) => {
 
 export const checkEmailValidity = (email: string) => {
   if (
-    !validator.isEmail(email) ||
-    !validator.isLength(email, {
+    !isEmail(email) ||
+    !isLength(email, {
       max: 255,
       min: 1,
     })
@@ -256,7 +256,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
       throw new ServiceError(400, "Email address is already taken.");
     }
 
-    if (!validator.equals(u.password1, u.password2)) {
+    if (!equals(u.password1, u.password2)) {
       throw new ServiceError(400, "Passwords do not match.");
     }
 
@@ -338,7 +338,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
     }
 
     if (newData.password1 && newData.password2) {
-      if (!validator.equals(newData.password1, newData.password2)) {
+      if (!equals(newData.password1, newData.password2)) {
         errors = [...errors, "Passwords do not match"];
       }
     }

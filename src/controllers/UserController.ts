@@ -77,9 +77,9 @@ class UserController implements Controller {
           return res.status(400).json(new ServiceResponse(null, "No service defined"));
         }
         serviceDataPermissions = (await AuthenticationService.getServiceWithIdentifier(serviceHeader)).dataPermissions;
-        req.params.id = req.authorization.user.id;
+        req.params.id = String(req.authorization.user.id);
       }
-      const user = await UserService.fetchUser(req.params.id);
+      const user = await UserService.fetchUser(Number(req.params.id));
       return res
         .status(200)
         .json(
@@ -91,7 +91,7 @@ class UserController implements Controller {
           ),
         );
     } catch (e) {
-      return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -106,20 +106,33 @@ class UserController implements Controller {
     // Request is a search
     if (req.query.searchTerm) {
       try {
-        const users = await UserService.searchUsers(req.query.searchTerm);
+        const users = await UserService.searchUsers(req.query.searchTerm as string);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
-        return res.status(500).json(new ServiceResponse(null, e.message));
+        return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
 
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        const users = await UserService.fetchAllWithSelectedFields(req.query.fields, req.query.conditions || null);
+        const users = await UserService.fetchAllWithSelectedFields(req.query.fields as string[], req.query.conditions ? req.query.conditions.toString().split(',') : undefined);
+
+        console.log(users);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
-        return res.status(500).json(new ServiceResponse(null, e.message));
+        return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
+      }
+    }
+
+    if (req.query.conditions) {
+      try {
+        const users = await UserService.fetchAllWithSelectedFields(undefined, req.query.conditions.toString().split(','));
+
+        console.log(users);
+        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+      } catch (e) {
+        return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
 
@@ -127,7 +140,7 @@ class UserController implements Controller {
       const users = await UserService.fetchAllUsers();
       return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
     } catch (e) {
-      return res.status(500).json(new ServiceResponse(null, e.message));
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -146,8 +159,8 @@ class UserController implements Controller {
 
   public async modifyUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      await this.userValidator.validateUpdate(req.params.id, req.body, req.authorization.user);
-      const update = await UserService.updateUser(req.params.id, req.body, req.body.password1 || null);
+      await this.userValidator.validateUpdate(Number(req.params.id), req.body, req.authorization.user);
+      const update = await UserService.updateUser(Number(req.params.id), req.body, req.body.password1 || null);
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));
       } else {

@@ -1,6 +1,6 @@
 import Knex from "knex";
 import Dao from "../interfaces/Dao";
-import UserDatabaseObject, { UserPaymentDatabaseObject } from "../interfaces/UserDatabaseObject";
+import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
 
 const tableName = "users";
@@ -60,26 +60,23 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
-    if (fields) {
-      const queryString: string = fields.join("`, ");
-      const query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName).select(fields);
-
-      if (queryString.indexOf("Payment.")) {
-        query.leftOuterJoin(
+    const query: Knex.QueryBuilder =
+      knexInstance<UserDatabaseObject>(tableName)
+        .select(`${tableName}.*`)
+        .leftOuterJoin(
           knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
         );
-      }
-
-      if (conditions) {
-        conditions.forEach((cond: string, i: number) => {
-          query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
-        });
-      }
-      // console.log(query.toString());
-      return Promise.resolve<UserPaymentDatabaseObject[]>(query);
+    if (fields) {
+      query.select(fields);
     }
 
-    return Promise.resolve<UserDatabaseObject[]>(knexInstance(tableName).select());
+    if (conditions) {
+      conditions.forEach((cond: string, i: number) => {
+        query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
+      });
+    }
+
+    return Promise.resolve<UserDatabaseObject[]>(query);
   }
 
   /**
