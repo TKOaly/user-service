@@ -8,8 +8,6 @@ RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python git \
   chromium chromium-chromedriver
 
-RUN npm install --global yarn
-
 COPY yarn.lock package.json /app/
 RUN yarn --dev --frozen-lockfile
 
