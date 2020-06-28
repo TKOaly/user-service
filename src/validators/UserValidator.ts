@@ -51,6 +51,8 @@ export const allowedSelfEdit: SelfEditKey[] = [
   "isTKTL",
   "password1",
   "password2",
+  "isHyStaff",
+  "isHyStudent",
 ];
 
 // Colums allowed to be edited by jäsenvirkailija
@@ -295,7 +297,11 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
   ) {
     let errors: string[] = [];
     const oldUser = await UserService.fetchUser(userId);
-    if (newData.username !== undefined && !stringsAreEqual(newData.username, modifiedBy.username)) {
+    if (
+      newData.username !== undefined &&
+      !stringsAreEqual(newData.username, modifiedBy.username) &&
+      !stringsAreEqual(newData.username, oldUser.username)
+    ) {
       const usernameAvailable = await checkUsernameAvailability(newData.username);
 
       if (!usernameAvailable) {
@@ -348,14 +354,15 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
     const error = "Forbidden modify action";
     if (userId === modifiedBy.id) {
       // Self edit
+      console.log('self edit')
       updatedData.id = userId;
-      checkModifyPermission(updatedData, allowedSelfEdit);
+      checkModifyPermission(newData, allowedSelfEdit);
     } else if (userId !== modifiedBy.id && modifiedBy.role === UserRoleString.Jasenvirkailija) {
       // Jasenvirkailija edit
-      checkModifyPermission(updatedData, allowedJVEdit);
+      checkModifyPermission(newData, allowedJVEdit);
     } else if (userId !== modifiedBy.id && modifiedBy.role === UserRoleString.Yllapitaja) {
       // Yllapitaja edit
-      checkModifyPermission(updatedData, allowedAdminEdit);
+      checkModifyPermission(newData, allowedAdminEdit);
     } else {
       throw new ServiceError(403, error);
     }

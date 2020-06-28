@@ -159,8 +159,9 @@ class UserController implements Controller {
 
   public async modifyUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      await this.userValidator.validateUpdate(Number(req.params.id), req.body, req.authorization.user);
-      const update = await UserService.updateUser(Number(req.params.id), req.body, req.body.password1 || null);
+      const transformedBody =
+        await this.userValidator.validateUpdate(Number(req.params.id), req.body, req.authorization.user);
+      const update = await UserService.updateUser(Number(req.params.id), transformedBody, req.body.password1 || null);
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));
       } else {
