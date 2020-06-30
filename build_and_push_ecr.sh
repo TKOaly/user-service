@@ -1,9 +1,5 @@
 #!/bin/bash
 
-echo "Installing awscli tools"
-pip install awscli
-export PATH=$PATH:$HOME/.local/bin
-
 echo "Building and tagging docker image"
 docker build --shm-size 512M -t user-service .
 docker tag user-service:latest $AWS_ECR_URL/user-service:latest
