@@ -13,4 +13,6 @@ RUN yarn --dev --frozen-lockfile
 
 COPY . /app/
 
+EXPOSE 3001
+
 CMD ["yarn", "start"]
