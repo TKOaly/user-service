@@ -96,7 +96,7 @@ EOF
 
 resource "aws_iam_role_policy" "user_service_execution_role_policy" {
   name = "user-service-execution-role-policy"
-  role = "${aws_iam_role.user_service_execution_role.id}"
+  role = aws_iam_role.user_service_execution_role.id
 
   policy = <<EOF
 {
@@ -123,7 +123,7 @@ EOF
 
 resource "aws_security_group" "user_service_task_sg" {
   name   = "user-service-task-sg"
-  vpc_id = "${data.aws_vpc.tekis_vpc.id}"
+  vpc_id = data.aws_vpc.tekis_vpc.id
 
   ingress {
     from_port   = 3001
@@ -144,7 +144,7 @@ resource "aws_alb_target_group" "user_service_lb_target_group" {
   name        = "cb-target-group"
   port        = 3001
   protocol    = "HTTP"
-  vpc_id      = "${data.aws_vpc.tekis_vpc.id}"
+  vpc_id      = data.aws_vpc.tekis_vpc.id
   target_type = "ip"
 
   health_check {
@@ -154,11 +154,11 @@ resource "aws_alb_target_group" "user_service_lb_target_group" {
 }
 
 resource "aws_alb_listener_rule" "user_service_listener_rule" {
-  listener_arn = "${data.aws_lb_listener.alb_listener.arn}"
+  listener_arn = data.aws_lb_listener.alb_listener.arn
 
   action {
     type             = "forward"
-    target_group_arn = "${aws_alb_target_group.user_service_lb_target_group.arn}"
+    target_group_arn = aws_alb_target_group.user_service_lb_target_group.arn
   }
 
   condition {
@@ -179,7 +179,7 @@ resource "aws_ecs_task_definition" "user_serivce_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-  execution_role_arn       = "${aws_iam_role.user_service_execution_role.arn}"
+  execution_role_arn       = aws_iam_role.user_service_execution_role.arn
   container_definitions    = <<DEFINITION
 [
   {
@@ -228,18 +228,18 @@ DEFINITION
 
 resource "aws_ecs_service" "user_service" {
   name            = "user-service"
-  cluster         = "${data.aws_ecs_cluster.cluster.id}"
-  task_definition = "${aws_ecs_task_definition.user_serivce_task.arn}"
+  cluster         = data.aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.user_serivce_task.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
   network_configuration {
     security_groups = ["${aws_security_group.user_service_task_sg.id}"]
-    subnets         = "${data.aws_subnet_ids.user_service_subnets.ids}"
+    subnets         = data.aws_subnet_ids.user_service_subnets.ids
   }
 
   load_balancer {
-    target_group_arn = "${aws_alb_target_group.user_service_lb_target_group.arn}"
+    target_group_arn = aws_alb_target_group.user_service_lb_target_group.arn
     container_name   = "user_service_task"
     container_port   = 3001
   }
