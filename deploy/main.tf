@@ -163,7 +163,7 @@ resource "aws_alb_listener_rule" "user_service_listener_rule" {
 
   condition {
     host_header {
-      values = ["event-api.tko-aly.fi"]
+      values = ["users.tko-aly.fi"]
     }
   }
 }
@@ -174,7 +174,7 @@ resource "aws_cloudwatch_log_group" "user_service_cw" {
 }
 
 resource "aws_ecs_task_definition" "user_serivce_task" {
-  family                   = "service"
+  family                   = "user-service"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
