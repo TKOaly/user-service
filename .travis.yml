@@ -1,44 +1,30 @@
-dist: trusty
 sudo: required
 language: generic
 
-addons:
-  apt:
-    packages:
-      - docker-ce
+services:
+  - docker
+
+before_install:
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+  - unzip /tmp/terraform.zip -d /tmp
+  - mkdir ~/bin
+  - mv /tmp/terraform ~/bin
+  - export PATH="~/bin:$PATH"
 
 jobs:
   include:
-    - stage: test
-      env:
-        - DOCKER_COMPOSE_VERSION=1.22.0
-      before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
-        - docker --version
-        - docker-compose --version
-      install:
-        - docker-compose build
-        - docker-compose up -d mysql
-        - sleep 5
-        - docker-compose run web yarn db:init
-      after_script:
-        - docker-compose down
-      after_success:
-        - codecov
-      script:
-        - docker-compose run web yarn lint
-        - docker-compose run web yarn test
+    - stage: build_push
+      script: bash ./build_and_push_ecr.sh
+    - stage: init
+      script: terraform init ./deploy
+    - stage: plan
+      script: terraform plan ./deploy
     - stage: deploy
-      script: skip
-      deploy:
-        provider: script
-        script: bash ./deploy-container.sh
-        skip_cleanup: true
+      script: terraform apply ./deploy
 
 stages:
-  - test
+  - build_push
+  - init
+  - plan
   - name: deploy
     if: (NOT type IN (pull_request)) AND (branch = master)
