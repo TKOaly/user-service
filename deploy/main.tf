@@ -204,12 +204,12 @@ resource "aws_ecs_task_definition" "user_serivce_task" {
       }
     },
     "environment": [
-      {"name": "NODE_ENV", "valueFrom": "production"},
-      {"name": "COOKIE_DOMAIN", "valueFrom": "tko-aly.fi"},
-      {"name": "API_VERSION", "valueFrom": "v1"},
-      {"name": "USERSERVICE_PORT", "valueFrom": "5001"},
-      {"name": "DEFAULT_LOCALE", "valueFrom": "fi"},
-      {"name": "COOKIE_DOMAIN", "valueFrom": "tko-aly.fi"}
+      {"name": "NODE_ENV", "value": "production"},
+      {"name": "COOKIE_DOMAIN", "value": "tko-aly.fi"},
+      {"name": "API_VERSION", "value": "v1"},
+      {"name": "USERSERVICE_PORT", "value": "3001"},
+      {"name": "DEFAULT_LOCALE", "value": "fi"},
+      {"name": "COOKIE_DOMAIN", "value": "tko-aly.fi"}
     ],
     "secrets": [
       {"name": "DB_HOST", "valueFrom": "${data.aws_ssm_parameter.user_service_db_host.arn}"},
