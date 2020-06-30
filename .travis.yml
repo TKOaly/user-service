@@ -27,4 +27,3 @@ stages:
   - init
   - plan
   - name: deploy
-    if: (NOT type IN (pull_request)) AND (branch = master)
