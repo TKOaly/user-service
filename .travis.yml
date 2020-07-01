@@ -4,7 +4,7 @@ sudo: required
 services:
   - docker
 
-before_install:
+install:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
   - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
@@ -12,12 +12,13 @@ before_install:
   - mv /tmp/terraform ~/bin
   - export PATH="~/bin:$PATH"
 
+before_script:
+  - terraform init ./deploy
+
 jobs:
   include:
     - stage: build_push
       script: bash ./build_and_push_ecr.sh
-    - stage: init
-      script: terraform init ./deploy
     - stage: plan
       script: terraform plan ./deploy
     - stage: deploy
@@ -25,6 +26,5 @@ jobs:
 
 stages:
   - build_push
-  - init
   - plan
   - name: deploy
