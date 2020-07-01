@@ -7,8 +7,6 @@ services:
 before_install:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
-  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
-  - aws s3 sync s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
 
 install:
   - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
@@ -25,11 +23,12 @@ jobs:
       script: bash ./build_and_push_ecr.sh
     - stage: plan
       script: cd ./deploy
-      script: terraform plan --out=~/$TRAVIS_BUILD_NUMBER
-      script: aws s3 sync s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+      script: terraform plan --out=./plan_output-$TRAVIS_BUILD_NUMBER
+    - script: aws s3 cp plan_output-$TRAVIS_BUILD_NUMBER s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER
     - stage: deploy
       script: cd ./deploy
-      script: terraform apply ~/$TRAVIS_BUILD_NUMBER
+      script: aws s3 cp s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER plan_output
+      script: terraform apply plan_output
       after_success: aws s3 rm --recursive s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER
 
 stages:
