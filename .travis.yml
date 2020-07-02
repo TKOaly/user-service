@@ -15,20 +15,16 @@ install:
   - export PATH="~/bin:$PATH"
 
 before_script:
-  - terraform init ./deploy
+  - terraform init "./deploy"
 
 jobs:
   include:
     - stage: build_push
       script: bash ./build_and_push_ecr.sh
     - stage: plan
-      script: cd ./deploy
-      script: terraform plan --out=./plan_output-$TRAVIS_BUILD_NUMBER
-    - script: aws s3 cp plan_output-$TRAVIS_BUILD_NUMBER s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER
+      script: bash ./deploy/scripts/terraform_plan.sh $TRAVIS_BUILD_NUMBER
     - stage: deploy
-      script: cd ./deploy
-      script: aws s3 cp s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER plan_output
-      script: terraform apply plan_output
+      script: bash ./deploy/scripts/terraform_apply.sh $TRAVIS_BUILD_NUMBER
       after_success: aws s3 rm --recursive s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER
 
 stages:
