@@ -1501,7 +1501,7 @@ expect-ct@0.2.0:
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.2.0.tgz#3a54741b6ed34cc7a93305c605f63cd268a54a62"
   integrity sha512-6SK3MG/Bbhm8MsgyJAylg+ucIOU71/FzyFalcfu5nY19dH8y/z0tBJU0wrNBXD4B27EoQtqPF/9wqH0iYAd04g==
 
-express-mysql-session@^2.0.1:
+express-mysql-session@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/express-mysql-session/-/express-mysql-session-2.1.4.tgz#fa32cb9035dbfbff57daaa6bd310f583819e1f7b"
   integrity sha512-Fcq168xVI8jtIJLhVHLJvBCvJlHnFWCcPmtt93UrWH38T2YsB919KrMCCh57/YkECkfff/L5zTQ95K1DxfOixg==

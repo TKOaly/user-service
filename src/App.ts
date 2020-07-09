@@ -9,7 +9,7 @@ import Raven from "raven";
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
-import SessionFileStore from "session-file-store";
+import MySQLSessionStore from "express-mysql-session";
 import helmet from "helmet";
 import sassMiddleware from "node-sass-middleware";
 import Path from "path";
@@ -69,8 +69,6 @@ app.use(
   }),
 );
 
-const FileStore = SessionFileStore(session);
-
 // Session
 app.use(
   session({
@@ -78,7 +76,13 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
-    store: new FileStore({ path: Path.resolve(__dirname, "..", ".sessions") }),
+    store: new MySQLSessionStore({
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    })
   }),
 );
 
