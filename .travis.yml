@@ -25,7 +25,7 @@ jobs:
       script: bash ./deploy/scripts/terraform_plan.sh $TRAVIS_BUILD_NUMBER
     - stage: deploy
       script: bash ./deploy/scripts/terraform_apply.sh $TRAVIS_BUILD_NUMBER
-      after_success: aws s3 rm --recursive s3://user-service-state/plan-$TRAVIS_BUILD_NUMBER
+      after_success: bash ./deploy/scripts/cleanup.sh $TRAVIS_BUILD_NUMBER
 
 stages:
   - build_push
