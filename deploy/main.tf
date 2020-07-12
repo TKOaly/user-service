@@ -141,19 +141,6 @@ resource "aws_security_group" "user_service_task_sg" {
 }
 
 resource "aws_alb_target_group" "user_service_lb_target_group" {
-  name        = "cb-target-group"
-  port        = 3001
-  protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.tekis_vpc.id
-  target_type = "ip"
-
-  health_check {
-    path    = "/ping"
-    matcher = 200
-  }
-}
-
-resource "aws_alb_target_group" "user_service_lb_target_group_2" {
   name        = "users-target-group"
   port        = 3001
   protocol    = "HTTP"
@@ -171,7 +158,7 @@ resource "aws_alb_listener_rule" "user_service_listener_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.user_service_lb_target_group_2.arn
+    target_group_arn = aws_alb_target_group.user_service_lb_target_group.arn
   }
 
   condition {
@@ -221,8 +208,7 @@ resource "aws_ecs_task_definition" "user_serivce_task" {
       {"name": "COOKIE_DOMAIN", "value": "tko-aly.fi"},
       {"name": "API_VERSION", "value": "v1"},
       {"name": "USERSERVICE_PORT", "value": "3001"},
-      {"name": "DEFAULT_LOCALE", "value": "fi"},
-      {"name": "COOKIE_DOMAIN", "value": "tko-aly.fi"}
+      {"name": "DEFAULT_LOCALE", "value": "fi"}
     ],
     "secrets": [
       {"name": "DB_HOST", "valueFrom": "${data.aws_ssm_parameter.user_service_db_host.arn}"},
@@ -252,12 +238,12 @@ resource "aws_ecs_service" "user_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.user_service_lb_target_group_2.arn
+    target_group_arn = aws_alb_target_group.user_service_lb_target_group.arn
     container_name   = "user_service_task"
     container_port   = 3001
   }
 
   depends_on = [
-    aws_alb_target_group.user_service_lb_target_group_2
+    aws_alb_target_group.user_service_lb_target_group
   ]
 }
