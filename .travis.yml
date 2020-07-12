@@ -1,44 +1,37 @@
 dist: trusty
 sudo: required
-language: generic
 
-addons:
-  apt:
-    packages:
-      - docker-ce
+branches:
+  only:
+    - master
+
+services:
+  - docker
+
+before_install:
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin
+
+install:
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
+  - unzip /tmp/terraform.zip -d /tmp
+  - mv /tmp/terraform ~/bin
+  - export PATH="~/bin:$PATH"
+
+before_script:
+  - terraform init "./deploy"
 
 jobs:
   include:
-    - stage: test
-      env:
-        - DOCKER_COMPOSE_VERSION=1.22.0
-      before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
-        - docker --version
-        - docker-compose --version
-      install:
-        - docker-compose build
-        - docker-compose up -d mysql
-        - sleep 5
-        - docker-compose run web yarn db:init
-      after_script:
-        - docker-compose down
-      after_success:
-        - codecov
-      script:
-        - docker-compose run web yarn lint
-        - docker-compose run web yarn test
+    - stage: build_push
+      script: bash ./build_and_push_ecr.sh
+    - stage: plan
+      script: bash ./deploy/scripts/terraform_plan.sh $TRAVIS_BUILD_NUMBER
     - stage: deploy
-      script: skip
-      deploy:
-        provider: script
-        script: bash ./deploy-container.sh
-        skip_cleanup: true
+      script: bash ./deploy/scripts/terraform_apply.sh $TRAVIS_BUILD_NUMBER
+      after_success: bash ./deploy/scripts/cleanup.sh $TRAVIS_BUILD_NUMBER
 
 stages:
-  - test
+  - build_push
+  - plan
   - name: deploy
-    if: (NOT type IN (pull_request)) AND (branch = master)
