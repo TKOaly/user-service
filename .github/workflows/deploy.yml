@@ -3,7 +3,7 @@ name: user-service deployment
 on:
   push:
     branches:
-      - github-actions
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
