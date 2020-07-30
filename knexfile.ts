@@ -35,7 +35,7 @@ export const production: Knex.Config = {
     database: process.env.DB_NAME,
   },
   pool: {
-    min: 2,
+    min: 0,
     max: 10,
   },
   migrations: {
@@ -57,7 +57,7 @@ export const staging: Knex.Config = {
     database: process.env.DB_NAME + "_staging",
   },
   pool: {
-    min: 2,
+    min: 0,
     max: 10,
   },
   migrations: {
@@ -75,7 +75,7 @@ export const development: Knex.Config = {
     database: process.env.DB_NAME + "_dev",
   },
   pool: {
-    min: 2,
+    min: 0,
     max: 10,
   },
   migrations: {
@@ -94,7 +94,7 @@ export const test: Knex.Config = {
     database: process.env.DB_NAME + "_test",
   },
   pool: {
-    min: 2,
+    min: 0,
     max: 10,
   },
   migrations: {

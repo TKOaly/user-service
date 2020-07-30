@@ -1,0 +1,50 @@
+name: user-service deployment
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+
+    - name: Login to ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build and push to ECR
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+      run: |
+        docker build --shm-size 512M -t user-service .
+        docker tag user-service:latest $ECR_REGISTRY/user-service:latest
+        docker push $ECR_REGISTRY/user-service:latest
+
+    - name: Terraform Setup
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 0.12.28
+
+    - name: Terraform Init
+      run: |
+        cd ./deploy
+        terraform init
+
+    - name: Terraform Plan
+      run: |
+        cd ./deploy
+        terraform plan -out=plan
+
+    - name: Terraform Apply
+      run: |
+        cd ./deploy
+        terraform apply plan
