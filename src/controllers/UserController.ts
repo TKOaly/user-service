@@ -116,7 +116,10 @@ class UserController implements Controller {
     // Request is only looking for certain fields
     if (req.query.fields) {
       try {
-        const users = await UserService.fetchAllWithSelectedFields(req.query.fields as string[], req.query.conditions ? req.query.conditions.toString().split(',') : undefined);
+        const users = await UserService.fetchAllWithSelectedFields(
+          req.query.fields as string[],
+          req.query.conditions ? req.query.conditions.toString().split(",") : undefined,
+        );
 
         console.log(users);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
@@ -127,7 +130,10 @@ class UserController implements Controller {
 
     if (req.query.conditions) {
       try {
-        const users = await UserService.fetchAllWithSelectedFields(undefined, req.query.conditions.toString().split(','));
+        const users = await UserService.fetchAllWithSelectedFields(
+          undefined,
+          req.query.conditions.toString().split(","),
+        );
 
         console.log(users);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
@@ -159,8 +165,11 @@ class UserController implements Controller {
 
   public async modifyUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      const transformedBody =
-        await this.userValidator.validateUpdate(Number(req.params.id), req.body, req.authorization.user);
+      const transformedBody = await this.userValidator.validateUpdate(
+        Number(req.params.id),
+        req.body,
+        req.authorization.user,
+      );
       const update = await UserService.updateUser(Number(req.params.id), transformedBody, req.body.password1 || null);
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));

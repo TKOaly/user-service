@@ -2,6 +2,7 @@ import Knex from "knex";
 import Dao from "../interfaces/Dao";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
+import _ from 'lodash'
 
 const tableName = "users";
 
@@ -141,6 +142,7 @@ class UserDao implements Dao<UserDatabaseObject> {
     entity: Required<
       Pick<
         UserDatabaseObject,
+        | "id"
         | "username"
         | "name"
         | "screen_name"
@@ -154,6 +156,8 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "hashed_password"
         | "tktl"
         | "deleted"
+        | "hy_student"
+        | "hy_staff"
       >
     >,
   ): PromiseLike<number[]> {
@@ -162,7 +166,7 @@ class UserDao implements Dao<UserDatabaseObject> {
       created: new Date(),
       modified: new Date(),
     };
-    return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).insert(savedObj));
+    return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).insert(_.omit(savedObj, "id")));
   }
 }
 
