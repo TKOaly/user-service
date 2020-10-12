@@ -25,7 +25,7 @@ import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 
 import i18n from "./i18n.config";
 
-import morgan from 'morgan'
+import morgan from "morgan";
 
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();
@@ -40,7 +40,7 @@ const app = express();
 // Helmet
 app.use(helmet());
 
-app.use(morgan('tiny'));
+app.use(morgan("tiny"));
 
 // Disable cross-domain checks for now
 app.use((req, res, next) => {
@@ -81,8 +81,8 @@ app.use(
       port: Number(process.env.DB_PORT),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME + "_dev"
-    })
+      database: process.env.DB_NAME,
+    }),
   }),
 );
 
@@ -112,7 +112,7 @@ app.use(ApiRoute.generateApiRoute("policy"), PrivacyPolicyController.createRoute
 app.use("/", LoginController.createRoutes());
 
 // Ping route
-app.get('/ping', (req, res) => res.json({ ok: true }));
+app.get("/ping", (req, res) => res.json({ ok: true }));
 
 // CSRF
 app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
