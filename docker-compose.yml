@@ -6,7 +6,7 @@ services:
     image: mysql:5.5
     environment:
       MYSQL_ROOT_PASSWORD: unsecure
-      MYSQL_DATABASE: user-service_dev
+      MYSQL_DATABASE: user-service
     volumes:
       - mysql-data:/var/lib/mysql
   adminer:

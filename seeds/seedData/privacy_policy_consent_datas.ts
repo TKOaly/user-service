@@ -9,8 +9,8 @@ const privacyPolicy: ConsentDatabaseObject[] = [
     created: new Date(),
     modified: new Date(),
     user_id: 1,
-    service_id: 2
-  }
+    service_id: 2,
+  },
 ];
 
 export default privacyPolicy;

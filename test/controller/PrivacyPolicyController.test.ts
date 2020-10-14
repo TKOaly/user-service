@@ -1,11 +1,11 @@
-process.env.NODE_ENV = "test";
-
-import chai = require("chai");
-import chaiHttp = require("chai-http");
 import "mocha";
 import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
 import { knexInstance } from "../../src/Db";
+process.env.NODE_ENV = "test";
+
+import chai = require("chai");
+import chaiHttp = require("chai-http");
 // Knex instance
 const knex = knexInstance;
 

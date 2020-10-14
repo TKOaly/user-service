@@ -1,6 +1,6 @@
 import Knex from "knex";
 
-exports.up = async function(knex: Knex): Promise<void> {
+exports.up = async function (knex: Knex): Promise<void> {
   const hasCreated = await knex.schema.hasColumn("services", "created");
   const hasModified = await knex.schema.hasColumn("services", "modified");
   if (!hasCreated && !hasModified) {
@@ -11,7 +11,7 @@ exports.up = async function(knex: Knex): Promise<void> {
   }
 };
 
-exports.down = async function(knex: Knex): Promise<void> {
+exports.down = async function (knex: Knex): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Do not drop database tables in production");
   }

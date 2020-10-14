@@ -5,13 +5,10 @@ import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 
-export interface IASRequest extends express.Request {
-  authorization: {
-    user: User;
-    token: ServiceToken;
-  };
-
-  session?: ISession;
+export enum LoginStep {
+  PrivacyPolicy,
+  GDPR,
+  Login,
 }
 
 /**
@@ -26,10 +23,13 @@ interface ISession extends Express.Session {
   keys: Array<{ name: string; value: string }>;
 }
 
-export enum LoginStep {
-  PrivacyPolicy,
-  GDPR,
-  Login,
+export interface IASRequest extends express.Request {
+  authorization: {
+    user: User;
+    token: ServiceToken;
+  };
+
+  session?: ISession;
 }
 
 class AuthorizeMiddleware {

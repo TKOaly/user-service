@@ -1,3 +1,14 @@
+export interface ServiceDatabaseObject {
+  id: number;
+  service_name: string;
+  display_name: string;
+  redirect_url: string;
+  service_identifier: string;
+  data_permissions: number;
+  modified: Date;
+  created: Date;
+}
+
 export default class Service {
   public id: number;
   public serviceName: string;
@@ -33,15 +44,4 @@ export default class Service {
       created: this.createdAt,
     } as ServiceDatabaseObject;
   }
-}
-
-export interface ServiceDatabaseObject {
-  id: number;
-  service_name: string;
-  display_name: string;
-  redirect_url: string;
-  service_identifier: string;
-  data_permissions: number;
-  modified: Date;
-  created: Date;
 }

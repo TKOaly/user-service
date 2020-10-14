@@ -1,11 +1,11 @@
+import "mocha";
+import ServiceToken, { stringToServiceToken } from "../../src/token/Token";
+import { calendarIdentifier, kjyrIdentifier } from "../TestUtils";
+import ServiceError from "../../src/utils/ServiceError";
 process.env.NODE_ENV = "test";
 process.env.JWT_SECRET = "secret_stuff";
 
 import chai = require("chai");
-import { JsonWebTokenError } from "jsonwebtoken";
-import "mocha";
-import ServiceToken, { stringToServiceToken } from "../../src/token/Token";
-import { calendarIdentifier, kjyrIdentifier } from "../TestUtils";
 const should: Chai.Should = chai.should();
 
 describe("ServiceToken", () => {
@@ -18,14 +18,14 @@ describe("ServiceToken", () => {
     const token = serviceToken.toString();
 
     should.exist(token);
-    // tslint:disable-next-line:no-unused-expression
+    // eslint-disable-next-line no-unused-expressions
     token.should.not.be.empty;
 
     done();
   });
   it("Should throw an exception when a malformed JWT is given", done => {
     // tslint:disable-next-line:no-unused-expression
-    chai.expect(stringToServiceToken).to.throw(JsonWebTokenError);
+    chai.expect(stringToServiceToken).to.throw(ServiceError);
 
     done();
   });

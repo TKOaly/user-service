@@ -1,7 +1,7 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
 import Service from "../../src/models/Service";
+
+process.env.NODE_ENV = "test";
 let service: Service;
 
 describe("Service model", () => {

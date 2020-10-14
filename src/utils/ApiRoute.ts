@@ -19,7 +19,7 @@ function generateApiRoute(endpointName: string, apiVersion?: string) {
  * API header middleware that sets headers.
  */
 function apiHeaderMiddleware(apiVersion?: string): (req: Request, res: Response, next: NextFunction) => void {
-  return function(req: Request, res: Response, next: NextFunction): void {
+  return function (req: Request, res: Response, next: NextFunction): void {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
     }

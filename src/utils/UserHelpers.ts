@@ -1,7 +1,7 @@
 import UserRoleString from "../enum/UserRoleString";
 import { RoleNumbers } from "../models/User";
 
-export const stringToBoolean = (str: string | number | object | boolean) => {
+export const stringToBoolean = (str: unknown) => {
   if (typeof str === "string") {
     if (str === "1" || str === "0") {
       return str === "1";

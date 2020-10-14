@@ -10,13 +10,12 @@ export default class PaymentValidator implements Validator<Payment, any> {
     }
 
     if (bodyData.id) {
+      // @ts-expect-error
       delete bodyData.id;
     }
 
     bodyData.created = new Date();
   }
 
-  public validateUpdate(dataId: number, newData: Payment, validator: User): void {
-    return;
-  }
+  public validateUpdate(_dataId: number, _newData: Payment, _validator: User): void {}
 }

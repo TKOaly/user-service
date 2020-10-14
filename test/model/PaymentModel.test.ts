@@ -1,8 +1,8 @@
+import "mocha";
+import Payment from "../../src/models/Payment";
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
-import "mocha";
-import Payment from "../../src/models/Payment";
 
 let payment: Payment;
 

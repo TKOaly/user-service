@@ -11,8 +11,8 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
+    "strict": true,
     "outDir": "./dist/",
-    "rootDirs": ["./src"],
     "lib": ["es6", "dom", "esnext"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true

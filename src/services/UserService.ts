@@ -115,7 +115,7 @@ class UserService {
   public async updateUser(
     userId: number,
     updatedUser: Partial<UserDatabaseObject>,
-    password?: string,
+    _password?: string,
   ): Promise<number> {
     const affectedRows = await UserDao.update(userId, updatedUser);
 

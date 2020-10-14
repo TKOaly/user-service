@@ -6,13 +6,9 @@ const tableName = "services";
 
 class ServiceDao implements Dao<ServiceDatabaseObject> {
   public findOne(id: number): PromiseLike<ServiceDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<ServiceDatabaseObject>(tableName)
-        .select()
-        .where({ id })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<ServiceDatabaseObject>(tableName).select().where({ id }).first());
   }
+
   public findAll(): PromiseLike<Required<ServiceDatabaseObject>[]> {
     return Promise.resolve(knexInstance<ServiceDatabaseObject>(tableName).select());
   }
@@ -21,15 +17,13 @@ class ServiceDao implements Dao<ServiceDatabaseObject> {
     return Promise.resolve(
       knexInstance<ServiceDatabaseObject>("privacy_policy_consent_data")
         .delete()
-        .where({ service_id: id })
-        .then(result => {
+        .where("service_id", id)
+        .then(_result => {
           return knexInstance<ServiceDatabaseObject>("privacy_policies")
             .delete()
-            .where({ service_id: id })
-            .then(result => {
-              return knexInstance<ServiceDatabaseObject>(tableName)
-                .delete()
-                .where({ id });
+            .where("service_id", id)
+            .then(_result => {
+              return knexInstance<ServiceDatabaseObject>(tableName).delete().where({ id });
             });
         }),
     );
@@ -48,11 +42,7 @@ class ServiceDao implements Dao<ServiceDatabaseObject> {
       ...entity,
       modified: new Date(),
     };
-    return Promise.resolve(
-      knexInstance<ServiceDatabaseObject>(tableName)
-        .where({ id: entityId })
-        .update(savedObj),
-    );
+    return Promise.resolve(knexInstance<ServiceDatabaseObject>(tableName).where({ id: entityId }).update(savedObj));
   }
 
   public save(
@@ -73,20 +63,12 @@ class ServiceDao implements Dao<ServiceDatabaseObject> {
 
   public findByIdentifier(service_identifier: string): PromiseLike<ServiceDatabaseObject | undefined> {
     return Promise.resolve(
-      knexInstance<ServiceDatabaseObject>(tableName)
-        .select()
-        .where({ service_identifier })
-        .first(),
+      knexInstance<ServiceDatabaseObject>(tableName).select().where({ service_identifier }).first(),
     );
   }
 
   public findByName(service_name: string): PromiseLike<ServiceDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<ServiceDatabaseObject>(tableName)
-        .select()
-        .where({ service_name })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<ServiceDatabaseObject>(tableName).select().where({ service_name }).first());
   }
 }
 

@@ -15,8 +15,10 @@ jobs:
       run: |
         docker-compose up -d mysql
         sleep 5
-        docker-compose run web yarn db:init
+        docker-compose run web npm run db:init
     - name: Run linter
-      run: docker-compose run web yarn lint
+      run: docker-compose run web npm run lint
+    - name: Run typecheck
+      run: docker-compose run web npm run typecheck
     - name: Run tests
-      run: docker-compose run web yarn test
+      run: docker-compose run web npm test

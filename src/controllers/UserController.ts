@@ -340,37 +340,38 @@ class UserController implements Controller {
   }
 
   public createRoutes(): express.Router {
-    this.route.get("/:id", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getUser.bind(this));
-    this.route.get("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getMe.bind(this));
+    // @ts-expect-error
+    this.route.get("/:id", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getUser.bind(this)); // @ts-expect-error
+    this.route.get("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getMe.bind(this)); // @ts-expect-error
     this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllUsers.bind(this));
     this.route.get(
-      "/payments/unpaid",
+      "/payments/unpaid", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.getAllUnpaidUsers.bind(this),
     );
     this.route.patch(
-      "/:id(\\d+)",
+      "/:id(\\d+)", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.modifyUser.bind(this),
-    );
+    ); // @ts-expect-error
     this.route.patch("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.modifyMe.bind(this));
     this.route.get(
-      "/:id(\\d+)/payments",
+      "/:id(\\d+)/payments", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.findUserPayment.bind(this),
     );
     this.route.get(
-      "/me/payments",
+      "/me/payments", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.findMePayment.bind(this),
     );
     this.route.put(
-      "/:id(\\d+)/membership",
+      "/:id(\\d+)/membership", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.setUserMembership.bind(this),
     );
     this.route.delete(
-      "/:id(\\d+)",
+      "/:id(\\d+)", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.deleteUser.bind(this),
     );

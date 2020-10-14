@@ -1,4 +1,5 @@
 export default class ServiceResponse<T> {
+  // @ts-expect-error
   public ok: boolean;
   public message: string | null;
   public payload: T;

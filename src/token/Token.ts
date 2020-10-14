@@ -3,7 +3,14 @@ import ParsedTokenContents from "../interfaces/ParsedTokenContents";
 import ServiceError from "../utils/ServiceError";
 
 export default class ServiceToken {
-  constructor(public userId: number, public authenticatedTo: string[], public createdAt: Date) {}
+  public userId: number;
+  public authenticatedTo: string[];
+  public createdAt: Date;
+  constructor(userId: number, authenticatedTo: string[], createdAt: Date) {
+    this.userId = userId;
+    this.authenticatedTo = authenticatedTo;
+    this.createdAt = createdAt;
+  }
 
   public toString() {
     if (process.env.JWT_SECRET === undefined) {

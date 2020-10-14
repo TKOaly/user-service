@@ -1,9 +1,9 @@
+import "mocha";
+import ApiRoute from "../../src/utils/ApiRoute";
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
 
 import chai = require("chai");
-import "mocha";
-import ApiRoute from "../../src/utils/ApiRoute";
 const should = chai.should();
 
 describe("ApiRoute", () => {

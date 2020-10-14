@@ -1,12 +1,12 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
 import CachingMiddleware from "../../src/utils/CachingMiddleware";
 
+process.env.NODE_ENV = "test";
+
 const headers: Array<{ name: string; val: string }> = [];
 
-let calledNext: boolean = false;
-let nextCount: number = 0;
+let calledNext = false;
+let nextCount = 0;
 
 // Mocked express
 // tslint:disable-next-line:typedef
@@ -27,7 +27,7 @@ const mockExpress = {
 };
 
 describe("CachingMiddleware", () => {
-  it("Sets headers correctly", (done) => {
+  it("Sets headers correctly", done => {
     // @ts-ignore
     CachingMiddleware(mockExpress.req, mockExpress.res, mockExpress.next);
     nextCount.should.equal(1);

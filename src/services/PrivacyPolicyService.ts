@@ -24,15 +24,15 @@ class PrivacyPolicyService implements Service<PrivacyPolicy> {
     throw new Error("Method not implemented.");
   }
 
-  public update(entity_id: number, entity: PrivacyPolicy): Promise<number> {
+  public update(_entity_id: number, _entity: PrivacyPolicy): Promise<number> {
     throw new Error("Method not implemented.");
   }
 
-  public delete(entity_id: number): Promise<number> {
+  public delete(_entity_id: number): Promise<number> {
     throw new Error("Method not implemented.");
   }
 
-  public create(entity: PrivacyPolicy): Promise<number[]> {
+  public create(_entity: PrivacyPolicy): Promise<number[]> {
     throw new Error("Method not implemented.");
   }
 }

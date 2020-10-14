@@ -47,7 +47,8 @@ export default class User {
   }
 
   public removeSensitiveInformation(): User {
-    delete this.salt;
+    // @ts-expect-error
+    delete this.salt; // @ts-expect-error
     delete this.hashedPassword;
     return this;
   }
@@ -56,6 +57,7 @@ export default class User {
    * Removes non-requested user data.
    */
   public removeNonRequestedData(dataRequest: number): Partial<User> {
+    // @ts-expect-error
     Object.keys(this.removeSensitiveInformation()).forEach((key: keyof User, i) => {
       const val: number = Math.pow(2, i);
       if (val === null || (val & dataRequest) !== val) {

@@ -171,26 +171,26 @@ class PaymentController implements Controller {
 
   public createRoutes(): express.Router {
     this.route.get(
-      "/:id(\\d+)/",
+      "/:id(\\d+)/", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.getSinglePayment.bind(this),
-    );
+    ); // @ts-expect-error
     this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllPayments.bind(this));
     this.route.patch(
-      "/:id(\\d+)/",
+      "/:id(\\d+)/", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.modifyPayment.bind(this),
     );
     this.route.put(
-      "/:id(\\d+)/pay/:method",
+      "/:id(\\d+)/pay/:method", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.markPaymentAsPaid.bind(this),
     );
     this.route.delete(
-      "/:id(\\d+)",
+      "/:id(\\d+)", // @ts-expect-error
       AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
       this.deletePayment.bind(this),
-    );
+    ); // @ts-expect-error
     this.route.post("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.createPayment.bind(this));
     return this.route;
   }

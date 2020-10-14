@@ -1,15 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config();
-
-if (!process.env.NODE_ENV) {
-  throw new Error("NODE_ENV environment variable must be set.");
-}
 
 import Raven from "raven";
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
-import MySQLSessionStore from "express-mysql-session";
 import helmet from "helmet";
 import sassMiddleware from "node-sass-middleware";
 import Path from "path";
@@ -28,6 +22,12 @@ import i18n from "./i18n.config";
 import morgan from "morgan";
 import { Environment } from './Db'
 import * as knexfile from "../knexfile";
+const MySQLSessionStore = require("express-mysql-session")(session);
+dotenv.config();
+
+if (!process.env.NODE_ENV) {
+  throw new Error("NODE_ENV environment variable must be set.");
+}
 
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();

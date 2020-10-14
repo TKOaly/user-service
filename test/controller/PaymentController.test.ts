@@ -1,6 +1,3 @@
-process.env.NODE_ENV = "test";
-
-import chai = require("chai");
 import chaiHttp from "chai-http";
 import * as JWT from "jsonwebtoken";
 import "mocha";
@@ -8,6 +5,9 @@ import payments from "../../seeds/seedData/payments";
 import app from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
 import { knexInstance } from "../../src/Db";
+process.env.NODE_ENV = "test";
+
+import chai = require("chai");
 
 // Knex instance
 const knex = knexInstance;
@@ -242,7 +242,7 @@ describe("PaymentController", () => {
 
               // Loop through
               // Old entries
-              for (let i: number = 0; i < res.body.payload.length - 1; i++) {
+              for (let i = 0; i < res.body.payload.length - 1; i++) {
                 should.exist(res.body.payload[i]);
                 should.exist(res.body.payload[i].id);
                 should.exist(res.body.payload[i].payer_id);
@@ -258,16 +258,16 @@ describe("PaymentController", () => {
                 res.body.payload[i].id.should.equal(payment_2.id);
                 res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
                 res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
-                /*Date.parse(res.body.payload[i].created).should.equal(
+                /* Date.parse(res.body.payload[i].created).should.equal(
                   Date.parse(payment_2.created.toLocaleDateString())
-                );*/
+                ); */
                 parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
-                /*Date.parse(res.body.payload[i].valid_until).should.equal(
+                /* Date.parse(res.body.payload[i].valid_until).should.equal(
                   Date.parse(payment_2.valid_until.toLocaleDateString())
                 );
                 Date.parse(res.body.payload[i].paid).should.equal(
                   Date.parse(payment_2.paid.toLocaleDateString())
-                );*/
+                ); */
                 res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
               }
 
@@ -275,16 +275,16 @@ describe("PaymentController", () => {
               const payment_2 = res.body.payload[2];
               payment_2.id.should.equal(3);
               payment_2.payer_id.should.equal(newPayment.payer_id);
-              /*Date.parse(payment_2.created).should.equal(
+              /* Date.parse(payment_2.created).should.equal(
                 Date.parse(newPayment.created.toLocaleDateString())
-              );*/
+              ); */
               parseFloat(payment_2.amount).should.equal(newPayment.amount);
-              /*Date.parse(payment_2.valid_until).should.equal(
+              /* Date.parse(payment_2.valid_until).should.equal(
                 Date.parse(newPayment.valid_until.toLocaleDateString())
               );
               Date.parse(payment_2.paid).should.equal(
                 Date.parse(newPayment.paid.toLocaleDateString())
-              );*/
+              ); */
               payment_2.payment_type.should.equal(newPayment.payment_type);
               done();
             });
@@ -302,8 +302,8 @@ describe("PaymentController", () => {
         .end((_, res) => {
           const payment: PaymentDatabaseObject = res.body.payload;
           // Set reference number and payment type, except them to be changed
-          const newRefNum: string = "00000001111111";
-          const newPaymentType: string = "HelloWorld";
+          const newRefNum = "00000001111111";
+          const newPaymentType = "HelloWorld";
           // Then, do a PATCH request
           chai
             .request(app)
@@ -385,10 +385,11 @@ describe("PaymentController", () => {
             membership_applied_for: res.body.payload.membership_applied_for,
           };
           // Set reference number and payment type, except them to be changed
-          const newRefNum: string = "00000001111111";
-          const newPaymentType: string = "HelloWorld";
+          const newRefNum = "00000001111111";
+          const newPaymentType = "HelloWorld";
 
           // PATCH excepts all object params to exist
+          // @ts-expect-error
           delete payment.confirmer_id;
 
           // Then, do a PATCH request

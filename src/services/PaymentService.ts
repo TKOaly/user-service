@@ -49,15 +49,19 @@ class PaymentService {
   }
 
   public async createBankPayment(payment: Payment): Promise<number[]> {
-    return PaymentDao.save(Object.assign({}, payment, {
-      payment_type: PaymentType.BankPayment,
-    }) as PaymentDatabaseObject);
+    return PaymentDao.save(
+      Object.assign({}, payment, {
+        payment_type: PaymentType.BankPayment,
+      }) as PaymentDatabaseObject,
+    );
   }
 
   public async createCashPayment(payment: Payment): Promise<number[]> {
-    return PaymentDao.save(Object.assign({}, payment, {
-      payment_type: PaymentType.CashPayment,
-    }) as PaymentDatabaseObject);
+    return PaymentDao.save(
+      Object.assign({}, payment, {
+        payment_type: PaymentType.CashPayment,
+      }) as PaymentDatabaseObject,
+    );
   }
 
   public async updatePayment(paymentId: number, updatedPayment: Payment): Promise<number> {
@@ -119,13 +123,13 @@ class PaymentService {
    * TODO: Should this be `createCashPayment` instead?
    */
   public async addCashPayment(
-    payer_id: number,
-    confirmer_id: number,
-    seasons: number,
-    membership: string,
+    _payer_id: number,
+    _confirmer_id: number,
+    _seasons: number,
+    _membership: string,
   ): Promise<Payment> {
     // TO DO
-    // @ts-ignore
+    // @ts-expect-error
     return Promise.resolve(new Payment({}));
   }
 }

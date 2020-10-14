@@ -1,6 +1,6 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
+
+process.env.NODE_ENV = "test";
 // const chai: Chai.ChaiStatic = require("chai");
 // const should = chai.should();
 /*
@@ -37,7 +37,7 @@ const mockExpress = {
 };
 */
 describe("AuthorizeMiddleware", () => {
-  it("Example test", (done) => {
+  it("Example test", done => {
     done();
   });
 });

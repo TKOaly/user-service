@@ -54,7 +54,7 @@ export const staging: Knex.Config = {
     port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_staging",
+    database: process.env.DB_NAME,
   },
   pool: {
     min: 0,
@@ -72,7 +72,7 @@ export const development: Knex.Config = {
     port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_dev",
+    database: process.env.DB_NAME,
   },
   pool: {
     min: 0,

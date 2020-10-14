@@ -1,4 +1,6 @@
-import { isEmail, isLength, equals } from "validator";
+import isEmail from "validator/lib/isEmail";
+import isLength from "validator/lib/isLength";
+import equals from "validator/lib/equals";
 import UserRoleString from "../enum/UserRoleString";
 import Validator from "../interfaces/Validator";
 import User from "../models/User";
@@ -236,7 +238,7 @@ const checkUsernameAvailability = async (username: string) => {
   return usernameAvailable;
 };
 
-const booleanToInt = (val: boolean): 1 | 0 => (!!val ? 1 : 0);
+const booleanToInt = (val: boolean): 1 | 0 => (val ? 1 : 0);
 
 const stringsAreEqual = (str1: string, str2: string) => str1.trim().toLowerCase() === str2.trim().toLowerCase();
 
@@ -291,7 +293,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
   public async validateUpdate(
     userId: number,
     newData: Partial<
-      UserData | UserDataWithRole | UserDataWithMembership | UserDataKeyWithRole & UserDataWithMembership
+      UserData | UserDataWithRole | UserDataWithMembership | (UserDataKeyWithRole & UserDataWithMembership)
     >,
     modifiedBy: User,
   ) {
@@ -354,7 +356,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
     const error = "Forbidden modify action";
     if (userId === modifiedBy.id) {
       // Self edit
-      console.log('self edit')
+      console.log("self edit");
       updatedData.id = userId;
       checkModifyPermission(newData, allowedSelfEdit);
     } else if (userId !== modifiedBy.id && modifiedBy.role === UserRoleString.Jasenvirkailija) {
@@ -379,7 +381,7 @@ export function checkModifyPermission(
   user: Partial<UserDatabaseObject>,
   allowedEdits: SelfEditKey[] | JVDataKey[] | AdminDataKey[],
 ) {
-  const error = "Forbidden modify action";
+  const error = "Forbidden modify action"; // @ts-expect-error
   Object.keys(user).forEach((key: keyof UserDatabaseObject) => {
     if (!allowedEdits.find(allowedEdit => allowedEdit === key) && key !== "id") {
       throw new ServiceError(403, error);
