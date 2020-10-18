@@ -254,13 +254,13 @@ resource "aws_ecs_service" "user_service" {
 
 resource "aws_cloudwatch_metric_alarm" "service_health" {
   alarm_name          = "user-service-health-check-alarmr"
-  comparison_operator = "LessThanThreshold"
+  comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
-  metric_name         = "HealthyHostCount"
+  metric_name         = "UnHealthyHostCount"
   namespace           = "AWS/ApplicationELB"
   period              = "300"
-  statistic           = "SampleCount"
-  threshold           = "1"
+  statistic           = "Sum"
+  threshold           = "0"
   alarm_description   = "Checks that the service is healthy"
   actions_enabled     = "true"
   alarm_actions       = [data.aws_sns_topic.alarm_sns_topic.arn]
