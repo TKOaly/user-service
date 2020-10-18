@@ -43,6 +43,10 @@ data "aws_ssm_parameter" "user_service_session_secret" {
   name = "user-service-session-secret"
 }
 
+data "aws_sns_topic" "alarm_sns_topic" {
+  name = "service-alarms-topic"
+}
+
 data "aws_vpc" "tekis_vpc" {
   filter {
     name   = "tag:Name"
@@ -246,4 +250,23 @@ resource "aws_ecs_service" "user_service" {
   depends_on = [
     aws_alb_target_group.user_service_lb_target_group
   ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "service_health" {
+  alarm_name          = "user-service-health-check-alarmr"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "HealthyHostCount"
+  namespace           = "AWS/ApplicationELB"
+  period              = "300"
+  statistic           = "SampleCount"
+  threshold           = "1"
+  alarm_description   = "Checks that the service is healthy"
+  actions_enabled     = "true"
+  alarm_actions       = [data.aws_sns_topic.alarm_sns_topic.arn]
+  ok_actions          = [data.aws_sns_topic.alarm_sns_topic.arn]
+  dimensions = {
+    TargetGroup  = aws_alb_target_group.user_service_lb_target_group.arn_suffix
+    LoadBalancer = data.aws_lb.tekis_lb.arn_suffix
+  }
 }
