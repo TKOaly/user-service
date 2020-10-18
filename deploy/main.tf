@@ -253,7 +253,7 @@ resource "aws_ecs_service" "user_service" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "service_health" {
-  alarm_name          = "user-service-health-check-alarmr"
+  alarm_name          = "user-service-health-check-alarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "1"
   metric_name         = "UnHealthyHostCount"
