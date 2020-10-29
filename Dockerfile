@@ -20,10 +20,8 @@ COPY ./seeds /app/seeds
 COPY ./migrations /app/migrations
 
 COPY tsconfig.json ./
-RUN npm run build
+RUN npm run build && \
+    npm prune --production
 
 EXPOSE 3001
-
-RUN npm prune --production
-
 CMD ["npm", "start"]
