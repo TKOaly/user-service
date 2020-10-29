@@ -6,7 +6,7 @@ RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python git \
   chromium chromium-chromedriver
 
-COPY package*.json tsconfig.json /app/
+COPY package*.json /app/
 RUN npm install --development
 
 COPY knexfile.ts .prettierrc .eslintrc.js .eslintignore ./
@@ -19,6 +19,7 @@ COPY ./locales /app/locales
 COPY ./seeds /app/seeds
 COPY ./migrations /app/migrations
 
+COPY tsconfig.json ./
 RUN npm run build
 
 EXPOSE 3001
