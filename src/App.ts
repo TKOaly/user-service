@@ -6,7 +6,7 @@ import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import sassMiddleware from "node-sass-middleware";
-import Path from "path";
+import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
 import LoginController from "./controllers/LoginController";
@@ -43,13 +43,6 @@ const app = express();
 app.use(helmet());
 
 app.use(morgan("tiny"));
-
-// Disable cross-domain checks for now
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  next();
-});
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -89,15 +82,15 @@ app.set("view engine", "pug");
 // SASS middleware
 app.use(
   sassMiddleware({
-    src: Path.join(__dirname, "..", "scss"),
-    dest: Path.join(__dirname, "..", "public", "styles"),
+    src: join(process.cwd(), "scss"),
+    dest: join(process.cwd(), "public", "styles"),
     debug: false,
     outputStyle: "compressed",
     response: true,
   }),
 );
 
-app.use(express.static(Path.join(__dirname, "..", "public")));
+app.use(express.static(join(process.cwd(), "public")));
 
 /*
 API routes
