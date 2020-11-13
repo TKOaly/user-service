@@ -2,7 +2,7 @@ import Knex from "knex";
 import Dao from "../interfaces/Dao";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
-import _ from 'lodash'
+import _ from "lodash";
 
 const tableName = "users";
 
@@ -61,12 +61,14 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
-    const query: Knex.QueryBuilder =
-      knexInstance<UserDatabaseObject>(tableName)
-        .select(`${tableName}.*`)
-        .leftOuterJoin(
-          knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
-        );
+    const query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName)
+      .select(`${tableName}.*`)
+      .max("payments.valid_until")
+      .leftOuterJoin(
+        knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
+      )
+      .groupBy("users.id")
+      .orderBy("users.name");
     if (fields) {
       query.select(fields);
     }
@@ -76,7 +78,6 @@ class UserDao implements Dao<UserDatabaseObject> {
         query[i === 0 ? "whereRaw" : "andWhereRaw"](cond);
       });
     }
-
     return Promise.resolve<UserDatabaseObject[]>(query);
   }
 

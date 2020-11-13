@@ -49,7 +49,7 @@ class UserService {
       conditions.forEach(condition => {
         switch (condition) {
           case "member":
-            conditionQuery.push("(membership <> 'ei-jasen or membership <> 'erotettu')");
+            conditionQuery.push("(membership <> 'ei-jasen' or membership <> 'erotettu')");
             break;
           case "nonmember":
             conditionQuery.push("membership = 'ei-jasen'");
