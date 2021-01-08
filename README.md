@@ -60,11 +60,10 @@ This will build the image and push it to `registry.tko-aly.fi` Docker registry.
 
 ### Docker
 
-1. Copy `.env.example` to `.env` and set environment variables
-2. Execute `docker build -t user-service .` in the project's root folder to build the image
-3. Execute `docker run -d --rm -p PORT:PORT --env-file=.env -e DB_HOST="host.docker.internal" --name user-service-container user-service` in the project's root folder to run the image. This will mount the project folder's .env file to the container. Replace `PORT` with the port you have set in the .env file.
-
-**Note: Since Docker v18.03, use `host.docker.internal` as the MySQL server address if you are using MacOS or Windows and running the MySQL server from the local machine.**
+1. `docker-compose up -d`. Now you can check adminer http://localhost:8081 (uname: root, pw: unsecure). The service is running at http://localhost:8080.
+2. `docker-compose run web yarn migrate`.
+3. `docker-compose run web yarn seed`.
+4. Boom, you should be ready to tyckittää.
 
 ## Endpoints
 

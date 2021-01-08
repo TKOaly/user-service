@@ -26,6 +26,8 @@ import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 import i18n from "./i18n.config";
 
 import morgan from "morgan";
+import { Environment } from './Db'
+import * as knexfile from "../knexfile";
 
 if (process.env.NODE_ENV === "production") {
   Raven.config(process.env.RAVEN_DSN).install();
@@ -77,11 +79,7 @@ app.use(
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
     store: new MySQLSessionStore({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      ...knexfile[process.env.NODE_ENV! as Environment].connection as object
     }),
   }),
 );

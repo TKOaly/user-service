@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 volumes:
   mysql-data:
 services:
@@ -43,4 +43,5 @@ services:
       DB_NAME: user-service
       SESSION_SECRET: unsecure
       JWT_SECRET: unsecure
+      COOKIE_DOMAIN: localhost
       DEFAULT_LOCALE: fi
