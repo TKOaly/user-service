@@ -45,3 +45,4 @@ services:
       JWT_SECRET: unsecure
       COOKIE_DOMAIN: localhost
       DEFAULT_LOCALE: fi
+      DEBUG: knex:query
