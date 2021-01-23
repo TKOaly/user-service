@@ -121,7 +121,6 @@ class UserController implements Controller {
           req.query.conditions ? req.query.conditions.toString().split(",") : undefined,
         );
 
-        console.log(users);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
@@ -135,7 +134,6 @@ class UserController implements Controller {
           req.query.conditions.toString().split(","),
         );
 
-        console.log(users);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
       } catch (e) {
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
