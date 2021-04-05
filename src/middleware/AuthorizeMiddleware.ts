@@ -2,7 +2,7 @@ import * as express from "express";
 import { Env } from "../env";
 import UserService from "../services/UserService";
 import { stringToServiceToken } from "../token/Token";
-import ServiceResponse from "./ServiceResponse";
+import ServiceResponse from "../utils/ServiceResponse";
 
 export enum LoginStep {
   PrivacyPolicy,

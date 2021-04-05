@@ -5,7 +5,7 @@
  * @param apiVersion API version. Defaults to null, can be configured manually.
  * @returns API route, example: /api/v1/users
  */
-export function generateApiRoute(endpointName: string, apiVersion?: string) {
+export function apiRoute(endpointName: string, apiVersion?: string) {
   if (!apiVersion) {
     return `/api/${endpointName}`;
   } else {

@@ -19,7 +19,7 @@ class PermissionGenerator {
     tktl: Math.pow(2, 14),
     username: Math.pow(2, 15),
     hy_staff: Math.pow(2, 16),
-    hy_student: Math.pow(2, 16),
+    hy_student: Math.pow(2, 17),
   };
 
   private PermissionByte = 0;
