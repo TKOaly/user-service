@@ -1,5 +1,3 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
 import app from "../../src/App";
 import users from "../../seeds/seedData/users";
@@ -7,8 +5,10 @@ import User from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 import { knexInstance } from "../../src/Db";
-import chai = require("chai");
 import Service, { ServiceDatabaseObject } from "../../src/models/Service";
+
+process.env.NODE_ENV = "test";
+import chai = require("chai");
 
 // Knex instance
 const knex = knexInstance;
@@ -73,7 +73,7 @@ describe("UserController", () => {
           res.body.payload.length.should.equal(users.length);
           res.body.ok.should.equal(true);
 
-          res.body.payload.forEach((payloadObject: User, i: number) => {
+          res.body.payload.forEach((payloadObject: User, _i: number) => {
             const user_2 = new User(users.find(usr => usr.id === payloadObject.id)!);
 
             should.exist(payloadObject.id);
@@ -295,7 +295,9 @@ describe("UserController", () => {
 
                 const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
 
+                // @ts-expect-error
                 delete user.createdAt;
+                // @ts-expect-error
                 delete user.modifiedAt;
 
                 const allFields = Object.keys(user) as Array<keyof User>;

@@ -1,6 +1,6 @@
 import sha1 from "sha1";
-const encryptPassword = (password: string, salt: string) => sha1(salt + "kekbUr" + password);
 import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
+const encryptPassword = (password: string, salt: string) => sha1(salt + "kekbUr" + password);
 
 const users: UserDatabaseObject[] = [
   {

@@ -1,11 +1,13 @@
-process.env.NODE_ENV = "test";
-
-import chai = require("chai");
 import "mocha";
 import users from "../../seeds/seedData/users";
 import UserDao from "../../src/dao/UserDao";
 import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
 import { knexInstance } from "../../src/Db";
+
+import sha1 from "sha1";
+process.env.NODE_ENV = "test";
+
+import chai = require("chai");
 
 const dbUsers = users;
 const should = chai.should();
@@ -13,8 +15,6 @@ const should = chai.should();
 const knex = knexInstance;
 
 const userDao = UserDao;
-
-import sha1 from "sha1";
 const encryptPassword: (password: string, salt: string) => string = (password: string, salt: string): string =>
   sha1(salt + "kekbUr" + password);
 
@@ -225,6 +225,7 @@ describe("UserDao", () => {
       hy_student: 0,
     };
 
+    // @ts-expect-error
     userDao.save(newUser).then(res => {
       res.length.should.equal(1);
       userDao.findAll().then(users => {
@@ -513,12 +514,12 @@ describe("UserDao", () => {
       const modifiedAtString = modifiedAt.toISOString();
       const updatedUsername = "testUsername";
       // Add a bit of delay to make the timestamp update itself
-      new Promise(resolve => setTimeout(resolve, 3000)).then(f => {
+      new Promise(resolve => setTimeout(resolve, 3000)).then(() => {
         userDao
           .update(1, {
             username: updatedUsername,
           })
-          .then(rows => {
+          .then(_rows => {
             userDao.findOne(1).then(user2 => {
               if (user2 === undefined) {
                 throw new Error("User not found");

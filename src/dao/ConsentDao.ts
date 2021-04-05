@@ -14,12 +14,9 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
       ...entity,
       modified: new Date(),
     };
-    return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .update(savedObj)
-        .where({ id: entityId }),
-    );
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).update(savedObj).where({ id: entityId }));
   }
+
   public save(
     entity: Required<Pick<ConsentDatabaseObject, "user_id" | "service_id" | "consent">>,
   ): PromiseLike<number[]> {
@@ -32,11 +29,7 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
   }
 
   public findOne(id: number): PromiseLike<ConsentDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .where({ id })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).where({ id }).first());
   }
 
   public findAll(): PromiseLike<ConsentDatabaseObject[]> {
@@ -44,11 +37,7 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
   }
 
   public remove(id: number): PromiseLike<number> {
-    return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .delete()
-        .where({ id }),
-    );
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).delete().where({ id }));
   }
 
   /**
@@ -63,35 +52,22 @@ class ConsentDao implements Dao<ConsentDatabaseObject> {
   }
 
   public findAllByServiceId(service_id: number): PromiseLike<ConsentDatabaseObject[]> {
-    return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .select()
-        .where("service_id", service_id),
-    );
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).select().where("service_id", service_id));
   }
 
   public findAllByUserId(user_id: number): PromiseLike<ConsentDatabaseObject[]> {
-    return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .select()
-        .where("user_id", user_id),
-    );
+    return Promise.resolve(knexInstance<ConsentDatabaseObject>(tableName).select().where("user_id", user_id));
   }
 
   public findByUserAndService(user_id: number, service_id: number): PromiseLike<ConsentDatabaseObject | undefined> {
     return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .select()
-        .where({ user_id, service_id })
-        .first(),
+      knexInstance<ConsentDatabaseObject>(tableName).select().where({ user_id, service_id }).first(),
     );
   }
 
   public findAllDeclined(): PromiseLike<ConsentDatabaseObject[]> {
     return Promise.resolve(
-      knexInstance<ConsentDatabaseObject>(tableName)
-        .select()
-        .where("consent", PrivacyPolicyConsent.Declined),
+      knexInstance<ConsentDatabaseObject>(tableName).select().where("consent", PrivacyPolicyConsent.Declined),
     );
   }
 }

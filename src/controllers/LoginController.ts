@@ -175,6 +175,7 @@ class LoginController implements Controller {
 
     // Removes data that are not needed when making a request
     // We require user id and role every time, regardless of permissions in services
+    // @ts-expect-error
     keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map((key: keyof User) => ({
       name: key,
       value: user[key].toString(),
@@ -388,32 +389,32 @@ class LoginController implements Controller {
     this.route.get(
       "/",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware,
+      cachingMiddleware, // @ts-expect-error
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.getLoginView.bind(this),
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware,
+      cachingMiddleware, // @ts-expect-error
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.login.bind(this),
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware,
+      cachingMiddleware, // @ts-expect-error
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.privacyPolicyConfirm.bind(this),
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware,
+      cachingMiddleware, // @ts-expect-error
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.loginConfirm.bind(this),
-    );
-    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this));
+    ); // @ts-expect-error
+    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this)); // @ts-expect-error
     this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
     return this.route;
   }

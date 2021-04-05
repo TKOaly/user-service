@@ -1,9 +1,9 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
 import chai from "chai";
 import { knexInstance } from "../../src/Db";
 import PaymentDao from "../../src/dao/PaymentDao";
+
+process.env.NODE_ENV = "test";
 const should = chai.should();
 
 describe("PaymentDao", () => {

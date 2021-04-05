@@ -44,11 +44,7 @@ class AuthenticationService {
     } else {
       token.authenticatedTo = [newServiceName];
     }
-    try {
-      return token.toString();
-    } catch (e) {
-      throw e;
-    }
+    return token.toString();
   }
 
   /**
@@ -68,11 +64,7 @@ class AuthenticationService {
       }
     });
     token.authenticatedTo = newServiceList;
-    try {
-      return token.toString();
-    } catch (e) {
-      throw e;
-    }
+    return token.toString();
   }
 
   public createToken(userId: number, authenticatedTo: string[]): string {

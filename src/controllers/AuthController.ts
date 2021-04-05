@@ -123,17 +123,16 @@ class AuthController implements Controller {
       hy_student: 0,
     }).removeSensitiveInformation();
 
-    let permissionInteger: number = 0;
+    let permissionInteger = 0;
 
     Object.keys(dummyObject.removeSensitiveInformation()).forEach((value: string, i: number) => {
-      Object.keys(wantedPermissions).forEach((bodyValue: string, a: number) => {
+      Object.keys(wantedPermissions).forEach((bodyValue: string, _a) => {
         if (value === bodyValue) {
           if (permissionInteger === 0) {
             permissionInteger = Math.pow(2, i);
           } else {
             permissionInteger = permissionInteger | Math.pow(2, i);
           }
-          return;
         }
       });
     });
@@ -149,9 +148,10 @@ class AuthController implements Controller {
    * Creates routes for authentication controller.
    */
   public createRoutes(): express.Router {
+    // @ts-expect-error
     this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
     this.route.post(
-      "/authenticate",
+      "/authenticate", // @ts-expect-error
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.authenticateUser.bind(this),
     );

@@ -1,9 +1,9 @@
-process.env.NODE_ENV = "test";
-
-import chai = require("chai");
 import "mocha";
 import PrivacyPolicyDatabaseObject from "../../src/interfaces/PrivacyPolicyDatabaseObject";
 import PrivacyPolicy from "../../src/models/PrivacyPolicy";
+
+import chai = require("chai");
+process.env.NODE_ENV = "test";
 const should: Chai.Should = chai.should();
 
 let policy: PrivacyPolicyDatabaseObject;
@@ -47,11 +47,11 @@ describe("Privacy policy model", () => {
     should.exist(policy2.text);
     policy2.text.should.equal("Hello World 2");
 
-    // @ts-ignore
+    // @ts-expect-error
     should.not.exist(policy2.created);
-    // @ts-ignore
+    // @ts-expect-error
     should.not.exist(policy2.modified);
-    // @ts-ignore
+    // @ts-expect-error
     should.not.exist(policy2.service_id);
     done();
   });

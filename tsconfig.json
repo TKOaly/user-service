@@ -11,12 +11,12 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
+    "strict": true,
     "outDir": "./dist/",
-    "rootDirs": ["./src"],
     "lib": ["es6", "dom", "esnext"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*.ts", "test/**/*", "knexfile.ts"],
+  "include": ["src/**/*.ts", "knexfile.ts"],
   "exclude": ["node_modules", "dist"]
 }

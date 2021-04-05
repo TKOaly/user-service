@@ -56,7 +56,13 @@ class UserDao implements Dao<UserDatabaseObject> {
       .orderBy("users.name");
     if (fields) {
       query.select(fields);
+    } else {
+      query.select(`${tableName}.*`);
     }
+
+    query.leftOuterJoin(
+      knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
+    );
 
     if (conditions) {
       conditions.forEach((cond: string, i: number) => {
@@ -85,8 +91,8 @@ class UserDao implements Dao<UserDatabaseObject> {
     // First, delete consents
     return knexInstance<UserDatabaseObject>("privacy_policy_consent_data")
       .delete()
-      .where({ user_id: id })
-      .then((result) => {
+      .where("user_id", id)
+      .then(_result => {
         return knexInstance<UserDatabaseObject>(tableName).delete().where({ id });
       });
   }

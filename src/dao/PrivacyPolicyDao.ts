@@ -14,11 +14,10 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
       modified: new Date(),
     };
     return Promise.resolve(
-      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
-        .update(savedObj)
-        .where({ id: entityId }),
+      knexInstance<PrivacyPolicyDatabaseObject>(tableName).update(savedObj).where({ id: entityId }),
     );
   }
+
   public save(entity: Required<Pick<PrivacyPolicyDatabaseObject, "service_id" | "text">>): PromiseLike<number[]> {
     const savedObj = {
       ...entity,
@@ -27,13 +26,9 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
     };
     return Promise.resolve(knexInstance<PrivacyPolicyDatabaseObject>(tableName).insert(savedObj));
   }
+
   public findOne(id: number): PromiseLike<PrivacyPolicyDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance
-        .select<PrivacyPolicyDatabaseObject>(tableName)
-        .where({ id })
-        .first(),
-    );
+    return Promise.resolve(knexInstance.select<PrivacyPolicyDatabaseObject>(tableName).where({ id }).first());
   }
 
   /**
@@ -56,12 +51,7 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
   }
 
   public findByName(name: string): PromiseLike<PrivacyPolicyDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
-        .select()
-        .where({ name })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<PrivacyPolicyDatabaseObject>(tableName).select().where("name", name).first());
   }
 
   public findAll(): PromiseLike<PrivacyPolicyDatabaseObject[]> {
@@ -69,11 +59,7 @@ class PrivacyPolicyDao implements Dao<PrivacyPolicyDatabaseObject> {
   }
 
   public remove(id: number): PromiseLike<number> {
-    return Promise.resolve(
-      knexInstance<PrivacyPolicyDatabaseObject>(tableName)
-        .delete()
-        .where({ id }),
-    );
+    return Promise.resolve(knexInstance<PrivacyPolicyDatabaseObject>(tableName).delete().where("id", id));
   }
 }
 

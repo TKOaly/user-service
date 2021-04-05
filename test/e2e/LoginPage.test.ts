@@ -1,6 +1,4 @@
-process.env.NODE_ENV = "test";
-
-import { By } from "selenium-webdriver";
+import { By, WebDriver } from "selenium-webdriver";
 import { cleanupDriver, prepareDriver } from "../WebDriver";
 
 import "mocha";
@@ -9,19 +7,19 @@ import { knexInstance } from "../../src/Db";
 
 import { ServiceDatabaseObject } from "../../src/models/Service";
 
-import { WebDriver } from "selenium-webdriver";
-import services = require("../../seeds/seedData/services");
-
 import { Server } from "http";
 import app from "../../src/App";
+
+import en from "../../locales/en.json";
+import fi from "../../locales/fi.json";
+
+process.env.NODE_ENV = "test";
+import services = require("../../seeds/seedData/services");
 
 // Knex instance
 const knex = knexInstance;
 
 const serviceData = services as ServiceDatabaseObject[];
-
-import en from "../../locales/en.json";
-import fi from "../../locales/fi.json";
 
 const port = 3010;
 

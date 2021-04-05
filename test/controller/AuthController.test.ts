@@ -1,10 +1,10 @@
+import "mocha";
+import app from "../../src/App";
+import { knexInstance } from "../../src/Db";
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 import chaiHttp = require("chai-http");
-import "mocha";
-import app from "../../src/App";
-import { knexInstance } from "../../src/Db";
 
 // Knex instance
 const knex = knexInstance;

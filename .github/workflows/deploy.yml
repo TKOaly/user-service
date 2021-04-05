@@ -48,3 +48,11 @@ jobs:
       run: |
         cd ./deploy
         terraform apply plan
+
+    - name: Deploy service
+      env:
+        AWS_ECR_URL: ${{ secrets.ECR_REGISTRY }}
+      run: |
+        curl https://raw.githubusercontent.com/silinternational/ecs-deploy/master/ecs-deploy | tee ./ecs-deploy	
+        chmod +x ./ecs-deploy	
+        ./ecs-deploy -t 600 -r eu-west-1 -c christina-regina -n user-service -i $AWS_ECR_URL/user-service:latest

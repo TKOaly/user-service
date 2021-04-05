@@ -1,6 +1,6 @@
 import Knex from "knex";
 import consentData from "./seedData/privacy_policy_consent_datas";
-exports.seed = async function(knex: Knex): Promise<void> {
+exports.seed = async function (knex: Knex): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Please do not seed a production database.");
   }

@@ -1,7 +1,7 @@
 import users from "./seedData/users";
 import Knex from "knex";
 
-exports.seed = async function(knex: Knex): Promise<void> {
+exports.seed = async function (knex: Knex): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Please do not seed a production database.");
   }

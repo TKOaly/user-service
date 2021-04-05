@@ -1,5 +1,3 @@
-process.env.NODE_ENV = "test";
-
 import "mocha";
 import UserDao from "../../src/dao/UserDao";
 import ServiceError from "../../src/utils/ServiceError";
@@ -11,9 +9,11 @@ import UserValidator, {
   checkEmailValidity,
 } from "../../src/validators/UserValidator";
 import { knexInstance } from "../../src/Db";
-import chai = require("chai");
 import UserRoleString from "../../src/enum/UserRoleString";
 import User from "../../src/models/User";
+
+process.env.NODE_ENV = "test";
+import chai = require("chai");
 
 // Knexfile
 const knex = knexInstance;
@@ -315,7 +315,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
         })
-        .then(function() {
+        .then(function () {
           done();
         })
         .catch(err => {
@@ -380,7 +380,7 @@ describe("UserValidator", () => {
         if (user === undefined) {
           throw new Error("User not found");
         }
-        userValidator.validateUpdate(2, { email: "admin@user.com" }, new User(user)).then(res => done());
+        userValidator.validateUpdate(2, { email: "admin@user.com" }, new User(user)).then(_res => done());
       });
     });
 
@@ -454,7 +454,7 @@ describe("UserValidator", () => {
         }
         userValidator
           .validateUpdate(2, { username: "tester" }, new User(user))
-          .then(res => {
+          .then(_res => {
             done();
           })
           .catch(err => {

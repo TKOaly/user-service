@@ -1,12 +1,12 @@
-process.env.NODE_ENV = "test";
-
-import chai = require("chai");
 import "mocha";
-
-import serviceFile = require("../../seeds/seedData/services");
 import ServiceDao from "../../src/dao/ServiceDao";
 import { ServiceDatabaseObject } from "../../src/models/Service";
 import { knexInstance } from "../../src/Db";
+process.env.NODE_ENV = "test";
+
+import chai = require("chai");
+
+import serviceFile = require("../../seeds/seedData/services");
 
 const dbServices = serviceFile as ServiceDatabaseObject[];
 const should = chai.should();
@@ -127,8 +127,10 @@ describe("ServiceDao", () => {
         throw new Error("Service not found");
       }
       // We can't compare modified and created dates
+      // @ts-expect-error
       delete dbService.modified;
-      delete dbService.created;
+      // @ts-expect-error
+      delete dbService.created; // @ts-expect-error
       Object.keys(dbService).forEach((key: keyof ServiceDatabaseObject) => {
         should.exist(dbService[key]);
         dbService[key].should.equal(seedService[key]);
@@ -138,12 +140,16 @@ describe("ServiceDao", () => {
   });
 
   it("Should return a single service with findByIdentifier()", done => {
+    // @ts-expect-error
     serviceDao.findByIdentifier(dbServices[0].service_identifier).then((dbService: ServiceDatabaseObject) => {
       const seedService: ServiceDatabaseObject = dbServices[0];
       // We can't compare modified and created dates
+      // @ts-expect-error
       delete dbService.modified;
+      // @ts-expect-error
       delete dbService.created;
 
+      // @ts-expect-error
       Object.keys(dbService).forEach((key: keyof ServiceDatabaseObject) => {
         should.exist(dbService[key]);
         dbService[key].should.equal(seedService[key]);
@@ -162,7 +168,7 @@ describe("ServiceDao", () => {
       if (oldService === undefined) {
         throw new Error("Service not found");
       }
-      new Promise(r => setTimeout(r, 2000)).then(() => {
+      new Promise((resolve, _reject) => setTimeout(resolve, 2000)).then(() => {
         serviceDao.update(updatedService.id, updatedService).then(res => {
           should.exist(res);
           res.should.equal(1);

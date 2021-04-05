@@ -6,18 +6,11 @@ const tableName = "payments";
 
 class PaymentDao implements Dao<PaymentDatabaseObject> {
   public findOne(id: number): PromiseLike<PaymentDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<PaymentDatabaseObject>(tableName)
-        .select()
-        .where({ id })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).select().where({ id }).first());
   }
 
   public findByPayer(payer_id: number, validPayment?: boolean): PromiseLike<PaymentDatabaseObject | undefined> {
-    let query = knexInstance<PaymentDatabaseObject>(tableName)
-      .select()
-      .where({ payer_id });
+    let query = knexInstance<PaymentDatabaseObject>(tableName).select().where({ payer_id });
 
     if (validPayment === true) {
       query = query.andWhere("valid_until", ">=", knexInstance.fn.now());
@@ -27,12 +20,7 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public findByConfirmer(confirmer_id: number): PromiseLike<PaymentDatabaseObject | undefined> {
-    return Promise.resolve(
-      knexInstance<PaymentDatabaseObject>(tableName)
-        .select()
-        .where({ confirmer_id })
-        .first(),
-    );
+    return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).select().where({ confirmer_id }).first());
   }
 
   public findAll(): PromiseLike<PaymentDatabaseObject[]> {
@@ -40,26 +28,19 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public remove(id: number): PromiseLike<number> {
-    return Promise.resolve(
-      knexInstance<PaymentDatabaseObject>(tableName)
-        .delete()
-        .where({ id }),
-    );
+    return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).delete().where({ id }));
   }
 
   public update(entityId: number, entity: Partial<PaymentDatabaseObject>): PromiseLike<number> {
     delete entity.created;
     // entity.modified = new Date();
-    return Promise.resolve(
-      knexInstance<PaymentDatabaseObject>(tableName)
-        .where({ id: entityId })
-        .update(entity),
-    );
+    return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).where({ id: entityId }).update(entity));
   }
 
   public save(entity: Omit<PaymentDatabaseObject, "created" | "modified">): PromiseLike<number[]> {
     // Delete id because it's auto-assigned
     if (entity.id) {
+      // @ts-expect-error
       delete entity.id;
     }
     const savedObj: PaymentDatabaseObject = {
@@ -114,11 +95,7 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public deletePayment(id: number): PromiseLike<boolean> {
-    return Promise.resolve(
-      knexInstance<PaymentDatabaseObject>(tableName)
-        .where({ id })
-        .del(),
-    );
+    return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).where({ id }).del());
   }
 }
 
