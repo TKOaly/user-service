@@ -7,7 +7,7 @@ declare namespace Express {
 
     session?: {
       user?: import("./controllers/LoginController").ISessionUser;
-      loginStep?: import("./utils/AuthorizeMiddleware").LoginStep;
+      loginStep?: import("./middleware/AuthorizeMiddleware").LoginStep;
       /**
        * User requested keys
        */
