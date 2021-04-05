@@ -33,5 +33,6 @@ module.exports = {
     "@typescript-eslint/ban-types": "warn",
     "promise/param-names": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-useless-constructor": "off",
   },
 };
