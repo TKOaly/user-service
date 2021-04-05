@@ -14,14 +14,14 @@ import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
 
-import ApiRoute from "./utils/ApiRoute";
 import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 
 import i18n from "./i18n.config";
 
 import morgan from "morgan";
-import { Environment } from './Db'
+import { Environment } from "./Db";
 import * as knexfile from "../knexfile";
+import { generateApiRoute } from "./utils/ApiRoute";
 const MySQLSessionStore = require("express-mysql-session")(session);
 dotenv.config();
 
@@ -72,7 +72,7 @@ app.use(
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
     store: new MySQLSessionStore({
-      ...knexfile[process.env.NODE_ENV! as Environment].connection as object
+      ...(knexfile[process.env.NODE_ENV! as Environment].connection as Record<string, unknown>),
     }),
   }),
 );
@@ -96,10 +96,10 @@ app.use(express.static(join(process.cwd(), "public")));
 API routes
 */
 
-app.use(ApiRoute.generateApiRoute("auth"), AuthController.createRoutes());
-app.use(ApiRoute.generateApiRoute("users"), UserController.createRoutes());
-app.use(ApiRoute.generateApiRoute("payments"), PaymentController.createRoutes());
-app.use(ApiRoute.generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
+app.use(generateApiRoute("auth"), AuthController.createRoutes());
+app.use(generateApiRoute("users"), UserController.createRoutes());
+app.use(generateApiRoute("payments"), PaymentController.createRoutes());
+app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
 // Ping route

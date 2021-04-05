@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from "express";
  * @param apiVersion API version. Defaults to null, can be configured manually.
  * @returns API route, example: /api/v1/users
  */
-function generateApiRoute(endpointName: string, apiVersion?: string) {
+export function generateApiRoute(endpointName: string, apiVersion?: string) {
   if (!apiVersion) {
     return `/api/${endpointName}`;
   } else {
@@ -18,7 +18,7 @@ function generateApiRoute(endpointName: string, apiVersion?: string) {
 /**
  * API header middleware that sets headers.
  */
-function apiHeaderMiddleware(apiVersion?: string): (req: Request, res: Response, next: NextFunction) => void {
+export function apiHeaderMiddleware(apiVersion?: string): (req: Request, res: Response, next: NextFunction) => void {
   return function (req: Request, res: Response, next: NextFunction): void {
     if (apiVersion) {
       res.setHeader("X-Route-API-version", apiVersion);
@@ -30,5 +30,3 @@ function apiHeaderMiddleware(apiVersion?: string): (req: Request, res: Response,
     next();
   };
 }
-
-export default { generateApiRoute, apiHeaderMiddleware };

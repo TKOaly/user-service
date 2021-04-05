@@ -1,5 +1,5 @@
 import "mocha";
-import ApiRoute from "../../src/utils/ApiRoute";
+import { apiHeaderMiddleware, generateApiRoute } from "../../src/utils/ApiRoute";
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
 
@@ -10,14 +10,14 @@ describe("ApiRoute", () => {
   it("Creates API route correctly, with API version and route", done => {
     const apiVersion = "v2";
     const route = "testroute";
-    const apiUrl = ApiRoute.generateApiRoute(route, apiVersion);
+    const apiUrl = generateApiRoute(route, apiVersion);
     apiUrl.should.equal("/api/" + apiVersion + "/" + route);
     done();
   });
 
   it("Creates API route correctly, with API route", done => {
     const route = "testroute";
-    const apiUrl = ApiRoute.generateApiRoute(route);
+    const apiUrl = generateApiRoute(route);
     apiUrl.should.equal("/api/" + route);
     done();
   });
@@ -42,7 +42,7 @@ describe("ApiRoute", () => {
       },
     };
 
-    const middleware: any = ApiRoute.apiHeaderMiddleware(apiVersion);
+    const middleware = apiHeaderMiddleware(apiVersion);
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
@@ -77,7 +77,7 @@ describe("ApiRoute", () => {
       },
     };
 
-    const middleware: any = ApiRoute.apiHeaderMiddleware();
+    const middleware = apiHeaderMiddleware();
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
