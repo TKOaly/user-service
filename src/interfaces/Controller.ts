@@ -1,5 +1,6 @@
 import { Router } from "express";
+import { Env } from "../env";
 
 export default interface Controller {
-  createRoutes(): Router;
+  createRoutes(env: Env): Router;
 }

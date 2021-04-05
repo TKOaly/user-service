@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
+import { Env } from "../env";
 
-const localizationMiddleware: RequestHandler = (req, res, next): void => {
+const localizationMiddleware = (env: Env): RequestHandler => (req, res, next): void => {
   if (req.cookies.tkoaly_locale === undefined) {
-    res.cookie("tkoaly_locale", process.env.DEFAULT_LOCALE, {
+    res.cookie("tkoaly_locale", env.DEFAULT_LOCALE, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: process.env.COOKIE_DOMAIN,
+      domain: env.COOKIE_DOMAIN,
     });
   }
   next();

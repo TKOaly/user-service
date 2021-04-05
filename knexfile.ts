@@ -1,38 +1,17 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import Knex from "knex";
+import { getEnvironment } from "./src/env";
 
-if (!process.env.NODE_ENV) {
-  throw new Error("NODE_ENV environment variable must be specified.");
-} else {
-  const envs = ["development", "test", "production", "staging"];
-  if (!(envs.indexOf(process.env.NODE_ENV) > -1)) {
-    throw new Error(
-      "NODE_ENV is set to an invalid value. It should be either development, test, production or staging.",
-    );
-  }
-}
+const env = getEnvironment();
 
-if (
-  process.env.DB_HOST === undefined ||
-  process.env.DB_PORT === undefined ||
-  process.env.DB_USER === undefined ||
-  process.env.DB_PASSWORD === undefined ||
-  process.env.DB_HOST === undefined ||
-  process.env.DB_NAME === undefined
-) {
-  throw new Error("Database configuration is invalid, please set all environment variables!");
-}
 export const production: Knex.Config = {
   client: "mysql2",
   version: "5.5",
   connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+    database: env.DB_NAME,
   },
   pool: {
     min: 0,
@@ -50,11 +29,11 @@ export const staging: Knex.Config = {
   client: "mysql2",
   version: "5.5",
   connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+    database: env.DB_NAME,
   },
   pool: {
     min: 0,
@@ -68,11 +47,11 @@ export const development: Knex.Config = {
   client: "mysql2",
   version: "5.5",
   connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+    database: env.DB_NAME,
   },
   pool: {
     min: 0,
@@ -87,11 +66,11 @@ export const test: Knex.Config = {
   client: "mysql2",
   version: "5.5",
   connection: {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + "_test",
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+    database: `${env.DB_NAME}_test`,
   },
   pool: {
     min: 0,

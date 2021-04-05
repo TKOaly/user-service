@@ -32,12 +32,16 @@ class AuthenticationService {
   /**
    * Appends a new service to the authentication token.
    */
-  public appendNewServiceAuthenticationToToken(oldToken: string | ServiceToken, newServiceName: string): string {
+  public appendNewServiceAuthenticationToToken(
+    oldToken: string | ServiceToken,
+    newServiceName: string,
+    secret: string,
+  ): string {
     let token: ServiceToken;
     if (typeof oldToken === "string") {
-      token = stringToServiceToken(oldToken);
+      token = stringToServiceToken(oldToken, secret);
     } else {
-      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt);
+      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt, secret);
     }
     if (token.authenticatedTo) {
       token.authenticatedTo.push(newServiceName);

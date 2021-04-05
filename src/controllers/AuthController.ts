@@ -1,9 +1,10 @@
 import express from "express";
+import { Env } from "../env";
 import Controller from "../interfaces/Controller";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import { AuthorizeMiddleware } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
 class AuthController implements Controller {
@@ -13,7 +14,7 @@ class AuthController implements Controller {
     this.route = express.Router();
   }
 
-  public async check(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async check(req: express.Request, res: express.Response): Promise<express.Response> {
     const service = req.get("service");
 
     if (service === undefined) {
@@ -27,7 +28,7 @@ class AuthController implements Controller {
     }
   }
 
-  public async authenticateUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async authenticateUser(req: express.Request, res: express.Response): Promise<express.Response> {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
       return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
@@ -147,15 +148,11 @@ class AuthController implements Controller {
   /**
    * Creates routes for authentication controller.
    */
-  public createRoutes(): express.Router {
+  public createRoutes(env: Env): express.Router {
     // @ts-expect-error
     this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
-    this.route.post(
-      "/authenticate", // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.authenticateUser.bind(this),
-    );
-    if (process.env.NODE_ENV !== "production") {
+    this.route.post("/authenticate", AuthorizeMiddleware(env).loadToken, this.authenticateUser.bind(this));
+    if (env.NODE_ENV !== "production") {
       this.route.get("/calcPermissions", this.calcPermissions.bind(this));
       this.route.post("/calcPermissions", this.calcPermissionsPost.bind(this));
     }
