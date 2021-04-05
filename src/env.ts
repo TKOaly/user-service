@@ -1,27 +1,25 @@
 import { Formatter, parseEnvironmentVariables } from "@absxn/process-env-parser";
 import dotenv from "dotenv";
+import { Environment } from "./Db";
 
-type NodeEnv = "development" | "test" | "production" | "staging";
-const envs: Array<NodeEnv> = ["development", "test", "production", "staging"];
+const envs: Array<Environment> = ["development", "test", "production", "staging"];
 
-const isNodeEnv = (x: unknown): x is NodeEnv => {
-  return !(envs.indexOf(x as NodeEnv) > -1);
+const isNodeEnv = (x: unknown): x is Environment => {
+  return envs.indexOf(x as Environment) > -1;
 };
-const parseNodeEnv = (env: string): NodeEnv => {
+const parseNodeEnv = (env: string): Environment => {
   if (!isNodeEnv(env)) {
     throw new Error(
-      "NODE_ENV is set to an invalid value. It should be either development, test, production or staging.",
+      `NODE_ENV is set to an invalid value. It should be either development, test, production or staging. Got: ${env}`,
     );
   }
   return env;
 };
 
-export const getEnvironment = (useDotenv = false) => {
-  if (useDotenv) {
-    dotenv.config();
-  }
+export const getEnvironment = () => {
+  dotenv.config();
   const result = parseEnvironmentVariables({
-    NODE_ENV: { default: "development" as NodeEnv, parser: parseNodeEnv },
+    NODE_ENV: { parser: parseNodeEnv },
     USERSERVICE_PORT: { parser: parseInt, default: 3000 },
     DB_HOST: {},
     DB_PORT: { parser: parseInt, default: 3306 },
