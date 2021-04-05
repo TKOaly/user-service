@@ -2,9 +2,10 @@ import chaiHttp from "chai-http";
 import * as JWT from "jsonwebtoken";
 import "mocha";
 import payments from "../../seeds/seedData/payments";
-import app from "../../src/App";
+import { createApp } from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
 import { knexInstance } from "../../src/Db";
+import { getEnvironment } from "../../src/env";
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
@@ -20,6 +21,9 @@ const url = "/api/payments";
 
 const kjyrIdentifier = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
 const calendarIdentifier = "65a0058d-f9da-4e76-a00a-6013300cab5f";
+
+const env = getEnvironment();
+const app = createApp(env);
 
 const generateToken = (
   userId: number,
@@ -389,7 +393,6 @@ describe("PaymentController", () => {
           const newPaymentType = "HelloWorld";
 
           // PATCH excepts all object params to exist
-          // @ts-expect-error
           delete payment.confirmer_id;
 
           // Then, do a PATCH request

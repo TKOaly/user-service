@@ -1,20 +1,22 @@
 import * as express from "express";
 import Raven from "raven";
 import UserRoleString from "../enum/UserRoleString";
+import { Env } from "../env";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
 import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import { AuthorizeMiddleware } from "../middleware/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
+import { generateReferenceNumber } from "../utils/ReferenceNumber";
 
-class PaymentController implements Controller {
+export class PaymentController implements Controller {
   private route: express.Router;
   private paymentValidator: PaymentValidator;
 
-  constructor() {
+  constructor(private readonly env: Env) {
     this.route = express.Router();
     this.paymentValidator = new PaymentValidator();
   }
@@ -25,7 +27,7 @@ class PaymentController implements Controller {
       const paymentIds = await PaymentService.createPayment(req.body);
       const payment = await PaymentService.fetchPayment(paymentIds[0]);
       if (payment.payment_type === "tilisiirto") {
-        payment.generateReferenceNumber();
+        payment.reference_number = generateReferenceNumber(payment.id);
         // Set the generated reference number
         await PaymentService.updatePayment(payment.id, payment);
       }
@@ -73,7 +75,7 @@ class PaymentController implements Controller {
     }
   }
 
-  public async getAllPayments(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async getAllPayments(req: express.Request, res: express.Response): Promise<express.Response> {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -100,7 +102,7 @@ class PaymentController implements Controller {
     }
   }
 
-  public async getSinglePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async getSinglePayment(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
       const payment: Payment = await PaymentService.fetchPayment(Number(req.params.id));
 
@@ -119,17 +121,17 @@ class PaymentController implements Controller {
     }
   }
 
-  public async markPaymentAsPaid(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async markPaymentAsPaid(req: express.Request, res: express.Response): Promise<express.Response> {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
     try {
       if (req.params.method === "bank") {
-        await PaymentService.makeBankPaid(Number(req.params.id), req.authorization.user.id);
+        await PaymentService.markBankPaymentAsPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else if (req.params.method === "cash") {
-        await PaymentService.makeCashPaid(Number(req.params.id), req.authorization.user.id);
+        await PaymentService.markCashPaymentAsPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else {
         return res.status(304);
@@ -148,13 +150,13 @@ class PaymentController implements Controller {
     }
   }
 
-  public async deletePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  public async deletePayment(req: express.Request, res: express.Response): Promise<express.Response> {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
     try {
-      await PaymentService.deletePatyment(Number(Number(req.params.id)));
+      await PaymentService.deletePayment(Number(req.params.id));
       return res.status(200);
     } catch (e) {
       Raven.captureBreadcrumb({
@@ -171,29 +173,35 @@ class PaymentController implements Controller {
 
   public createRoutes(): express.Router {
     this.route.get(
-      "/:id(\\d+)/", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
+      "/:id(\\d+)/",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
       this.getSinglePayment.bind(this),
-    ); // @ts-expect-error
-    this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllPayments.bind(this));
+    );
+    this.route.get(
+      "/",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
+      this.getAllPayments.bind(this),
+    );
     this.route.patch(
-      "/:id(\\d+)/", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
+      "/:id(\\d+)/",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
       this.modifyPayment.bind(this),
     );
     this.route.put(
-      "/:id(\\d+)/pay/:method", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
+      "/:id(\\d+)/pay/:method",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
       this.markPaymentAsPaid.bind(this),
     );
     this.route.delete(
-      "/:id(\\d+)", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
+      "/:id(\\d+)",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
       this.deletePayment.bind(this),
-    ); // @ts-expect-error
-    this.route.post("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.createPayment.bind(this));
+    );
+    this.route.post(
+      "/",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
+      this.createPayment.bind(this),
+    );
     return this.route;
   }
 }
-
-export default new PaymentController();

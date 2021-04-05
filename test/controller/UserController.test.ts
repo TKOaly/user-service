@@ -1,11 +1,12 @@
 import "mocha";
-import app from "../../src/App";
+import { createApp } from "../../src/App";
 import users from "../../seeds/seedData/users";
 import User from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 import { knexInstance } from "../../src/Db";
 import Service, { ServiceDatabaseObject } from "../../src/models/Service";
+import { getEnvironment } from "../../src/env";
 
 process.env.NODE_ENV = "test";
 import chai = require("chai");
@@ -18,6 +19,9 @@ chai.use(chaiHttp);
 
 const authService = AuthenticationService;
 const url = "/api/users";
+
+const env = getEnvironment();
+const app = createApp(env);
 
 describe("UserController", () => {
   // Roll back
@@ -156,7 +160,7 @@ describe("UserController", () => {
           should.exist(res.body.message);
           res.body.message.should.equal("Success");
 
-          const user_2: User = new User(users.find(user => user.id === 1)!);
+          const user_2 = new User(users.find(user => user.id === 1));
 
           should.exist(user_2);
 
@@ -277,8 +281,8 @@ describe("UserController", () => {
             chai
               .request(app)
               .get(url + "/me")
-              .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier!]))
-              .set("Service", serviceIdentifier!)
+              .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier]))
+              .set("Service", serviceIdentifier)
               .end((err, res) => {
                 res.status.should.equal(200);
                 should.exist(res.body.ok);
@@ -287,23 +291,21 @@ describe("UserController", () => {
                 should.exist(res.body.message);
                 res.body.message.should.equal("Success");
 
-                const user_2: User = new User(users.find(user => user.id === 1)!);
+                const user_2 = new User(users.find(user => user.id === 1));
 
                 should.exist(user_2);
 
                 const payloadObject: User = res.body.payload;
 
-                const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
+                const user = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
 
-                // @ts-expect-error
                 delete user.createdAt;
-                // @ts-expect-error
                 delete user.modifiedAt;
 
                 const allFields = Object.keys(user) as Array<keyof User>;
 
                 const required: string[] = Object.keys(
-                  user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber!),
+                  user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber),
                 );
                 for (const field of allFields) {
                   if (required.find((requiredField: string) => requiredField === field)) {

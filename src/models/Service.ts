@@ -42,6 +42,6 @@ export default class Service {
       service_identifier: this.serviceIdentifier,
       modified: this.modifiedAt,
       created: this.createdAt,
-    } as ServiceDatabaseObject;
+    };
   }
 }

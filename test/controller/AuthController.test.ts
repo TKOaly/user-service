@@ -1,6 +1,7 @@
 import "mocha";
-import app from "../../src/App";
+import { createApp } from "../../src/App";
 import { knexInstance } from "../../src/Db";
+import { getEnvironment } from "../../src/env";
 process.env.NODE_ENV = "test";
 
 import chai = require("chai");
@@ -25,6 +26,9 @@ const incorrectCreds: { [value: string]: string } = {
   password: "testuser",
   serviceIdentifier: kjyrIdentifier,
 };
+
+const env = getEnvironment();
+const app = createApp(env);
 
 describe("AuthController", () => {
   // Roll back

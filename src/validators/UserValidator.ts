@@ -86,7 +86,7 @@ export const userDataKeys: UserDataKey[] = [
   "isTKTL",
 ];
 
-export const hasForeignKeys = (obj: object, ownKeys: UserDataKey[]) => {
+export const hasForeignKeys = (obj: Record<string, unknown>, ownKeys: UserDataKey[]) => {
   const keys = [...Object.keys(obj)].filter(key => ownKeys.find(ownKey => ownKey === key) === undefined);
   return keys.length > 0;
 };

@@ -78,16 +78,14 @@ class PaymentService {
     return results.map(ent => new PaymentListing(ent));
   }
 
-  // TODO: Fix typo
-  public async deletePatyment(paymentId: number): Promise<void> {
+  public async deletePayment(paymentId: number): Promise<void> {
     await PaymentDao.deletePayment(paymentId);
   }
 
   /**
    * Marks a cash payment paid.
-   * TODO: Clarify naming?
    */
-  public async makeCashPaid(payment_id: number, confirmer_id: number): Promise<number> {
+  public async markCashPaymentAsPaid(payment_id: number, confirmer_id: number): Promise<number> {
     const payment = await PaymentDao.findOne(payment_id);
     if (!payment) {
       throw new ServiceError(404, "Payment not found");
@@ -102,9 +100,8 @@ class PaymentService {
 
   /**
    * Marks a bank payment paid.
-   * TODO: Clarify naming?
    */
-  public async makeBankPaid(payment_id: number, confirmer_id: number): Promise<number> {
+  public async markBankPaymentAsPaid(payment_id: number, confirmer_id: number): Promise<number> {
     const payment = await PaymentDao.findOne(payment_id);
 
     if (!payment) {

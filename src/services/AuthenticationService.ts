@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error
 import compare from "secure-compare";
 import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";
@@ -54,12 +54,16 @@ class AuthenticationService {
   /**
    * Remove a service from the authentication token.
    */
-  public removeServiceAuthenticationToToken(oldToken: string | ServiceToken, serviceToRemove: string): string {
+  public removeServiceAuthenticationToToken(
+    oldToken: string | ServiceToken,
+    serviceToRemove: string,
+    secret: string,
+  ): string {
     let token: ServiceToken;
     if (typeof oldToken === "string") {
-      token = stringToServiceToken(oldToken);
+      token = stringToServiceToken(oldToken, secret);
     } else {
-      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt);
+      token = new ServiceToken(oldToken.userId, oldToken.authenticatedTo, oldToken.createdAt, secret);
     }
     const newServiceList: string[] = [];
     token.authenticatedTo.forEach((s: string) => {
@@ -71,8 +75,8 @@ class AuthenticationService {
     return token.toString();
   }
 
-  public createToken(userId: number, authenticatedTo: string[]): string {
-    return new ServiceToken(userId, authenticatedTo, new Date()).toString();
+  public createToken(userId: number, authenticatedTo: string[], secret: string): string {
+    return new ServiceToken(userId, authenticatedTo, new Date(), secret).toString();
   }
 }
 

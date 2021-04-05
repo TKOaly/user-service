@@ -4,13 +4,13 @@ import Controller from "../interfaces/Controller";
 import User from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
-import { AuthorizeMiddleware } from "../utils/AuthorizeMiddleware";
+import { AuthorizeMiddleware } from "../middleware/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 
-class AuthController implements Controller {
+export class AuthController implements Controller {
   private route: express.Router;
 
-  constructor() {
+  constructor(private readonly env: Env) {
     this.route = express.Router();
   }
 
@@ -49,9 +49,10 @@ class AuthController implements Controller {
           token = AuthenticationService.appendNewServiceAuthenticationToToken(
             req.authorization.token,
             req.body.serviceIdentifier,
+            this.env.JWT_SECRET,
           );
         } else {
-          token = AuthenticationService.createToken(user.id, [req.body.serviceIdentifier]);
+          token = AuthenticationService.createToken(user.id, [req.body.serviceIdentifier], this.env.JWT_SECRET);
         }
 
         return res.status(200).json(new ServiceResponse({ token }, "Authenticated", true));
@@ -148,16 +149,17 @@ class AuthController implements Controller {
   /**
    * Creates routes for authentication controller.
    */
-  public createRoutes(env: Env): express.Router {
-    // @ts-expect-error
-    this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
-    this.route.post("/authenticate", AuthorizeMiddleware(env).loadToken, this.authenticateUser.bind(this));
-    if (env.NODE_ENV !== "production") {
+  public createRoutes(): express.Router {
+    this.route.get(
+      "/check",
+      AuthorizeMiddleware(this.env).authorize(true).bind(AuthorizeMiddleware),
+      this.check.bind(this),
+    );
+    this.route.post("/authenticate", AuthorizeMiddleware(this.env).loadToken, this.authenticateUser.bind(this));
+    if (this.env.NODE_ENV !== "production") {
       this.route.get("/calcPermissions", this.calcPermissions.bind(this));
       this.route.post("/calcPermissions", this.calcPermissionsPost.bind(this));
     }
     return this.route;
   }
 }
-
-export default new AuthController();

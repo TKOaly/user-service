@@ -6,21 +6,20 @@ import helmet from "helmet";
 import sassMiddleware from "node-sass-middleware";
 import { join } from "path";
 
-import AuthController from "./controllers/AuthController";
-import LoginController from "./controllers/LoginController";
-import PaymentController from "./controllers/PaymentController";
-import UserController from "./controllers/UserController";
-import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
-
-import LocalizationMiddleware from "./utils/LocalizationMiddleware";
+import LocalizationMiddleware from "./middleware/LocalizationMiddleware";
 
 import { initI18n } from "./i18n";
 
 import morgan from "morgan";
-import { Environment } from "./Db";
+import { Environment, knexInstance } from "./Db";
 import * as knexfile from "../knexfile";
-import { generateApiRoute } from "./utils/ApiRoute";
+import { apiRoute } from "./middleware/ApiRouteMiddleware";
 import { Env } from "./env";
+import { AuthController } from "./controllers/AuthController";
+import { UserController } from "./controllers/UserController";
+import { LoginController } from "./controllers/LoginController";
+import { PaymentController } from "./controllers/PaymentController";
+import { PrivacyPolicyController } from "./controllers/PrivacyPolicyController";
 
 const MySQLSessionStore = require("express-mysql-session")(session);
 
@@ -92,14 +91,21 @@ export const createApp = (env: Env) => {
   API routes
   */
 
-  app.use(generateApiRoute("auth"), AuthController.createRoutes());
-  app.use(generateApiRoute("users"), UserController.createRoutes());
-  app.use(generateApiRoute("payments"), PaymentController.createRoutes());
-  app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
-  app.use("/", LoginController.createRoutes());
+  app.use(apiRoute("auth"), new AuthController(env).createRoutes());
+  app.use(apiRoute("users"), new UserController(env).createRoutes());
+  app.use(apiRoute("payments"), new PaymentController(env).createRoutes());
+  app.use(apiRoute("policy"), new PrivacyPolicyController().createRoutes());
+  app.use("/", new LoginController(env).createRoutes());
 
   // Ping route
-  app.get("/ping", (_req, res) => res.json({ ok: true }));
+  app.get("/ping", async (_req, res) => {
+    try {
+      await knexInstance.raw("SELECT 1");
+      res.json({ ok: true });
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  });
 
   // CSRF
   app.use((err: { code?: string }, _req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -109,6 +115,16 @@ export const createApp = (env: Env) => {
     return res.status(403).render("serviceError", {
       error: "Invalid CSRF token",
     });
+  });
+
+  app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+    if (env.NODE_ENV === "production") {
+      return res.sendStatus(500);
+    }
+    return next(err);
   });
 
   return app;

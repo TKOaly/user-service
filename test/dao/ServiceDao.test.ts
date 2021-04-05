@@ -127,9 +127,7 @@ describe("ServiceDao", () => {
         throw new Error("Service not found");
       }
       // We can't compare modified and created dates
-      // @ts-expect-error
       delete dbService.modified;
-      // @ts-expect-error
       delete dbService.created; // @ts-expect-error
       Object.keys(dbService).forEach((key: keyof ServiceDatabaseObject) => {
         should.exist(dbService[key]);
@@ -140,13 +138,10 @@ describe("ServiceDao", () => {
   });
 
   it("Should return a single service with findByIdentifier()", done => {
-    // @ts-expect-error
     serviceDao.findByIdentifier(dbServices[0].service_identifier).then((dbService: ServiceDatabaseObject) => {
       const seedService: ServiceDatabaseObject = dbServices[0];
       // We can't compare modified and created dates
-      // @ts-expect-error
       delete dbService.modified;
-      // @ts-expect-error
       delete dbService.created;
 
       // @ts-expect-error
@@ -172,7 +167,7 @@ describe("ServiceDao", () => {
         serviceDao.update(updatedService.id, updatedService).then(res => {
           should.exist(res);
           res.should.equal(1);
-          serviceDao.findOne(updatedService.id!).then(service => {
+          serviceDao.findOne(updatedService.id).then(service => {
             if (service === undefined) {
               throw new Error("Service not found");
             }

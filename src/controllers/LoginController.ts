@@ -11,26 +11,24 @@ import AuthenticationService from "../services/AuthenticationService";
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMiddleware";
-import cachingMiddleware from "../utils/CachingMiddleware";
+import { AuthorizeMiddleware, LoginStep } from "../middleware/AuthorizeMiddleware";
+import cachingMiddleware from "../middleware/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
+import { Env } from "../env";
 
-class LoginController implements Controller {
+export class LoginController implements Controller {
   public route: Router;
 
   public csrfMiddleware: express.RequestHandler;
 
-  constructor() {
+  constructor(private readonly env: Env) {
     this.route = Router();
     this.csrfMiddleware = csrf({
       cookie: true,
     });
   }
 
-  public async getLoginView(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  public async getLoginView(req: express.Request, res: express.Response): Promise<express.Response | void> {
     // Delete login step
     if (req.session && req.session.loginStep) {
       req.session.loginStep = undefined;
@@ -64,7 +62,7 @@ class LoginController implements Controller {
       return res.render("login", {
         service,
         loggedUser: req.authorization ? req.authorization.user.username : null,
-        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        logoutRedirect: `/?serviceIdentifier=${service.serviceIdentifier}`,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
         csrfToken: req.csrfToken(),
@@ -80,16 +78,16 @@ class LoginController implements Controller {
   /**
    * Sets the language of the page.
    */
-  public setLanguage(req: IASRequest, res: express.Response) {
+  public setLanguage(req: express.Request, res: express.Response) {
     res.clearCookie("tkoaly_locale");
     res.cookie("tkoaly_locale", req.params.language, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      domain: process.env.COOKIE_DOMAIN,
+      domain: this.env.COOKIE_DOMAIN,
     });
     return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
-  public async logOut(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  public async logOut(req: express.Request, res: express.Response): Promise<express.Response | void> {
     if (!req.query.serviceIdentifier) {
       return res.status(400).render("serviceError", {
         error: "Missing service identifier",
@@ -114,15 +112,16 @@ class LoginController implements Controller {
     const token = AuthenticationService.removeServiceAuthenticationToToken(
       req.authorization.token,
       service.serviceIdentifier,
+      this.env.JWT_SECRET,
     );
 
     // this token had one service left which was remove -> clear token
     if (req.authorization.token.authenticatedTo.length === 1) {
-      res.clearCookie("token", { domain: process.env.COOKIE_DOMAIN });
+      res.clearCookie("token", { domain: this.env.COOKIE_DOMAIN });
     } else {
       res.cookie("token", token, {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        domain: process.env.COOKIE_DOMAIN,
+        domain: this.env.COOKIE_DOMAIN,
       });
     }
 
@@ -132,7 +131,7 @@ class LoginController implements Controller {
     return res.render("logout", { serviceName: service.displayName });
   }
 
-  public async login(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  public async login(req: express.Request, res: express.Response): Promise<express.Response | void> {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
       return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
@@ -166,7 +165,7 @@ class LoginController implements Controller {
       return res.status(500).render("login", {
         service,
         errors: [e.message],
-        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        logoutRedirect: `/?serviceIdentifier=${service.serviceIdentifier}`,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
         csrfToken: req.csrfToken(),
@@ -186,7 +185,7 @@ class LoginController implements Controller {
       return res.status(500).render("login", {
         service,
         errors: ["Authentication failure: User ID is undefined."],
-        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        logoutRedirect: `/?serviceIdentifier=${service.serviceIdentifier}`,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
         csrfToken: req.csrfToken(),
@@ -198,7 +197,7 @@ class LoginController implements Controller {
       return res.status(500).render("login", {
         service,
         errors: ["Authentication failure: Session is undefined."],
-        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        logoutRedirect: `/?serviceIdentifier=${service.serviceIdentifier}`,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
         csrfToken: req.csrfToken(),
@@ -239,7 +238,7 @@ class LoginController implements Controller {
       return res.status(500).render("login", {
         service,
         errors: [err.message],
-        logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
+        logoutRedirect: `/?serviceIdentifier=${service.serviceIdentifier}`,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: res.getLocale(),
         csrfToken: req.csrfToken(),
@@ -259,10 +258,7 @@ class LoginController implements Controller {
   /**
    * Handles GDPR template and redirects the user forward
    */
-  public async loginConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  public async loginConfirm(req: express.Request, res: express.Response): Promise<express.Response | void> {
     const body: {
       permission: string;
     } = req.body;
@@ -296,9 +292,14 @@ class LoginController implements Controller {
         token = AuthenticationService.appendNewServiceAuthenticationToToken(
           req.authorization.token,
           req.session.user.serviceIdentifier,
+          this.env.JWT_SECRET,
         );
       } else {
-        token = AuthenticationService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
+        token = AuthenticationService.createToken(
+          req.session.user.userId,
+          [req.session.user.serviceIdentifier],
+          this.env.JWT_SECRET,
+        );
       }
     } catch (e) {
       Raven.captureException(e);
@@ -323,10 +324,7 @@ class LoginController implements Controller {
   /**
    * Handles privacy policy confirmation.
    */
-  public async privacyPolicyConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  public async privacyPolicyConfirm(req: express.Request, res: express.Response): Promise<express.Response | void> {
     const body: {
       accept: string;
     } = req.body;
@@ -389,32 +387,36 @@ class LoginController implements Controller {
     this.route.get(
       "/",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
+      cachingMiddleware,
+      AuthorizeMiddleware(this.env).loadToken.bind(AuthorizeMiddleware),
       this.getLoginView.bind(this),
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
+      cachingMiddleware,
+      AuthorizeMiddleware(this.env).loadToken.bind(AuthorizeMiddleware),
       this.login.bind(this),
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
+      cachingMiddleware,
+      AuthorizeMiddleware(this.env).loadToken.bind(AuthorizeMiddleware),
       this.privacyPolicyConfirm.bind(this),
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
+      cachingMiddleware,
+      AuthorizeMiddleware(this.env).loadToken.bind(AuthorizeMiddleware),
       this.loginConfirm.bind(this),
-    ); // @ts-expect-error
-    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this)); // @ts-expect-error
+    );
+    this.route.get(
+      "/logout",
+      AuthorizeMiddleware(this.env).authorize(false).bind(AuthorizeMiddleware),
+      this.logOut.bind(this),
+    );
     this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
     return this.route;
   }
@@ -427,5 +429,3 @@ export interface ISessionUser {
   serviceIdentifier: string;
   redirectTo: string;
 }
-
-export default new LoginController();
