@@ -52,7 +52,7 @@
     "secure-compare": "^3.0.1",
     "sha1": "^1.1.1",
     "typedoc": "^0.19.2",
-    "validator": "^13.1.17"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@sentry/types": "^6.19.3",
