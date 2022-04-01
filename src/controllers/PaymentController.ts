@@ -33,7 +33,9 @@ class PaymentController implements Controller {
     } catch (err) {
       Sentry.addBreadcrumb({
         message: "Error creating payment",
-        errorMessage: err.message,
+        data: {
+          errorMessage: err.message,
+        },
       });
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
@@ -159,9 +161,9 @@ class PaymentController implements Controller {
     } catch (e) {
       Sentry.addBreadcrumb({
         message: "Error deleting payment",
-        errorMessage: e.message,
         data: {
           paymentId: Number(req.params.id),
+          errorMessage: e.message,
         },
       });
       Sentry.captureException(e);
