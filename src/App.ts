@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-import Raven from "raven";
+import Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
@@ -30,10 +30,12 @@ if (!process.env.NODE_ENV) {
 }
 
 if (process.env.NODE_ENV === "production") {
-  Raven.config(process.env.RAVEN_DSN).install();
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: "production",
+  });
 } else {
-  console.log("Skipping raven as the environment is not production");
-  Raven.config("").install();
+  console.log("Skipping sentry init as the environment is not production");
 }
 
 // Express application instance
@@ -54,8 +56,8 @@ app.use(cookieParser());
 app.use(LocalizationMiddleware);
 app.use(i18n.init);
 
-// Raven
-app.use(Raven.requestHandler());
+// Sentry
+app.use(Sentry.Handlers.requestHandler());
 
 app.use(express.json());
 app.use(
@@ -76,12 +78,6 @@ app.use(
     }),
   }),
 );
-
-app.use((req: any, _res: any, next: any) => {
-  Raven.context({
-    session: req.session,
-  }, () => next());
-});
 
 app.set("view engine", "pug");
 
@@ -111,13 +107,17 @@ app.use("/", LoginController.createRoutes());
 // Ping route
 app.get("/ping", (req, res) => res.json({ ok: true }));
 
+app.use(Sentry.Handlers.errorHandler());
+
 // CSRF
 app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }
+
   return res.status(403).render("serviceError", {
     error: "Invalid CSRF token",
+    errorId: (res as any)?.sentry,
   });
 });
 

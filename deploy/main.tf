@@ -221,7 +221,7 @@ resource "aws_ecs_task_definition" "user_serivce_task" {
       {"name": "DB_PASSWORD", "valueFrom": "${data.aws_ssm_parameter.user_service_db_password.arn}"},
       {"name": "DB_NAME", "valueFrom": "${data.aws_ssm_parameter.user_service_db_name.arn}"},
       {"name": "JWT_SECRET", "valueFrom": "${data.aws_ssm_parameter.user_service_jwt_secret.arn}"},
-      {"name": "RAVEN_DSN", "valueFrom": "${data.aws_ssm_parameter.user_service_raven_dsn.arn}"},
+      {"name": "SENTRY_DSN", "valueFrom": "${data.aws_ssm_parameter.user_service_raven_dsn.arn}"},
       {"name": "SESSION_SECRET", "valueFrom": "${data.aws_ssm_parameter.user_service_session_secret.arn}"}
     ]
   }

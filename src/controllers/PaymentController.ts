@@ -1,5 +1,5 @@
 import * as express from "express";
-import Raven from "raven";
+import Sentry from "@sentry/node";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
@@ -31,7 +31,7 @@ class PaymentController implements Controller {
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error creating payment",
         errorMessage: err.message,
       });
@@ -135,7 +135,7 @@ class PaymentController implements Controller {
         return res.status(304);
       }
     } catch (e) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error marking payment as paid",
         data: {
           paymentId: Number(req.params.id),
@@ -143,7 +143,7 @@ class PaymentController implements Controller {
           paymentMarkedByUserId: req.authorization.user.id,
         },
       });
-      Raven.captureException(e);
+      Sentry.captureException(e);
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
@@ -157,14 +157,14 @@ class PaymentController implements Controller {
       await PaymentService.deletePatyment(Number(Number(req.params.id)));
       return res.status(200);
     } catch (e) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error deleting payment",
         errorMessage: e.message,
         data: {
           paymentId: Number(req.params.id),
         },
       });
-      Raven.captureException(e);
+      Sentry.captureException(e);
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }

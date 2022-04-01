@@ -2,7 +2,7 @@ import csrf from "csurf";
 import { Router } from "express";
 import * as express from "express";
 import moment from "moment";
-import Raven from "raven";
+import Sentry from "@sentry/node";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
@@ -70,7 +70,7 @@ class LoginController implements Controller {
         csrfToken: req.csrfToken(),
       });
     } catch (err) {
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(400).render("serviceError", {
         error: err.message,
       });
@@ -105,7 +105,7 @@ class LoginController implements Controller {
     try {
       service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier as string);
     } catch (e) {
-      Raven.captureException(e);
+      Sentry.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
         error: e.message,
       });
@@ -194,7 +194,7 @@ class LoginController implements Controller {
     }
 
     if (req.session === undefined) {
-      Raven.captureException(new Error("Session is undefined."));
+      Sentry.captureException(new Error("Session is undefined."));
       return res.status(500).render("login", {
         service,
         errors: ["Authentication failure: Session is undefined."],
@@ -235,7 +235,7 @@ class LoginController implements Controller {
         });
       }
     } catch (err) {
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(500).render("login", {
         service,
         errors: [err.message],
@@ -272,14 +272,14 @@ class LoginController implements Controller {
     }
 
     if (req.session === undefined) {
-      Raven.captureException(new Error("Session is undefined"));
+      Sentry.captureException(new Error("Session is undefined"));
       return res.status(500).render("serviceError", {
         error: "Server error",
       });
     }
 
     if (req.session.loginStep !== LoginStep.GDPR) {
-      Raven.captureException(new Error("Invalid login step"));
+      Sentry.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
         error: "Server error",
       });
@@ -301,7 +301,7 @@ class LoginController implements Controller {
         token = AuthenticationService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
       }
     } catch (e) {
-      Raven.captureException(e);
+      Sentry.captureException(e);
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
 
@@ -332,21 +332,21 @@ class LoginController implements Controller {
     } = req.body;
 
     if (req.session === undefined) {
-      Raven.captureException(new Error("Session is undefined."));
+      Sentry.captureException(new Error("Session is undefined."));
       return res.status(500).render("serviceError", {
         error: "Server error",
       });
     }
 
     if (req.session.user === undefined) {
-      Raven.captureException(new Error("Session user is undefined."));
+      Sentry.captureException(new Error("Session user is undefined."));
       return res.status(500).render("serviceError", {
         error: "Server error",
       });
     }
 
     if (req.session.loginStep !== LoginStep.PrivacyPolicy) {
-      Raven.captureException(new Error("Invalid login step"));
+      Sentry.captureException(new Error("Invalid login step"));
       return res.status(500).render("serviceError", {
         error: "Server error",
       });
@@ -360,7 +360,7 @@ class LoginController implements Controller {
         await ConsentService.declineConsent(req.session.user.userId, service.id);
         return res.redirect("https://members.tko-aly.fi");
       } catch (ex) {
-        Raven.captureException(ex);
+        Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer." + ex.message,
         });
@@ -369,7 +369,7 @@ class LoginController implements Controller {
       try {
         await ConsentService.acceptConsent(req.session.user.userId, service.id);
       } catch (ex) {
-        Raven.captureException(ex);
+        Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer: " + ex.message,
         });

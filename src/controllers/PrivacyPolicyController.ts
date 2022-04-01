@@ -1,6 +1,6 @@
 import Express from "express";
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
-import Raven from "raven";
+import Sentry from "@sentry/node";
 import Controller from "../interfaces/Controller";
 import ServiceResponse from "../utils/ServiceResponse";
 
@@ -20,7 +20,7 @@ class PrivacyPolicyController implements Controller {
         return res.status(404).json(new ServiceResponse(null, "Privacy policy not found", false));
       }
     } catch (err) {
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(500).json(new ServiceResponse(null, "Server error", false));
     }
   }

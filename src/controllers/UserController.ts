@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as Raven from "raven";
+import Sentry from "@sentry/node";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
@@ -175,14 +175,15 @@ class UserController implements Controller {
         return res.status(200).json(new ServiceResponse(req.body, "User was not modified"));
       }
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error modifying user",
         data: {
           userId: req.params.id,
           modifierUserId: req.authorization.user.id,
         },
       });
-      Raven.captureException(err);
+
+      Sentry.captureException(err);
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -197,13 +198,13 @@ class UserController implements Controller {
       await UserService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
       return res.status(200).json(new ServiceResponse(req.body, "Success"));
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error modifying user (self)",
         data: {
           userId: req.params.id,
         },
       });
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -224,10 +225,10 @@ class UserController implements Controller {
       }
       return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), "Success"));
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error creating user",
       });
-      Raven.captureBreadcrumb(err);
+      Sentry.captureException(err);
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -301,7 +302,7 @@ class UserController implements Controller {
       }
       return res.status(200).json(new ServiceResponse(null, "User updated", true));
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error setting user membership",
         data: {
           userId: req.params.id,
@@ -309,7 +310,7 @@ class UserController implements Controller {
           modifierUserId: req.authorization.user.id,
         },
       });
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -327,14 +328,14 @@ class UserController implements Controller {
         return res.status(500).json(new ServiceResponse(null, "Failed to delete user", false));
       }
     } catch (err) {
-      Raven.captureBreadcrumb({
+      Sentry.addBreadcrumb({
         message: "Error deleting user",
         data: {
           userId: req.params.id,
           deleterUserId: req.authorization.user.id,
         },
       });
-      Raven.captureException(err);
+      Sentry.captureException(err);
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
