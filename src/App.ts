@@ -79,6 +79,11 @@ app.use(
   }),
 );
 
+app.use((req, _res, next) => {
+  Sentry.setContext("session", req.session ?? {});
+  next();
+});
+
 app.set("view engine", "pug");
 
 // SASS middleware
