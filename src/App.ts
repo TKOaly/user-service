@@ -77,6 +77,14 @@ app.use(
   }),
 );
 
+app.use((req: any, _res: any, next: any) => {
+  Raven.setContext({
+    session: req.session,
+  });
+
+  next();
+});
+
 app.set("view engine", "pug");
 
 // SASS middleware
