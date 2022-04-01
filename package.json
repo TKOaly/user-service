@@ -29,6 +29,7 @@
     "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
   },
   "dependencies": {
+    "@sentry/node": "^6.19.3",
     "@types/lodash": "^4.14.162",
     "@types/morgan": "^1.9.1",
     "cookie-parser": "^1.4.5",
@@ -54,7 +55,7 @@
     "validator": "^13.1.17"
   },
   "devDependencies": {
-    "@sentry/node": "^6.19.3",
+    "@sentry/types": "^6.19.3",
     "@types/chai": "^4.2.13",
     "@types/chai-http": "^4.2.0",
     "@types/cookie-parser": "^1.4.2",
@@ -94,7 +95,6 @@
     "prettier": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "ts-node": "^9.0.0",
-    "ts-node-dev": "^1.1.8",
     "typescript": "^4.0.3",
     "uuid": "^8.3.1"
   },
