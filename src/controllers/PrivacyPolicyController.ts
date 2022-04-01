@@ -1,6 +1,6 @@
 import Express from "express";
 import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import Controller from "../interfaces/Controller";
 import ServiceResponse from "../utils/ServiceResponse";
 

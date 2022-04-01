@@ -2,7 +2,7 @@ import csrf from "csurf";
 import { Router } from "express";
 import * as express from "express";
 import moment from "moment";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";

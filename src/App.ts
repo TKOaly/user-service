@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";

@@ -1,5 +1,5 @@
 import * as express from "express";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
