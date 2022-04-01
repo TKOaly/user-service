@@ -78,11 +78,9 @@ app.use(
 );
 
 app.use((req: any, _res: any, next: any) => {
-  Raven.setContext({
+  Raven.context({
     session: req.session,
-  });
-
-  next();
+  }, () => next());
 });
 
 app.set("view engine", "pug");
