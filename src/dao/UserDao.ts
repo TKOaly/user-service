@@ -46,23 +46,23 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
-    const query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName)
-      .select(`${tableName}.*`, "payments.membership_applied_for")
+    let query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName)
       .max("payments.valid_until")
       .leftOuterJoin(
         knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
       )
       .groupBy("users.id")
       .orderBy("users.name");
+
     if (fields) {
-      query.select(fields);
+      query.select(fields, "payments.membership_applied_for");
     } else {
-      query.select(`${tableName}.*`);
+      query.select(`${tableName}.*`, "payments.membership_applied_for");
     }
 
-    query.leftOuterJoin(
+    /*query.leftOuterJoin(
       knexInstance.raw("payments on (" + tableName + ".id = payments.payer_id and payments.valid_until > now())"),
-    );
+    );*/
 
     if (conditions) {
       conditions.forEach((cond: string, i: number) => {
