@@ -2,10 +2,10 @@ import "mocha";
 import ServiceToken, { stringToServiceToken } from "../../src/token/Token";
 import { calendarIdentifier, kjyrIdentifier } from "../TestUtils";
 import ServiceError from "../../src/utils/ServiceError";
-process.env.NODE_ENV = "test";
-process.env.JWT_SECRET = "secret_stuff";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = "secret_stuff";
 const should: Chai.Should = chai.should();
 
 describe("ServiceToken", () => {

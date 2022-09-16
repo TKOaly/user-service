@@ -2,11 +2,11 @@ import "mocha";
 import ServiceDao from "../../src/dao/ServiceDao";
 import { ServiceDatabaseObject } from "../../src/models/Service";
 import { knexInstance } from "../../src/Db";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 
 import serviceFile = require("../../seeds/seedData/services");
+process.env.NODE_ENV = "test";
 
 const dbServices = serviceFile as ServiceDatabaseObject[];
 const should = chai.should();

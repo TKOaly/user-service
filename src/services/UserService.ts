@@ -19,12 +19,12 @@ class UserService {
 
   public async fetchAllUsers(): Promise<User[]> {
     const results = await UserDao.findAll();
-    return results.map((dbObj) => new User(dbObj));
+    return results.map(dbObj => new User(dbObj));
   }
 
   public async fetchAllUnpaidUsers(): Promise<User[]> {
     const results = await UserDao.findAllByUnpaidPayment();
-    return results.map((dbObj) => new User(dbObj));
+    return results.map(dbObj => new User(dbObj));
   }
 
   /**
@@ -36,7 +36,7 @@ class UserService {
       return this.fetchAllUsers();
     }
 
-    return results.map((res) => new User(res));
+    return results.map(res => new User(res));
   }
 
   /**
@@ -46,7 +46,7 @@ class UserService {
     let conditionQuery: string[] = [];
     if (conditions) {
       conditionQuery = [];
-      conditions.forEach((condition) => {
+      conditions.forEach(condition => {
         switch (condition) {
           case "member":
             conditionQuery.push("(membership <> 'ei-jasen' and membership <> 'erotettu')");
@@ -76,7 +76,7 @@ class UserService {
 
     // @ts-ignore
     // FIXME: Wrong typings
-    return results.map((u) => new UserPayment(u));
+    return results.map(u => new UserPayment(u));
   }
 
   public async getUserWithUsernameAndPassword(username: string, password: string): Promise<User> {

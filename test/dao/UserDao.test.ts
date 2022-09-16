@@ -5,9 +5,9 @@ import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
 import { knexInstance } from "../../src/Db";
 
 import sha1 from "sha1";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
 
 const dbUsers = users;
 const should = chai.should();

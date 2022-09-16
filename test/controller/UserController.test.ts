@@ -6,9 +6,9 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 import { knexInstance } from "../../src/Db";
 import Service, { ServiceDatabaseObject } from "../../src/models/Service";
+import chai = require("chai");
 
 process.env.NODE_ENV = "test";
-import chai = require("chai");
 
 // Knex instance
 const knex = knexInstance;

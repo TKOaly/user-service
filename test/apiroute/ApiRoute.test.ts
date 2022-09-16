@@ -1,9 +1,9 @@
 import "mocha";
 import { apiHeaderMiddleware, generateApiRoute } from "../../src/utils/ApiRoute";
-process.env.NODE_ENV = "test";
-process.env.API_VERSION = "v5";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
+process.env.API_VERSION = "v5";
 const should = chai.should();
 
 describe("ApiRoute", () => {

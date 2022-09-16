@@ -1,9 +1,9 @@
 import "mocha";
 import PrivacyPolicyConsent from "../../src/enum/PrivacyPolicyConsent";
 import Consent from "../../src/models/Consent";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
 const should = chai.should();
 
 let consent: Consent;

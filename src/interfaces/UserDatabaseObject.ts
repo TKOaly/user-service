@@ -25,5 +25,5 @@ export default interface UserDatabaseObject {
 export interface UserPaymentDatabaseObject extends UserDatabaseObject {
   paid: Date;
   valid_until: Date;
-  membership_applied_for: string
+  membership_applied_for: string;
 }
