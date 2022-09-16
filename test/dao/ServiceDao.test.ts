@@ -11,7 +11,6 @@ process.env.NODE_ENV = "test";
 const dbServices = serviceFile as ServiceDatabaseObject[];
 const should = chai.should();
 
-
 // const sleep = (timeout: number) => new Promise((resolve, _reject) => setTimeout(resolve, timeout))
 
 // Knex instance
@@ -168,7 +167,7 @@ describe("ServiceDao", () => {
       data_permissions: 7768,
     };
 
-    const oldService = await serviceDao.findOne(updatedService.id)
+    const oldService = await serviceDao.findOne(updatedService.id);
 
     if (oldService === undefined) {
       throw new Error("Service not found");
@@ -176,12 +175,12 @@ describe("ServiceDao", () => {
 
     // await sleep(2000)
 
-    const res = await serviceDao.update(updatedService.id, updatedService)
+    const res = await serviceDao.update(updatedService.id, updatedService);
 
     should.exist(res);
     res.should.equal(1);
 
-    const service = await serviceDao.findOne(updatedService.id!)
+    const service = await serviceDao.findOne(updatedService.id!);
 
     if (service === undefined) {
       throw new Error("Service not found");

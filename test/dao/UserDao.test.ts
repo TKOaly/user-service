@@ -38,12 +38,12 @@ describe("UserDao", () => {
   });
 
   it("Returns all users with all fields", async () => {
-    const users = await userDao.findAll()
+    const users = await userDao.findAll();
 
     should.exist(users.length);
     users.length.should.equal(dbUsers.length);
 
-    users.forEach((user) => {
+    users.forEach(user => {
       const dbUser = user;
 
       const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
@@ -124,7 +124,7 @@ describe("UserDao", () => {
   });
 
   it("Returns all users with only a few fields requested", async () => {
-    const users = await userDao.findAll(["username", "name", "email"])
+    const users = await userDao.findAll(["username", "name", "email"]);
 
     should.exist(users.length);
     users.length.should.equal(dbUsers.length);
@@ -195,12 +195,12 @@ describe("UserDao", () => {
   });
 
   it("Removes a user", async () => {
-    const res = await userDao.remove(dbUsers[0].id)
+    const res = await userDao.remove(dbUsers[0].id);
 
     res.should.equal(1);
 
-    const users = await userDao.findAll()
-    
+    const users = await userDao.findAll();
+
     users.length.should.equal(dbUsers.length - 1);
   });
 
@@ -226,15 +226,15 @@ describe("UserDao", () => {
     };
 
     // @ts-expect-error
-    const res = await userDao.save(newUser)
+    const res = await userDao.save(newUser);
 
     res.length.should.equal(1);
 
-    const users = await userDao.findAll()
+    const users = await userDao.findAll();
 
     users.length.should.equal(dbUsers.length + 1);
 
-    const dbUser = await userDao.findByUsername(newUser.username)
+    const dbUser = await userDao.findByUsername(newUser.username);
 
     if (dbUser === undefined) {
       throw new Error("User not found");
@@ -506,7 +506,7 @@ describe("UserDao", () => {
   });
 
   it("Editing a user should update modifiedAt timestamp, but not createdAt", async () => {
-    const user = await userDao.findOne(1)
+    const user = await userDao.findOne(1);
 
     if (user === undefined) {
       throw new Error("User not found");
@@ -518,12 +518,11 @@ describe("UserDao", () => {
     const modifiedAtString = modifiedAt.toISOString();
     const updatedUsername = "testUsername";
 
-    await userDao
-      .update(1, {
-        username: updatedUsername,
-      })
+    await userDao.update(1, {
+      username: updatedUsername,
+    });
 
-    const user2 = await userDao.findOne(1)
+    const user2 = await userDao.findOne(1);
 
     if (user2 === undefined) {
       throw new Error("User not found");
