@@ -5,9 +5,9 @@ import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
 import { knexInstance } from "../../src/Db";
 
 import sha1 from "sha1";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
 
 const dbUsers = users;
 const should = chai.should();
@@ -37,174 +37,174 @@ describe("UserDao", () => {
     });
   });
 
-  it("Returns all users with all fields", done => {
-    userDao.findAll().then(users => {
-      should.exist(users.length);
-      users.length.should.equal(dbUsers.length);
-      users.forEach(user => {
-        const dbUser = user;
+  it("Returns all users with all fields", async () => {
+    const users = await userDao.findAll();
 
-        const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
+    should.exist(users.length);
+    users.length.should.equal(dbUsers.length);
 
-        if (seedUser === undefined) {
-          throw new Error("Seeded user not found");
-        }
+    users.forEach(user => {
+      const dbUser = user;
 
-        // Username
-        should.exist(dbUser.username);
-        dbUser.username.should.equal(seedUser.username);
+      const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
 
-        // Screen name
-        should.exist(dbUser.screen_name);
-        dbUser.screen_name.should.equal(seedUser.screen_name);
+      if (seedUser === undefined) {
+        throw new Error("Seeded user not found");
+      }
 
-        // Salt
-        should.exist(dbUser.salt);
-        dbUser.salt.should.equal(seedUser.salt);
+      // Username
+      should.exist(dbUser.username);
+      dbUser.username.should.equal(seedUser.username);
 
-        // Role
-        should.exist(dbUser.role);
-        dbUser.role.should.equal(seedUser.role);
+      // Screen name
+      should.exist(dbUser.screen_name);
+      dbUser.screen_name.should.equal(seedUser.screen_name);
 
-        // Residence
-        should.exist(dbUser.residence);
-        dbUser.residence.should.equal(seedUser.residence);
+      // Salt
+      should.exist(dbUser.salt);
+      dbUser.salt.should.equal(seedUser.salt);
 
-        // Phone
-        should.exist(dbUser.phone);
-        dbUser.phone.should.equal(seedUser.phone);
+      // Role
+      should.exist(dbUser.role);
+      dbUser.role.should.equal(seedUser.role);
 
-        // Name
-        should.exist(dbUser.name);
-        dbUser.name.should.equal(seedUser.name);
+      // Residence
+      should.exist(dbUser.residence);
+      dbUser.residence.should.equal(seedUser.residence);
 
-        // ModifiedAt
-        should.exist(dbUser.modified);
+      // Phone
+      should.exist(dbUser.phone);
+      dbUser.phone.should.equal(seedUser.phone);
 
-        // Membership
-        should.exist(dbUser.membership);
-        dbUser.membership.should.equal(seedUser.membership);
+      // Name
+      should.exist(dbUser.name);
+      dbUser.name.should.equal(seedUser.name);
 
-        // isTKTL
-        should.exist(dbUser.tktl);
-        dbUser.tktl.should.equal(seedUser.tktl);
+      // ModifiedAt
+      should.exist(dbUser.modified);
 
-        // isHYYMember
-        should.exist(dbUser.hyy_member);
-        dbUser.hyy_member.should.equal(seedUser.hyy_member);
+      // Membership
+      should.exist(dbUser.membership);
+      dbUser.membership.should.equal(seedUser.membership);
 
-        // isDeleted
-        should.exist(dbUser.deleted);
-        dbUser.deleted.should.equal(seedUser.deleted);
+      // isTKTL
+      should.exist(dbUser.tktl);
+      dbUser.tktl.should.equal(seedUser.tktl);
 
-        // id
-        should.exist(dbUser.id);
-        dbUser.id.should.equal(seedUser.id);
+      // isHYYMember
+      should.exist(dbUser.hyy_member);
+      dbUser.hyy_member.should.equal(seedUser.hyy_member);
 
-        // hashedPassword
-        should.exist(dbUser.hashed_password);
-        dbUser.hashed_password.should.equal(seedUser.hashed_password);
+      // isDeleted
+      should.exist(dbUser.deleted);
+      dbUser.deleted.should.equal(seedUser.deleted);
 
-        // email
-        should.exist(dbUser.email);
-        dbUser.email.should.equal(seedUser.email);
+      // id
+      should.exist(dbUser.id);
+      dbUser.id.should.equal(seedUser.id);
 
-        // createdAt
-        should.exist(dbUser.created);
-        dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+      // hashedPassword
+      should.exist(dbUser.hashed_password);
+      dbUser.hashed_password.should.equal(seedUser.hashed_password);
 
-        should.exist(dbUser.hy_staff);
-        dbUser.hy_staff.should.equal(seedUser.hy_staff);
+      // email
+      should.exist(dbUser.email);
+      dbUser.email.should.equal(seedUser.email);
 
-        should.exist(dbUser.hy_student);
-        dbUser.hy_student.should.equal(seedUser.hy_student);
-      });
+      // createdAt
+      should.exist(dbUser.created);
+      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
 
-      done();
+      should.exist(dbUser.hy_staff);
+      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+
+      should.exist(dbUser.hy_student);
+      dbUser.hy_student.should.equal(seedUser.hy_student);
     });
   });
 
-  it("Returns all users with only a few fields requested", done => {
-    userDao.findAll(["username", "name", "email"]).then(users => {
-      should.exist(users.length);
-      users.length.should.equal(dbUsers.length);
-      users.forEach(user => {
-        const dbUser = user;
+  it("Returns all users with only a few fields requested", async () => {
+    const users = await userDao.findAll(["username", "name", "email"]);
 
-        const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
-        if (seedUser === undefined) {
-          throw new Error("Seeded user not found");
-        }
-        // Username
-        should.exist(dbUser.username);
-        dbUser.username.should.equal(seedUser.username);
+    should.exist(users.length);
+    users.length.should.equal(dbUsers.length);
 
-        // Screen name
-        should.not.exist(dbUser.screen_name);
+    users.forEach(user => {
+      const dbUser = user;
 
-        // Salt
-        should.not.exist(dbUser.salt);
+      const seedUser = dbUsers.find(usr => usr.username === dbUser.username);
 
-        // Role
-        should.not.exist(dbUser.role);
+      if (seedUser === undefined) {
+        throw new Error("Seeded user not found");
+      }
 
-        // Residence
-        should.not.exist(dbUser.residence);
+      // Username
+      should.exist(dbUser.username);
+      dbUser.username.should.equal(seedUser.username);
 
-        // Phone
-        should.not.exist(dbUser.phone);
+      // Screen name
+      should.not.exist(dbUser.screen_name);
 
-        // Name
-        should.exist(dbUser.name);
-        dbUser.name.should.equal(seedUser.name);
+      // Salt
+      should.not.exist(dbUser.salt);
 
-        // ModifiedAt
-        should.not.exist(dbUser.modified);
+      // Role
+      should.not.exist(dbUser.role);
 
-        // Membership
-        should.not.exist(dbUser.membership);
+      // Residence
+      should.not.exist(dbUser.residence);
 
-        // isTKTL
-        should.not.exist(dbUser.tktl);
+      // Phone
+      should.not.exist(dbUser.phone);
 
-        // isHYYMember
-        should.not.exist(dbUser.hyy_member);
+      // Name
+      should.exist(dbUser.name);
+      dbUser.name.should.equal(seedUser.name);
 
-        // isDeleted
-        should.not.exist(dbUser.deleted);
+      // ModifiedAt
+      should.not.exist(dbUser.modified);
 
-        // id
-        should.not.exist(dbUser.id);
+      // Membership
+      should.not.exist(dbUser.membership);
 
-        // hashedPassword
-        should.not.exist(dbUser.hashed_password);
+      // isTKTL
+      should.not.exist(dbUser.tktl);
 
-        // email
-        should.exist(dbUser.email);
-        dbUser.email.should.equal(seedUser.email);
+      // isHYYMember
+      should.not.exist(dbUser.hyy_member);
 
-        // createdAt
-        should.not.exist(dbUser.created);
+      // isDeleted
+      should.not.exist(dbUser.deleted);
 
-        should.not.exist(dbUser.hy_staff);
-        should.not.exist(dbUser.hy_student);
-      });
+      // id
+      should.not.exist(dbUser.id);
 
-      done();
+      // hashedPassword
+      should.not.exist(dbUser.hashed_password);
+
+      // email
+      should.exist(dbUser.email);
+      dbUser.email.should.equal(seedUser.email);
+
+      // createdAt
+      should.not.exist(dbUser.created);
+
+      should.not.exist(dbUser.hy_staff);
+      should.not.exist(dbUser.hy_student);
     });
   });
 
-  it("Removes a user", done => {
-    userDao.remove(dbUsers[0].id).then(res => {
-      res.should.equal(1);
-      userDao.findAll().then(users => {
-        users.length.should.equal(dbUsers.length - 1);
-        done();
-      });
-    });
+  it("Removes a user", async () => {
+    const res = await userDao.remove(dbUsers[0].id);
+
+    res.should.equal(1);
+
+    const users = await userDao.findAll();
+
+    users.length.should.equal(dbUsers.length - 1);
   });
 
-  it("Inserts a new user", done => {
+  it("Inserts a new user", async () => {
     const newUser: Omit<UserDatabaseObject, "id"> = {
       username: "testuser",
       name: "Test User",
@@ -226,32 +226,34 @@ describe("UserDao", () => {
     };
 
     // @ts-expect-error
-    userDao.save(newUser).then(res => {
-      res.length.should.equal(1);
-      userDao.findAll().then(users => {
-        users.length.should.equal(dbUsers.length + 1);
-        userDao.findByUsername(newUser.username).then(dbUser => {
-          if (dbUser === undefined) {
-            throw new Error("User not found");
-          }
-          dbUser.username.should.equal(newUser.username);
-          dbUser.name.should.equal(newUser.name);
-          dbUser.screen_name.should.equal(newUser.screen_name);
-          dbUser.email.should.equal(newUser.email);
-          dbUser.residence.should.equal(newUser.residence);
-          dbUser.phone.should.equal(newUser.phone);
-          dbUser.hyy_member.should.equal(newUser.hyy_member);
-          dbUser.membership.should.equal(newUser.membership);
-          dbUser.role.should.equal(newUser.role);
-          dbUser.salt.should.equal(newUser.salt);
-          dbUser.tktl.should.equal(newUser.tktl);
-          dbUser.deleted.should.equal(newUser.deleted);
-          dbUser.hy_staff.should.equal(newUser.hy_staff);
-          dbUser.hy_student.should.equal(newUser.hy_student);
-          done();
-        });
-      });
-    });
+    const res = await userDao.save(newUser);
+
+    res.length.should.equal(1);
+
+    const users = await userDao.findAll();
+
+    users.length.should.equal(dbUsers.length + 1);
+
+    const dbUser = await userDao.findByUsername(newUser.username);
+
+    if (dbUser === undefined) {
+      throw new Error("User not found");
+    }
+
+    dbUser.username.should.equal(newUser.username);
+    dbUser.name.should.equal(newUser.name);
+    dbUser.screen_name.should.equal(newUser.screen_name);
+    dbUser.email.should.equal(newUser.email);
+    dbUser.residence.should.equal(newUser.residence);
+    dbUser.phone.should.equal(newUser.phone);
+    dbUser.hyy_member.should.equal(newUser.hyy_member);
+    dbUser.membership.should.equal(newUser.membership);
+    dbUser.role.should.equal(newUser.role);
+    dbUser.salt.should.equal(newUser.salt);
+    dbUser.tktl.should.equal(newUser.tktl);
+    dbUser.deleted.should.equal(newUser.deleted);
+    dbUser.hy_staff.should.equal(newUser.hy_staff);
+    dbUser.hy_student.should.equal(newUser.hy_student);
   });
 
   it("Returns a single user with findOne()", done => {
@@ -503,34 +505,31 @@ describe("UserDao", () => {
     });
   });
 
-  it("Editing a user should update modifiedAt timestamp, but not createdAt", done => {
-    userDao.findOne(1).then(user => {
-      if (user === undefined) {
-        throw new Error("User not found");
-      }
-      const createdAt = user.created;
-      const modifiedAt = user.modified;
-      const createdAtString = createdAt.toISOString();
-      const modifiedAtString = modifiedAt.toISOString();
-      const updatedUsername = "testUsername";
-      // Add a bit of delay to make the timestamp update itself
-      new Promise(resolve => setTimeout(resolve, 3000)).then(() => {
-        userDao
-          .update(1, {
-            username: updatedUsername,
-          })
-          .then(_rows => {
-            userDao.findOne(1).then(user2 => {
-              if (user2 === undefined) {
-                throw new Error("User not found");
-              }
-              createdAtString.should.equal(user2.created.toISOString());
-              modifiedAtString.should.not.equal(user2.modified.toISOString());
-              done();
-            });
-          });
-      });
+  it("Editing a user should update modifiedAt timestamp, but not createdAt", async () => {
+    const user = await userDao.findOne(1);
+
+    if (user === undefined) {
+      throw new Error("User not found");
+    }
+
+    const createdAt = user.created;
+    const modifiedAt = user.modified;
+    const createdAtString = createdAt.toISOString();
+    const modifiedAtString = modifiedAt.toISOString();
+    const updatedUsername = "testUsername";
+
+    await userDao.update(1, {
+      username: updatedUsername,
     });
+
+    const user2 = await userDao.findOne(1);
+
+    if (user2 === undefined) {
+      throw new Error("User not found");
+    }
+
+    createdAtString.should.equal(user2.created.toISOString());
+    modifiedAtString.should.not.equal(user2.modified.toISOString());
   });
 
   it("should return undefined if user is not found", done => {

@@ -2,14 +2,16 @@ import "mocha";
 import ServiceDao from "../../src/dao/ServiceDao";
 import { ServiceDatabaseObject } from "../../src/models/Service";
 import { knexInstance } from "../../src/Db";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
 
 import serviceFile = require("../../seeds/seedData/services");
+process.env.NODE_ENV = "test";
 
 const dbServices = serviceFile as ServiceDatabaseObject[];
 const should = chai.should();
+
+// const sleep = (timeout: number) => new Promise((resolve, _reject) => setTimeout(resolve, timeout))
 
 // Knex instance
 const knex = knexInstance;
@@ -158,34 +160,37 @@ describe("ServiceDao", () => {
     });
   });
 
-  it("Should update a service with update()", done => {
+  it("Should update a service with update()", async () => {
     const updatedService: Pick<ServiceDatabaseObject, "id" | "service_name" | "data_permissions"> = {
       id: 2,
       service_name: "test_service",
       data_permissions: 7768,
     };
-    serviceDao.findOne(updatedService.id).then(oldService => {
-      if (oldService === undefined) {
-        throw new Error("Service not found");
-      }
-      new Promise((resolve, _reject) => setTimeout(resolve, 2000)).then(() => {
-        serviceDao.update(updatedService.id, updatedService).then(res => {
-          should.exist(res);
-          res.should.equal(1);
-          serviceDao.findOne(updatedService.id!).then(service => {
-            if (service === undefined) {
-              throw new Error("Service not found");
-            }
-            service.modified.toISOString().should.not.equal(oldService.modified.toISOString());
-            service.created.toISOString().should.equal(oldService.created.toISOString());
-            service.id.should.equal(updatedService.id);
-            service.service_name.should.equal(updatedService.service_name);
-            service.data_permissions.should.equal(7768);
-            done();
-          });
-        });
-      });
-    });
+
+    const oldService = await serviceDao.findOne(updatedService.id);
+
+    if (oldService === undefined) {
+      throw new Error("Service not found");
+    }
+
+    // await sleep(2000)
+
+    const res = await serviceDao.update(updatedService.id, updatedService);
+
+    should.exist(res);
+    res.should.equal(1);
+
+    const service = await serviceDao.findOne(updatedService.id!);
+
+    if (service === undefined) {
+      throw new Error("Service not found");
+    }
+
+    service.modified.toISOString().should.not.equal(oldService.modified.toISOString());
+    service.created.toISOString().should.equal(oldService.created.toISOString());
+    service.id.should.equal(updatedService.id);
+    service.service_name.should.equal(updatedService.service_name);
+    service.data_permissions.should.equal(7768);
   });
 
   it("should return undefined if service is not found", done => {

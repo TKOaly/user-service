@@ -18,6 +18,7 @@ client-key.pem
 deploy-keys/key.pem
 aws-credentials.csv
 .sessions
+public/styles/*
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/terraform

@@ -11,9 +11,9 @@ import UserValidator, {
 import { knexInstance } from "../../src/Db";
 import UserRoleString from "../../src/enum/UserRoleString";
 import User from "../../src/models/User";
+import chai = require("chai");
 
 process.env.NODE_ENV = "test";
-import chai = require("chai");
 
 // Knexfile
 const knex = knexInstance;

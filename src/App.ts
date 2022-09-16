@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
 import helmet from "helmet";
-import sassMiddleware from "node-sass-middleware";
 import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
@@ -85,17 +84,6 @@ app.use((req, _res, next) => {
 });
 
 app.set("view engine", "pug");
-
-// SASS middleware
-app.use(
-  sassMiddleware({
-    src: join(process.cwd(), "scss"),
-    dest: join(process.cwd(), "public", "styles"),
-    debug: false,
-    outputStyle: "compressed",
-    response: true,
-  }),
-);
 
 app.use(express.static(join(process.cwd(), "public")));
 

@@ -5,9 +5,9 @@ import payments from "../../seeds/seedData/payments";
 import app from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
 import { knexInstance } from "../../src/Db";
-process.env.NODE_ENV = "test";
 
 import chai = require("chai");
+process.env.NODE_ENV = "test";
 
 // Knex instance
 const knex = knexInstance;

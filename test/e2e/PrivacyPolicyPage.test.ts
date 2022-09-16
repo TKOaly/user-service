@@ -11,9 +11,9 @@ import app from "../../src/App";
 
 import en from "../../locales/en.json";
 import fi from "../../locales/fi.json";
+import services = require("../../seeds/seedData/services");
 
 process.env.NODE_ENV = "test";
-import services = require("../../seeds/seedData/services");
 
 // Knex instance
 const knex = knexInstance;
