@@ -1,9 +1,9 @@
-FROM node:12.17.0-alpine
+FROM node:17.9.0-alpine AS development
 
 WORKDIR /app
 
 RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python git \
+  g++ gcc libgcc libstdc++ linux-headers make python3 git \
   chromium chromium-chromedriver
 
 COPY package*.json /app/
@@ -20,8 +20,14 @@ COPY ./seeds /app/seeds
 COPY ./migrations /app/migrations
 
 COPY tsconfig.json ./
+
+EXPOSE 3001
+CMD ["npm", "run", "watch"]
+
+FROM development AS production
+
 RUN npm run build && \
-    npm prune --production
+  npm prune --production
 
 EXPOSE 3001
 CMD ["npm", "start"]

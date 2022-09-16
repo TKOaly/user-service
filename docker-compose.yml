@@ -17,6 +17,7 @@ services:
   web:
     build:
       context: .
+      target: development
       shm_size: 1G
     ports:
       - "8080:8080"
@@ -32,7 +33,6 @@ services:
       - ./locales:/app/locales
       - ./migrations:/app/migrations
       - ./knexfile.ts:/app/knexfile.ts
-    command: npm run watch
     environment:
       USERSERVICE_PORT: 8080
       NODE_ENV: development

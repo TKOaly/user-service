@@ -1,4 +1,5 @@
 import * as express from "express";
+import { Session } from "express-session"
 import { ISessionUser } from "../controllers/LoginController";
 import User from "../models/User";
 import UserService from "../services/UserService";
@@ -14,7 +15,7 @@ export enum LoginStep {
 /**
  * ISession interface adds support for new keys in the Express.Session interface.
  */
-interface ISession extends Express.Session {
+interface ISession extends Session {
   user?: ISessionUser;
   loginStep?: LoginStep;
   /**
@@ -29,7 +30,7 @@ export interface IASRequest extends express.Request {
     token: ServiceToken;
   };
 
-  session?: ISession;
+  session: ISession;
 }
 
 class AuthorizeMiddleware {
