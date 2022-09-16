@@ -18,6 +18,7 @@ COPY ./public /app/public
 COPY ./locales /app/locales
 COPY ./seeds /app/seeds
 COPY ./migrations /app/migrations
+COPY ./scripts /app/scripts
 
 COPY tsconfig.json ./
 
