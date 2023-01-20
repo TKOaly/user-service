@@ -7,7 +7,7 @@ module.exports = [
     redirect_url: "https://calendar.tko-aly.fi",
     data_permissions: 6143,
     created: new Date(),
-    modified: new Date()
+    modified: new Date(),
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ module.exports = [
     redirect_url: "https://kjyr.tko-aly.fi",
     data_permissions: 89,
     created: new Date(),
-    modified: new Date()
+    modified: new Date(),
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ module.exports = [
     redirect_url: "https://tarpisto.tko-aly.fi",
     data_permissions: 514,
     created: new Date(),
-    modified: new Date()
+    modified: new Date(),
   },
   {
     id: 4,
@@ -37,6 +37,16 @@ module.exports = [
     redirect_url: "https://arkisto.tko-aly.fi",
     data_permissions: 514,
     created: new Date(),
-    modified: new Date()
-  }
+    modified: new Date(),
+  },
+  {
+    id: 5,
+    service_identifier: "5e02267a-d6e1-4e3a-899e-a9082b07da32",
+    service_name: "cube_admin",
+    display_name: "TKO-äly admin",
+    redirect_url: "http://admin.tko-aly.localhost",
+    data_permissions: 8714,
+    created: new Date(),
+    modified: new Date(),
+  },
 ];
