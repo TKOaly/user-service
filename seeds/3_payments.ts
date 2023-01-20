@@ -1,7 +1,7 @@
 import type Knex from "knex";
-import users from "./seedData/users";
+const payments = require("./seedData/payments");
 
-exports.seed = async function (knex: Knex): Promise<void> {
+exports.seed = async function (knex: Knex) {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Please do not seed a production database.");
   }
@@ -12,7 +12,7 @@ exports.seed = async function (knex: Knex): Promise<void> {
   }
 
   // Deletes ALL existing entries
-  await knex("privacy_policy_consent_data").del();
-  await knex("users").del();
-  return await knex("users").insert(users);
+  await knex("payments").del();
+  // Inserts seed entries
+  await knex("payments").insert(payments);
 };

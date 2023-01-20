@@ -29,6 +29,13 @@ const privacyPolicy: PrivacyPolicyDatabaseObject[] = [
     created: new Date(),
     modified: new Date(),
   },
+  {
+    id: 5,
+    service_id: 5,
+    text: "Cube Admin privacy policy",
+    created: new Date(),
+    modified: new Date(),
+  },
 ];
 
 export default privacyPolicy;

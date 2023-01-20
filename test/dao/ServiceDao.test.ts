@@ -18,6 +18,9 @@ const knex = knexInstance;
 
 const serviceDao = ServiceDao;
 
+const descending = (a: number, b: number) => b - a;
+const nextDbServiceId = dbServices.map(s => s.id).sort(descending)[0] + 1;
+
 describe("ServiceDao", () => {
   // Roll back
   beforeEach(done => {
@@ -88,7 +91,7 @@ describe("ServiceDao", () => {
     const newService: Omit<ServiceDatabaseObject, "created" | "modified"> = {
       data_permissions: 666,
       display_name: "Test service",
-      id: 5,
+      id: nextDbServiceId,
       redirect_url: "https://google.fi",
       service_identifier: "a123b456",
       service_name: "TestServicce",
@@ -96,7 +99,7 @@ describe("ServiceDao", () => {
 
     serviceDao.save(newService).then(res => {
       should.exist(res);
-      res[0].should.equal(5);
+      res[0].should.equal(nextDbServiceId);
       serviceDao.findAll().then(services => {
         services.length.should.equal(dbServices.length + 1);
         serviceDao.findByIdentifier(newService.service_identifier).then(dbService => {
