@@ -1,6 +1,5 @@
-import sha1 from "sha1";
 import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
-const encryptPassword = (password: string, salt: string) => sha1(salt + "kekbUr" + password);
+import { hashPasswordSync, legacyHashPassword } from "../../src/utils/UserHelpers";
 
 const users: UserDatabaseObject[] = [
   {
@@ -15,7 +14,8 @@ const users: UserDatabaseObject[] = [
     membership: "ei-jasen",
     created: new Date(),
     modified: new Date(),
-    hashed_password: encryptPassword("test_user", "12345"),
+    hashed_password: legacyHashPassword("test_user", "12345"),
+    password_hash: hashPasswordSync("test_user"),
     salt: "12345",
     role: "jasen",
     tktl: 1,
@@ -35,7 +35,8 @@ const users: UserDatabaseObject[] = [
     membership: "jasen",
     created: new Date(),
     modified: new Date(),
-    hashed_password: encryptPassword("admin_user", "12345"),
+    hashed_password: legacyHashPassword("admin_user", "12345"),
+    password_hash: hashPasswordSync("admin_user"),
     salt: "12345",
     role: "yllapitaja",
     tktl: 1,
@@ -55,7 +56,8 @@ const users: UserDatabaseObject[] = [
     membership: "jasen",
     created: new Date(),
     modified: new Date(),
-    hashed_password: encryptPassword("jasenvirkailija_user", "12345"),
+    hashed_password: legacyHashPassword("jasenvirkailija_user", "12345"),
+    password_hash: hashPasswordSync("jasenvirkailija_user"),
     salt: "12345",
     role: "jasenvirkailija",
     tktl: 1,
@@ -75,7 +77,8 @@ const users: UserDatabaseObject[] = [
     membership: "jasen",
     created: new Date(),
     modified: new Date(),
-    hashed_password: encryptPassword("tv_user", "12345"),
+    hashed_password: legacyHashPassword("tv_user", "12345"),
+    password_hash: hashPasswordSync("tv_user"),
     salt: "12345",
     role: "tenttiarkistovirkailija",
     tktl: 1,

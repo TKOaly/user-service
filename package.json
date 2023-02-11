@@ -36,6 +36,7 @@
     "@sentry/node": "^6.19.3",
     "@types/lodash": "^4.14.162",
     "@types/morgan": "^1.9.1",
+    "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
@@ -60,6 +61,7 @@
   },
   "devDependencies": {
     "@sentry/types": "^6.19.3",
+    "@types/bcrypt": "^5.0.0",
     "@types/chai": "^4.2.13",
     "@types/chai-http": "^4.2.0",
     "@types/cookie-parser": "^1.4.2",

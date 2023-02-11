@@ -4,8 +4,9 @@ import UserDao from "../dao/UserDao";
 import User from "../models/User";
 import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
-import { validatePassword } from "./AuthenticationService";
+import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
+import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -86,7 +87,17 @@ class UserService {
     }
 
     const user = new User(dbUser);
-    const isPasswordCorrect = await validatePassword(password, user.salt, user.hashedPassword);
+
+    // if user has bcrypt hash instead of the legacy hash
+    if (user.passwordHash) {
+      if (await validatePasswordHashAsync(password, user.passwordHash)) {
+        return user;
+      }
+
+      throw new ServiceError(401, "Invalid username or password");
+    }
+
+    const isPasswordCorrect = await validateLegacyPassword(password, user.salt, user.hashedPassword);
     if (isPasswordCorrect) {
       return user;
     }
@@ -108,6 +119,7 @@ class UserService {
     const { password, salt } = await mkHashedPassword(rawPassword);
     userData.hashedPassword = password;
     userData.salt = salt;
+    userData.passwordHash = await hashPasswordAsync(rawPassword);
     const insertIds = await UserDao.save(userData.getDatabaseObject());
     return insertIds[0];
   }

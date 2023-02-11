@@ -13,11 +13,19 @@ export default class User {
   public membership: string;
 
   public role: UserRoleString;
+  /**
+   * @deprecated Legacy, pending removal.
+   */
   public salt: string;
   /**
-   * Password hash (sha1 or BCrypt)
+   * Password hash (sha1).
+   * @deprecated Legacy, pending removal.
    */
   public hashedPassword: string;
+  /**
+   * Password hash (bcrypt)
+   */
+  public passwordHash: string;
   public createdAt: Date;
   public modifiedAt: Date;
   public isTKTL: boolean;
@@ -38,6 +46,7 @@ export default class User {
     this.role = userDatabaseObject.role as UserRoleString;
     this.salt = userDatabaseObject.salt;
     this.hashedPassword = userDatabaseObject.hashed_password;
+    this.passwordHash = userDatabaseObject.password_hash;
     this.createdAt = userDatabaseObject.created;
     this.modifiedAt = userDatabaseObject.modified;
     this.isTKTL = userDatabaseObject.tktl === 1;
@@ -49,7 +58,8 @@ export default class User {
   public removeSensitiveInformation(): User {
     // @ts-expect-error
     delete this.salt; // @ts-expect-error
-    delete this.hashedPassword;
+    delete this.hashedPassword; // @ts-expect-error
+    delete this.passwordHash;
     return this;
   }
 
@@ -82,6 +92,7 @@ export default class User {
       role: this.role,
       salt: this.salt,
       hashed_password: this.hashedPassword,
+      password_hash: this.passwordHash,
       created: this.createdAt,
       modified: this.modifiedAt,
       deleted: this.isDeleted ? 1 : 0,
