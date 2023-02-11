@@ -1,25 +1,29 @@
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 
+// stripped in removeSensitiveFields() but here for type exhaustiveness checking
+const NOT_ACTUALLY_AVAILABLE = Math.pow(2, 32);
+
 class PermissionGenerator {
   private PermissionModel: Record<keyof UserDatabaseObject, number> = {
     created: Math.pow(2, 0),
     deleted: Math.pow(2, 1),
     email: Math.pow(2, 2),
-    hashed_password: Math.pow(2, 3),
-    hyy_member: Math.pow(2, 4),
-    id: Math.pow(2, 5),
-    membership: Math.pow(2, 6),
-    modified: Math.pow(2, 7),
-    name: Math.pow(2, 8),
-    phone: Math.pow(2, 9),
-    residence: Math.pow(2, 10),
-    role: Math.pow(2, 11),
-    salt: Math.pow(2, 12),
-    screen_name: Math.pow(2, 13),
-    tktl: Math.pow(2, 14),
-    username: Math.pow(2, 15),
-    hy_staff: Math.pow(2, 16),
-    hy_student: Math.pow(2, 16),
+    hashed_password: NOT_ACTUALLY_AVAILABLE,
+    password_hash: NOT_ACTUALLY_AVAILABLE,
+    hyy_member: Math.pow(2, 3),
+    id: Math.pow(2, 4),
+    membership: Math.pow(2, 5),
+    modified: Math.pow(2, 6),
+    name: Math.pow(2, 7),
+    phone: Math.pow(2, 8),
+    residence: Math.pow(2, 9),
+    role: Math.pow(2, 10),
+    salt: NOT_ACTUALLY_AVAILABLE,
+    screen_name: Math.pow(2, 11),
+    tktl: Math.pow(2, 12),
+    username: Math.pow(2, 13),
+    hy_staff: Math.pow(2, 14),
+    hy_student: Math.pow(2, 15),
   };
 
   private PermissionByte = 0;
@@ -45,6 +49,10 @@ class PermissionGenerator {
 
   public hashedPassword() {
     return this.helper("hashed_password");
+  }
+
+  public passwordHash() {
+    return this.helper("password_hash");
   }
 
   public hyyMember() {

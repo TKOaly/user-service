@@ -3,8 +3,7 @@ import users from "../../seeds/seedData/users";
 import UserDao from "../../src/dao/UserDao";
 import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
 import { knexInstance } from "../../src/Db";
-
-import sha1 from "sha1";
+import { hashPasswordSync, legacyHashPassword } from "../../src/utils/UserHelpers";
 
 import chai = require("chai");
 process.env.NODE_ENV = "test";
@@ -15,8 +14,6 @@ const should = chai.should();
 const knex = knexInstance;
 
 const userDao = UserDao;
-const encryptPassword: (password: string, salt: string) => string = (password: string, salt: string): string =>
-  sha1(salt + "kekbUr" + password);
 
 describe("UserDao", () => {
   // Roll back
@@ -107,6 +104,9 @@ describe("UserDao", () => {
       should.exist(dbUser.hashed_password);
       dbUser.hashed_password.should.equal(seedUser.hashed_password);
 
+      should.exist(dbUser.password_hash);
+      dbUser.password_hash.should.equal(seedUser.password_hash);
+
       // email
       should.exist(dbUser.email);
       dbUser.email.should.equal(seedUser.email);
@@ -181,6 +181,7 @@ describe("UserDao", () => {
 
       // hashedPassword
       should.not.exist(dbUser.hashed_password);
+      should.not.exist(dbUser.password_hash);
 
       // email
       should.exist(dbUser.email);
@@ -216,7 +217,8 @@ describe("UserDao", () => {
       membership: "member",
       role: "yllapitaja",
       salt: "12345",
-      hashed_password: encryptPassword("12345", "test"),
+      hashed_password: legacyHashPassword("12345", "test"),
+      password_hash: hashPasswordSync("12345"),
       created: new Date(2017, 1, 1),
       modified: new Date(2017, 1, 1),
       tktl: 1,
@@ -326,6 +328,9 @@ describe("UserDao", () => {
       should.exist(dbUser.hashed_password);
       dbUser.hashed_password.should.equal(seedUser.hashed_password);
 
+      should.exist(dbUser.password_hash);
+      dbUser.password_hash.should.equal(seedUser.password_hash);
+
       // email
       should.exist(dbUser.email);
       dbUser.email.should.equal(seedUser.email);
@@ -398,6 +403,8 @@ describe("UserDao", () => {
       // hashedPassword
       should.exist(dbUser.hashed_password);
       dbUser.hashed_password.should.equal(seedUser.hashed_password);
+      should.exist(dbUser.password_hash);
+      dbUser.password_hash.should.equal(seedUser.password_hash);
 
       // email
       should.exist(dbUser.email);
@@ -492,6 +499,8 @@ describe("UserDao", () => {
       // hashedPassword
       should.exist(dbUser.hashed_password);
       dbUser.hashed_password.should.equal(seedUser.hashed_password);
+      should.exist(dbUser.password_hash);
+      dbUser.password_hash.should.equal(seedUser.password_hash);
 
       // email
       should.exist(dbUser.email);

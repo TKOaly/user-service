@@ -113,6 +113,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "role"
         | "salt"
         | "hashed_password"
+        | "password_hash"
         | "tktl"
         | "deleted"
       >
@@ -141,6 +142,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "role"
         | "salt"
         | "hashed_password"
+        | "password_hash"
         | "tktl"
         | "deleted"
         | "hy_student"

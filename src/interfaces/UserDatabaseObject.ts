@@ -11,6 +11,7 @@ export default interface UserDatabaseObject {
   role: string;
   salt: string;
   hashed_password: string;
+  password_hash: string;
   created: Date;
   modified: Date;
   tktl: 0 | 1;

@@ -72,7 +72,7 @@ class AuthenticationService {
   }
 }
 
-export async function validatePassword(password: string, salt: string, hashedPassword: string): Promise<boolean> {
+export async function validateLegacyPassword(password: string, salt: string, hashedPassword: string): Promise<boolean> {
   return await compare(sha1(`${salt}kekbUr${password}`), hashedPassword);
 }
 

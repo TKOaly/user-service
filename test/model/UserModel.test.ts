@@ -25,6 +25,7 @@ describe("User model", () => {
       role: "yllapitaja",
       salt: "12345",
       hashed_password: "12345",
+      password_hash: "12345",
       created: new Date(2017, 1, 1),
       modified: new Date(2017, 1, 1),
       tktl: 1,
@@ -50,6 +51,7 @@ describe("User model", () => {
     user.role.should.equal("yllapitaja");
     user.salt.should.equal("12345");
     user.hashedPassword.should.equal("12345");
+    user.passwordHash.should.equal("12345");
     user.createdAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
     user.modifiedAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
     user.isTKTL.should.equal(true);
@@ -59,9 +61,11 @@ describe("User model", () => {
 
   it("Removing sensitive data should remove salt and hashed_password", done => {
     should.exist(user.hashedPassword);
+    should.exist(user.passwordHash);
     should.exist(user.salt);
     const newUser = user.removeSensitiveInformation();
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     should.not.exist(newUser.salt);
     done();
   });
@@ -105,6 +109,8 @@ describe("User model", () => {
     // Hashed password
     should.exist(userDatabaseObject.hashed_password);
     userDatabaseObject.hashed_password.should.equal("12345");
+    should.exist(userDatabaseObject.password_hash);
+    userDatabaseObject.password_hash.should.equal("12345");
     // Email
     should.exist(userDatabaseObject.email);
     userDatabaseObject.email.should.equal("user@test.com");
@@ -137,6 +143,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -154,6 +161,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -171,6 +179,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -188,6 +197,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -205,6 +215,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -222,6 +233,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -239,6 +251,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -256,6 +269,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -273,6 +287,7 @@ describe("User model", () => {
     should.not.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -290,40 +305,7 @@ describe("User model", () => {
     should.exist(newUser.role);
     should.not.exist(newUser.salt);
     should.not.exist(newUser.hashedPassword);
-    done();
-  });
-
-  it("Requesting only salt should not return salt", done => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 10));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    done();
-  });
-
-  it("Requesting only hashedPassword should not return hashedPassword", done => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 11));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
+    should.not.exist(newUser.passwordHash);
     done();
   });
 
@@ -343,6 +325,7 @@ describe("User model", () => {
       should.not.exist(newUser.role);
       should.not.exist(newUser.salt);
       should.not.exist(newUser.hashedPassword);
+      should.not.exist(newUser.passwordHash);
       done();
     },
   );

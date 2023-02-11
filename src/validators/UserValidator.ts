@@ -284,6 +284,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
         created: new Date(),
         modified: new Date(),
         hashed_password: "",
+        password_hash: "",
         salt: "",
       }),
       password: u.password1,
