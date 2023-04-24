@@ -15,6 +15,7 @@ describe("Service model", () => {
       service_name: "testService",
       created: new Date(2017, 1, 1),
       modified: new Date(2017, 1, 1),
+      secret: "unsecure",
     });
     done();
   });

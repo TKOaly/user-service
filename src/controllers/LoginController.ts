@@ -1,4 +1,5 @@
 import csrf from "csurf";
+import querystring from "querystring";
 import { Router } from "express";
 import * as express from "express";
 import moment from "moment";
@@ -14,6 +15,7 @@ import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
+import { flow } from "lodash";
 
 class LoginController implements Controller {
   public route: Router;
@@ -31,6 +33,17 @@ class LoginController implements Controller {
     req: express.Request & IASRequest,
     res: express.Response,
   ): Promise<express.Response | void> {
+    if (req.query.response_type) {
+      const query = querystring.stringify(flow(
+        Object.entries,
+        (entries) => entries.map(([key, value]) => [key, String(value)]),
+        Object.fromEntries,
+      )(req.query));
+
+      res.status(302).redirect("/oauth/authorize?" + query);
+      return;
+    }
+
     // Delete login step
     if (req.session && req.session.loginStep) {
       req.session.loginStep = undefined;

@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import "express-async-errors";
 
 import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
@@ -8,6 +9,7 @@ import helmet from "helmet";
 import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
+import OAuthController from "./controllers/OAuthController";
 import LoginController from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
@@ -95,6 +97,7 @@ app.use(generateApiRoute("auth"), AuthController.createRoutes());
 app.use(generateApiRoute("users"), UserController.createRoutes());
 app.use(generateApiRoute("payments"), PaymentController.createRoutes());
 app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
+app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
 // Ping route
