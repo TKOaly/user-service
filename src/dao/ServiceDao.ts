@@ -6,10 +6,7 @@ const tableName = "services";
 
 class ServiceDao implements Dao<ServiceDatabaseObject> {
   public async findOne(id: number): Promise<ServiceDatabaseObject | undefined> {
-    const result = await knexInstance<ServiceDatabaseObject>(tableName)
-      .select()
-      .where({ id })
-      .first();
+    const result = await knexInstance<ServiceDatabaseObject>(tableName).select().where({ id }).first();
 
     return result;
   }

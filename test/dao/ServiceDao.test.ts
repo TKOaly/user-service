@@ -24,13 +24,13 @@ const nextDbServiceId = dbServices.map(s => s.id).sort(descending)[0] + 1;
 describe("ServiceDao", () => {
   // Roll back
   beforeEach(async () => {
-    console.log('ROLLBACK!');
+    console.log("ROLLBACK!");
     await knex.migrate.rollback();
-    console.log('MIGRATE!');
+    console.log("MIGRATE!");
     await knex.migrate.latest();
-    console.log('SEED!');
+    console.log("SEED!");
     await knex.seed.run();
-    console.log('DONE!');
+    console.log("DONE!");
   });
 
   // After each
@@ -135,19 +135,18 @@ describe("ServiceDao", () => {
       throw new Error("Service not found");
     }
 
-    Object.keys(dbService)
-      .forEach((sKey) => {
-        if (['modified', 'created'].includes(sKey)) {
-          // We can't compare modified and created dates
-          return;
-        }
+    Object.keys(dbService).forEach(sKey => {
+      if (["modified", "created"].includes(sKey)) {
+        // We can't compare modified and created dates
+        return;
+      }
 
-        const key = sKey as any as keyof ServiceDatabaseObject;
+      const key = sKey as any as keyof ServiceDatabaseObject;
 
-        console.log(key, dbService[key]);
-        should.exist(dbService[key]);
-        should.equal(dbService[key], seedService[key]);
-      });
+      console.log(key, dbService[key]);
+      should.exist(dbService[key]);
+      should.equal(dbService[key], seedService[key]);
+    });
   });
 
   it("Should return a single service with findByIdentifier()", async () => {
@@ -159,19 +158,18 @@ describe("ServiceDao", () => {
       throw new Error("Service not found");
     }
 
-    Object.keys(dbService)
-      .forEach((sKey) => {
-        if (['modified', 'created'].includes(sKey)) {
-          // We can't compare modified and created dates
-          return;
-        }
+    Object.keys(dbService).forEach(sKey => {
+      if (["modified", "created"].includes(sKey)) {
+        // We can't compare modified and created dates
+        return;
+      }
 
-        const key = sKey as any as keyof ServiceDatabaseObject;
+      const key = sKey as any as keyof ServiceDatabaseObject;
 
-        console.log(key, dbService[key]);
-        should.exist(dbService[key]);
-        should.equal(dbService[key], seedService[key]);
-      });
+      console.log(key, dbService[key]);
+      should.exist(dbService[key]);
+      should.equal(dbService[key], seedService[key]);
+    });
   });
 
   it("Should update a service with update()", async () => {

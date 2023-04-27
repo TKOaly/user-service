@@ -34,11 +34,13 @@ class LoginController implements Controller {
     res: express.Response,
   ): Promise<express.Response | void> {
     if (req.query.response_type) {
-      const query = querystring.stringify(flow(
-        Object.entries,
-        (entries) => entries.map(([key, value]) => [key, String(value)]),
-        Object.fromEntries,
-      )(req.query));
+      const query = querystring.stringify(
+        flow(
+          Object.entries,
+          entries => entries.map(([key, value]) => [key, String(value)]),
+          Object.fromEntries,
+        )(req.query),
+      );
 
       res.status(302).redirect("/oauth/authorize?" + query);
       return;
