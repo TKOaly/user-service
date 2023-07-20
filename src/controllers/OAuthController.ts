@@ -532,62 +532,57 @@ class OAuthController implements Controller {
     };
   }
 
-  private async token(
-    req: RequestWithService,
-    res: Response,
-  ) {
+  private async token(req: RequestWithService, res: Response) {
     const body = req.body;
     let user;
     let scope: string[] = [];
 
-    if (body.grant_type === 'authorization_code') {
+    if (body.grant_type === "authorization_code") {
       const ctx = this.codes.get(body.code);
 
       if (!ctx) {
-        throw new OAuthError('invalid_request');
+        throw new OAuthError("invalid_request");
       }
 
       this.codes.delete(body.code);
 
       if (ctx.service.serviceIdentifier !== req.service.serviceIdentifier) {
-        throw new OAuthError('unauthorized_client');
+        throw new OAuthError("unauthorized_client");
       }
-      
+
       if (body.redirect_uri !== ctx.service.redirectUrl) {
-        throw new OAuthError('invalid_request')
-          .withDescription('Provided redirection URI is wrong.');
+        throw new OAuthError("invalid_request").withDescription("Provided redirection URI is wrong.");
       }
 
       user = ctx.user;
       scope = ctx.scope;
-    } else if (body.grant_type === 'password') {
+    } else if (body.grant_type === "password") {
       if (!body.username || !body.password) {
-        throw new OAuthError('invalid_request')
-          .withDescription('Parameters "username" and "password" are required for grant type "password".');
+        throw new OAuthError("invalid_request").withDescription(
+          'Parameters "username" and "password" are required for grant type "password".',
+        );
       }
 
       try {
         user = await UserService.getUserWithUsernameAndPassword(body.username, body.password);
       } catch (err) {
-        throw new OAuthError('access_denied');
+        throw new OAuthError("access_denied");
       }
 
-      if (body.scope && typeof body.scope === 'string') {
-        scope = body.scope.split(' ');
+      if (body.scope && typeof body.scope === "string") {
+        scope = body.scope.split(" ");
       }
     } else {
-      throw new OAuthError('invalid_request')
-        .withDescription(`Grant type "${body.grant_type}" is not supported.`);
+      throw new OAuthError("invalid_request").withDescription(`Grant type "${body.grant_type}" is not supported.`);
     }
 
     const token = getIdToken(user, scope, req.service);
 
-    return res.status(200)
-      .json({
-        "access_token": AuthenticationService.createToken(user.id, [req.service.serviceIdentifier]),
-        "token_type": "bearer",
-        "id_token": token,
-      });
+    return res.status(200).json({
+      access_token: AuthenticationService.createToken(user.id, [req.service.serviceIdentifier]),
+      token_type: "bearer",
+      id_token: token,
+    });
   }
 
   private async jsonErrorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
