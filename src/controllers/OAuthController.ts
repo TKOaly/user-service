@@ -451,7 +451,7 @@ class OAuthController implements Controller {
       csrfToken: req.csrfToken(),
       personalInformation: keys,
       serviceDisplayName: service.displayName,
-      redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
+      redirectTo: req.body.loginRedirect ?? service.redirectUrl,
     });
   }
 
