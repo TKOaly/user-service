@@ -63,6 +63,7 @@ const SCOPES: Record<string, string[]> = {
   address: ["address"],
 };
 
+// TODO: This could probably be a flatMap
 const getClaimNames = (scopes: string[]) => scopes.map(scope => SCOPES[scope] ?? []).reduce((a, b) => [...a, ...b], []);
 
 const getUserClaims = (user: User, claims: string[]) =>
