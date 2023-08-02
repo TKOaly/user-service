@@ -26,7 +26,8 @@ const getIdToken = (user: User, scope: string[], service: Service) => {
     iss: "http://users.tko-aly.localhost/",
     aud: service.serviceIdentifier,
     iat,
-    exp: Date.now() / 1000 + 60 * 60 * 3,
+    // Three hours
+    exp: Date.now() + 1000 * 60 * 60 * 3,
     ...claims,
   };
 
