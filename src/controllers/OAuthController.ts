@@ -195,6 +195,7 @@ class OAuthController implements Controller {
   }
 
   private createFlow(options: FlowInitOptions): string {
+    // FIXME: This has potential to cause collisions
     const id = Math.random().toString(16).slice(2);
 
     this.flows.set(id, {
