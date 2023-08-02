@@ -135,7 +135,7 @@ type FlowStateLogin = {
   service: Service;
   state: string | null;
   scope: string[];
-  responseType: "token" | "code" | "id_token";
+  responseType: ResponseType;
   redirectUrl: string;
   step: "login";
 };
