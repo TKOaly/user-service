@@ -594,7 +594,7 @@ class OAuthController implements Controller {
 
     res.status(error.statusCode).json({
       error: error.options.code,
-      error_descrpition: error.options.description,
+      error_description: error.options.description,
       error_uri: error.options.uri,
       state: error.options.state,
     });
@@ -646,7 +646,7 @@ class OAuthController implements Controller {
     }
 
     if (error.options.description) {
-      target.searchParams.set("error_descrpition", error.options.description);
+      target.searchParams.set("error_description", error.options.description);
     }
 
     if (error.options.state) {
