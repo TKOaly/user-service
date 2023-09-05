@@ -298,7 +298,7 @@ class OAuthController implements Controller {
 
     return res.status(200).render("login", {
       service,
-      submitUrl: "/login",
+      submitUrl: `/oauth/flow/${req.params.id}/login`,
       csrfToken: req.csrfToken(),
     });
   }
@@ -315,6 +315,7 @@ class OAuthController implements Controller {
       return res.status(200).render("login", {
         service,
         csrfToken: req.csrfToken(),
+        submitUrl: `/oauth/flow/${req.params.id}/login`,
         errors: ["Invalid credentials."],
       });
     }
@@ -453,6 +454,7 @@ class OAuthController implements Controller {
       personalInformation: keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ?? service.redirectUrl,
+      submitUrl: `/oauth/flow/${req.params.id}/gdpr`,
     });
   }
 
