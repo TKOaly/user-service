@@ -1,7 +1,7 @@
 import type Knex from "knex";
 import privacyPolicies from "./seedData/privacy_policies";
 import consentData from "./seedData/privacy_policy_consent_datas";
-const services = require("./seedData/services");
+import services from "./seedData/services";
 
 exports.seed = async function (knex: Knex) {
   if (process.env.NODE_ENV === "production") {

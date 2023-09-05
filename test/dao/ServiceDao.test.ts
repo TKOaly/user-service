@@ -23,14 +23,14 @@ const nextDbServiceId = dbServices.map(s => s.id).sort(descending)[0] + 1;
 
 describe("ServiceDao", () => {
   // Roll back
-  beforeEach(done => {
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    console.log("ROLLBACK!");
+    await knex.migrate.rollback();
+    console.log("MIGRATE!");
+    await knex.migrate.latest();
+    console.log("SEED!");
+    await knex.seed.run();
+    console.log("DONE!");
   });
 
   // After each
@@ -95,6 +95,7 @@ describe("ServiceDao", () => {
       redirect_url: "https://google.fi",
       service_identifier: "a123b456",
       service_name: "TestServicce",
+      secret: "unsecure",
     };
 
     serviceDao.save(newService).then(res => {
@@ -125,41 +126,49 @@ describe("ServiceDao", () => {
     });
   });
 
-  it("Should return a single service with findOne()", done => {
-    serviceDao.findOne(dbServices[0].id).then(dbService => {
-      const seedService = dbServices[0];
-      if (dbService === undefined) {
-        throw new Error("Service not found");
+  it("Should return a single service with findOne()", async () => {
+    const seedService = dbServices[0];
+
+    const dbService = await serviceDao.findOne(seedService.id);
+
+    if (dbService === undefined) {
+      throw new Error("Service not found");
+    }
+
+    Object.keys(dbService).forEach(sKey => {
+      if (["modified", "created"].includes(sKey)) {
+        // We can't compare modified and created dates
+        return;
       }
-      // We can't compare modified and created dates
-      // @ts-expect-error
-      delete dbService.modified;
-      // @ts-expect-error
-      delete dbService.created; // @ts-expect-error
-      Object.keys(dbService).forEach((key: keyof ServiceDatabaseObject) => {
-        should.exist(dbService[key]);
-        dbService[key].should.equal(seedService[key]);
-      });
-      done();
+
+      const key = sKey as any as keyof ServiceDatabaseObject;
+
+      console.log(key, dbService[key]);
+      should.exist(dbService[key]);
+      should.equal(dbService[key], seedService[key]);
     });
   });
 
-  it("Should return a single service with findByIdentifier()", done => {
-    // @ts-expect-error
-    serviceDao.findByIdentifier(dbServices[0].service_identifier).then((dbService: ServiceDatabaseObject) => {
-      const seedService: ServiceDatabaseObject = dbServices[0];
-      // We can't compare modified and created dates
-      // @ts-expect-error
-      delete dbService.modified;
-      // @ts-expect-error
-      delete dbService.created;
+  it("Should return a single service with findByIdentifier()", async () => {
+    const seedService = dbServices[0];
 
-      // @ts-expect-error
-      Object.keys(dbService).forEach((key: keyof ServiceDatabaseObject) => {
-        should.exist(dbService[key]);
-        dbService[key].should.equal(seedService[key]);
-      });
-      done();
+    const dbService = await serviceDao.findByIdentifier(seedService.service_identifier);
+
+    if (dbService === undefined) {
+      throw new Error("Service not found");
+    }
+
+    Object.keys(dbService).forEach(sKey => {
+      if (["modified", "created"].includes(sKey)) {
+        // We can't compare modified and created dates
+        return;
+      }
+
+      const key = sKey as any as keyof ServiceDatabaseObject;
+
+      console.log(key, dbService[key]);
+      should.exist(dbService[key]);
+      should.equal(dbService[key], seedService[key]);
     });
   });
 

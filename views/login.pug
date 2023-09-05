@@ -21,7 +21,7 @@ html(lang="en")
           each error in errors
             div.error-message
               span.error-text=error
-        form#loginForm(action='/login', method='POST')
+        form#loginForm(action=(submitUrl || '/login'), method='POST')
           .form-group
             label(for='username', class='usernameLabel') #{t("login_UsernameLabel")}
             - let unameVal = loggedUser || '';

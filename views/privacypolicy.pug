@@ -20,10 +20,10 @@ html(lang="en")
         p.privacyPolicyRedirect #{t("privacypolicy_YouWillBeRedirected")}
         p.privacyPolicyDeclineMessage #{t("privacypolicy_IfYouDecline_1")} #{serviceDisplayName}#{t("privacypolicy_IfYouDecline_2")}
       #confirmation
-        form(id='formSubmitReject', action='/privacypolicy_confirm', method='POST')
+        form(id='formSubmitReject', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
           input(type='hidden', name='_csrf', value=csrfToken)
           input.cancel(type='submit', name='cancel', value=t("privacypolicy_Decline"))
-        form(id='formSubmitAccept', action='/privacypolicy_confirm', method='POST')
+        form(id='formSubmitAccept', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
           input(type='hidden', name='accept', value='yes')
           input(type='hidden', name='_csrf', value=csrfToken)
           input.accept(type='submit', name='accept', value=t("privacypolicy_Accept"))
