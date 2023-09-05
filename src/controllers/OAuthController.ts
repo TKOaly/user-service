@@ -42,6 +42,7 @@ function isSupportedResponseType(value: unknown): value is ResponseType {
 
 const SCOPES: Record<string, string[]> = {
   openid: ["iss", "aud", "sub", "exp", "iat"],
+  role: ['role'],
   profile: [
     "name",
     "family_name",
