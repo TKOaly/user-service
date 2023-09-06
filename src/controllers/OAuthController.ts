@@ -350,7 +350,7 @@ class OAuthController implements Controller {
       policy: policy.text,
       policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm"),
       csrfToken: req.csrfToken(),
-      submitUrl: `/api/oidc/flow/${req.params.id}/privacy`,
+      submitUrl: `/oauth/flow/${req.params.id}/privacy`,
     });
   }
 
