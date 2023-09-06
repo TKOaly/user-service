@@ -23,7 +23,7 @@ const getIdToken = (user: User, scope: string[], service: Service) => {
   const iat = Date.now();
 
   const token = {
-    iss: "http://users.tko-aly.localhost/",
+    iss: process.env.ISSUER_ID,
     aud: service.serviceIdentifier,
     iat,
     // Three hours
