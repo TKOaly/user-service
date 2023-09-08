@@ -5,6 +5,7 @@ export type OAuthErrorCode =
   | "unsupported_response_type"
   | "invalid_scope"
   | "server_error"
+  | "invalid_client"
   | "temporarily_unavailable";
 
 const ERROR_STATUS_CODES: { [key in OAuthErrorCode]: number } = {
@@ -15,6 +16,7 @@ const ERROR_STATUS_CODES: { [key in OAuthErrorCode]: number } = {
   invalid_scope: 400,
   server_error: 500,
   temporarily_unavailable: 503,
+  invalid_client: 400,
 };
 
 interface OAuthErrorOptions {

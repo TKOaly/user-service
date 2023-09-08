@@ -31,7 +31,11 @@ const getIdToken = (user: User, scope: string[], service: Service) => {
     ...claims,
   };
 
-  return JWT.sign(token, process.env.JWT_SECRET ?? "");
+  if (!service.secret) {
+    throw new OAuthError("invalid_client").withDescription("service secret is not configured");
+  }
+
+  return JWT.sign(token, service.secret);
 };
 
 type ResponseType = "code" | "token" | "id_token";
@@ -592,6 +596,8 @@ class OAuthController implements Controller {
   }
 
   private async jsonErrorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
+    console.log(err);
+
     const error: OAuthError =
       err instanceof OAuthError ? err : new OAuthError("server_error").withDescription("Internal server error");
 
@@ -604,6 +610,8 @@ class OAuthController implements Controller {
   }
 
   private async redirectErrorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
+    console.log(err);
+
     let state;
     let redirectUrl;
 
