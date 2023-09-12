@@ -207,7 +207,7 @@ class OAuthController implements Controller {
 
   async getOpenIDPrivateKey() {
     if (!this.openidPrivateKey) {
-      this.openidPrivateKey = await JWK.asKey(process.env.OPENID_PRIVATE_KEY!, 'pem', { use: 'sig', alg: 'RS256' });
+      this.openidPrivateKey = await JWK.asKey(process.env.OPENID_PRIVATE_KEY!, "pem", { use: "sig", alg: "RS256" });
     }
 
     return this.openidPrivateKey;
@@ -685,17 +685,15 @@ class OAuthController implements Controller {
 
   private discovery(_req: Request, res: Response) {
     res.status(200).json({
-      "issuer": process.env.ISSUER_ID,
-      "authorization_endpoint": `${process.env.PUBLIC_URL}/oauth/authorize`,
-      "token_endpoint": `${process.env.PRIVATE_URL}/oauth/token`,
-      "jwks_uri": `${process.env.PRIVATE_URL}/oauth/jwks.json`,
-      "scopes_supported": Object.keys(SCOPES),
-      "response_types_supported": SUPPORTED_RESPONSE_TYPES,
-      "token_endpoint_auth_methods_supported": [
-        "client_secret_basic",
-      ],
-      "subject_types_supported": ["public"],
-      "id_token_signing_alg_values_supported": ["RS256"], // RS256
+      issuer: process.env.ISSUER_ID,
+      authorization_endpoint: `${process.env.PUBLIC_URL}/oauth/authorize`,
+      token_endpoint: `${process.env.PRIVATE_URL}/oauth/token`,
+      jwks_uri: `${process.env.PRIVATE_URL}/oauth/jwks.json`,
+      scopes_supported: Object.keys(SCOPES),
+      response_types_supported: SUPPORTED_RESPONSE_TYPES,
+      token_endpoint_auth_methods_supported: ["client_secret_basic"],
+      subject_types_supported: ["public"],
+      id_token_signing_alg_values_supported: ["RS256"], // RS256
     });
   }
 
@@ -703,7 +701,7 @@ class OAuthController implements Controller {
     const key = await this.getOpenIDPrivateKey();
 
     res.status(200).json({
-      "keys": [key.toJSON()],
+      keys: [key.toJSON()],
     });
   }
 
@@ -777,7 +775,7 @@ class OAuthController implements Controller {
     this.route.use(backChannelRouter);
     this.route.use(authorizationFlowRouter);
 
-    this.route.use('/jwks.json', this.jwks.bind(this));
+    this.route.use("/jwks.json", this.jwks.bind(this));
 
     return this.route;
   }
