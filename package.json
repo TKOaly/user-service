@@ -53,13 +53,14 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
+    "node-jose": "^2.2.0",
     "pug": "^3.0.0",
     "sass": "^1.54.8",
     "secure-compare": "^3.0.1",
     "sha1": "^1.1.1",
+    "ts-node": "^9.0.0",
     "typedoc": "^0.19.2",
-    "validator": "^13.1.17",
-    "ts-node": "^9.0.0"
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "@sentry/types": "^6.19.3",
@@ -79,6 +80,7 @@
     "@types/mysql": "^2.15.15",
     "@types/mysql2": "https://github.com/types/mysql2.git",
     "@types/node": "^14.11.8",
+    "@types/node-jose": "^1.1.10",
     "@types/raven": "^2.5.3",
     "@types/selenium-webdriver": "^4.0.9",
     "@types/sha1": "^1.1.2",

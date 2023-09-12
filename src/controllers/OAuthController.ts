@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, RequestHandler, Response } from "express";
 import JWT from "jsonwebtoken";
+import { JWK } from "node-jose";
 import csrf from "csurf";
 import moment from "moment";
 import Controller from "../interfaces/Controller";
@@ -16,7 +17,7 @@ import ConsentService from "../services/ConsentService";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import { OAuthError } from "../utils/OAuthError";
 
-const getIdToken = (user: User, scope: string[], service: Service) => {
+const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key) => {
   const claimNames = getClaimNames(scope);
   const claims = pick(getUserClaims(user, claimNames), getAllowedClaims(service.dataPermissions));
 
@@ -35,10 +36,15 @@ const getIdToken = (user: User, scope: string[], service: Service) => {
     throw new OAuthError("invalid_client").withDescription("service secret is not configured");
   }
 
-  return JWT.sign(token, service.secret);
+  return JWT.sign(token, process.env.OPENID_PRIVATE_KEY!, {
+    algorithm: 'RS256',
+  });
 };
 
-type ResponseType = "code" | "token" | "id_token";
+
+const SUPPORTED_RESPONSE_TYPES = ["code", "token", "id_token"] as const;
+
+type ResponseType = (typeof SUPPORTED_RESPONSE_TYPES)[number];
 
 function isSupportedResponseType(value: unknown): value is ResponseType {
   return typeof value === "string" && ["code", "token", "id_token"].indexOf(value) !== -1;
@@ -189,6 +195,7 @@ class OAuthController implements Controller {
   private route: express.Router;
   private flows: Map<string, FlowState> = new Map();
   private codes: Map<string, AuthorizationCodeContext> = new Map();
+  private openidPrivateKey: JWK.Key | null = null;
   public csrfMiddleware: express.RequestHandler;
 
   constructor() {
@@ -197,6 +204,14 @@ class OAuthController implements Controller {
     this.csrfMiddleware = csrf({
       cookie: true,
     });
+  }
+
+  async getOpenIDPrivateKey() {
+    if (!this.openidPrivateKey) {
+      this.openidPrivateKey = await JWK.asKey(process.env.OPENID_PRIVATE_KEY!, 'pem', { use: 'sig', alg: 'RS256' });
+    }
+
+    return this.openidPrivateKey;
   }
 
   private createFlow(options: FlowInitOptions): string {
@@ -426,7 +441,8 @@ class OAuthController implements Controller {
       url.searchParams.set("access_token", token);
       url.searchParams.set("token_type", "bearer");
     } else if (responseType === "id_token") {
-      const token = getIdToken(user, scope, service);
+      const key = await this.getOpenIDPrivateKey();
+      const token = getIdToken(user, scope, service, key);
 
       url.searchParams.set("access_token", "asd");
       url.searchParams.set("token_type", "bearer");
@@ -586,7 +602,8 @@ class OAuthController implements Controller {
       throw new OAuthError("invalid_request").withDescription(`Grant type "${body.grant_type}" is not supported.`);
     }
 
-    const token = getIdToken(user, scope, req.service);
+    const key = await this.getOpenIDPrivateKey();
+    const token = getIdToken(user, scope, req.service, key);
 
     return res.status(200).json({
       access_token: AuthenticationService.createToken(user.id, [req.service.serviceIdentifier]),
@@ -667,6 +684,34 @@ class OAuthController implements Controller {
     res.status(302).redirect(target.toString());
   }
 
+  private discovery(_req: Request, res: Response) {
+    res.status(200).json({
+      "issuer": process.env.ISSUER_ID,
+      "authorization_endpoint": `${process.env.PUBLIC_URL}/oauth/authorize`,
+      "token_endpoint": `${process.env.PRIVATE_URL}/oauth/token`,
+      "jwks_uri": `${process.env.PRIVATE_URL}/oauth/jwks.json`,
+      "scopes_supported": Object.keys(SCOPES),
+      "response_types_supported": SUPPORTED_RESPONSE_TYPES,
+      "token_endpoint_auth_methods_supported": [
+        "client_secret_basic",
+      ],
+      "subject_types_supported": ["public"],
+      "id_token_signing_alg_values_supported": ["RS256"], // RS256
+    });
+  }
+
+  private async jwks(_req: Request, res: Response) {
+    const key = await this.getOpenIDPrivateKey();
+
+    res.status(200).json({
+      "keys": [key.toJSON()],
+    });
+  }
+
+  public createDiscoveryRoute(): RequestHandler {
+    return this.discovery.bind(this) as any;
+  }
+
   public createRoutes(): express.Router {
     const authorizationFlowRouter = express.Router();
     const backChannelRouter = express.Router();
@@ -732,6 +777,8 @@ class OAuthController implements Controller {
 
     this.route.use(backChannelRouter);
     this.route.use(authorizationFlowRouter);
+
+    this.route.use('/jwks.json', this.jwks.bind(this));
 
     return this.route;
   }

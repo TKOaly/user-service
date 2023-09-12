@@ -97,6 +97,7 @@ app.use(generateApiRoute("auth"), AuthController.createRoutes());
 app.use(generateApiRoute("users"), UserController.createRoutes());
 app.use(generateApiRoute("payments"), PaymentController.createRoutes());
 app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
+app.use("/.well-known/openid-configuration", OAuthController.createDiscoveryRoute());
 app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
