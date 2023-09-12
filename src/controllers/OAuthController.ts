@@ -38,6 +38,7 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
 
   return JWT.sign(token, key.toPEM(true), {
     algorithm: "RS256",
+    keyid: key.kid,
   });
 };
 
