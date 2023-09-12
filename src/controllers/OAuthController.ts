@@ -21,14 +21,9 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
   const claimNames = getClaimNames(scope);
   const claims = pick(getUserClaims(user, claimNames), getAllowedClaims(service.dataPermissions));
 
-  const iat = Date.now();
-
   const token = {
     iss: process.env.ISSUER_ID,
     aud: service.serviceIdentifier,
-    iat,
-    // Three hours
-    exp: Date.now() + 1000 * 60 * 60 * 3,
     ...claims,
   };
 
@@ -39,6 +34,7 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
   return JWT.sign(token, key.toPEM(true), {
     algorithm: "RS256",
     keyid: key.kid,
+    expiresIn: '3h',
   });
 };
 
