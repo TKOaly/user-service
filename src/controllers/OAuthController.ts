@@ -36,11 +36,10 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
     throw new OAuthError("invalid_client").withDescription("service secret is not configured");
   }
 
-  return JWT.sign(token, process.env.OPENID_PRIVATE_KEY!, {
-    algorithm: 'RS256',
+  return JWT.sign(token, key.toPEM(true), {
+    algorithm: "RS256",
   });
 };
-
 
 const SUPPORTED_RESPONSE_TYPES = ["code", "token", "id_token"] as const;
 
