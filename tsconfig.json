@@ -15,7 +15,7 @@
     "outDir": "./dist/",
     "lib": ["es6", "dom", "esnext"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*.ts", "knexfile.ts"],
   "exclude": ["node_modules", "dist"]
