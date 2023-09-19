@@ -47,7 +47,7 @@ class UserController implements Controller {
             "Success",
           ),
         );
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
   }
@@ -90,7 +90,7 @@ class UserController implements Controller {
             "Success",
           ),
         );
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
@@ -108,7 +108,7 @@ class UserController implements Controller {
       try {
         const users = await UserService.searchUsers(req.query.searchTerm as string);
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
-      } catch (e) {
+      } catch (e: any) {
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -122,7 +122,7 @@ class UserController implements Controller {
         );
 
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
-      } catch (e) {
+      } catch (e: any) {
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -135,7 +135,7 @@ class UserController implements Controller {
         );
 
         return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
-      } catch (e) {
+      } catch (e: any) {
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -143,7 +143,7 @@ class UserController implements Controller {
     try {
       const users = await UserService.fetchAllUsers();
       return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
@@ -156,7 +156,7 @@ class UserController implements Controller {
     try {
       const users = await UserService.fetchAllUnpaidUsers();
       return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
-    } catch (e) {
+    } catch (e: any) {
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
   }
@@ -174,7 +174,7 @@ class UserController implements Controller {
       } else {
         return res.status(200).json(new ServiceResponse(req.body, "User was not modified"));
       }
-    } catch (err) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error modifying user",
         data: {
@@ -183,8 +183,8 @@ class UserController implements Controller {
         },
       });
 
-      Sentry.captureException(err);
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      Sentry.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -197,15 +197,15 @@ class UserController implements Controller {
       await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
       await UserService.updateUser(req.authorization.user.id, req.body, req.body.password1 || null);
       return res.status(200).json(new ServiceResponse(req.body, "Success"));
-    } catch (err) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error modifying user (self)",
         data: {
           userId: req.params.id,
         },
       });
-      Sentry.captureException(err);
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      Sentry.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -224,12 +224,12 @@ class UserController implements Controller {
         return res.status(400).json(new ServiceResponse(null, "Error creating user"));
       }
       return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), "Success"));
-    } catch (err) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error creating user",
       });
-      Sentry.captureException(err);
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      Sentry.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -254,8 +254,8 @@ class UserController implements Controller {
       }
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
-    } catch (err) {
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+    } catch (e: any) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -275,8 +275,8 @@ class UserController implements Controller {
       }
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
-    } catch (err) {
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+    } catch (e: any) {
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -301,7 +301,7 @@ class UserController implements Controller {
         });
       }
       return res.status(200).json(new ServiceResponse(null, "User updated", true));
-    } catch (err) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error setting user membership",
         data: {
@@ -310,8 +310,8 @@ class UserController implements Controller {
           modifierUserId: req.authorization.user.id,
         },
       });
-      Sentry.captureException(err);
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      Sentry.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
@@ -327,7 +327,7 @@ class UserController implements Controller {
       } else {
         return res.status(500).json(new ServiceResponse(null, "Failed to delete user", false));
       }
-    } catch (err) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error deleting user",
         data: {
@@ -335,8 +335,8 @@ class UserController implements Controller {
           deleterUserId: req.authorization.user.id,
         },
       });
-      Sentry.captureException(err);
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      Sentry.captureException(e);
+      return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
   }
 
