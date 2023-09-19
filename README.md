@@ -50,6 +50,11 @@ Microservice for authenticating users of members.tko-aly.fi.
 4.  Run `yarn test` to run unit & API tests. Run `yarn browser-test` to run E2E tests.
 5.  Run `yarn start` or `yarn watch``
 
+### Updating package-lock.json for production
+
+The Dockerfile uses npm (and our very specific `package-lock.json` configuration).  
+Make sure to run `npm install` before pushing, if you have new dependencies.
+
 ## Pushing to TKO-äly's Docker registry
 
 1. Clone the repo
