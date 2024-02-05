@@ -68,6 +68,7 @@ const SCOPES: Record<string, string[]> = {
   email: ["email", "email_verified"],
   phone: ["phone_number", "phone_number_verified"],
   address: ["address"],
+  membership: ["membership"],
 };
 
 // TODO: This could probably be a flatMap
