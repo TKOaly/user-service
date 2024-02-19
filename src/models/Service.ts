@@ -7,6 +7,7 @@ export interface ServiceDatabaseObject {
   data_permissions: number;
   modified: Date;
   created: Date;
+  secret: string | null;
 }
 
 export default class Service {
@@ -16,6 +17,7 @@ export default class Service {
   public displayName: string;
   public redirectUrl: string;
   public dataPermissions: number;
+  public secret: string | null;
 
   public createdAt: Date;
 
@@ -30,6 +32,7 @@ export default class Service {
     this.dataPermissions = databaseObject.data_permissions;
     this.modifiedAt = databaseObject.modified;
     this.createdAt = databaseObject.created;
+    this.secret = databaseObject.secret;
   }
 
   public getDatabaseObject(): ServiceDatabaseObject {
@@ -42,6 +45,7 @@ export default class Service {
       service_identifier: this.serviceIdentifier,
       modified: this.modifiedAt,
       created: this.createdAt,
+      secret: this.secret,
     } as ServiceDatabaseObject;
   }
 }

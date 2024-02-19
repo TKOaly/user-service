@@ -5,8 +5,8 @@ import { knexInstance } from "../Db";
 const tableName = "services";
 
 class ServiceDao implements Dao<ServiceDatabaseObject> {
-  public findOne(id: number): PromiseLike<ServiceDatabaseObject | undefined> {
-    return Promise.resolve(knexInstance<ServiceDatabaseObject>(tableName).select().where({ id }).first());
+  public async findOne(id: number): Promise<ServiceDatabaseObject | undefined> {
+    return await knexInstance<ServiceDatabaseObject>(tableName).select().where({ id }).first();
   }
 
   public findAll(): PromiseLike<Required<ServiceDatabaseObject>[]> {

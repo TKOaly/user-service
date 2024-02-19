@@ -8,6 +8,7 @@ module.exports = [
     data_permissions: 6143,
     created: new Date(),
     modified: new Date(),
+    secret: "secret" 
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ module.exports = [
     data_permissions: 89,
     created: new Date(),
     modified: new Date(),
+    secret: null
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ module.exports = [
     data_permissions: 514,
     created: new Date(),
     modified: new Date(),
+    secret: null
   },
   {
     id: 4,
@@ -38,15 +41,17 @@ module.exports = [
     data_permissions: 514,
     created: new Date(),
     modified: new Date(),
+    secret: null
   },
   {
     id: 5,
-    service_identifier: "5e02267a-d6e1-4e3a-899e-a9082b07da32",
+    service_identifier: "73f665af-eeb6-4a6e-8ee1-8de8663e17e0",
     service_name: "cube_admin",
-    display_name: "TKO-äly admin",
-    redirect_url: "http://admin.tko-aly.localhost",
-    data_permissions: 8714,
+    display_name: "Cube Admin",
+    redirect_url: "https://admin.tko-aly.fi",
+    data_permissions: 514,
     created: new Date(),
     modified: new Date(),
+    secret: null
   },
 ];
