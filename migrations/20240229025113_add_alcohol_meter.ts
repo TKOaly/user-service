@@ -1,6 +1,10 @@
 import Knex from "knex";
 
 exports.up = async function (knex: Knex): Promise<void> {
+  if (!(await knex.schema.hasTable("calendar_events"))) {
+    return;
+  }
+
   if (await knex.schema.hasColumn("calendar_events", "alcohol_meter")) {
     return;
   }
@@ -13,6 +17,10 @@ exports.up = async function (knex: Knex): Promise<void> {
 exports.down = async function (knex: Knex): Promise<void> {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Do not drop database columns in production");
+  }
+
+  if (!(await knex.schema.hasTable("calendar_events"))) {
+    return;
   }
 
   if (!(await knex.schema.hasColumn("calendar_events", "alcohol_meter"))) {
