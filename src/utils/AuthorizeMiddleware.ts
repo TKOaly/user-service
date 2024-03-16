@@ -39,15 +39,13 @@ class AuthorizeMiddleware {
     (returnAsJson: boolean): ((req: IASRequest, res: express.Response, next: express.NextFunction) => void) =>
     async (req: IASRequest, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
       const headerValue = req.get("authorization");
-      console.log("header", headerValue);
+
       if (headerValue && headerValue.toString().startsWith("Bearer ")) {
         const authValue = headerValue.slice(7).toString();
 
         if (authValue.startsWith("service:")) {
           const [, serviceId, secret] = authValue.split(":", 3);
           const service = await AuthenticationService.getServiceWithIdentifier(serviceId);
-
-          console.log("Secret", service.secret, secret);
 
           if (service.secret !== secret) {
             if (returnAsJson) {
