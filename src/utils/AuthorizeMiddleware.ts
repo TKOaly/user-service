@@ -5,6 +5,7 @@ import User from "../models/User";
 import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
+import AuthenticationService from "../services/AuthenticationService";
 
 export enum LoginStep {
   PrivacyPolicy,
@@ -37,10 +38,57 @@ class AuthorizeMiddleware {
   public authorize =
     (returnAsJson: boolean): ((req: IASRequest, res: express.Response, next: express.NextFunction) => void) =>
     async (req: IASRequest, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
-      const token = req.get("authorization");
-      if (token && token.toString().startsWith("Bearer ")) {
+      const headerValue = req.get("authorization");
+      console.log('header', headerValue);
+      if (headerValue && headerValue.toString().startsWith("Bearer ")) {
+        const authValue = headerValue.slice(7).toString();
+
+        if (authValue.startsWith('service:')) {
+          const [,serviceId,secret] = authValue.split(':', 3);
+          const service = await AuthenticationService.getServiceWithIdentifier(serviceId);
+
+          console.log('Secret', service.secret, secret);
+
+          if (service.secret !== secret) {
+            if (returnAsJson) {
+              return res.status(403).json(new ServiceResponse(null, "Invalid credentials."));
+            } else {
+              return res.status(403).render("serviceError", {
+                error: "Invalid credentials.",
+              });
+            }
+          }
+
+          req.authorization = {
+            token: new ServiceToken(-1, [serviceId], new Date()),
+            user: new User({
+              id: -1,
+              username: serviceId,
+              name: '',
+              screen_name: '', 
+              email: '',
+              residence: '',
+              phone: '', 
+              hyy_member: 1,
+              membership: 'kunniajasen',
+              role: 'yllapitaja',
+              salt: '',
+              hashed_password: '',
+              password_hash: '', 
+              created: new Date(),
+              modified: new Date(), 
+              tktl: 1, 
+              deleted: 0,
+              hy_staff: 1,
+              hy_student: 1,
+            }),
+          }
+
+          return next();
+        }
+
         try {
-          const parsedToken = stringToServiceToken(token.slice(7).toString());
+          const parsedToken = stringToServiceToken(authValue);
           const user = await UserService.fetchUser(parsedToken.userId);
           req.authorization = {
             token: parsedToken,
