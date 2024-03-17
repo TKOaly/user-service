@@ -40,11 +40,31 @@ class AuthorizeMiddleware {
     async (req: IASRequest, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
       const headerValue = req.get("authorization");
 
-      if (headerValue && headerValue.toString().startsWith("Bearer ")) {
-        const authValue = headerValue.slice(7).toString();
+      if (headerValue) {
+        const [authType, authValue] = headerValue.split(/\s+/, 2);
 
-        if (authValue.startsWith("service:")) {
-          const [, serviceId, secret] = authValue.split(":", 3);
+        if (authType.toLowerCase() === 'bearer') {
+          try {
+            const parsedToken = stringToServiceToken(authValue);
+            const user = await UserService.fetchUser(parsedToken.userId);
+            req.authorization = {
+              token: parsedToken,
+              user,
+            };
+            return next();
+          } catch (e) {
+            if (returnAsJson) {
+              return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+            } else {
+              return res.status(e.httpStatusCode || 500).render("serviceError", {
+                error: e.message,
+              });
+            }
+          }
+        } else if (authType.toLowerCase() === 'basic') {
+          const decoded = Buffer.from(authValue, 'base64').toString('utf-8');
+          const [serviceId, secret] = decoded.split(':', 2);
+
           const service = await AuthenticationService.getServiceWithIdentifier(serviceId);
 
           if (service.secret !== secret) {
@@ -85,23 +105,7 @@ class AuthorizeMiddleware {
           return next();
         }
 
-        try {
-          const parsedToken = stringToServiceToken(authValue);
-          const user = await UserService.fetchUser(parsedToken.userId);
-          req.authorization = {
-            token: parsedToken,
-            user,
-          };
-          return next();
-        } catch (e) {
-          if (returnAsJson) {
-            return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
-          } else {
-            return res.status(e.httpStatusCode || 500).render("serviceError", {
-              error: e.message,
-            });
-          }
-        }
+      } else if (headerValue && headerValue.toString().startsWith("Basic ")) {
       } else if (req.cookies.token) {
         try {
           const parsedToken = stringToServiceToken(req.cookies.token);
