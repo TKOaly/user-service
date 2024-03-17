@@ -43,7 +43,7 @@ class AuthorizeMiddleware {
       if (headerValue) {
         const [authType, authValue] = headerValue.split(/\s+/, 2);
 
-        if (authType.toLowerCase() === 'bearer') {
+        if (authType.toLowerCase() === "bearer") {
           try {
             const parsedToken = stringToServiceToken(authValue);
             const user = await UserService.fetchUser(parsedToken.userId);
@@ -61,9 +61,9 @@ class AuthorizeMiddleware {
               });
             }
           }
-        } else if (authType.toLowerCase() === 'basic') {
-          const decoded = Buffer.from(authValue, 'base64').toString('utf-8');
-          const [serviceId, secret] = decoded.split(':', 2);
+        } else if (authType.toLowerCase() === "basic") {
+          const decoded = Buffer.from(authValue, "base64").toString("utf-8");
+          const [serviceId, secret] = decoded.split(":", 2);
 
           const service = await AuthenticationService.getServiceWithIdentifier(serviceId);
 
@@ -104,7 +104,6 @@ class AuthorizeMiddleware {
 
           return next();
         }
-
       } else if (headerValue && headerValue.toString().startsWith("Basic ")) {
       } else if (req.cookies.token) {
         try {
