@@ -59,10 +59,10 @@ module.exports = [
     service_identifier: "abc77909-9c6e-45fe-8ad4-e256dc47d711",
     service_name: "website",
     display_name: "TKO-äly Website",
-    redirect_url: "http://localhost:3060",
-    data_permissions: 514,
+    redirect_url: "http://localhost:3060/api/auth/callback/tkoaly",
+    data_permissions: 55295,
     created: new Date(),
     modified: new Date(),
-    secret: null
+    secret: "secret"
   },
 ];
