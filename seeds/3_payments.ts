@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { Knex } from "knex";
 const payments = require("./seedData/payments");
 
 exports.seed = async function (knex: Knex) {

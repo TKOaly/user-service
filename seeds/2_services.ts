@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { Knex } from "knex";
 import privacyPolicies from "./seedData/privacy_policies";
 import consentData from "./seedData/privacy_policy_consent_datas";
 import services from "./seedData/services";

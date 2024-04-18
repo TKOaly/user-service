@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import Knex from "knex";
+import { Knex } from "knex";
 
 if (!process.env.NODE_ENV) {
   throw new Error("NODE_ENV environment variable must be specified.");
