@@ -3,13 +3,13 @@ import { Knex } from "knex";
 exports.up = async function (knex: Knex): Promise<void> {
   const hasTable = await knex.schema.hasTable("privacy_policy_consent_data");
   if (!hasTable) {
-    await knex.schema.createTable("privacy_policy_consent_data", function(table){
-      table.increments("id").primary();
-      table.integer("user_id").unsigned().notNullable().index().references("id").inTable("users");
-      table.integer("service_id").unsigned().notNullable().index().references("id").inTable("services");
-      table.enum("consent", ["unknown", "accepted", "declined"]).defaultTo("unknown");
-      table.dateTime("created");
-      table.dateTime("modified");
+    await knex.schema.createTable("privacy_policy_consent_data", (t: Knex.CreateTableBuilder)=>{
+      t.increments("id").primary();
+      t.integer("user_id").unsigned().notNullable().index().references("id").inTable("users");
+      t.integer("service_id").unsigned().notNullable().index().references("id").inTable("services");
+      t.enum("consent", ["unknown", "accepted", "declined"]).defaultTo("unknown");
+      t.dateTime("created");
+      t.dateTime("modified");
     });
   }
 };
