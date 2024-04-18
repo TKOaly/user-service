@@ -32,6 +32,8 @@ export default class User {
   public isDeleted: boolean;
   public isHyStaff: boolean;
   public isHyStudent: boolean;
+  public isTKTDTStudent: boolean;
+
 
   constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
@@ -53,6 +55,7 @@ export default class User {
     this.isDeleted = userDatabaseObject.deleted === 1;
     this.isHyStaff = userDatabaseObject.hy_staff === 1;
     this.isHyStudent = userDatabaseObject.hy_student === 1;
+    this.isTKTDTStudent = userDatabaseObject.tktdt_student === 1;
   }
 
   public removeSensitiveInformation(): User {
@@ -98,6 +101,7 @@ export default class User {
       deleted: this.isDeleted ? 1 : 0,
       hy_staff: this.isHyStaff ? 1 : 0,
       hy_student: this.isHyStudent ? 1 : 0,
+      tktdt_student: this.isTKTDTStudent ? 1 : 0,
     };
   }
 }

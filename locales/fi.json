@@ -30,5 +30,6 @@
 	"logout_Title": "Uloskirjautuminen",
 	"logout_YouHaveBeenLoggedOutFrom": "Sinut on kirjattu ulos palvelusta ",
 	"logout_ReturnTo": "Palaa osoitteeseen ",
-	"login_LoggedInAs": "Kirjautunut sisään: "
+	"login_LoggedInAs": "Kirjautunut sisään: ",
+	"login_InFinnish": "login_InFinnish"
 }

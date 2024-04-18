@@ -69,6 +69,10 @@ const SCOPES: Record<string, string[]> = {
   phone: ["phone_number", "phone_number_verified"],
   address: ["address"],
   membership: ["membership"],
+  is_hy_student: ["is_hy_student"],
+  is_hy_staff: ["is_hy_staff"],
+  is_hyy_member: ["is_hyy_member"],
+  is_tktdt_student: ["is_tktdt_student"],
 };
 
 // TODO: This could probably be a flatMap
@@ -93,6 +97,7 @@ const getUserClaims = (user: User, claims: string[]) =>
       created_at: user.createdAt,
       is_tktl: user.isTKTL,
       email_verified: false,
+      is_tktdt_student: user.isTKTDTStudent,
     },
     claims,
   );
@@ -111,6 +116,7 @@ const CLAIM_TO_PROPERTY_MAP: Record<string, Array<string>> = {
   role: ["role"],
   created_at: ["createdAt"],
   is_tktl: ["isTKTL"],
+  is_tktdt_student: ["isTKTDTStudent"],
 };
 
 const mapClaimsToUserProperties = (claims: string[]) =>
@@ -122,8 +128,8 @@ const CLAIMS = [
   ["name"],
   ["nickname"],
   ["email"],
-  ["residence"],
-  ["phone"],
+  ["address"],
+  ["phone_number", "phone_number_verified"],
   ["is_hyy_member"],
   ["membership"],
   ["role"],
@@ -134,6 +140,7 @@ const CLAIMS = [
   [],
   ["is_hy_staff"],
   ["is_hy_student"],
+  ["is_tktdt_student"]
 ];
 
 const getAllowedClaims = (permissions: number) =>

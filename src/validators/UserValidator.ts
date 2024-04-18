@@ -31,6 +31,7 @@ export type UserDataKey =
   | "isHYYMember"
   | "isHyStaff"
   | "isHyStudent"
+  | "isTKTDTStudent"
   | "isTKTL";
 
 export type UserDataKeyWithRole = UserDataKey | "role";
@@ -55,6 +56,7 @@ export const allowedSelfEdit: SelfEditKey[] = [
   "password2",
   "isHyStaff",
   "isHyStudent",
+  "isTKTDTStudent",
 ];
 
 // Colums allowed to be edited by jäsenvirkailija
@@ -84,6 +86,7 @@ export const userDataKeys: UserDataKey[] = [
   "isHyStaff",
   "isHyStudent",
   "isTKTL",
+  "isTKTDTStudent",
 ];
 
 export const hasForeignKeys = (obj: object, ownKeys: UserDataKey[]) => {
@@ -137,6 +140,9 @@ export const isValidPartialUser = (
   if (u.isTKTL !== undefined && !isBoolean(u.isTKTL)) {
     return false;
   }
+  if (u.isTKTDTStudent !== undefined && !isBoolean(u.isTKTDTStudent)) {
+    return false;
+  }
   if ("role" in u) {
     if (u.role !== undefined && !isString(u.isTKTL)) {
       return false;
@@ -170,7 +176,8 @@ export const isValidUser = (entity: unknown): entity is UserData => {
     u.isHYYMember === undefined ||
     u.isHyStaff === undefined ||
     u.isHyStudent === undefined ||
-    u.isTKTL === undefined
+    u.isTKTL === undefined || 
+    u.isTKTDTStudent === undefined
   ) {
     return false;
   }
@@ -208,6 +215,9 @@ export const isValidUser = (entity: unknown): entity is UserData => {
     return false;
   }
   if (!isBoolean(u.isTKTL)) {
+    return false;
+  }
+  if (!isBoolean(u.isTKTDTStudent)) {
     return false;
   }
   return true;
@@ -286,6 +296,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
         hashed_password: "",
         password_hash: "",
         salt: "",
+        tktdt_student: booleanToInt(u.isTKTDTStudent),
       }),
       password: u.password1,
     };
@@ -336,6 +347,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
       hy_student: newData.isHyStudent ? booleanToInt(newData.isHyStudent) : undefined,
       hyy_member: newData.isHYYMember ? booleanToInt(newData.isHYYMember) : undefined,
       tktl: newData.isTKTL ? booleanToInt(newData.isTKTL) : undefined,
+      tktdt_student: newData.isTKTDTStudent ? booleanToInt(newData.isTKTDTStudent) : undefined,
     };
 
     if ("role" in newData) {

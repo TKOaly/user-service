@@ -116,6 +116,9 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "password_hash"
         | "tktl"
         | "deleted"
+        | "hy_student"
+        | "hy_staff"
+        | "tktdt_student"
       >
     >,
   ): PromiseLike<number> {
@@ -147,6 +150,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "deleted"
         | "hy_student"
         | "hy_staff"
+        | "tktdt_student"
       >
     >,
   ): PromiseLike<number[]> {
