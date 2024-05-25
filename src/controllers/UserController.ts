@@ -289,14 +289,17 @@ class UserController implements Controller {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
       const id = parseInt(req.params.id, 10);
-      const user = await UserService.fetchUser(id);
       const membership = String(req.body.membership);
       if (!membership) {
         return res.status(400).json(new ServiceResponse(null, "Membership not set in request"));
       }
 
       if (membership === "hyvaksy") {
-        UserService.updateUser(id, { membership: user.isTKTL ? "jasen" : "ulkojasen" });
+        const payment = await PaymentService.fetchValidPaymentForUser(id);
+        if (!payment) {
+            return res.status(400).json(new ServiceResponse(null, "User has not applied for membership"));
+        }
+        UserService.updateUser(id, { membership: payment.membership_applied_for });
       } else if (membership === "ei-jasen" || membership === "erotettu") {
         UserService.updateUser(id, {
           membership,
