@@ -223,7 +223,10 @@ class UserController implements Controller {
       if (createdUser === undefined) {
         return res.status(400).json(new ServiceResponse(null, "Error creating user"));
       }
-      return res.status(200).json(new ServiceResponse(user.removeSensitiveInformation(), "Success"));
+      return res.status(200).json(new ServiceResponse({
+        ...user.removeSensitiveInformation(),
+        accessToken: AuthenticationService.createToken(userId, [req.headers['service']?.toString() ?? '']),
+      }, "Success"));
     } catch (err) {
       Sentry.addBreadcrumb({
         message: "Error creating user",
