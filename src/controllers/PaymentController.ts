@@ -134,7 +134,7 @@ class PaymentController implements Controller {
         await PaymentService.makeCashPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else {
-        return res.status(304);
+        return res.status(400);
       }
     } catch (e) {
       Sentry.addBreadcrumb({
