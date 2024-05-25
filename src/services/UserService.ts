@@ -165,7 +165,7 @@ class UserService {
 }
 
 async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; password: string }> {
-  const salt = crypto.randomBytes(16).toString("hex");
+  const salt = crypto.randomBytes(16).toString("hex").substring(0, 20);
   // The passwords are first hashed according to the legacy format
   // to ensure backwards compability
   const password = sha1(`${salt}kekbUr${rawPassword}`) as string;
