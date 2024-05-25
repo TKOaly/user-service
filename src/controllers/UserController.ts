@@ -223,10 +223,15 @@ class UserController implements Controller {
       if (createdUser === undefined) {
         return res.status(400).json(new ServiceResponse(null, "Error creating user"));
       }
-      return res.status(200).json(new ServiceResponse({
-        ...user.removeSensitiveInformation(),
-        accessToken: AuthenticationService.createToken(userId, [req.headers['service']?.toString() ?? '']),
-      }, "Success"));
+      return res.status(200).json(
+        new ServiceResponse(
+          {
+            ...user.removeSensitiveInformation(),
+            accessToken: AuthenticationService.createToken(userId, [req.headers.service?.toString() ?? ""]),
+          },
+          "Success",
+        ),
+      );
     } catch (err) {
       Sentry.addBreadcrumb({
         message: "Error creating user",
@@ -297,7 +302,7 @@ class UserController implements Controller {
       if (membership === "hyvaksy") {
         const payment = await PaymentService.fetchValidPaymentForUser(id);
         if (!payment) {
-            return res.status(400).json(new ServiceResponse(null, "User has not applied for membership"));
+          return res.status(400).json(new ServiceResponse(null, "User has not applied for membership"));
         }
         UserService.updateUser(id, { membership: payment.membership_applied_for });
       } else if (membership === "ei-jasen" || membership === "erotettu") {

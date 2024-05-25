@@ -55,15 +55,15 @@ class UserDao implements Dao<UserDatabaseObject> {
       .orderBy("users.name");
 
     const paymentFields = [
-      'payments.id as payment_id',
-      'payments.confirmer_id as payment_confirmer_id',
-      'payments.created as payment_created',
-      'payments.reference_number as payment_reference_number',
-      'payments.amount as payment_amount',
-      'payments.valid_until as payment_valid_until',
-      'payments.paid as payment_paid',
-      'payments.payment_type as payment_type',
-      'payments.membership_applied_for as payment_membership_applied_for',
+      "payments.id as payment_id",
+      "payments.confirmer_id as payment_confirmer_id",
+      "payments.created as payment_created",
+      "payments.reference_number as payment_reference_number",
+      "payments.amount as payment_amount",
+      "payments.valid_until as payment_valid_until",
+      "payments.paid as payment_paid",
+      "payments.payment_type as payment_type",
+      "payments.membership_applied_for as payment_membership_applied_for",
     ];
 
     if (fields) {
