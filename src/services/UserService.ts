@@ -124,6 +124,17 @@ class UserService {
     return insertIds[0];
   }
 
+  public async setPassword(user: number, plaintext: string) {
+    const { password, salt } = await mkHashedPassword(plaintext);
+    const passwordHash = await hashPasswordAsync(plaintext);
+
+    return this.updateUser(user, {
+      password_hash: passwordHash,
+      hashed_password: password,
+      salt,
+    });
+  }
+
   public async updateUser(
     userId: number,
     updatedUser: Partial<UserDatabaseObject>,
@@ -136,6 +147,20 @@ class UserService {
 
   public async deleteUser(userId: number): Promise<number> {
     return UserDao.remove(userId);
+  }
+
+  public async getUserWithUsername(username: string): Promise<User | null> {
+    const dbUser = await UserDao.findByUsername(username);
+    if (!dbUser) return null;
+    const user = new User(dbUser);
+    return user;
+  }
+
+  public async getUserWithEmail(email: string): Promise<User | null> {
+    const dbUser = await UserDao.findByEmail(email);
+    if (!dbUser) return null;
+    const user = new User(dbUser);
+    return user;
   }
 }
 
