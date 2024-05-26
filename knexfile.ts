@@ -52,7 +52,7 @@ console.log("DB_NAME: ", process.env.DB_NAME);
 
 export const staging: Knex.Config = {
   client: "mysql2",
-  version: "8.0.34",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -70,7 +70,7 @@ export const staging: Knex.Config = {
 };
 export const development: Knex.Config = {
   client: "mysql2",
-  version: "8.0.34",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -89,7 +89,7 @@ export const development: Knex.Config = {
 
 export const test: Knex.Config = {
   client: "mysql2",
-  version: "8.0.34",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
