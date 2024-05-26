@@ -26,7 +26,7 @@ if (
 }
 export const production: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -66,7 +66,7 @@ export const staging: Knex.Config = {
 };
 export const development: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),

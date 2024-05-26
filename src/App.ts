@@ -20,8 +20,6 @@ import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 import i18n from "./i18n.config";
 
 import morgan from "morgan";
-import { Environment } from "./Db";
-import * as knexfile from "../knexfile";
 import { generateApiRoute } from "./utils/ApiRoute";
 const MySQLSessionStore = require("express-mysql-session")(session);
 dotenv.config();
@@ -75,7 +73,11 @@ app.use(
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
     store: new MySQLSessionStore({
-      ...(knexfile[process.env.NODE_ENV! as Environment].connection as Record<string, unknown>),
+      host: 'members-mysql',
+      user: 'root',
+      port: 3306,
+      password: 'unsecure',
+      database: 'members',
     }),
   }),
 );
