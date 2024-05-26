@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import "express-async-errors";
 
-import * as Sentry from "@sentry/node";
+import * as Sentry from '@sentry/node';
 import cookieParser from "cookie-parser";
 import express from "express";
 import session from "express-session";
@@ -63,8 +63,6 @@ app.use(cookieParser());
 app.use(LocalizationMiddleware);
 app.use(i18n.init);
 
-// Sentry
-app.use(Sentry.Handlers.requestHandler());
 
 app.use(express.json());
 app.use(
@@ -114,7 +112,6 @@ app.use("/", LoginController.createRoutes());
 // Ping route
 app.get("/ping", (req, res) => res.json({ ok: true }));
 
-app.use(Sentry.Handlers.errorHandler());
 
 // CSRF
 app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -127,5 +124,8 @@ app.use((err: { code?: string }, req: express.Request, res: express.Response, ne
     errorId: (res as any)?.sentry,
   });
 });
+
+// Sentry
+Sentry.setupExpressErrorHandler(app);
 
 export default app;
