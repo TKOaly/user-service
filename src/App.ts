@@ -23,7 +23,9 @@ import morgan from "morgan";
 import { Environment } from "./Db";
 import * as knexfile from "../knexfile";
 import { generateApiRoute } from "./utils/ApiRoute";
-const MySQLSessionStore = require("express-mysql-session")(session);
+import KnexSessionStore from "connect-session-knex";
+import Knex from "knex";
+
 dotenv.config();
 
 if (!process.env.NODE_ENV) {
@@ -38,6 +40,10 @@ if (process.env.NODE_ENV === "production") {
 } else {
   console.log("Skipping sentry init as the environment is not production");
 }
+
+// Initialize Knex instance
+const knexConfig = knexfile[process.env.NODE_ENV as Environment];
+const knex = Knex(knexConfig);
 
 // Express application instance
 const app = express();
@@ -68,14 +74,18 @@ app.use(
 );
 
 // Session
+
+const KnexStore = KnexSessionStore(session);
+
 app.use(
   session({
     cookie: { secure: "auto", maxAge: 60000 },
-    resave: true,
-    saveUninitialized: true,
+    resave: false, // KnexStore supports touch, so you don't need to resave every time    
+    saveUninitialized: false,
     secret: process.env.SESSION_SECRET || "unsafe",
-    store: new MySQLSessionStore({
-      ...(knexfile[process.env.NODE_ENV! as Environment].connection as Record<string, unknown>),
+    store: new KnexStore({
+      knex,
+      tablename: 'sessions'
     }),
   }),
 );

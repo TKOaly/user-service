@@ -19,14 +19,13 @@ if (
   process.env.DB_PORT === undefined ||
   process.env.DB_USER === undefined ||
   process.env.DB_PASSWORD === undefined ||
-  process.env.DB_HOST === undefined ||
   process.env.DB_NAME === undefined
 ) {
   throw new Error("Database configuration is invalid, please set all environment variables!");
 }
 export const production: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "5.7",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -45,10 +44,15 @@ export const production: Knex.Config = {
     directory: "do_not_seed_prod_db",
   },
 };
+console.log("DB_HOST: ", process.env.DB_HOST);
+console.log("DB_PORT: ", process.env.DB_PORT);
+console.log("DB_USER: ", process.env.DB_USER);
+console.log("DB_PASSWORD: ", process.env.DB_PASSWORD);
+console.log("DB_NAME: ", process.env.DB_NAME);
 
 export const staging: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "8.0.34",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -66,7 +70,7 @@ export const staging: Knex.Config = {
 };
 export const development: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "8.0.34",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -85,7 +89,7 @@ export const development: Knex.Config = {
 
 export const test: Knex.Config = {
   client: "mysql2",
-  version: "5.5",
+  version: "8.0.34",
   connection: {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
