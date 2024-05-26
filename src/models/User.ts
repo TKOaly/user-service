@@ -34,7 +34,6 @@ export default class User {
   public isHyStudent: boolean;
   public isTKTDTStudent: boolean;
 
-
   constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
     this.username = userDatabaseObject.username;

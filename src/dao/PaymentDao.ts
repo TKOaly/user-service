@@ -95,9 +95,10 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public deletePayment(id: number): Promise<boolean> {
-    return knexInstance<PaymentDatabaseObject>(tableName).where({ id })
-    .del()
-    .then(count => count > 0);
+    return knexInstance<PaymentDatabaseObject>(tableName)
+      .where({ id })
+      .del()
+      .then(count => count > 0);
   }
 }
 

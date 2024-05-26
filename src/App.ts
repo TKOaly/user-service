@@ -80,12 +80,12 @@ const KnexStore = KnexSessionStore(session);
 app.use(
   session({
     cookie: { secure: "auto", maxAge: 60000 },
-    resave: false, // KnexStore supports touch, so you don't need to resave every time    
+    resave: false, // KnexStore supports touch, so you don't need to resave every time
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET || "unsafe",
     store: new KnexStore({
       knex,
-      tablename: 'sessions'
+      tablename: "sessions",
     }),
   }),
 );

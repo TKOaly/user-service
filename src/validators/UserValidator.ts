@@ -176,7 +176,7 @@ export const isValidUser = (entity: unknown): entity is UserData => {
     u.isHYYMember === undefined ||
     u.isHyStaff === undefined ||
     u.isHyStudent === undefined ||
-    u.isTKTL === undefined || 
+    u.isTKTL === undefined ||
     u.isTKTDTStudent === undefined
   ) {
     return false;

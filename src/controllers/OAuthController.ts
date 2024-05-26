@@ -40,7 +40,7 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
 
 const SUPPORTED_RESPONSE_TYPES = ["code", "token", "id_token"] as const;
 
-type ResponseType = typeof SUPPORTED_RESPONSE_TYPES[number];
+type ResponseType = (typeof SUPPORTED_RESPONSE_TYPES)[number];
 
 function isSupportedResponseType(value: unknown): value is ResponseType {
   return typeof value === "string" && ["code", "token", "id_token"].indexOf(value) !== -1;
@@ -140,7 +140,7 @@ const CLAIMS = [
   [],
   ["is_hy_staff"],
   ["is_hy_student"],
-  ["is_tktdt_student"]
+  ["is_tktdt_student"],
 ];
 
 const getAllowedClaims = (permissions: number) =>
