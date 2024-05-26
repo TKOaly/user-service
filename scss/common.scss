@@ -149,9 +149,12 @@ form#loginForm {
   margin-bottom: 5px;
 }
 
+input.input {
+  width: 60%;
+}
+
 input.input,
 button.button {
-  width: 60%;
   height: 40px;
   text-align: center;
   margin-top: 5px;
@@ -159,12 +162,14 @@ button.button {
   font-size: 1em;
 }
 
-input[type="submit"] {
+input[type="submit"],
+button[type="submit"]
+{
   margin-top: 25px;
-  width: 30%;
-  height: 50px;
+  min-height: 50px;
   font-size: 1.3em;
   border-radius: 5px;
+  padding: 10px 10px;
   &:hover {
     cursor: pointer;
   }
