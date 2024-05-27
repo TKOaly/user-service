@@ -124,23 +124,25 @@ class UserService {
     return insertIds[0];
   }
 
-  public async setPassword(user: number, plaintext: string) {
-    const { password, salt } = await mkHashedPassword(plaintext);
-    const passwordHash = await hashPasswordAsync(plaintext);
-
-    return this.updateUser(user, {
-      password_hash: passwordHash,
-      hashed_password: password,
-      salt,
-    });
-  }
-
   public async updateUser(
     userId: number,
     updatedUser: Partial<UserDatabaseObject>,
-    _password?: string,
+    rawPassword?: string,
   ): Promise<number> {
-    const affectedRows = await UserDao.update(userId, updatedUser);
+    const fields = { ...updatedUser };
+
+    if (rawPassword) {
+      const { password, salt } = await mkHashedPassword(rawPassword);
+      const passwordHash = await hashPasswordAsync(rawPassword);
+
+      Object.assign(fields, {
+        password_hash: passwordHash,
+        hashed_password: password,
+        salt,
+      });
+    }
+
+    const affectedRows = await UserDao.update(userId, fields);
 
     return affectedRows;
   }
