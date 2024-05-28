@@ -3,27 +3,13 @@ import PricingDao from "../dao/PricingDao";
 import { MembershipType, PUBLIC_MEMBERSIHP_TYPES } from "../enum/Membership";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
-import Pricing from "../models/Pricing";
+import PricingService, { Season } from "../services/PricingService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 
 type IASRequestHandler = (req: IASRequest, res: express.Response, next: express.NextFunction) => void;
-
-const getActiveSeason = () => {
-  const date = new Date();
-  date.setMonth(7);
-  date.setDate(1);
-  date.setHours(0);
-  date.setMinutes(0);
-
-  if (date.valueOf() >= Date.now()) {
-    return date.getFullYear() - 1;
-  }
-
-  return date.getFullYear();
-};
 
 const isMembershipType = (value: string): value is MembershipType =>
   (PUBLIC_MEMBERSIHP_TYPES as string[]).includes(value);
@@ -73,9 +59,9 @@ const validateUpdateSeasonPricesBody = (body: any): body is UpdateSeasonPricesBo
 
 const parseSeason = (season: string | undefined) => {
   if (!season || season === "current") {
-    return getActiveSeason();
+    return PricingService.getSeason();
   } else if (season === "next") {
-    return getActiveSeason() + 1;
+    return PricingService.getSeason(1);
   }
 
   return parseInt(season, 10);
@@ -86,7 +72,19 @@ class UserController implements Controller {
     let membership: MembershipType | null = null;
     let seasons: number | null = null;
 
-    const season = parseSeason(req.params.season);
+    let season: Season;
+
+    if (req.params.season === "next" || req.params.season === "current") {
+      season = req.params.season;
+    } else if (req.params.season) {
+      try {
+        season = parseInt(req.params.season.toString(), 10);
+      } catch (_err) {
+        throw new ServiceError(400, 'invalid value for route parameter "season"');
+      }
+    } else {
+      season = "current";
+    }
 
     if (req.query.membership) {
       if (typeof req.query.membership !== "string") {
@@ -108,40 +106,14 @@ class UserController implements Controller {
       }
     }
 
-    const prices = await PricingDao.findPrices(membership, seasons, season);
-
-    const result = prices.map(price => new Pricing(price));
+    const result = await PricingService.findPricings(season, membership, seasons);
 
     res.json(new ServiceResponse(result, "prices found", true));
   };
 
   getSeason: RequestHandler = async (req, res) => {
-    const season = parseSeason(req.params.season);
-
-    const getDate = (month: number, day: number, future: boolean) => {
-      const date = new Date();
-      date.setMonth(month);
-      date.setDate(day);
-
-      if (future) {
-        date.setFullYear(season + 1);
-        date.setHours(23);
-        date.setMinutes(59);
-      } else {
-        date.setFullYear(season);
-        date.setHours(0);
-        date.setMinutes(0);
-      }
-
-      return date;
-    };
-
-    res.json(
-      new ServiceResponse({
-        start: getDate(7, 1, false),
-        end: getDate(6, 31, true),
-      }),
-    );
+    const result = await PricingService.getSeasonInfo(parseSeason(req.params.season));
+    res.json(new ServiceResponse(result));
   };
 
   updateSeasonPrices: IASRequestHandler = async (req, res) => {
