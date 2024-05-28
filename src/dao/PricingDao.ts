@@ -22,7 +22,11 @@ class PricingDao implements Dao<PricingDatabaseObject> {
       ]);
   }
 
-  findPrices(membership: MembershipType | null, seasons: number | null): Promise<PricingDatabaseObject[]> {
+  findPrices(
+    membership: MembershipType | null,
+    seasons: number | null,
+    season: number,
+  ): Promise<PricingDatabaseObject[]> {
     const conditionalFilter: QueryCallbackWithArgs = (builder, column, value) => {
       if (value !== null) {
         builder.andWhere(column, "=", value);
@@ -31,7 +35,7 @@ class PricingDao implements Dao<PricingDatabaseObject> {
 
     return this.knex()
       .select()
-      .whereRaw("DATEDIFF(NOW(), starts) BETWEEN 0 AND 365")
+      .andWhereRaw("YEAR(starts) = ?", [season])
       .modify(conditionalFilter, "membership", membership)
       .modify(conditionalFilter, "seasons", seasons)
       .orderBy([
@@ -58,6 +62,29 @@ class PricingDao implements Dao<PricingDatabaseObject> {
 
   save(entity: Required<Omit<PricingDatabaseObject, "id" | "created" | "modified">>): PromiseLike<number[]> {
     return this.knex().insert(entity);
+  }
+
+  async updatePrice(season: number, membership: MembershipType, seasons: number, price: number) {
+    const existing = await this.knex()
+      .select("id")
+      .where({ membership, seasons })
+      .andWhereRaw("YEAR(starts) = ?", [season])
+      .first();
+
+    if (existing) {
+      await this.knex().update({ price }).where({ id: existing.id });
+    } else {
+      await this.knex().insert({
+        starts: new Date(season, 7, 1, 0, 0),
+        membership,
+        price,
+        seasons,
+      });
+    }
+  }
+
+  async deleteSeasonPrices(season: number) {
+    return this.knex().delete().andWhereRaw("YEAR(starts) = ?", [season]);
   }
 }
 
