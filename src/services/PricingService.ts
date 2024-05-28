@@ -56,15 +56,19 @@ class PricingService {
       const date = new Date();
       date.setMonth(month);
       date.setDate(day);
+      date.setSeconds(0);
+      date.setMilliseconds(0);
 
       if (future) {
         date.setFullYear(season + 1);
         date.setHours(23);
         date.setMinutes(59);
+        date.setSeconds(59);
       } else {
         date.setFullYear(season);
         date.setHours(0);
         date.setMinutes(0);
+        date.setSeconds(0);
       }
 
       return date;

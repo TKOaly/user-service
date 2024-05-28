@@ -35,11 +35,12 @@ class PaymentController implements Controller {
 
       this.paymentValidator.validateCreate(newPayment);
       const paymentIds = await PaymentService.createPayment(newPayment);
-      const payment = await PaymentService.fetchPayment(paymentIds[0]);
+      let payment = await PaymentService.fetchPayment(paymentIds[0]);
       if (payment.payment_type === "tilisiirto") {
         payment.generateReferenceNumber();
         // Set the generated reference number
         await PaymentService.updatePayment(payment.id, payment);
+        payment = await PaymentService.fetchPayment(paymentIds[0]);
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
