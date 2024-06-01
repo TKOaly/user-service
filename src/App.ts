@@ -14,6 +14,7 @@ import LoginController from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import PricingsController from "./controllers/PricingsController";
 
 import LocalizationMiddleware from "./utils/LocalizationMiddleware";
 
@@ -102,6 +103,7 @@ API routes
 */
 
 app.use(generateApiRoute("auth"), AuthController.createRoutes());
+app.use(generateApiRoute("pricings"), PricingsController.createRoutes());
 app.use(generateApiRoute("users"), UserController.createRoutes());
 app.use(generateApiRoute("payments"), PaymentController.createRoutes());
 app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
