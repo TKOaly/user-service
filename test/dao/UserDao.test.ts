@@ -225,6 +225,7 @@ describe("UserDao", () => {
       deleted: 0,
       hy_staff: 1,
       hy_student: 0,
+      tktdt_student: 0,
     };
 
     // @ts-expect-error
@@ -256,6 +257,7 @@ describe("UserDao", () => {
     dbUser.deleted.should.equal(newUser.deleted);
     dbUser.hy_staff.should.equal(newUser.hy_staff);
     dbUser.hy_student.should.equal(newUser.hy_student);
+    dbUser.tktdt_student.should.equal(newUser.tktdt_student);
   });
 
   it("Returns a single user with findOne()", done => {

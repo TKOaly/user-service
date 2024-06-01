@@ -123,6 +123,7 @@ describe("UserValidator", () => {
         isHyStaff: true,
         isTKTL: true,
         isHyStudent: true,
+        isTKTDTStudent: false,
         name: "Aku Ankka",
         password1: "hunter1",
         password2: "hunter1",
@@ -147,6 +148,7 @@ describe("UserValidator", () => {
         residence: "Helsinki",
         screenName: "Aku-setä",
         username: "akuankka",
+        isTKTDTStudent: false,
       });
       res.should.equal(true);
     });
@@ -188,6 +190,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -213,6 +216,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -238,6 +242,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -264,6 +269,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -289,6 +295,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -314,6 +321,7 @@ describe("UserValidator", () => {
           isHYYMember: true,
           isTKTL: false,
           isHyStudent: false,
+          isTKTDTStudent: false,
         })
         .then(function () {
           done();
