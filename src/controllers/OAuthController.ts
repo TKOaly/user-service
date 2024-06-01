@@ -140,7 +140,7 @@ const CLAIMS = [
   [],
   ["is_hy_staff"],
   ["is_hy_student"],
-  ["is_tktdt_student"]
+  ["is_tktdt_student"],
 ];
 
 const getAllowedClaims = (permissions: number) =>

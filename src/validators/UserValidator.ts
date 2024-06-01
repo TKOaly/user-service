@@ -176,7 +176,7 @@ export const isValidUser = (entity: unknown): entity is UserData => {
     u.isHYYMember === undefined ||
     u.isHyStaff === undefined ||
     u.isHyStudent === undefined ||
-    u.isTKTL === undefined || 
+    u.isTKTL === undefined ||
     u.isTKTDTStudent === undefined
   ) {
     return false;
@@ -302,13 +302,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
     };
   }
 
-  public async validateUpdate(
-    userId: number,
-    newData: Partial<
-      UserData | UserDataWithRole | UserDataWithMembership | (UserDataKeyWithRole & UserDataWithMembership)
-    >,
-    modifiedBy: User,
-  ) {
+  public async validateUpdate(userId: number, newData: Partial<Pick<UserCreateModel, AdminDataKey>>, modifiedBy: User) {
     let errors: string[] = [];
     const oldUser = await UserService.fetchUser(userId);
     if (
@@ -343,11 +337,12 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
       email: newData.email,
       residence: newData.residence,
       phone: newData.phone,
-      hy_staff: newData.isHyStaff ? booleanToInt(newData.isHyStaff) : undefined,
-      hy_student: newData.isHyStudent ? booleanToInt(newData.isHyStudent) : undefined,
-      hyy_member: newData.isHYYMember ? booleanToInt(newData.isHYYMember) : undefined,
-      tktl: newData.isTKTL ? booleanToInt(newData.isTKTL) : undefined,
-      tktdt_student: newData.isTKTDTStudent ? booleanToInt(newData.isTKTDTStudent) : undefined,
+      created: newData.createdAt ? new Date(newData.createdAt) : undefined,
+      hy_staff: newData.isHyStaff !== undefined ? booleanToInt(newData.isHyStaff) : undefined,
+      hy_student: newData.isHyStudent !== undefined ? booleanToInt(newData.isHyStudent) : undefined,
+      hyy_member: newData.isHYYMember !== undefined ? booleanToInt(newData.isHYYMember) : undefined,
+      tktl: newData.isTKTL !== undefined ? booleanToInt(newData.isTKTL) : undefined,
+      tktdt_student: newData.isTKTDTStudent !== undefined ? booleanToInt(newData.isTKTDTStudent) : undefined,
     };
 
     if ("role" in newData) {

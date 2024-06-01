@@ -2,6 +2,7 @@ import csrf from "csurf";
 import querystring from "querystring";
 import { Router } from "express";
 import * as express from "express";
+import crypto from "crypto";
 import moment from "moment";
 import * as Sentry from "@sentry/node";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
@@ -16,6 +17,63 @@ import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMi
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { flow } from "lodash";
+import EmailService from "../services/EmailService";
+
+class ValidationError extends Error {
+  name = "ValidationError";
+
+  public status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
+const sign = (data: string) => {
+  const hash = crypto.createHash("sha256");
+  hash.update(data);
+  hash.update(process.env.SESSION_SECRET!);
+  return hash.digest("hex");
+};
+
+const validate = async (params: { user: string; hash: string; nonce: string; expires: string; signature: string }) => {
+  const { user: userId, hash, nonce, expires, signature } = params;
+
+  if (
+    userId === undefined ||
+    hash === undefined ||
+    nonce === undefined ||
+    expires === undefined ||
+    signature === undefined
+  ) {
+    throw new ValidationError(400, "Invalid link!");
+  }
+
+  const sig = sign([userId, expires, nonce].join("|"));
+
+  if (sig !== signature) {
+    throw new ValidationError(403, "Invalid link signature!");
+  }
+
+  if (parseInt(expires, 10) < Date.now()) {
+    throw new ValidationError(403, "Link expired!");
+  }
+
+  const user = await UserService.fetchUser(parseInt(userId.toString(), 10));
+
+  if (!user) {
+    throw new ValidationError(404, "User not found!");
+  }
+
+  const compareHash = sign([user.passwordHash, nonce].join("|"));
+
+  if (compareHash !== hash) {
+    throw new ValidationError(409, "Password already changed!");
+  }
+
+  return user;
+};
 
 class LoginController implements Controller {
   public route: Router;
@@ -400,6 +458,138 @@ class LoginController implements Controller {
     });
   }
 
+  public async resetPassword(req: express.Request, res: express.Response): Promise<express.Response | void> {
+    if (req.method === "GET" && req.query.user) {
+      const params = {
+        user: req.query.user?.toString() ?? "",
+        hash: req.query.hash?.toString() ?? "",
+        nonce: req.query.nonce?.toString() ?? "",
+        expires: req.query.expires?.toString() ?? "",
+        signature: req.query.signature?.toString() ?? "",
+      };
+
+      try {
+        await validate(params);
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          return res.status(err.status).render("serviceError", {
+            error: err.message,
+          });
+        }
+      }
+
+      res.render("resetPasswordForm", params);
+    } else if (req.method === "GET" && req.query.method) {
+      res.render("resetPassword", { method: req.query.method });
+    } else if (req.method === "GET") {
+      res.render("resetPasswordChoice", {});
+    } else if (req.method === "POST" && req.body.method) {
+      const { method, email, username } = req.body;
+
+      if (method === "email") {
+        if (!email) {
+          return res.status(400).render("serviceError", {
+            error: "Invalid email",
+          });
+        }
+      } else if (method === "username") {
+        if (!username) {
+          return res.status(400).render("serviceError", {
+            error: "Invalid username",
+          });
+        }
+      } else {
+        return res.status(400).render("serviceError", {
+          error: "Invalid recovery method: " + JSON.stringify(req.body),
+        });
+      }
+
+      let user;
+
+      if (method === "username") {
+        user = await UserService.getUserWithUsername(username);
+      } else if (method === "email") {
+        user = await UserService.getUserWithEmail(email);
+      }
+
+      if (!user) {
+        return res.status(400).render("serviceError", {
+          error: "User not found!",
+        });
+      }
+
+      const expires = Date.now() + 30 * 60 * 1000;
+      const nonce = crypto.randomBytes(16).toString("hex");
+
+      const hash = sign([user.passwordHash, nonce].join("|"));
+
+      const signature = sign([user.id.toString(), expires, nonce].join("|"));
+
+      const link = `${process.env.PUBLIC_URL}/reset-password?${new URLSearchParams({
+        user: user.id.toString(),
+        nonce,
+        expires: expires.toString(),
+        signature,
+        hash,
+      })}`;
+
+      await EmailService.sendEmail({
+        to: `${user.screenName} <${user.email}>`,
+        from: `TKO-äly ry <yllapito@tko-aly.fi>`,
+        subject: "Password reset",
+        text: `You can reset your password by using the link below. If you did not request a password reset, please ignore this message.\n\n\n${link}`,
+        html: `You can reset your password by using the link below. If you did not request a password reset, please ignore this message.<br/><br/><a href="${link}">Reset your password</a>`,
+      });
+
+      const redactEmail = (email: string) => {
+        let [head, tail] = email.split("@", 2);
+        head = head.replace(/(?<!^).(?!$)/g, "*");
+        const [tld, ...domain] = tail.split(".").reverse();
+        tail = `${domain
+          .reverse()
+          .join(".")
+          .replace(/(?<!^).(?!$)/g, "*")}.${tld}`;
+        return `${head}@${tail}`;
+      };
+
+      res.render("resetPasswordSent", {
+        email: redactEmail(user.email),
+      });
+    } else if (req.method === "POST" && req.body.password1 && req.body.password2) {
+      const params = {
+        user: req.body.user?.toString() ?? "",
+        hash: req.body.hash?.toString() ?? "",
+        nonce: req.body.nonce?.toString() ?? "",
+        expires: req.body.expires?.toString() ?? "",
+        signature: req.body.signature?.toString() ?? "",
+      };
+
+      try {
+        const user = await validate(params);
+
+        if (req.body.password1 !== req.body.password2) {
+          return res.status(404).render("serviceError", {
+            error: "Passwords do not match!",
+          });
+        }
+
+        await UserService.updateUser(user.id, {}, req.body.password1);
+
+        return res.render("resetPasswordSuccess");
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          return res.status(err.status).render("serviceError", {
+            error: err.message,
+          });
+        }
+      }
+    } else {
+      res.status(400).render("serviceError", {
+        error: "Invalid request!",
+      });
+    }
+  }
+
   public createRoutes(): express.Router {
     this.route.get(
       "/",
@@ -429,7 +619,10 @@ class LoginController implements Controller {
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.loginConfirm.bind(this),
     ); // @ts-expect-error
-    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this)); // @ts-expect-error
+    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this));
+    this.route.get("/reset-password", this.resetPassword.bind(this));
+    this.route.post("/reset-password", this.resetPassword.bind(this));
+    // @ts-expect-error
     this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
     return this.route;
   }

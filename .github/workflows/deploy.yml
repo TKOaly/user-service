@@ -3,6 +3,8 @@ name: user-service deployment
 on:
   release:
     types: [released]
+  push:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -48,6 +50,7 @@ jobs:
 
     - name: Trigger deployment
       uses: aurelien-baudet/workflow-dispatch@v2
+      if: ${{ github.event_name == 'release' }}
       with:
         token: ${{ secrets.DEPLOYMENT_PAT }}
         workflow: Bump Service
