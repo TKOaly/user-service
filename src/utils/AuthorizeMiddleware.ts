@@ -99,6 +99,7 @@ class AuthorizeMiddleware {
               deleted: 0,
               hy_staff: 1,
               hy_student: 1,
+              tktdt_student: 1,
             }),
           };
 

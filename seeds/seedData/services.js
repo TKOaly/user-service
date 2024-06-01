@@ -60,7 +60,7 @@ module.exports = [
     service_name: "website",
     display_name: "TKO-äly Website",
     redirect_url: "http://localhost:3060/api/auth/callback/tkoaly",
-    data_permissions: 55295,
+    data_permissions: 262143,
     created: new Date(),
     modified: new Date(),
     secret: "secret"

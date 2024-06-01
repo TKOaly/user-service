@@ -32,6 +32,7 @@ describe("User model", () => {
       deleted: 0,
       hy_staff: 1,
       hy_student: 0,
+      tktdt_student: 0,
     });
     done();
   });
@@ -126,6 +127,9 @@ describe("User model", () => {
     // HY student
     should.exist(userDatabaseObject.hy_student);
     userDatabaseObject.hy_student.should.equal(0);
+    // TKTDT student
+    should.exist(userDatabaseObject.tktdt_student);
+    userDatabaseObject.tktdt_student.should.equal(0);
     done();
   });
 

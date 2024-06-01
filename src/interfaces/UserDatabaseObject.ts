@@ -18,6 +18,7 @@ export default interface UserDatabaseObject {
   deleted: 0 | 1;
   hy_staff: 0 | 1;
   hy_student: 0 | 1;
+  tktdt_student: 0 | 1;
 }
 
 /**

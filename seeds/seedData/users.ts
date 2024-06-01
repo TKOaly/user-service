@@ -22,6 +22,7 @@ const users: UserDatabaseObject[] = [
     deleted: 0,
     hy_staff: 0,
     hy_student: 1,
+    tktdt_student: 1,
   },
   {
     id: 2,
@@ -43,6 +44,7 @@ const users: UserDatabaseObject[] = [
     deleted: 0,
     hy_staff: 1,
     hy_student: 0,
+    tktdt_student: 0,
   },
   {
     id: 3,
@@ -64,6 +66,7 @@ const users: UserDatabaseObject[] = [
     deleted: 0,
     hy_staff: 1,
     hy_student: 1,
+    tktdt_student: 1,
   },
   {
     id: 4,
@@ -85,6 +88,7 @@ const users: UserDatabaseObject[] = [
     deleted: 0,
     hy_staff: 0,
     hy_student: 1,
+    tktdt_student: 1,
   },
 ];
 
