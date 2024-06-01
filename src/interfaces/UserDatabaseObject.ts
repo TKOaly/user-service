@@ -24,7 +24,14 @@ export default interface UserDatabaseObject {
  * User database object with additional payment information
  */
 export interface UserPaymentDatabaseObject extends UserDatabaseObject {
-  paid: Date;
-  valid_until: Date;
-  membership_applied_for: string;
+  payment_id: number;
+  payment_payer_id: number;
+  payment_confirmer_id: number;
+  payment_created: Date;
+  payment_reference_number: string;
+  payment_amount: number;
+  payment_valid_until: Date;
+  payment_paid: Date;
+  payment_type: string;
+  payment_membership_applied_for: string;
 }

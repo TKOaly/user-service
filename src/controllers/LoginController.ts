@@ -573,7 +573,7 @@ class LoginController implements Controller {
           });
         }
 
-        await UserService.setPassword(user.id, req.body.password1);
+        await UserService.updateUser(user.id, {}, req.body.password1);
 
         return res.render("resetPasswordSuccess");
       } catch (err) {

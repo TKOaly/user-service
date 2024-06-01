@@ -9,6 +9,7 @@ import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
+import PricingService from "../services/PricingService";
 
 class PaymentController implements Controller {
   private route: express.Router;
@@ -21,13 +22,25 @@ class PaymentController implements Controller {
 
   public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
     try {
-      this.paymentValidator.validateCreate(req.body);
-      const paymentIds = await PaymentService.createPayment(req.body);
-      const payment = await PaymentService.fetchPayment(paymentIds[0]);
+      const endSeason = await PricingService.getSeasonInfo(PricingService.getSeason(req.body.seasons - 1));
+      const [price] = await PricingService.findPricings("current", req.body.membership_applied_for, req.body.seasons);
+
+      const newPayment = {
+        ...req.body,
+        valid_until: endSeason.end,
+        amount: price.price,
+      };
+
+      delete newPayment.seasons;
+
+      this.paymentValidator.validateCreate(newPayment);
+      const paymentIds = await PaymentService.createPayment(newPayment);
+      let payment = await PaymentService.fetchPayment(paymentIds[0]);
       if (payment.payment_type === "tilisiirto") {
         payment.generateReferenceNumber();
         // Set the generated reference number
         await PaymentService.updatePayment(payment.id, payment);
+        payment = await PaymentService.fetchPayment(paymentIds[0]);
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
@@ -134,7 +147,7 @@ class PaymentController implements Controller {
         await PaymentService.makeCashPaid(Number(req.params.id), req.authorization.user.id);
         return res.status(200).json(new ServiceResponse(null, "Success"));
       } else {
-        return res.status(304);
+        return res.status(400);
       }
     } catch (e) {
       Sentry.addBreadcrumb({
