@@ -361,21 +361,26 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
 
     updatedData = { ...pickBy(updatedData, v => v !== undefined) };
 
-    const error = "Forbidden modify action";
+    let allowed: (SelfEditKey | JVDataKey | AdminDataKey)[] = [];
+
     if (userId === modifiedBy.id) {
       // Self edit
       console.log("self edit");
       updatedData.id = userId;
-      checkModifyPermission(newData, allowedSelfEdit);
-    } else if (userId !== modifiedBy.id && modifiedBy.role === UserRoleString.Jasenvirkailija) {
-      // Jasenvirkailija edit
-      checkModifyPermission(newData, allowedJVEdit);
-    } else if (userId !== modifiedBy.id && modifiedBy.role === UserRoleString.Yllapitaja) {
-      // Yllapitaja edit
-      checkModifyPermission(newData, allowedAdminEdit);
-    } else {
-      throw new ServiceError(403, error);
+      allowed = [...allowed, ...allowedSelfEdit];
     }
+
+    if (modifiedBy.role === UserRoleString.Jasenvirkailija) {
+      // Jasenvirkailija edit
+      allowed = [...allowed, ...allowedJVEdit];
+    }
+
+    if (modifiedBy.role === UserRoleString.Yllapitaja) {
+      // Yllapitaja edit
+      allowed = [...allowed, ...allowedAdminEdit];
+    }
+
+    checkModifyPermission(newData, allowed);
 
     if (errors.length > 0) {
       throw new ServiceError(400, "Validation errors: " + errors.join(", "));
