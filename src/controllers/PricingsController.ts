@@ -1,6 +1,6 @@
 import express, { RequestHandler, Router } from "express";
 import PricingDao from "../dao/PricingDao";
-import { MembershipType, PUBLIC_MEMBERSIHP_TYPES } from "../enum/Membership";
+import { MembershipType } from "../enum/Membership";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import PricingService, { Season } from "../services/PricingService";
@@ -12,7 +12,7 @@ import { compareRoles } from "../utils/UserHelpers";
 type IASRequestHandler = (req: IASRequest, res: express.Response, next: express.NextFunction) => void;
 
 const isMembershipType = (value: string): value is MembershipType =>
-  (PUBLIC_MEMBERSIHP_TYPES as string[]).includes(value);
+  ['jasen', 'kannatusjasen', 'kunniajasen', 'ulkojasen'].includes(value);
 
 type UpdateSeasonPricesBody = {
   clear?: boolean;
