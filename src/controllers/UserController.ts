@@ -232,7 +232,7 @@ class UserController implements Controller {
           "Success",
         ),
       );
-    } catch (err) {
+    } catch (err: any) {
       Sentry.addBreadcrumb({
         message: "Error creating user",
       });
