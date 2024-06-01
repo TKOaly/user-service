@@ -12,7 +12,7 @@ import { compareRoles } from "../utils/UserHelpers";
 type IASRequestHandler = (req: IASRequest, res: express.Response, next: express.NextFunction) => void;
 
 const isMembershipType = (value: string): value is MembershipType =>
-  ['jasen', 'kannatusjasen', 'kunniajasen', 'ulkojasen'].includes(value);
+  ["jasen", "kannatusjasen", "kunniajasen", "ulkojasen"].includes(value);
 
 type UpdateSeasonPricesBody = {
   clear?: boolean;
