@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     });
   }
 
-  await knex.schema.createTable("user_ids", (table) => {
+  await knex.schema.createTable("user_ids", table => {
     table.increments("id").unique().nullable().unsigned();
     table.string("email").unique().nullable();
     table.string("username").unique().nullable();
@@ -22,7 +22,9 @@ export async function up(knex: Knex): Promise<void> {
 
   await Promise.all(
     users.map(async user => {
-      const { id, last_seq: _, ...fields } = user;
+      const { id, ...fields } = user;
+
+      delete fields.last_seq;
 
       await knex("user_ids").insert({ id, username: fields.username, email: fields.email });
 

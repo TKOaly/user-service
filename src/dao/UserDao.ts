@@ -2,7 +2,6 @@ import Knex from "knex";
 import Dao from "../interfaces/Dao";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
-import _ from "lodash";
 
 const tableName = "users";
 
@@ -143,24 +142,24 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public async reserveId(id?: number) {
-    const [result] = await knexInstance('user_ids').insert({ id });
+    const [result] = await knexInstance("user_ids").insert({ id });
     return result;
   }
 
   public async reserveEmail(email: string) {
-    await knexInstance('user_ids').insert({ email });
+    await knexInstance("user_ids").insert({ email });
   }
 
   public async releaseEmail(email: string) {
-    await knexInstance('user_ids').delete().where({ email });
+    await knexInstance("user_ids").delete().where({ email });
   }
 
   public async reserveUsername(username: string) {
-    await knexInstance('user_ids').insert({ username });
+    await knexInstance("user_ids").insert({ username });
   }
 
   public async releaseUsername(username: string) {
-    await knexInstance('user_ids').delete().where({ username });
+    await knexInstance("user_ids").delete().where({ username });
   }
 
   public save(

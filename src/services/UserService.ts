@@ -112,7 +112,7 @@ class UserService {
       await UserDao.reserveUsername(username);
       return true;
     } catch (err) {
-      if ('code' in err && err.code === 'ER_DUP_ENTRY') {
+      if ("code" in err && err.code === "ER_DUP_ENTRY") {
         return false;
       }
 
@@ -125,7 +125,7 @@ class UserService {
       await UserDao.reserveEmail(email);
       return true;
     } catch (err) {
-      if ('code' in err && err.code === 'ER_DUP_ENTRY') {
+      if ("code" in err && err.code === "ER_DUP_ENTRY") {
         return false;
       }
 
@@ -134,20 +134,20 @@ class UserService {
   }
 
   public async createUser(userData: User, rawPassword: string): Promise<number> {
-    let usernameCaptured: boolean = false;
-    let emailCaptured: boolean = false;
+    let usernameCaptured = false;
+    let emailCaptured = false;
 
     try {
       emailCaptured = await this.tryReserveEmail(userData.email);
 
       if (!emailCaptured) {
-        throw new ServiceError(400, 'Email address already in use!');
+        throw new ServiceError(400, "Email address already in use!");
       }
 
       usernameCaptured = await this.tryReserveUsername(userData.username);
 
       if (!usernameCaptured) {
-        throw new ServiceError(400, 'Username already in use!');
+        throw new ServiceError(400, "Username already in use!");
       }
 
       userData.id = await UserDao.reserveId();
@@ -159,10 +159,15 @@ class UserService {
 
       const nats = await NatsService.get();
 
-      await nats.publish(`members.${userData.id}`, {
-        type: 'create',
-        fields: userData.getDatabaseObject(),
-      }, undefined, true);
+      await nats.publish(
+        `members.${userData.id}`,
+        {
+          type: "create",
+          fields: userData.getDatabaseObject(),
+        },
+        undefined,
+        true,
+      );
 
       return userData.id;
     } catch (err) {
@@ -196,7 +201,7 @@ class UserService {
         emailReserved = await this.tryReserveEmail(updatedUser.email);
 
         if (!emailReserved) {
-          throw new ServiceError(400, 'Email already in use!');
+          throw new ServiceError(400, "Email already in use!");
         }
       }
 
@@ -204,7 +209,7 @@ class UserService {
         usernameReserved = await this.tryReserveUsername(updatedUser.username);
 
         if (!usernameReserved) {
-          throw new ServiceError(400, 'Username already in use!');
+          throw new ServiceError(400, "Username already in use!");
         }
       }
 
@@ -233,7 +238,7 @@ class UserService {
       const opts: Partial<JetStreamPublishOptions> = {
         expect: {
           lastSubjectSequence: user.lastSeq,
-        }
+        },
       };
 
       const changedFields = Object.entries(fields).filter(
@@ -268,11 +273,11 @@ class UserService {
       return 1;
     } catch (err) {
       if (usernameReserved) {
-        await UserDao.releaseUsername(updatedUser.username!); 
+        await UserDao.releaseUsername(updatedUser.username!);
       }
 
       if (emailReserved) {
-        await UserDao.releaseEmail(updatedUser.email!); 
+        await UserDao.releaseEmail(updatedUser.email!);
       }
 
       throw err;
