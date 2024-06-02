@@ -6,7 +6,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    container: node:18
+    container: docker
 
     services:
       nats:
