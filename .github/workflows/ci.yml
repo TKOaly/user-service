@@ -6,16 +6,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    container: docker
-
-    services:
-      nats:
-        image: nats
-
-    env:
-      NATS_HOST: nats
-      NATS_USER: ruser
-      NATS_PASSWORD: T0pS3cr3t
  
     steps:
     - uses: actions/checkout@v1
