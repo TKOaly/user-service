@@ -4,7 +4,6 @@ import equals from "validator/lib/equals";
 import UserRoleString from "../enum/UserRoleString";
 import Validator from "../interfaces/Validator";
 import User from "../models/User";
-import UserService from "../services/UserService";
 import ServiceError from "../utils/ServiceError";
 import { pickBy } from "lodash";
 import { isString, isBoolean, isObject } from "./Validators";
@@ -32,7 +31,8 @@ export type UserDataKey =
   | "isHyStaff"
   | "isHyStudent"
   | "isTKTDTStudent"
-  | "isTKTL";
+  | "isTKTL"
+  | "lastSeq";
 
 export type UserDataKeyWithRole = UserDataKey | "role";
 export type UserDataKeyWithMembership = UserDataKey | "membership";
@@ -87,6 +87,7 @@ export const userDataKeys: UserDataKey[] = [
   "isHyStudent",
   "isTKTL",
   "isTKTDTStudent",
+  "lastSeq",
 ];
 
 export const hasForeignKeys = (obj: object, ownKeys: UserDataKey[]) => {
@@ -223,11 +224,6 @@ export const isValidUser = (entity: unknown): entity is UserData => {
   return true;
 };
 
-export const checkEmailAvailability = async (email: string) => {
-  const emailAvailable = await UserService.checkEmailAvailability(email);
-  return emailAvailable;
-};
-
 export const checkEmailValidity = (email: string) => {
   if (
     !isEmail(email) ||
@@ -242,32 +238,13 @@ export const checkEmailValidity = (email: string) => {
   return true;
 };
 
-const checkUsernameAvailability = async (username: string) => {
-  // Test username
-  const usernameAvailable = await UserService.checkUsernameAvailability(username.trim());
-  return usernameAvailable;
-};
-
 const booleanToInt = (val: boolean): 1 | 0 => (val ? 1 : 0);
-
-const stringsAreEqual = (str1: string, str2: string) => str1.trim().toLowerCase() === str2.trim().toLowerCase();
 
 export default class UserValidator implements Validator<UserCreateModel, UserUpdateModel> {
   public async validateCreate(u: UserData) {
-    const usernameAvailable = await checkUsernameAvailability(u.username);
-    if (!usernameAvailable) {
-      throw new ServiceError(400, "Username is already taken.");
-    }
-
     // Test email
     if (!checkEmailValidity(u.email)) {
       throw new ServiceError(400, "Malformed email address.");
-    }
-
-    // Test email for taken
-    const emailAvailable = await checkEmailAvailability(u.email);
-    if (!emailAvailable) {
-      throw new ServiceError(400, "Email address is already taken.");
     }
 
     if (!equals(u.password1, u.password2)) {
@@ -297,6 +274,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
         password_hash: "",
         salt: "",
         tktdt_student: booleanToInt(u.isTKTDTStudent),
+        last_seq: u.lastSeq,
       }),
       password: u.password1,
     };
@@ -304,29 +282,11 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
 
   public async validateUpdate(userId: number, newData: Partial<Pick<UserCreateModel, AdminDataKey>>, modifiedBy: User) {
     let errors: string[] = [];
-    const oldUser = await UserService.fetchUser(userId);
-    if (
-      newData.username !== undefined &&
-      !stringsAreEqual(newData.username, modifiedBy.username) &&
-      !stringsAreEqual(newData.username, oldUser.username)
-    ) {
-      const usernameAvailable = await checkUsernameAvailability(newData.username);
-
-      if (!usernameAvailable) {
-        errors = [...errors, "Username already taken"];
-      }
-    }
 
     // New email address
     if (newData.email !== undefined) {
       if (!checkEmailValidity(newData.email)) {
         errors = [...errors, "Email address is malformed"];
-      }
-      if (!stringsAreEqual(newData.email, oldUser.email)) {
-        const emailAvailable = await checkEmailAvailability(newData.email);
-        if (!emailAvailable) {
-          errors = [...errors, "Email address is already taken"];
-        }
       }
     }
 

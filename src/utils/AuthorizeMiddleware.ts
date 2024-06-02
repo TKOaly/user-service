@@ -100,6 +100,7 @@ class AuthorizeMiddleware {
               hy_staff: 1,
               hy_student: 1,
               tktdt_student: 1,
+              last_seq: 0,
             }),
           };
 

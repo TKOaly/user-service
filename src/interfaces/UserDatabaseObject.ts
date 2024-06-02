@@ -19,6 +19,7 @@ export default interface UserDatabaseObject {
   hy_staff: 0 | 1;
   hy_student: 0 | 1;
   tktdt_student: 0 | 1;
+  last_seq: number;
 }
 
 /**

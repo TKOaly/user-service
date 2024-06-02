@@ -131,6 +131,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "hy_student"
         | "hy_staff"
         | "tktdt_student"
+        | "last_seq"
       >
     >,
   ): PromiseLike<number> {
@@ -139,6 +140,27 @@ class UserDao implements Dao<UserDatabaseObject> {
       modified: new Date(),
     };
     return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).update(savedObj).where({ id: entityId }));
+  }
+
+  public async reserveId(id?: number) {
+    const [result] = await knexInstance('user_ids').insert({ id });
+    return result;
+  }
+
+  public async reserveEmail(email: string) {
+    await knexInstance('user_ids').insert({ email });
+  }
+
+  public async releaseEmail(email: string) {
+    await knexInstance('user_ids').delete().where({ email });
+  }
+
+  public async reserveUsername(username: string) {
+    await knexInstance('user_ids').insert({ username });
+  }
+
+  public async releaseUsername(username: string) {
+    await knexInstance('user_ids').delete().where({ username });
   }
 
   public save(
@@ -163,6 +185,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "hy_student"
         | "hy_staff"
         | "tktdt_student"
+        | "last_seq"
       >
     >,
   ): PromiseLike<number[]> {
@@ -171,7 +194,7 @@ class UserDao implements Dao<UserDatabaseObject> {
       created: new Date(),
       modified: new Date(),
     };
-    return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).insert(_.omit(savedObj, "id")));
+    return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).insert(savedObj));
   }
 }
 

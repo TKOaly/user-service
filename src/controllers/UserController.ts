@@ -168,7 +168,12 @@ class UserController implements Controller {
         req.body,
         req.authorization.user,
       );
-      const update = await UserService.updateUser(Number(req.params.id), transformedBody, req.body.password1 || null);
+      const update = await UserService.updateUser(
+        Number(req.params.id),
+        transformedBody,
+        req.body.password1 || null,
+        req.authorization.user,
+      );
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));
       } else {

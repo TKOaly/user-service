@@ -33,6 +33,7 @@ export default class User {
   public isHyStaff: boolean;
   public isHyStudent: boolean;
   public isTKTDTStudent: boolean;
+  public lastSeq: number;
 
   constructor(userDatabaseObject: UserDatabaseObject) {
     this.id = userDatabaseObject.id;
@@ -55,6 +56,7 @@ export default class User {
     this.isHyStaff = userDatabaseObject.hy_staff === 1;
     this.isHyStudent = userDatabaseObject.hy_student === 1;
     this.isTKTDTStudent = userDatabaseObject.tktdt_student === 1;
+    this.lastSeq = userDatabaseObject.last_seq;
   }
 
   public removeSensitiveInformation(): User {
@@ -101,6 +103,7 @@ export default class User {
       hy_staff: this.isHyStaff ? 1 : 0,
       hy_student: this.isHyStudent ? 1 : 0,
       tktdt_student: this.isTKTDTStudent ? 1 : 0,
+      last_seq: this.lastSeq,
     };
   }
 }
