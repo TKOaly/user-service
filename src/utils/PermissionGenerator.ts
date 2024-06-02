@@ -25,6 +25,7 @@ class PermissionGenerator {
     hy_staff: Math.pow(2, 14),
     hy_student: Math.pow(2, 15),
     tktdt_student: Math.pow(2, 16),
+    last_seq: NOT_ACTUALLY_AVAILABLE,
   };
 
   private PermissionByte = 0;
