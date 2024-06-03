@@ -191,6 +191,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -217,6 +218,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -243,6 +245,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -270,6 +273,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -296,6 +300,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .catch((err: ServiceError) => {
           should.exist(err.message);
@@ -322,6 +327,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
+          lastSeq: 0,
         })
         .then(function () {
           done();

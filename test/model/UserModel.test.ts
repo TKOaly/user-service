@@ -33,6 +33,7 @@ describe("User model", () => {
       hy_staff: 1,
       hy_student: 0,
       tktdt_student: 0,
+      last_seq: 0,
     });
     done();
   });

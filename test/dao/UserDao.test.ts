@@ -226,6 +226,7 @@ describe("UserDao", () => {
       hy_staff: 1,
       hy_student: 0,
       tktdt_student: 0,
+      last_seq: 0,
     };
 
     // @ts-expect-error
@@ -258,6 +259,7 @@ describe("UserDao", () => {
     dbUser.hy_staff.should.equal(newUser.hy_staff);
     dbUser.hy_student.should.equal(newUser.hy_student);
     dbUser.tktdt_student.should.equal(newUser.tktdt_student);
+    dbUser.last_seq.should.equal(newUser.last_seq);
   });
 
   it("Returns a single user with findOne()", done => {
