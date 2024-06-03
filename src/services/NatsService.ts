@@ -204,6 +204,7 @@ export default class NatsService {
       options.abort.addEventListener("abort", () => (aborted = true));
     }
 
+    // eslint-disable-next-line no-unmodified-loop-condition
     while (!aborted) {
       for await (const message of await c2.fetch()) {
         if (aborted) {

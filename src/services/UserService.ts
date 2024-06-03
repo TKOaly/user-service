@@ -325,10 +325,10 @@ class UserService {
       return this.abortController;
     }
 
-    const promise = new Promise<AbortController>(async resolve => {
-      const controller = new AbortController();
-      const nats = await NatsService.get();
+    const controller = new AbortController();
+    const nats = await NatsService.get();
 
+    const promise = new Promise<AbortController>(resolve => {
       const handler = async ({ type, fields }: any, msg: JsMsg) => {
         const userId = parseInt(msg.subject.split(".")[1], 10);
 

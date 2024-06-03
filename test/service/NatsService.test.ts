@@ -29,7 +29,7 @@ describe("NatsService", () => {
 
     const sent: Promise<number> = new Promise(resolve => (setSent = resolve));
 
-    const promise = new Promise<void>(async resolve => {
+    const promise = new Promise<void>(resolve => {
       nats.subscribe(async (payload: unknown, msg) => {
         const sentSeq = await sent;
 
