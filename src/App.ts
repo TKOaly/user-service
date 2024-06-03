@@ -1,6 +1,18 @@
 import dotenv from "dotenv";
 import "express-async-errors";
 
+// Temporary polyfill for the Awaited type.
+// Remove when we are running on a more recent TypeScript version.
+declare global {
+  type Awaited<T> = T extends null | undefined
+    ? T
+    : T extends object & { then(onfulfilled: infer F): any }
+    ? F extends (value: infer V, ...args: any) => any
+      ? Awaited<V>
+      : never
+    : T
+}
+
 import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
 import express from "express";
