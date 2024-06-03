@@ -1,10 +1,6 @@
 import "mocha";
 import { assert } from "chai";
 import NatsService from "../../src/services/NatsService";
-import { headers, JsHeaders } from "nats";
-
-const rollup = headers();
-rollup.append(JsHeaders.RollupHdr, JsHeaders.RollupValueAll);
 
 describe("NatsService", () => {
   beforeEach(async () => {
@@ -46,7 +42,7 @@ describe("NatsService", () => {
       });
     });
 
-    const ack = await nats.publish("members.test", { data: 321 }, { headers: rollup });
+    const ack = await nats.publish("members.test", { data: 321 });
     setSent(ack.seq);
 
     await promise;
