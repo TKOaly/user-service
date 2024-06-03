@@ -186,8 +186,8 @@ export default class NatsService {
   public async subscribe(
     handler: (data: unknown, message: JsMsg) => Promise<boolean | void> | boolean | void,
     options?: {
-      onReady?: () => void,
-      abort?: AbortSignal,
+      onReady?: () => void;
+      abort?: AbortSignal;
     },
   ) {
     const js = this.conn.jetstream();
@@ -201,7 +201,7 @@ export default class NatsService {
     let aborted = false;
 
     if (options?.abort) {
-      options.abort.addEventListener('abort', () => aborted = true);
+      options.abort.addEventListener("abort", () => (aborted = true));
     }
 
     while (!aborted) {

@@ -16,5 +16,5 @@ exports.seed = async function (knex: Knex): Promise<void> {
   await knex("privacy_policy_consent_data").del();
   await knex("users").del();
   await knex("users").insert(users);
-  await knex("user_ids").insert(_.map(_.pick(['id', 'username', 'email']), users))
+  await knex("user_ids").insert(_.map(_.pick(["id", "username", "email"]), users));
 };

@@ -19,7 +19,7 @@ describe("NatsService", () => {
 
   it("Should be able to publish messages", async () => {
     const nats = await NatsService.get();
-    await nats.publish('members.test', { data: 123 });
+    await nats.publish("members.test", { data: 123 });
   });
 
   it("Should be able to receive published messages", async () => {
@@ -27,9 +27,9 @@ describe("NatsService", () => {
 
     let setSent!: (seq: number) => void;
 
-    let sent: Promise<number> = new Promise((resolve) => setSent = resolve);
+    const sent: Promise<number> = new Promise(resolve => (setSent = resolve));
 
-    const promise = new Promise<void>(async (resolve) => {
+    const promise = new Promise<void>(async resolve => {
       nats.subscribe(async (payload: unknown, msg) => {
         const sentSeq = await sent;
 
@@ -46,20 +46,20 @@ describe("NatsService", () => {
       });
     });
 
-    const ack = await nats.publish('members.test', { data: 321 }, { headers: rollup });
+    const ack = await nats.publish("members.test", { data: 321 }, { headers: rollup });
     setSent(ack.seq);
 
     await promise;
   });
 
-  it('Should be able to fetch message history', async () => {
+  it("Should be able to fetch message history", async () => {
     const nats = await NatsService.get();
 
     for (let i = 0; i < 5; i++) {
-      await nats.publish('members.test', { data: i });
+      await nats.publish("members.test", { data: i });
     }
 
-    const messages = await nats.fetch('members.test');
+    const messages = await nats.fetch("members.test");
 
     assert.lengthOf(messages, 5);
 
@@ -68,7 +68,7 @@ describe("NatsService", () => {
       assert.deepEqual(data, { data: i });
 
       if (i > 0) {
-        assert.isAtLeast(messages[i].info.timestampNanos, messages[i-1].info.timestampNanos);
+        assert.isAtLeast(messages[i].info.timestampNanos, messages[i - 1].info.timestampNanos);
       }
     }
   });

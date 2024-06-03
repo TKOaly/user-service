@@ -325,7 +325,7 @@ class UserService {
       return this.abortController;
     }
 
-    const promise = new Promise<AbortController>(async (resolve) => {
+    const promise = new Promise<AbortController>(async resolve => {
       const controller = new AbortController();
       const nats = await NatsService.get();
 
@@ -366,7 +366,7 @@ class UserService {
       });
     });
 
-    promise.catch(async (err) => {
+    promise.catch(async err => {
       console.error(err);
       await this.restart();
       return Promise.reject(err);

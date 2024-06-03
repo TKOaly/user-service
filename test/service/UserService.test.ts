@@ -7,7 +7,7 @@ import { knexInstance as knex } from "../../src/Db";
 import ServiceError from "../../src/utils/ServiceError";
 import _ from "lodash";
 
-describe('UserService', () => {
+describe("UserService", () => {
   // Roll back
   beforeEach(async () => {
     console.log("ROLLBACK!");
@@ -32,7 +32,7 @@ describe('UserService', () => {
     });
   });
 
-  it('Should be possible to create an user', async () => {
+  it("Should be possible to create an user", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -57,10 +57,10 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    await UserService.createUser(user, 'pass');
+    await UserService.createUser(user, "pass");
   });
 
-  it('Created user should be fetchable', async () => {
+  it("Created user should be fetchable", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -85,7 +85,7 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    const id = await UserService.createUser(user, 'pass');
+    const id = await UserService.createUser(user, "pass");
     const created = await UserService.fetchUser(id);
 
     assert.equal(user.username, created.username);
@@ -103,7 +103,7 @@ describe('UserService', () => {
     assert.equal(user.isTKTDTStudent, created.isTKTDTStudent);
   });
 
-  it('Should not be possible to use the same username twice', async () => {
+  it("Should not be possible to use the same username twice", async () => {
     const userDetails = {
       id: 0,
       username: "testuser",
@@ -130,22 +130,22 @@ describe('UserService', () => {
 
     const user = new User(userDetails);
 
-    await UserService.createUser(user, 'pass');
+    await UserService.createUser(user, "pass");
 
     let success = false;
 
     try {
-      await UserService.createUser(new User({ ...userDetails, email: 'user2@test.com' }), 'pass');
+      await UserService.createUser(new User({ ...userDetails, email: "user2@test.com" }), "pass");
       success = true;
     } catch (err) {
       assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, 'Username already in use!');
+      assert.equal(err.message, "Username already in use!");
     }
 
-    assert.isFalse(success, 'Should not succeed!');
+    assert.isFalse(success, "Should not succeed!");
   });
 
-  it('Should not be possible to use the same username twice', async () => {
+  it("Should not be possible to use the same username twice", async () => {
     const userDetails = {
       id: 0,
       username: "testuser",
@@ -172,22 +172,22 @@ describe('UserService', () => {
 
     const user = new User(userDetails);
 
-    await UserService.createUser(user, 'pass');
+    await UserService.createUser(user, "pass");
 
     let success = false;
 
     try {
-      await UserService.createUser(new User({ ...userDetails, username: 'testuser2' }), 'pass');
+      await UserService.createUser(new User({ ...userDetails, username: "testuser2" }), "pass");
       success = true;
     } catch (err) {
       assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, 'Email address already in use!');
+      assert.equal(err.message, "Email address already in use!");
     }
 
-    assert.isFalse(success, 'Should not succeed!');
+    assert.isFalse(success, "Should not succeed!");
   });
 
-  it('Should be possible to update user details', async () => {
+  it("Should be possible to update user details", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -212,7 +212,7 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    const id = await UserService.createUser(user, 'pass');
+    const id = await UserService.createUser(user, "pass");
     const created = await UserService.fetchUser(id);
 
     assert.equal(user.username, created.username);
@@ -255,10 +255,10 @@ describe('UserService', () => {
 
     const updated = await UserService.fetchUser(id);
 
-    assert.hasAllKeys(_.omit(updated.getDatabaseObject(), ['id', 'last_seq']), updateData);
+    assert.hasAllKeys(_.omit(updated.getDatabaseObject(), ["id", "last_seq"]), updateData);
   });
 
-  it('Should not be possible to change user\'s email to an email already in use', async () => {
+  it("Should not be possible to change user's email to an email already in use", async () => {
     const user2 = new User({
       id: 0,
       username: "testuser2",
@@ -283,7 +283,7 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    await UserService.createUser(user2, 'pass');
+    await UserService.createUser(user2, "pass");
 
     const user = new User({
       id: 0,
@@ -309,7 +309,7 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    const id = await UserService.createUser(user, 'pass');
+    const id = await UserService.createUser(user, "pass");
 
     const updateData = {
       email: "user2@test.com",
@@ -322,13 +322,13 @@ describe('UserService', () => {
       success = true;
     } catch (err) {
       assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, 'Email address in use!');
+      assert.equal(err.message, "Email address in use!");
     }
 
-    assert.isFalse(success, 'Should not succeed!');
+    assert.isFalse(success, "Should not succeed!");
   });
 
-  it('Should not be possible to change user\'s username to an username already in use', async () => {
+  it("Should not be possible to change user's username to an username already in use", async () => {
     const user2 = new User({
       id: 0,
       username: "testuser2",
@@ -353,7 +353,7 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    await UserService.createUser(user2, 'pass');
+    await UserService.createUser(user2, "pass");
 
     const user = new User({
       id: 0,
@@ -379,10 +379,10 @@ describe('UserService', () => {
       last_seq: 0,
     });
 
-    const id = await UserService.createUser(user, 'pass');
+    const id = await UserService.createUser(user, "pass");
 
     const updateData = {
-      username: "testuser2"
+      username: "testuser2",
     } as const;
 
     let success = false;
@@ -392,9 +392,9 @@ describe('UserService', () => {
       success = true;
     } catch (err) {
       assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, 'Username already in use!');
+      assert.equal(err.message, "Username already in use!");
     }
 
-    assert.isFalse(success, 'Should not succeed!');
+    assert.isFalse(success, "Should not succeed!");
   });
 });
