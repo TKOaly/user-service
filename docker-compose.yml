@@ -20,6 +20,7 @@ services:
       - 8081:8080
   nats:
     image: nats
+    command: --jetstream
   web:
     build:
       context: .
