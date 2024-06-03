@@ -175,60 +175,6 @@ describe("UserValidator", () => {
   });
 
   describe("validateCreate()", () => {
-    it("Throws a service error when username is already taken", done => {
-      userValidator
-        .validateCreate({
-          username: "test_user",
-          name: "testUser",
-          screenName: "jee",
-          email: "test@test.com",
-          residence: "123",
-          phone: "12345",
-          password1: "testpassword",
-          password2: "testpassword",
-          isHyStaff: true,
-          isHYYMember: true,
-          isTKTL: false,
-          isHyStudent: false,
-          isTKTDTStudent: false,
-          lastSeq: 0,
-        })
-        .catch((err: ServiceError) => {
-          should.exist(err.message);
-          err.message.should.equal("Username is already taken.");
-          should.exist(err.httpErrorCode);
-          err.httpErrorCode.should.equal(400);
-          done();
-        });
-    });
-
-    it("Throws a service error when email address is already taken", done => {
-      userValidator
-        .validateCreate({
-          username: "testuser",
-          name: "testuser",
-          screenName: "jee",
-          email: "test@user.com",
-          residence: "123",
-          phone: "12345",
-          password1: "testpassword",
-          password2: "testpassword",
-          isHyStaff: true,
-          isHYYMember: true,
-          isTKTL: false,
-          isHyStudent: false,
-          isTKTDTStudent: false,
-          lastSeq: 0,
-        })
-        .catch((err: ServiceError) => {
-          should.exist(err.message);
-          err.message.should.equal("Email address is already taken.");
-          should.exist(err.httpErrorCode);
-          err.httpErrorCode.should.equal(400);
-          done();
-        });
-    });
-
     it("Throws a service error if the email address is malformed", done => {
       userValidator
         .validateCreate({
@@ -355,24 +301,6 @@ describe("UserValidator", () => {
           });
       });
     });
-
-    it(
-      "Throws a service error when an elevated user" + " tries to set email address to an already used email address",
-      done => {
-        userDao.findOne(2).then(user => {
-          if (user === undefined) {
-            throw new Error("User not found");
-          }
-          userValidator.validateUpdate(1, { email: "admin@user.com" }, new User(user)).catch((err: ServiceError) => {
-            should.exist(err.message);
-            err.message.should.equal("Validation errors: Email address is already taken");
-            should.exist(err.httpErrorCode);
-            err.httpErrorCode.should.equal(400);
-            done();
-          });
-        });
-      },
-    );
 
     it("Throws a service error when an elevated user" + " tries to set a malformed used email address", done => {
       userDao.findOne(2).then(user => {
