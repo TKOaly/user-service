@@ -322,7 +322,7 @@ describe("UserService", () => {
       success = true;
     } catch (err) {
       assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, "Email address in use!");
+      assert.equal(err.message, "Email already in use!");
     }
 
     assert.isFalse(success, "Should not succeed!");
