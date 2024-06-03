@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
     });
   }
 
-  await knex.schema.createTable("user_ids", table => {
+  await knex.schema.createTableIfNotExists("user_ids", table => {
     table.increments("id").unique().nullable().unsigned();
     table.string("email").unique().nullable();
     table.string("username").unique().nullable();
