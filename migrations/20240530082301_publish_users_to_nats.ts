@@ -10,13 +10,15 @@ export async function up(knex: Knex): Promise<void> {
     });
   }
 
-  await knex.schema.createTableIfNotExists("user_ids", table => {
-    table.increments("id").unique().nullable().unsigned();
-    table.string("email").unique().nullable();
-    table.string("username").unique().nullable();
-  });
-
-  await knex("user_ids").truncate();
+  if (await knex.schema.hasTable("user_ids")) {
+    await knex("user_ids").truncate();
+  } else {
+    await knex.schema.createTable("user_ids", table => {
+      table.increments("id").unique().nullable().unsigned();
+      table.string("email").unique().nullable();
+      table.string("username").unique().nullable();
+    });
+  }
 
   const conn = await NatsService.get();
 
