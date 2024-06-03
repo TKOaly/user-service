@@ -1,4 +1,5 @@
 import type Knex from "knex";
+import _ from "lodash/fp";
 import users from "./seedData/users";
 
 exports.seed = async function (knex: Knex): Promise<void> {
@@ -14,5 +15,6 @@ exports.seed = async function (knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex("privacy_policy_consent_data").del();
   await knex("users").del();
-  return await knex("users").insert(users);
+  await knex("users").insert(users);
+  await knex("user_ids").insert(_.map(_.pick(['id', 'username', 'email']), users))
 };
