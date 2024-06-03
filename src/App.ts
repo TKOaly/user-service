@@ -24,6 +24,7 @@ import morgan from "morgan";
 import { Environment } from "./Db";
 import * as knexfile from "../knexfile";
 import { generateApiRoute } from "./utils/ApiRoute";
+import UserService from "./services/UserService";
 
 // Temporary polyfill for the Awaited type.
 // Remove when we are running on a more recent TypeScript version.
@@ -131,5 +132,7 @@ app.use((err: { code?: string }, req: express.Request, res: express.Response, ne
     errorId: (res as any)?.sentry,
   });
 });
+
+UserService.listen();
 
 export default app;

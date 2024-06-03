@@ -8,7 +8,7 @@ import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
 import NatsService from "../services/NatsService";
-import { JetStreamPublishOptions } from "nats";
+import { JetStreamPublishOptions, JsMsg } from "nats";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -301,6 +301,79 @@ class UserService {
     const user = new User(dbUser);
     return user;
   }
+
+  private abortController: AbortController | null = null;
+
+  public async restart() {
+    await this.stop();
+    return await this.listen();
+  }
+
+  public async stop() {
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
+  }
+
+  /**
+   * Taustaprosessi, joka kuuntelee jäsentieto-streamiin julkaistuja viestejä
+   * ja käsittelee ne.
+   */
+  public async listen() {
+    if (this.abortController) {
+      return this.abortController;
+    }
+
+    const promise = new Promise<AbortController>(async (resolve) => {
+      const controller = new AbortController();
+      const nats = await NatsService.get();
+
+      const handler = async ({ type, fields }: any, msg: JsMsg) => {
+        const userId = parseInt(msg.subject.split(".")[1], 10);
+
+        if (type === "set" || type === "import") {
+          // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
+
+          if (fields.created) {
+            // Tämä piti tehdä jostain syystä. Syyttäkää user-serviceä älkääkä NATSia.
+            fields.created = new Date(fields.created);
+          }
+
+          // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
+          await UserDao.update(userId, fields);
+        } else if (type === "create") {
+          await UserDao.save({
+            ...fields,
+            id: userId,
+            last_seq: msg.seq,
+          });
+
+          return;
+        }
+
+        // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
+        // vaikka viesti ei olisikaan meille relevantti.
+        await UserDao.update(userId, { last_seq: msg.seq });
+      };
+
+      nats.subscribe(handler, {
+        onReady: () => {
+          this.abortController = controller;
+          resolve(controller);
+        },
+        abort: controller.signal,
+      });
+    });
+
+    promise.catch(async (err) => {
+      console.error(err);
+      await this.restart();
+      return Promise.reject(err);
+    });
+
+    return promise;
+  }
 }
 
 async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; password: string }> {
@@ -312,43 +385,5 @@ async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; pa
 }
 
 const service = new UserService();
-
-/**
- * Taustaprosessi, joka kuuntelee jäsentieto-streamiin julkaistuja viestejä
- * ja käsittelee ne.
- */
-const start = async () => {
-  const nats = await NatsService.get();
-
-  nats.subscribe(async ({ type, fields }: any, msg) => {
-    const userId = parseInt(msg.subject.split(".")[1], 10);
-
-    if (type === "set" || type === "import") {
-      // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
-
-      if (fields.created) {
-        // Tämä piti tehdä jostain syystä. Syyttäkää user-serviceä älkääkä NATSia.
-        fields.created = new Date(fields.created);
-      }
-
-      // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
-      await UserDao.update(userId, fields);
-    } else if (type === "create") {
-      await UserDao.save({
-        ...fields,
-        id: userId,
-        last_seq: msg.seq,
-      });
-
-      return;
-    }
-
-    // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
-    // vaikka viesti ei olisikaan meille relevantti.
-    await UserDao.update(userId, { last_seq: msg.seq });
-  });
-};
-
-start();
 
 export default service;

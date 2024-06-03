@@ -59,6 +59,10 @@ export default class NatsService {
       pass,
     });
 
+    await this.setup();
+  }
+
+  private async setup() {
     // Luodaan tarvittavat JetStream streamit ja consumerit.
 
     const jsm = await this.conn.jetstreamManager();
@@ -120,6 +124,14 @@ export default class NatsService {
     });
   }
 
+  public async reset() {
+    const jsm = await this.conn.jetstreamManager();
+    await jsm.streams.purge(STREAM);
+    await jsm.streams.purge(ACK_STREAM);
+    await jsm.consumers.delete(STREAM, CONSUMER);
+    await this.setup();
+  }
+
   /**
    * Lähtettään NATS-palvelimelle julkaistavan viestin.
    */
@@ -134,6 +146,7 @@ export default class NatsService {
         // kuuntelee meidän itsemme lähettämiä vahvistusviestejä.
         c = await js.consumers.get("members-ack", {
           filterSubjects: "ack.*.user-service",
+          deliver_policy: DeliverPolicy.New,
         });
       }
 
@@ -170,35 +183,57 @@ export default class NatsService {
    * Kuuntelee jäsentietostreamiin julkaistavia viestejä ja käsittelee ne annetun
    * funktion avulla.
    */
-  public async subscribe(callback: (data: unknown, message: JsMsg) => Promise<void> | void) {
+  public async subscribe(
+    handler: (data: unknown, message: JsMsg) => Promise<boolean | void> | boolean | void,
+    options?: {
+      onReady?: () => void,
+      abort?: AbortSignal,
+    },
+  ) {
     const js = this.conn.jetstream();
 
     // Hankitaan kahva persistoituun consumeriin.
     // Saamme siis tämän avulla vain viestejä, joita emme ole aikaisemmin käsitelleet.
     const c2 = await js.consumers.get(STREAM, CONSUMER);
 
-    for await (const message of await c2.consume()) {
-      const data = message.json();
+    options?.onReady?.();
 
-      try {
-        // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
-        // jolloin timeout-ajastin nollataan.
-        message.working();
+    let aborted = false;
 
-        // Käsitellään viesti.
-        await Promise.resolve(callback(data, message));
+    if (options?.abort) {
+      options.abort.addEventListener('abort', () => aborted = true);
+    }
 
-        // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
-        // tietää, että olemme sen käsitelleet.
-        await js.publish(`ack.${message.seq}.user-service`);
+    while (!aborted) {
+      for await (const message of await c2.fetch()) {
+        if (aborted) {
+          break;
+        }
 
-        // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
-        message.ack();
-      } catch (err) {
-        // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
-        message.nak();
+        const data = message.json();
 
-        throw err;
+        try {
+          // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
+          // jolloin timeout-ajastin nollataan.
+          message.working();
+
+          // Käsitellään viesti.
+          const result = await Promise.resolve(handler(data, message));
+
+          // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
+          // tietää, että olemme sen käsitelleet.
+          await js.publish(`ack.${message.seq}.user-service`);
+
+          // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
+          message.ack();
+
+          if (result === false) break;
+        } catch (err) {
+          // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
+          message.nak();
+
+          throw err;
+        }
       }
     }
   }
@@ -209,7 +244,7 @@ export default class NatsService {
    * Tämän toteutus on jotenkin vaikeampi kuin NATS muuten antaisi olettaa,
    * joten luulen että tähän on joku fiksumpikin tapa.
    */
-  public async fetch(subject: string) {
+  public async fetch(subject: string): Promise<JsMsg[]> {
     const js = this.conn.jetstream();
 
     // Haetaan palvelimelta subjektin viimeisin viesti,
