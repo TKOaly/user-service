@@ -16,6 +16,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string("username").unique().nullable();
   });
 
+  await knex("user_ids").truncate();
+
   const conn = await NatsService.get();
 
   const users = await knex("users").select();
