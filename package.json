@@ -18,7 +18,7 @@
     "watch:scss": "sass --watch scss/:public/styles/",
     "test": "nyc mocha",
     "create-uuid": "ts-node scripts/create_uuid.ts",
-    "generate-doc": "typedoc --ignoreCompilerErrors --out ./doc/ src/**/*.ts",
+    "generate-doc": "typedoc --out ./doc/ src/**/*.ts",
     "db:init": "ts-node scripts/create_databases.ts",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
@@ -61,7 +61,7 @@
     "secure-compare": "^3.0.1",
     "sha1": "^1.1.1",
     "ts-node": "^9.0.0",
-    "typedoc": "^0.19.2",
+    "typedoc": "^0.20.0",
     "validator": "^13.1.17"
   },
   "devDependencies": {
