@@ -2,6 +2,18 @@ import * as Knex from "knex";
 import NatsService from "../src/services/NatsService";
 
 export async function up(knex: Knex): Promise<void> {
+  await knex.raw(`
+    ALTER TABLE privacy_policy_consent_data
+        DROP FOREIGN KEY privacy_policy_consent_data_user_id_foreign
+  `);
+
+  await knex.raw(`
+    ALTER TABLE privacy_policy_consent_data
+        ADD CONSTRAINT privacy_policy_consent_data_user_id_foreign
+            FOREIGN KEY (user_id) REFERENCES users (id)
+                ON DELETE CASCADE
+  `);
+
   if (await knex.schema.hasColumn("users", "last_seq")) {
     await knex("users").update({ last_seq: null });
   } else {
