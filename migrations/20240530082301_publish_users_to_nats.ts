@@ -22,7 +22,7 @@ export async function up(knex: Knex): Promise<void> {
 
   const conn = await NatsService.get();
 
-  const users = await knex("users").select();
+  const users = await knex("users").orderBy("id", "asc").select();
 
   await Promise.all(
     users.map(async user => {
@@ -30,7 +30,17 @@ export async function up(knex: Knex): Promise<void> {
 
       delete fields.last_seq;
 
-      await knex("user_ids").insert({ id, username: fields.username, email: fields.email });
+      try {
+        await knex("user_ids").insert({ id, username: fields.username, email: fields.email });
+      } catch (err) {
+        if ("code" in err && err.code === "ER_DUP_ENTRY") {
+          // HACK: Remove before production!
+          await knex("users").delete().where({ id });
+          return;
+        }
+
+        throw err;
+      }
 
       const res = await conn.publish(`members.${id}`, {
         type: "import",
