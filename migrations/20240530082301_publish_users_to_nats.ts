@@ -47,8 +47,8 @@ export async function up(knex: Knex): Promise<void> {
       } catch (err) {
         if ("code" in err && err.code === "ER_DUP_ENTRY") {
           // HACK: Remove before production!
-          await knex("users").delete().where({ id });
-          return;
+          // await knex("users").delete().where({ id });
+          // return;
         }
 
         throw err;
