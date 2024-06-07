@@ -338,7 +338,11 @@ class UserService {
       return;
     }
 
-    await this.worker.terminate();
+    const result = this.worker.terminate();
+
+    this.worker = null;
+
+    return result;
   }
 
   public async start() {
@@ -363,6 +367,7 @@ class UserService {
     };
 
     try {
+      this.restartOnExit = true;
       this.worker = await UserServiceWorker.start();
       console.log("User service worker started!");
       this.worker.addListener("error", onError);
