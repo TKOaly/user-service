@@ -6,9 +6,11 @@ import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
 import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
+import { Worker } from "worker_threads";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
 import NatsService from "../services/NatsService";
 import { JetStreamPublishOptions, JsMsg, headers, JsHeaders } from "nats";
+import * as UserServiceWorker from "./UserServiceWorker";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -288,7 +290,7 @@ class UserService {
     const user = await UserDao.findOne(userId);
 
     if (!user) {
-      throw new ServiceError(404, 'User not found');
+      throw new ServiceError(404, "User not found");
     }
 
     const nats = await NatsService.get();
@@ -297,17 +299,12 @@ class UserService {
       headers: headers(),
       expect: {
         lastSubjectSequence: user.last_seq,
-      }
+      },
     };
 
     options.headers?.append(JsHeaders.RollupHdr, JsHeaders.RollupValueSubject);
 
-    await nats.publish(
-      `members.${userId}`,
-      { type: 'delete', user: userId },
-      options,
-      true,
-    );
+    await nats.publish(`members.${userId}`, { type: "delete", user: userId }, options, true);
 
     return 1;
   }
@@ -326,17 +323,53 @@ class UserService {
     return user;
   }
 
-  private abortController: AbortController | null = null;
+  private restartOnExit = true;
+  private worker: Worker | null = null;
 
   public async restart() {
     await this.stop();
-    return await this.listen();
+    await this.start();
   }
 
   public async stop() {
-    if (this.abortController) {
-      this.abortController.abort();
-      this.abortController = null;
+    this.restartOnExit = false;
+
+    if (!this.worker) {
+      return;
+    }
+
+    await this.worker.terminate();
+  }
+
+  public async start() {
+    if (this.worker) {
+      return;
+    }
+
+    const onError = async (err?: Error) => {
+      if (!this.worker) {
+        return;
+      }
+
+      await this.worker.terminate();
+      this.worker = null;
+
+      console.log("User service worker exited! Value:", err);
+
+      if (this.restartOnExit) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.start();
+      }
+    };
+
+    try {
+      this.worker = await UserServiceWorker.start();
+      console.log("User service worker started!");
+      this.worker.addListener("error", onError);
+      this.worker.addListener("exit", onError);
+    } catch (err) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await this.start();
     }
   }
 
@@ -345,14 +378,9 @@ class UserService {
    * ja käsittelee ne.
    */
   public async listen() {
-    if (this.abortController) {
-      return this.abortController;
-    }
-
-    const controller = new AbortController();
     const nats = await NatsService.get();
 
-    const promise = new Promise<AbortController>(resolve => {
+    return new Promise<void>(resolve => {
       const handler = async ({ type, fields }: any, msg: JsMsg) => {
         const userId = parseInt(msg.subject.split(".")[1], 10);
 
@@ -385,21 +413,9 @@ class UserService {
       };
 
       nats.subscribe(handler, {
-        onReady: () => {
-          this.abortController = controller;
-          resolve(controller);
-        },
-        abort: controller.signal,
+        onReady: () => resolve(),
       });
     });
-
-    promise.catch(async err => {
-      console.error(err);
-      await this.restart();
-      return Promise.reject(err);
-    });
-
-    return promise;
   }
 }
 

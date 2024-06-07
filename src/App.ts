@@ -133,6 +133,6 @@ app.use((err: { code?: string }, req: express.Request, res: express.Response, ne
   });
 });
 
-UserService.listen();
+UserService.start();
 
 export default app;

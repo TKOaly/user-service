@@ -189,7 +189,6 @@ export default class NatsService {
     handler: (data: unknown, message: JsMsg) => Promise<boolean | void> | boolean | void,
     options?: {
       onReady?: () => void;
-      abort?: AbortSignal;
     },
   ) {
     const js = this.conn.jetstream();
@@ -200,43 +199,30 @@ export default class NatsService {
 
     options?.onReady?.();
 
-    let aborted = false;
+    for await (const message of await c2.consume()) {
+      const data = message.json();
 
-    if (options?.abort) {
-      options.abort.addEventListener("abort", () => (aborted = true));
-    }
+      try {
+        // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
+        // jolloin timeout-ajastin nollataan.
+        message.working();
 
-    // eslint-disable-next-line no-unmodified-loop-condition
-    while (!aborted) {
-      for await (const message of await c2.fetch()) {
-        if (aborted) {
-          break;
-        }
+        // Käsitellään viesti.
+        const result = await Promise.resolve(handler(data, message));
 
-        const data = message.json();
+        // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
+        // tietää, että olemme sen käsitelleet.
+        await js.publish(`ack.${message.seq}.user-service`);
 
-        try {
-          // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
-          // jolloin timeout-ajastin nollataan.
-          message.working();
+        // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
+        message.ack();
 
-          // Käsitellään viesti.
-          const result = await Promise.resolve(handler(data, message));
+        if (result === false) break;
+      } catch (err) {
+        // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
+        message.nak();
 
-          // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
-          // tietää, että olemme sen käsitelleet.
-          await js.publish(`ack.${message.seq}.user-service`);
-
-          // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
-          message.ack();
-
-          if (result === false) break;
-        } catch (err) {
-          // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
-          message.nak();
-
-          throw err;
-        }
+        throw err;
       }
     }
   }
