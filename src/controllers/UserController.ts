@@ -333,7 +333,7 @@ class UserController implements Controller {
 
   public async deleteUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
     try {
-      if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) === 0) {
+      if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) !== 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
       }
       const id = parseInt(req.params.id, 10);
