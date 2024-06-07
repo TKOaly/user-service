@@ -8,7 +8,7 @@ import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
 import NatsService from "../services/NatsService";
-import { JetStreamPublishOptions, JsMsg } from "nats";
+import { JetStreamPublishOptions, JsMsg, headers, JsHeaders } from "nats";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -285,7 +285,31 @@ class UserService {
   }
 
   public async deleteUser(userId: number): Promise<number> {
-    return UserDao.remove(userId);
+    const user = await UserDao.findOne(userId);
+
+    if (!user) {
+      throw new ServiceError(404, 'User not found');
+    }
+
+    const nats = await NatsService.get();
+
+    const options = {
+      headers: headers(),
+      expect: {
+        lastSubjectSequence: user.last_seq,
+      }
+    };
+
+    options.headers?.append(JsHeaders.RollupHdr, JsHeaders.RollupValueSubject);
+
+    await nats.publish(
+      `members.${userId}`,
+      { type: 'delete', user: userId },
+      options,
+      true,
+    );
+
+    return 1;
   }
 
   public async getUserWithUsername(username: string): Promise<User | null> {
@@ -349,6 +373,9 @@ class UserService {
             last_seq: msg.seq,
           });
 
+          return;
+        } else if (type === "delete") {
+          await UserDao.remove(userId);
           return;
         }
 

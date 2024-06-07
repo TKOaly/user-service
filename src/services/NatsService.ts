@@ -92,6 +92,8 @@ export default class NatsService {
       // Tässä tapauksessa kaikki `members.`-alkuisilla subjekteilla varustetut viestit
       // kuuluvat tähän streamiin.
       subjects: ["members.>"],
+
+      allow_rollup_hdrs: true,
     });
 
     // Luodaan lisäksi streami palvelukohtaisia vahvistusviestejä varten.
