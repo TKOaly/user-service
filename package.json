@@ -16,7 +16,7 @@
     "watch": "concurrently \"npm:watch:*\"",
     "watch:server": "ts-node-dev src/index.ts",
     "watch:scss": "sass --watch scss/:public/styles/",
-    "test": "nyc mocha",
+    "test": "NODE_OPTIONS='-r ts-node/register' nyc mocha",
     "create-uuid": "ts-node scripts/create_uuid.ts",
     "generate-doc": "typedoc --out ./doc/ src/**/*.ts",
     "db:init": "ts-node scripts/create_databases.ts",
