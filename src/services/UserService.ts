@@ -6,7 +6,11 @@ import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
 import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
+import { Worker } from "worker_threads";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
+import NatsService from "../services/NatsService";
+import { JetStreamPublishOptions, JsMsg, headers, JsHeaders } from "nats";
+import * as UserServiceWorker from "./UserServiceWorker";
 
 class UserService {
   public async fetchUser(userId: number): Promise<User> {
@@ -105,50 +109,204 @@ class UserService {
     throw new ServiceError(401, "Invalid username or password");
   }
 
-  public async checkUsernameAvailability(username: string): Promise<boolean> {
-    const user = await UserDao.findByUsername(username);
-    return user === undefined;
+  public async tryReserveUsername(username: string): Promise<boolean> {
+    try {
+      await UserDao.reserveUsername(username);
+      return true;
+    } catch (err) {
+      if ("code" in err && err.code === "ER_DUP_ENTRY") {
+        return false;
+      }
+
+      throw err;
+    }
   }
 
-  public async checkEmailAvailability(email: string): Promise<boolean> {
-    const user = await UserDao.findByEmail(email);
-    return user === undefined;
+  public async tryReserveEmail(email: string): Promise<boolean> {
+    try {
+      await UserDao.reserveEmail(email);
+      return true;
+    } catch (err) {
+      if ("code" in err && err.code === "ER_DUP_ENTRY") {
+        return false;
+      }
+
+      throw err;
+    }
   }
 
   public async createUser(userData: User, rawPassword: string): Promise<number> {
-    const { password, salt } = await mkHashedPassword(rawPassword);
-    userData.hashedPassword = password;
-    userData.salt = salt;
-    userData.passwordHash = await hashPasswordAsync(rawPassword);
-    const insertIds = await UserDao.save(userData.getDatabaseObject());
-    return insertIds[0];
+    let usernameCaptured = false;
+    let emailCaptured = false;
+
+    try {
+      emailCaptured = await this.tryReserveEmail(userData.email);
+
+      if (!emailCaptured) {
+        throw new ServiceError(400, "Email address already in use!");
+      }
+
+      usernameCaptured = await this.tryReserveUsername(userData.username);
+
+      if (!usernameCaptured) {
+        throw new ServiceError(400, "Username already in use!");
+      }
+
+      userData.id = await UserDao.reserveId();
+
+      const { password, salt } = await mkHashedPassword(rawPassword);
+      userData.hashedPassword = password;
+      userData.salt = salt;
+      userData.passwordHash = await hashPasswordAsync(rawPassword);
+
+      const nats = await NatsService.get();
+
+      await nats.publish(
+        `members.${userData.id}`,
+        {
+          type: "create",
+          fields: userData.getDatabaseObject(),
+        },
+        undefined,
+        true,
+      );
+
+      return userData.id;
+    } catch (err) {
+      if (emailCaptured) {
+        await UserDao.releaseEmail(userData.email);
+      }
+
+      if (usernameCaptured) {
+        await UserDao.releaseEmail(userData.username);
+      }
+
+      throw err;
+    }
   }
 
   public async updateUser(
     userId: number,
     updatedUser: Partial<UserDatabaseObject>,
     rawPassword?: string,
+    subject?: User,
   ): Promise<number> {
-    const fields = { ...updatedUser };
+    let emailReserved = false;
+    let usernameReserved = false;
 
-    if (rawPassword) {
-      const { password, salt } = await mkHashedPassword(rawPassword);
-      const passwordHash = await hashPasswordAsync(rawPassword);
+    try {
+      const fields = { ...updatedUser };
 
-      Object.assign(fields, {
-        password_hash: passwordHash,
-        hashed_password: password,
-        salt,
-      });
+      const oldUser = await this.fetchUser(userId);
+
+      if (updatedUser.email !== undefined && oldUser.email !== updatedUser.email) {
+        emailReserved = await this.tryReserveEmail(updatedUser.email);
+
+        if (!emailReserved) {
+          throw new ServiceError(400, "Email already in use!");
+        }
+      }
+
+      if (updatedUser.username !== undefined && oldUser.username !== updatedUser.username) {
+        usernameReserved = await this.tryReserveUsername(updatedUser.username);
+
+        if (!usernameReserved) {
+          throw new ServiceError(400, "Username already in use!");
+        }
+      }
+
+      if (rawPassword) {
+        const { password, salt } = await mkHashedPassword(rawPassword);
+        const passwordHash = await hashPasswordAsync(rawPassword);
+
+        Object.assign(fields, {
+          password_hash: passwordHash,
+          hashed_password: password,
+          salt,
+        });
+      }
+
+      const nats = await NatsService.get();
+
+      const user = await this.fetchUser(userId);
+
+      // Kerrotaan NATS-palvelimelle, että tämä on viimeisin käsittelemämme
+      // tätä käyttäjää koskevan viestin järjestysnumero. Jos NATS-vastaanottaa
+      // tämän viestin, ja viimeisimmän käyttäjää koskevan viestin sarjanumero on jokin muu,
+      // NATS kieltäytyy vastaanottamasta viestiä.
+      //
+      // Näin voimme varmistua siitä, että lähtötietomme on ajantasainen,
+      // eikä joku muu ole kerennyt tässä välissä muokata käyttäjän tietoja.
+      const opts: Partial<JetStreamPublishOptions> = {
+        expect: {
+          lastSubjectSequence: user.lastSeq,
+        },
+      };
+
+      const changedFields = Object.entries(fields).filter(
+        ([field, newValue]) => user.getDatabaseObject()[field as keyof UserDatabaseObject] !== newValue,
+      );
+
+      if (changedFields.length === 0) {
+        return 0;
+      }
+
+      // Jukaistaan viesti, jossa kerrotaan, että asetamme käyttäjälle uudet pyynnön mukana saadut arvot.
+      await nats.publish(
+        `members.${userId}`,
+        {
+          type: "set",
+          user: userId,
+          fields: Object.fromEntries(changedFields),
+          subject: subject?.id,
+        },
+        opts,
+        true,
+      );
+
+      if (usernameReserved) {
+        await UserDao.releaseUsername(oldUser.username);
+      }
+
+      if (emailReserved) {
+        await UserDao.releaseEmail(oldUser.email);
+      }
+
+      return 1;
+    } catch (err) {
+      if (usernameReserved) {
+        await UserDao.releaseUsername(updatedUser.username!);
+      }
+
+      if (emailReserved) {
+        await UserDao.releaseEmail(updatedUser.email!);
+      }
+
+      throw err;
     }
-
-    const affectedRows = await UserDao.update(userId, fields);
-
-    return affectedRows;
   }
 
   public async deleteUser(userId: number): Promise<number> {
-    return UserDao.remove(userId);
+    const user = await UserDao.findOne(userId);
+
+    if (!user) {
+      throw new ServiceError(404, "User not found");
+    }
+
+    const nats = await NatsService.get();
+
+    const options = {
+      headers: headers(),
+      expect: {
+        lastSubjectSequence: user.last_seq,
+      },
+    };
+
+    options.headers?.append(JsHeaders.RollupHdr, JsHeaders.RollupValueSubject);
+
+    await nats.publish(`members.${userId}`, { type: "delete", user: userId }, options, true);
+
+    return 1;
   }
 
   public async getUserWithUsername(username: string): Promise<User | null> {
@@ -164,6 +322,106 @@ class UserService {
     const user = new User(dbUser);
     return user;
   }
+
+  private restartOnExit = true;
+  private worker: Worker | null = null;
+
+  public async restart() {
+    await this.stop();
+    await this.start();
+  }
+
+  public async stop() {
+    this.restartOnExit = false;
+
+    if (!this.worker) {
+      return;
+    }
+
+    const result = this.worker.terminate();
+
+    this.worker = null;
+
+    return result;
+  }
+
+  public async start() {
+    if (this.worker) {
+      return;
+    }
+
+    const onError = async (err?: Error) => {
+      if (!this.worker) {
+        return;
+      }
+
+      await this.worker.terminate();
+      this.worker = null;
+
+      console.log("User service worker exited! Value:", err);
+
+      if (this.restartOnExit) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.start();
+      }
+    };
+
+    try {
+      this.restartOnExit = true;
+      this.worker = await UserServiceWorker.start();
+      console.log("User service worker started!");
+      this.worker.addListener("error", onError);
+      this.worker.addListener("exit", onError);
+    } catch (err) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await this.start();
+    }
+  }
+
+  /**
+   * Taustaprosessi, joka kuuntelee jäsentieto-streamiin julkaistuja viestejä
+   * ja käsittelee ne.
+   */
+  public async listen() {
+    const nats = await NatsService.get();
+
+    return new Promise<void>(resolve => {
+      const handler = async ({ type, fields }: any, msg: JsMsg) => {
+        const userId = parseInt(msg.subject.split(".")[1], 10);
+
+        if (type === "set") {
+          // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
+
+          if (fields.created) {
+            // Tämä piti tehdä jostain syystä. Syyttäkää user-serviceä älkääkä NATSia.
+            fields.created = new Date(fields.created);
+          }
+
+          // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
+          await UserDao.update(userId, fields);
+        } else if (type === "create" || type === "import") {
+          await UserDao.save({
+            ...fields,
+            id: userId,
+            last_seq: msg.seq,
+          });
+
+          return;
+        } else if (type === "delete") {
+          await UserDao.remove(userId);
+          return;
+        }
+
+        // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
+        // vaikka viesti ei olisikaan meille relevantti.
+        await UserDao.update(userId, { last_seq: msg.seq });
+      };
+
+      nats.subscribe(handler, {
+        onReady: () => resolve(),
+      });
+    });
+  }
 }
 
 async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; password: string }> {
@@ -174,4 +432,6 @@ async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; pa
   return { salt, password };
 }
 
-export default new UserService();
+const service = new UserService();
+
+export default service;

@@ -5,7 +5,6 @@ on: [push]
 jobs:
 
   build:
- 
     runs-on: ubuntu-latest
  
     steps:
@@ -14,7 +13,7 @@ jobs:
       run: docker-compose build
     - name: Setup test environment
       run: |
-        docker-compose up -d mysql
+        docker-compose up -d mysql nats
         sleep 5
         docker-compose run web npm run db:init
     - name: Run linter

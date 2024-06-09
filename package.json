@@ -16,9 +16,9 @@
     "watch": "concurrently \"npm:watch:*\"",
     "watch:server": "ts-node-dev src/index.ts",
     "watch:scss": "sass --watch scss/:public/styles/",
-    "test": "nyc mocha",
+    "test": "NODE_OPTIONS='-r ts-node/register' nyc mocha",
     "create-uuid": "ts-node scripts/create_uuid.ts",
-    "generate-doc": "typedoc --ignoreCompilerErrors --out ./doc/ src/**/*.ts",
+    "generate-doc": "typedoc --out ./doc/ src/**/*.ts",
     "db:init": "ts-node scripts/create_databases.ts",
     "migrate": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
@@ -53,6 +53,7 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
+    "nats": "^2.26.0",
     "node-jose": "^2.2.0",
     "nodemailer": "^6.9.13",
     "pug": "^3.0.0",
@@ -60,7 +61,7 @@
     "secure-compare": "^3.0.1",
     "sha1": "^1.1.1",
     "ts-node": "^9.0.0",
-    "typedoc": "^0.19.2",
+    "typedoc": "^0.20.0",
     "validator": "^13.1.17"
   },
   "devDependencies": {
@@ -107,7 +108,7 @@
     "prettier": "^2.1.2",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.0.3",
+    "typescript": "4.1.5",
     "uuid": "^8.3.1"
   },
   "engines": {

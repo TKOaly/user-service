@@ -24,6 +24,19 @@ import morgan from "morgan";
 import { Environment } from "./Db";
 import * as knexfile from "../knexfile";
 import { generateApiRoute } from "./utils/ApiRoute";
+import UserService from "./services/UserService";
+
+// Temporary polyfill for the Awaited type.
+// Remove when we are running on a more recent TypeScript version.
+declare global {
+  type Awaited<T> = T extends null | undefined
+    ? T
+    : T extends object & { then(onfulfilled: infer F): any }
+    ? F extends (value: infer V, ...args: any) => any
+      ? Awaited<V>
+      : never
+    : T;
+}
 const MySQLSessionStore = require("express-mysql-session")(session);
 dotenv.config();
 
@@ -119,5 +132,7 @@ app.use((err: { code?: string }, req: express.Request, res: express.Response, ne
     errorId: (res as any)?.sentry,
   });
 });
+
+UserService.start();
 
 export default app;

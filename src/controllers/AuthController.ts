@@ -87,6 +87,7 @@ class AuthController implements Controller {
       hy_staff: 0,
       hy_student: 0,
       tktdt_student: 0,
+      last_seq: 0,
     });
     return res.render("calcPermissions", {
       userKeys: Object.keys(dummyObject),
@@ -125,6 +126,7 @@ class AuthController implements Controller {
       hy_staff: 0,
       hy_student: 0,
       tktdt_student: 0,
+      last_seq: 0,
     }).removeSensitiveInformation();
 
     let permissionInteger = 0;
