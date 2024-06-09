@@ -37,30 +37,22 @@ export async function up(knex: Knex): Promise<void> {
   const users = await knex("users").orderBy("id", "asc").select();
 
   await Promise.all(
-    users.map(async user => {
+    users.map(async (user, i) => {
       const { id, ...fields } = user;
 
       delete fields.last_seq;
 
-      try {
-        await knex("user_ids").insert({ id, username: fields.username, email: fields.email });
-      } catch (err) {
-        if ("code" in err && err.code === "ER_DUP_ENTRY") {
-          // HACK: Remove before production!
-          // await knex("users").delete().where({ id });
-          // return;
-        }
+      await knex("user_ids").insert({ id, username: fields.username, email: fields.email });
 
-        throw err;
-      }
-
-      const res = await conn.publish(`members.${id}`, {
+      await conn.publish(`members.${id}`, {
         type: "import",
         user: id,
         fields,
       });
 
-      await knex("users").update({ last_seq: res.seq }).where({ id });
+      await knex("users").delete().where({ id });
+
+      console.log(`Migrated user ${id} (${i + 1}/${users.length})!`);
     }),
   );
 

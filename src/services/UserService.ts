@@ -389,7 +389,7 @@ class UserService {
       const handler = async ({ type, fields }: any, msg: JsMsg) => {
         const userId = parseInt(msg.subject.split(".")[1], 10);
 
-        if (type === "set" || type === "import") {
+        if (type === "set") {
           // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
 
           if (fields.created) {
@@ -399,7 +399,7 @@ class UserService {
 
           // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
           await UserDao.update(userId, fields);
-        } else if (type === "create") {
+        } else if (type === "create" || type === "import") {
           await UserDao.save({
             ...fields,
             id: userId,
