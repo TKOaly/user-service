@@ -81,7 +81,7 @@ app.use(
   }),
 );
 
-app.locals.currentYear = () => new Date().getFullYear()
+app.locals.currentYear = () => new Date().getFullYear();
 
 app.use((req, _res, next) => {
   Sentry.setContext("session", req.session ?? {});
