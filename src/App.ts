@@ -58,6 +58,29 @@ app.use(cookieParser());
 app.use(LocalizationMiddleware);
 app.use(i18n.init);
 
+app.use((_req, res, next) => {
+  const render = res.render.bind(res);
+
+  type Callback = (err: Error, html: string) => void;
+
+  res.render = (view: string, options?: Record<string, unknown> | Callback, callback?: Callback) => {
+    if (typeof options === "function") {
+      callback = options;
+      options = {};
+    }
+
+    if (!options) {
+      options = {};
+    }
+
+    options.title = i18n.__(`${view}_title`);
+
+    render(view, options, callback);
+  };
+
+  next();
+});
+
 // Sentry
 app.use(Sentry.Handlers.requestHandler());
 

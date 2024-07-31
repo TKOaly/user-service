@@ -1,18 +1,6 @@
-doctype html
-html(lang="en")
-  head
-    title #{t("logout_Title")} - TKO-äly ry
-    link(rel='stylesheet', href='/styles/common.css')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-  body
-    #container
-      #menubar
-        #logo-container
-          img.img(src='/svg/tkoaly.svg')
-        #title-container
-          div#title #{t("logout_Title")}
-      #content
-        .success-message
-          span.success-text #{t("logout_YouHaveBeenLoggedOutFrom")} #{serviceName}.
-        a(href="https://tko-aly.fi") #{t("logout_ReturnTo")} tko-aly.fi
-    include partials/footer.pug
+extends layouts/common.pug
+
+block content
+  .success-message
+    span.success-text #{t("logout_YouHaveBeenLoggedOutFrom")} #{serviceName}.
+  a(href="https://tko-aly.fi") #{t("logout_ReturnTo")} tko-aly.fi

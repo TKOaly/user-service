@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+  head
+    block head
+      title #{title} - TKO-äly ry
+      link(rel='stylesheet', href='/styles/reset.css')
+      link(rel='stylesheet', href='/styles/common.css')
+      meta(name='viewport', content='width=device-width, initial-scale=1')
+  body
+    #container
+      #menubar
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title
+            block title
+              | #{title}
+      #content
+        block content
+      #confirmation
+        block confirmation
+    include ../partials/footer.pug
