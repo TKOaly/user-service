@@ -50,16 +50,5 @@
 	"resetPassword_changePassword": "Change password",
 	"passwordReset_successMessage": "Password reset successfull! You can now login by using the password you just provided.",
 	"resetPassword_usernameInputMessage": "Please enter the username of the account for which you want to reset the password.",
-	"resetPassword_emailInputMessage": "Please enter the email address of the account whose password you want to reset in the form below.",
-	"resetPasswordChoice_title": "Reset your password",
-	"resetPassword_title": "Reset your password",
-	"resetPasswordSent_title": "Reset your password",
-	"resetPasswordForm_title": "Reset your password",
-	"resetPasswordSuccess_title": "Password reset",
-	"serviceError_title": "Error!",
-	"calcPermissions_title": "Permission calculator",
-	"login_title": "Login to service",
-	"gdpr_title": "Data usage request",
-	"privacypolicy_title": "Privacy policy",
-	"logout_title": "Logged out"
+	"resetPassword_emailInputMessage": "Please enter the email address of the account whose password you want to reset in the form below."
 }

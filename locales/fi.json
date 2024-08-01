@@ -50,16 +50,5 @@
 	"resetPassword_password2Label": "Varmista salasana",
 	"resetPassword_password2Placeholder": "Salasana",
 	"resetPassword_changePassword": "Vaihda salasana",
-	"passwordReset_successMessage": "Salasanan vaihtaminen onnistui! Voit nyt kirjautua käyttäen juuri asettamaasi salasanaa.",
-	"resetPasswordChoice_title": "Palauta salasana",
-	"resetPassword_title": "Palauta salasana",
-	"resetPasswordSent_title": "Palauta salasana",
-	"resetPasswordForm_title": "Palauta salasana",
-	"resetPasswordSuccess_title": "Salasana palautettu",
-	"serviceError_title": "Virhe!",
-	"calcPermissions_title": "Oikeuslaskuri",
-	"login_title": "login_title",
-	"gdpr_title": "gdpr_title",
-	"privacypolicy_title": "privacypolicy_title",
-	"logout_title": "logout_title"
+	"passwordReset_successMessage": "Salasanan vaihtaminen onnistui! Voit nyt kirjautua käyttäen juuri asettamaasi salasanaa."
 }

@@ -1,23 +1,30 @@
-extends layouts/common.pug
-
-block append head
-  link(rel='stylesheet', href='/styles/termsAndConditions.css')
-
-block title
-  | #{service.name} #{t("privacypolicy_Title")}
-
-block content
-  p
-    small #{t("privacypolicy_UpdatedAt")} #{policyUpdateDate}
-  #termsAndConditions #{policy}
-  p.privacyPolicyRedirect #{t("privacypolicy_YouWillBeRedirected")}
-  p.privacyPolicyDeclineMessage #{t("privacypolicy_IfYouDecline_1")} #{serviceDisplayName}#{t("privacypolicy_IfYouDecline_2")}
-
-block confirmation
-  form(id='formSubmitReject', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
-    input(type='hidden', name='_csrf', value=csrfToken)
-    input.cancel(type='submit', name='cancel', value=t("privacypolicy_Decline"))
-  form(id='formSubmitAccept', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
-    input(type='hidden', name='accept', value='yes')
-    input(type='hidden', name='_csrf', value=csrfToken)
-    input.accept(type='submit', name='accept', value=t("privacypolicy_Accept"))
+doctype html
+html(lang="en")
+  head
+    title #{serviceDisplayName} #{t("privacypolicy_Title")} - TKO-äly ry
+    link(rel='stylesheet', href='/styles/reset.css')
+    link(rel='stylesheet', href='/styles/common.css')
+    link(rel='stylesheet', href='/styles/termsAndConditions.css')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+  body
+    #container
+      #menubar
+        #logo-container
+          img.img(src='/svg/tkoaly.svg')
+        #title-container
+          div#title #{serviceDisplayName} #{t("privacypolicy_Title")}
+      #content
+        p
+          small #{t("privacypolicy_UpdatedAt")} #{policyUpdateDate}
+        #termsAndConditions #{policy}
+        p.privacyPolicyRedirect #{t("privacypolicy_YouWillBeRedirected")}
+        p.privacyPolicyDeclineMessage #{t("privacypolicy_IfYouDecline_1")} #{serviceDisplayName}#{t("privacypolicy_IfYouDecline_2")}
+      #confirmation
+        form(id='formSubmitReject', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
+          input(type='hidden', name='_csrf', value=csrfToken)
+          input.cancel(type='submit', name='cancel', value=t("privacypolicy_Decline"))
+        form(id='formSubmitAccept', action=(submitUrl || '/privacypolicy_confirm'), method='POST')
+          input(type='hidden', name='accept', value='yes')
+          input(type='hidden', name='_csrf', value=csrfToken)
+          input.accept(type='submit', name='accept', value=t("privacypolicy_Accept"))
+    include partials/footer.pug
