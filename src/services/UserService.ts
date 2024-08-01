@@ -71,9 +71,6 @@ class UserService {
     }
 
     const results = await UserDao.findAll(fields, conditionQuery);
-    if (!results.length) {
-      throw new ServiceError(404, "No results returned");
-    }
 
     // @ts-ignore
     // FIXME: Wrong typings
