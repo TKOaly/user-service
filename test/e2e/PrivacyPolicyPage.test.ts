@@ -73,7 +73,7 @@ describe("Privacy policy page", () => {
         containerTitle.should.equal(service.display_name + " " + fi.privacypolicy_Title);
 
         const title = await browser.getTitle();
-        title.should.equal(service.display_name + " " + fi.privacypolicy_Title + " - TKO-äly ry");
+        title.should.equal(fi.privacypolicy_title + " - TKO-äly ry");
 
         const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(fi.privacypolicy_Decline);
@@ -105,7 +105,7 @@ describe("Privacy policy page", () => {
         containerTitle.should.equal(service.display_name + en.privacypolicy_Title);
 
         const title = await browser.getTitle();
-        title.should.equal(service.display_name + en.privacypolicy_Title + " - TKO-äly ry");
+        title.should.equal(en.privacypolicy_title + " - TKO-äly ry");
 
         const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
         cancelVal.should.equal(en.privacypolicy_Decline);

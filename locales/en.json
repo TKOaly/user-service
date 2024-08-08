@@ -29,7 +29,7 @@
 	"privacypolicy_Accept": "Accept",
 	"error_Title": "Error",
 	"login_InFinnish": "Suomeksi",
-	"logout_Title": "Logged out",
+	"logout_title": "Logged out",
 	"logout_YouHaveBeenLoggedOutFrom": "You have been logged out from ",
 	"logout_ReturnTo": "Return to ",
 	"login_LoggedInAs": "Logged in as ",
@@ -67,5 +67,6 @@
 	"gdpr_FieldName_isTKTDTStudent": "Is a student of computer science or data science?",
 	"privacypolicy_title": "Privacy policy",
 	"gdpr_title": "Data usage request",
-	"serviceError_title": "Error!"
+	"serviceError_title": "Error!",
+  "login_title": "Login"
 }

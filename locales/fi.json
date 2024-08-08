@@ -27,7 +27,7 @@
 	"privacypolicy_Decline": "Hylkää",
 	"privacypolicy_Accept": "Hyväksy",
 	"login_InEnglish": "In English",
-	"logout_Title": "Uloskirjautuminen",
+	"logout_title": "Uloskirjautuminen",
 	"logout_YouHaveBeenLoggedOutFrom": "Sinut on kirjattu ulos palvelusta ",
 	"logout_ReturnTo": "Palaa osoitteeseen ",
 	"login_LoggedInAs": "Kirjautunut sisään: ",
@@ -67,5 +67,6 @@
 	"gdpr_FieldName_isTKTDTStudent": "On tietojenkäsittely- tai datatieteen opiskelija?",
 	"privacypolicy_title": "Tietosuojaseloste",
 	"gdpr_title": "Henkilötietojen käyttöoikeuspyyntö",
-	"serviceError_title": "Virhe!"
+	"serviceError_title": "Virhe!",
+	"login_title": "Kirjaudu palveluun"
 }

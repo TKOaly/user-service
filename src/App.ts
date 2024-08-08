@@ -92,7 +92,7 @@ app.use((_req, res, next) => {
   const render = res.render.bind(res);
 
   res.render = (...[view, ...args]: Parameters<typeof render>) => {
-    res.locals.title = i18n.__(`${view}_title`);
+    res.locals.title = (res as any).t(`${view}_title`);
     render(view, ...args);
   };
 
