@@ -50,5 +50,22 @@
 	"resetPassword_changePassword": "Change password",
 	"passwordReset_successMessage": "Password reset successfull! You can now login by using the password you just provided.",
 	"resetPassword_usernameInputMessage": "Please enter the username of the account for which you want to reset the password.",
-	"resetPassword_emailInputMessage": "Please enter the email address of the account whose password you want to reset in the form below."
+	"resetPassword_emailInputMessage": "Please enter the email address of the account whose password you want to reset in the form below.",
+	"gdpr_FieldName_id": "Member ID",
+	"gdpr_FieldName_username": "Username",
+	"gdpr_FieldName_role": "User role",
+	"gdpr_FieldName_name": "Name",
+	"gdpr_FieldName_screenName": "Screen name",
+	"gdpr_FieldName_email": "Email",
+	"gdpr_FieldName_phone": "Phone",
+	"gdpr_FieldName_residence": "Residence",
+	"gdpr_FieldName_isHYYMember": "Is HYY member?",
+	"gdpr_FieldName_createdAt": "Account creation date",
+	"gdpr_FieldName_modifiedAt": "Account last modified at",
+	"gdpr_FieldName_isHyStaff": "Is employed by the University of Helsinki?",
+	"gdpr_FieldName_isHyStudent": "Is a student in the University of Helsinki?",
+	"gdpr_FieldName_isTKTDTStudent": "Is a student of computer science or data science?",
+	"privacypolicy_title": "Privacy policy",
+	"gdpr_title": "Data usage request",
+	"serviceError_title": "Error!"
 }
