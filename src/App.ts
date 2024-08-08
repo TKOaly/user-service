@@ -88,6 +88,17 @@ app.use((req, _res, next) => {
   next();
 });
 
+app.use((_req, res, next) => {
+  const render = res.render.bind(res);
+
+  res.render = (...[view, ...args]: Parameters<typeof render>) => {
+    res.locals.title = i18n.__(`${view}_title`);
+    render(view, ...args);
+  };
+
+  next();
+});
+
 app.set("view engine", "pug");
 
 app.use(express.static(join(process.cwd(), "public")));

@@ -478,11 +478,11 @@ class LoginController implements Controller {
         }
       }
 
-      res.render("resetPasswordForm", params);
+      res.render("resetPasswordForm", { ...params });
     } else if (req.method === "GET" && req.query.method) {
       res.render("resetPassword", { method: req.query.method });
     } else if (req.method === "GET") {
-      res.render("resetPasswordChoice", {});
+      res.render("resetPasswordChoice");
     } else if (req.method === "POST" && req.body.method) {
       const { method, email, username } = req.body;
 

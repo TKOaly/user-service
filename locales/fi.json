@@ -50,5 +50,22 @@
 	"resetPassword_password2Label": "Varmista salasana",
 	"resetPassword_password2Placeholder": "Salasana",
 	"resetPassword_changePassword": "Vaihda salasana",
-	"passwordReset_successMessage": "Salasanan vaihtaminen onnistui! Voit nyt kirjautua käyttäen juuri asettamaasi salasanaa."
+	"passwordReset_successMessage": "Salasanan vaihtaminen onnistui! Voit nyt kirjautua käyttäen juuri asettamaasi salasanaa.",
+	"gdpr_FieldName_id": "Käyttäjätunniste",
+	"gdpr_FieldName_username": "Käyttäjänimi",
+	"gdpr_FieldName_role": "Käyttäjärooli",
+	"gdpr_FieldName_name": "Nimi",
+	"gdpr_FieldName_screenName": "Kutsumanimi",
+	"gdpr_FieldName_email": "Sähköpostiosoite",
+	"gdpr_FieldName_phone": "Puhelinnumero",
+	"gdpr_FieldName_residence": "Kotikunta",
+	"gdpr_FieldName_isHYYMember": "HYY:n jäsenyys",
+	"gdpr_FieldName_createdAt": "Liittymispäivä",
+	"gdpr_FieldName_modifiedAt": "Jäsentietojen viimeisin muokkausajankohta",
+	"gdpr_FieldName_isHyStaff": "On Helsingin Yliopiston henkilökuntaa?",
+	"gdpr_FieldName_isHyStudent": "On Helsingin Yliopiston opiskelija?",
+	"gdpr_FieldName_isTKTDTStudent": "On tietojenkäsittely- tai datatieteen opiskelija?",
+	"privacypolicy_title": "Tietosuojaseloste",
+	"gdpr_title": "Henkilötietojen käyttöoikeuspyyntö",
+	"serviceError_title": "Virhe!"
 }

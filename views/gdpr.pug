@@ -1,33 +1,26 @@
-doctype html
-html(lang="en")
-  head
-    title #{t("gdpr_PersonalDataRequestTitle")} - TKO-äly ry
-    link(rel='stylesheet', href='/styles/reset.css')
-    link(rel='stylesheet', href='/styles/common.css')
-    link(rel='stylesheet', href='/styles/gdpr.css')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-  body
-    #container
-      #menubar
-        #logo-container
-          img.img(src='/svg/tkoaly.svg')
-        #title-container
-          div#title #{t("gdpr_PersonalDataRequestTitle")}
-      #content
-        p <b class='service'>#{serviceDisplayName}</b>#{t("gdpr_PersonalDataServiceRequires")}
-        p #{t("gdpr_PersonalDataFollowingData")}
-        #personaldata
-          ul
-            each info in personalInformation
-              li.entry #{info.name}: <b>#{info.value}</b>
-        p #{t("gdpr_PersonalDataRedirectMessage")} <b>#{redirectTo}</b>
-        p #{t("gdpr_PersonalDataReadPrivacyPolicy")} <a href='https://tko-aly.fi/member_privacy' target=_blank>#{t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink")}</a>
-      #confirmation
-        form(id='formSubmitReject', action=(submitUrl || '/login_confirm'), method='POST')
-          input(type='hidden', name='_csrf', value=csrfToken)
-          input.cancel(type='submit', name='cancel', value=t("gdpr_PersonalDataDecline"))
-        form(id='formSubmitAccept', action=(submitUrl || '/login_confirm'), method='POST')
-          input(type='hidden', name='_csrf', value=csrfToken)
-          input(type='hidden', name='permission', value='yes')
-          input.accept(type='submit', name='accept', value=t("gdpr_PersonalDataAccept"))
-    include partials/footer.pug
+extends layouts/common.pug
+
+block append head
+  link(rel='stylesheet', href='/styles/gdpr.css')
+
+block content
+  p <b class='service'>#{serviceDisplayName}</b>#{t("gdpr_PersonalDataServiceRequires")}
+  p #{t("gdpr_PersonalDataFollowingData")}
+
+  #personaldata
+    each info in personalInformation
+      .entry
+        .field #{t("gdpr_FieldName_" + info.name)}
+        .value #{info.value} 
+
+  p #{t("gdpr_PersonalDataRedirectMessage")} <b>#{redirectTo}</b>
+  p #{t("gdpr_PersonalDataReadPrivacyPolicy")} <a href='https://tko-aly.fi/member_privacy' target=_blank>#{t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink")}</a>
+
+block confirmation
+  form(id='formSubmitReject', action=(submitUrl || '/login_confirm'), method='POST')
+    input(type='hidden', name='_csrf', value=csrfToken)
+    input.cancel(type='submit', name='cancel', value=t("gdpr_PersonalDataDecline"))
+  form(id='formSubmitAccept', action=(submitUrl || '/login_confirm'), method='POST')
+    input(type='hidden', name='_csrf', value=csrfToken)
+    input(type='hidden', name='permission', value='yes')
+    input.accept(type='submit', name='accept', value=t("gdpr_PersonalDataAccept"))
