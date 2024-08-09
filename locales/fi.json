@@ -82,5 +82,9 @@
 	"gdpr_FieldValue_role_virkailija": "Virkailija",
 	"gdpr_FieldValue_role_tenttiarkistovirkailija": "Tenttiarkistovirkailija",
 	"gdpr_FieldValue_role_jasenvirkailija": "Jäsenvirkailija",
-	"gdpr_FieldValue_role_yllapitaja": "Ylläpitäjä"
+	"gdpr_FieldValue_role_yllapitaja": "Ylläpitäjä",
+  "resetPasswordChoice_title": "Salasanan palautus",
+  "resetPasswordSent_title": "Salasanan palautus",
+  "resetPasswordForm_title": "Salasanan palautus",
+  "resetPasswordSuccess_title": "Salasana palautettu"
 }

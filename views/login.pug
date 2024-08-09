@@ -7,11 +7,6 @@ block content
         h5 #{t("login_LoggedInAs")} #{loggedUser}
         - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`
         a(href=link fsty) #{t("login_DestroySession")}
-    if errors
-      #errors
-        each error in errors
-          div.error-message
-            span.error-text=error
     form#loginForm(action=(submitUrl || '/login'), method='POST')
       .form-group
         label(for='username', class='usernameLabel') #{t("login_UsernameLabel")}

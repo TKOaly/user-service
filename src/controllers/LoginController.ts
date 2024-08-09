@@ -513,8 +513,9 @@ class LoginController implements Controller {
       }
 
       if (!user) {
-        return res.status(400).render("serviceError", {
-          error: "User not found!",
+        return res.status(404).render("resetPassword", {
+          method,
+          errors: ["User not found!"],
         });
       }
 

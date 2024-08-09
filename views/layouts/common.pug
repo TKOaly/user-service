@@ -1,8 +1,10 @@
 doctype html
 html(lang="en")
   head
-    block head
+    block title
       title #{title} - TKO-äly ry
+
+    block head
       link(rel='stylesheet', href='/styles/reset.css')
       link(rel='stylesheet', href='/styles/common.css')
       meta(name='viewport', content='width=device-width, initial-scale=1')
@@ -13,6 +15,11 @@ html(lang="en")
       #title
         block title
           | #{title}
+      if errors
+        #errors
+          each error in errors
+            div.error-message
+              span.error-text=error
       #content
         block content
       #confirmation

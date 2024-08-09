@@ -87,7 +87,7 @@ a {
   border-radius: 0.05rem;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"] {
   height: 2.5rem;
   width: 100%;
   background: #1c1b17;
@@ -255,3 +255,13 @@ p {
   display: none;
 }
 
+#errors {
+  margin-bottom: 2em;
+}
+
+.error-message {
+  background: rgba(0,0,0,0.3);
+  padding: .5rem .5rem .5rem .75rem;
+  border-radius: .25rem;
+  border-left: .25rem solid var(--primary);
+}
