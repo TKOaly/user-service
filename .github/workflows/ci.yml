@@ -11,15 +11,18 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build project
-      run: docker-compose build
+      run: docker compose build
     - name: Setup test environment
       run: |
-        docker-compose up -d mysql
+        docker compose up -d mysql
         sleep 5
-        docker-compose run web npm run db:init
+        docker compose run web npm run db:init
+
     - name: Run linter
-      run: docker-compose run web npm run lint
+      run: docker compose run web npm run lint
+
     - name: Run typecheck
-      run: docker-compose run web npm run typecheck
+      run: docker compose run web npm run typecheck
+
     - name: Run tests
-      run: docker-compose run web npm test
+      run: docker compose run web npm test

@@ -198,9 +198,9 @@ describe("PaymentController", () => {
     it("POST /api/payments : As an authenticated user, adds a new payment", done => {
       const newPayment = {
         payer_id: 2,
-        amount: 44.44,
-        valid_until: "2018-05-28 22:25:4",
-        payment_type: "jasenmaksu",
+        seasons: 3,
+        payment_type: "tilisiirto",
+        membership_applied_for: "jasen",
       };
       chai
         .request(app)
@@ -208,13 +208,14 @@ describe("PaymentController", () => {
         .set("Authorization", "Bearer " + generateToken(2))
         .send(newPayment)
         .end((_, res) => {
+          console.log(res.body);
           res.status.should.equal(201);
           should.exist(res.body.ok);
           should.exist(res.body.payload);
           should.exist(res.body.payload.id);
           should.exist(res.body.payload.payer_id);
           should.exist(res.body.payload.created);
-          should.not.exist(res.body.payload.reference_number);
+          should.exist(res.body.payload.reference_number);
           should.exist(res.body.payload.amount);
           should.exist(res.body.payload.valid_until);
           should.exist(res.body.payload.payment_type);
@@ -222,8 +223,25 @@ describe("PaymentController", () => {
           res.body.message.should.equal("Payment created");
           res.body.payload.id.should.equal(payments.length + 1);
           res.body.payload.payer_id.should.equal(newPayment.payer_id);
-          parseFloat(res.body.payload.amount).should.equal(newPayment.amount);
+          parseFloat(res.body.payload.amount).should.equal(10);
           res.body.payload.payment_type.should.equal(newPayment.payment_type);
+
+          const endDate = new Date();
+
+          endDate.setMonth(6);
+          endDate.setDate(31);
+          endDate.setHours(23);
+          endDate.setMinutes(59);
+          endDate.setSeconds(59);
+          endDate.setMilliseconds(0);
+
+          if (endDate.valueOf() >= Date.now()) {
+            endDate.setFullYear(endDate.getFullYear() - 1);
+          }
+
+          endDate.setFullYear(endDate.getFullYear() + newPayment.seasons);
+
+          res.body.payload.valid_until.should.equal(endDate.toISOString());
 
           // Next, get all post and check for a match
           chai
@@ -278,7 +296,7 @@ describe("PaymentController", () => {
               /* Date.parse(payment_2.created).should.equal(
                 Date.parse(newPayment.created.toLocaleDateString())
               ); */
-              parseFloat(payment_2.amount).should.equal(newPayment.amount);
+              parseFloat(payment_2.amount).should.equal(10);
               /* Date.parse(payment_2.valid_until).should.equal(
                 Date.parse(newPayment.valid_until.toLocaleDateString())
               );

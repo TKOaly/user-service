@@ -66,10 +66,10 @@ describe("Login page", () => {
 
     const title = await browser.getTitle();
 
-    title.should.equal(fi.error_Title + " - TKO-äly ry");
+    title.should.equal(fi.serviceError_title + " - TKO-äly ry");
     const contentTitle = await browser.findElement(By.id("title")).getText();
 
-    contentTitle.should.equal(fi.error_Title);
+    contentTitle.should.equal(fi.serviceError_title);
 
     const errorText = await browser.findElement(By.className("error-text")).getText();
 
@@ -81,10 +81,10 @@ describe("Login page", () => {
 
     const title = await browser.getTitle();
 
-    title.should.equal(en.error_Title + " - TKO-äly ry");
+    title.should.equal(en.serviceError_title + " - TKO-äly ry");
     const contentTitle = await browser.findElement(By.id("title")).getText();
 
-    contentTitle.should.equal(en.error_Title);
+    contentTitle.should.equal(en.serviceError_title);
 
     const errorText = await browser.findElement(By.className("error-text")).getText();
 
@@ -97,7 +97,7 @@ describe("Login page", () => {
 
       const title = await browser.getTitle();
 
-      title.should.equal(fi.login_Login_to + " " + service.display_name + " - TKO-äly ry");
+      title.should.equal(fi.login_title + " - TKO-äly ry");
       const contentTitle = await browser.findElement(By.id("title")).getText();
 
       contentTitle.should.equal(fi.login_Login);
@@ -134,7 +134,7 @@ describe("Login page", () => {
       await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
 
       const title = await browser.getTitle();
-      title.should.equal(en.login_Login_to + " " + service.display_name + " - TKO-äly ry");
+      title.should.equal(en.login_title + " - TKO-äly ry");
       const containerTitle = await browser.findElement(By.id("title")).getText();
       containerTitle.should.equal(en.login_Login);
 
@@ -175,7 +175,7 @@ describe("Login page", () => {
       errorText.should.equal("Invalid username or password");
 
       const containerTitle = await browser.findElement(By.id("title")).getText();
-      containerTitle.should.equal(fi.login_Login);
+      containerTitle.should.equal(fi.login_title);
 
       const usernameLabel = await browser.findElement(By.className("usernameLabel")).getText();
       usernameLabel.should.equal(fi.login_UsernameLabel);
@@ -200,7 +200,7 @@ describe("Login page", () => {
       registerToService.should.equal(fi.login_RegisterToServiceText);
 
       const title = await browser.getTitle();
-      title.should.equal(fi.login_Login_to + " " + service.display_name + " - TKO-äly ry");
+      title.should.equal(fi.login_title + " - TKO-äly ry");
     });
   }
 
@@ -241,7 +241,7 @@ describe("Login page", () => {
       registerToService.should.equal(en.login_RegisterToServiceText);
 
       const title = await browser.getTitle();
-      title.should.equal(en.login_Login_to + " " + service.display_name + " - TKO-äly ry");
+      title.should.equal(en.login_title + " - TKO-äly ry");
     });
   }
 }).timeout(5000);

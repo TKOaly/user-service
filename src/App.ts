@@ -14,10 +14,9 @@ import LoginController from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
+import PricingsController from "./controllers/PricingsController";
 
-import LocalizationMiddleware from "./utils/LocalizationMiddleware";
-
-import i18n from "./i18n.config";
+import initLocalization from "./i18n.config";
 
 import morgan from "morgan";
 import { generateApiRoute } from "./utils/ApiRoute";
@@ -52,8 +51,7 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 
 // Localization
-app.use(LocalizationMiddleware);
-app.use(i18n.init);
+initLocalization(app);
 
 // Sentry
 app.use(Sentry.Handlers.requestHandler());
@@ -82,8 +80,21 @@ app.use(
   }),
 );
 
+app.locals.currentYear = () => new Date().getFullYear();
+
 app.use((req, _res, next) => {
   Sentry.setContext("session", req.session ?? {});
+  next();
+});
+
+app.use((req, res, next) => {
+  const render = res.render.bind(res);
+
+  res.render = (...[view, ...args]: Parameters<typeof render>) => {
+    res.locals.title = req.t(`${view}_title`);
+    render(view, ...args);
+  };
+
   next();
 });
 
@@ -96,6 +107,7 @@ API routes
 */
 
 app.use(generateApiRoute("auth"), AuthController.createRoutes());
+app.use(generateApiRoute("pricings"), PricingsController.createRoutes());
 app.use(generateApiRoute("users"), UserController.createRoutes());
 app.use(generateApiRoute("payments"), PaymentController.createRoutes());
 app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
@@ -104,12 +116,12 @@ app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
 // Ping route
-app.get("/ping", (req, res) => res.json({ ok: true }));
+app.get("/ping", (_req, res) => res.json({ ok: true }));
 
 app.use(Sentry.Handlers.errorHandler());
 
 // CSRF
-app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: { code?: string }, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }

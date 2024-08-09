@@ -71,9 +71,6 @@ class UserService {
     }
 
     const results = await UserDao.findAll(fields, conditionQuery);
-    if (!results.length) {
-      throw new ServiceError(404, "No results returned");
-    }
 
     // @ts-ignore
     // FIXME: Wrong typings
@@ -127,9 +124,22 @@ class UserService {
   public async updateUser(
     userId: number,
     updatedUser: Partial<UserDatabaseObject>,
-    _password?: string,
+    rawPassword?: string,
   ): Promise<number> {
-    const affectedRows = await UserDao.update(userId, updatedUser);
+    const fields = { ...updatedUser };
+
+    if (rawPassword) {
+      const { password, salt } = await mkHashedPassword(rawPassword);
+      const passwordHash = await hashPasswordAsync(rawPassword);
+
+      Object.assign(fields, {
+        password_hash: passwordHash,
+        hashed_password: password,
+        salt,
+      });
+    }
+
+    const affectedRows = await UserDao.update(userId, fields);
 
     return affectedRows;
   }
@@ -137,10 +147,24 @@ class UserService {
   public async deleteUser(userId: number): Promise<number> {
     return UserDao.remove(userId);
   }
+
+  public async getUserWithUsername(username: string): Promise<User | null> {
+    const dbUser = await UserDao.findByUsername(username);
+    if (!dbUser) return null;
+    const user = new User(dbUser);
+    return user;
+  }
+
+  public async getUserWithEmail(email: string): Promise<User | null> {
+    const dbUser = await UserDao.findByEmail(email);
+    if (!dbUser) return null;
+    const user = new User(dbUser);
+    return user;
+  }
 }
 
 async function mkHashedPassword(rawPassword: string): Promise<{ salt: string; password: string }> {
-  const salt = crypto.randomBytes(16).toString("hex");
+  const salt = crypto.randomBytes(16).toString("hex").substring(0, 20);
   // The passwords are first hashed according to the legacy format
   // to ensure backwards compability
   const password = sha1(`${salt}kekbUr${rawPassword}`) as string;
