@@ -139,7 +139,7 @@ class LoginController implements Controller {
         loggedUser: req.authorization ? req.authorization.user.username : null,
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale(),
+        currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
     } catch (err) {
@@ -241,7 +241,7 @@ class LoginController implements Controller {
         errors: [e.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale(),
+        currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
     }
@@ -261,7 +261,7 @@ class LoginController implements Controller {
         errors: ["Authentication failure: User ID is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale(),
+        currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
     }
@@ -273,7 +273,7 @@ class LoginController implements Controller {
         errors: ["Authentication failure: Session is undefined."],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale(),
+        currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
     }
@@ -314,7 +314,7 @@ class LoginController implements Controller {
         errors: [err.message],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
-        currentLocale: res.getLocale(),
+        currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
     }

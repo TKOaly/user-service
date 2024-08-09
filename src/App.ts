@@ -16,9 +16,7 @@ import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
 import PricingsController from "./controllers/PricingsController";
 
-import LocalizationMiddleware from "./utils/LocalizationMiddleware";
-
-import i18n from "./i18n.config";
+import initLocalization from "./i18n.config";
 
 import morgan from "morgan";
 import { Environment } from "./Db";
@@ -55,8 +53,7 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 
 // Localization
-app.use(LocalizationMiddleware);
-app.use(i18n.init);
+initLocalization(app);
 
 // Sentry
 app.use(Sentry.Handlers.requestHandler());
@@ -88,11 +85,11 @@ app.use((req, _res, next) => {
   next();
 });
 
-app.use((_req, res, next) => {
+app.use((req, res, next) => {
   const render = res.render.bind(res);
 
   res.render = (...[view, ...args]: Parameters<typeof render>) => {
-    res.locals.title = (res as any).t(`${view}_title`);
+    res.locals.title = req.t(`${view}_title`);
     render(view, ...args);
   };
 
