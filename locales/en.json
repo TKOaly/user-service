@@ -82,7 +82,7 @@
 	"gdpr_FieldValue_role_virkailija": "Officer",
 	"gdpr_FieldValue_role_tenttiarkistovirkailija": "Exam archive officer",
 	"gdpr_FieldValue_role_jasenvirkailija": "Membership officer",
-	"gdpr_FieldValue_role_yllapitaja": "Admin"
+	"gdpr_FieldValue_role_yllapitaja": "Admin",
   "resetPasswordChoice_title": "Password recovery",
   "resetPasswordSent_title": "Password recovery",
   "resetPasswordForm_title": "Password recovery",
