@@ -114,12 +114,12 @@ app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
 // Ping route
-app.get("/ping", (req, res) => res.json({ ok: true }));
+app.get("/ping", (_req, res) => res.json({ ok: true }));
 
 app.use(Sentry.Handlers.errorHandler());
 
 // CSRF
-app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: { code?: string }, _req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }
