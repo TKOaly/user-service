@@ -190,7 +190,7 @@ const extractService = async (req: Request) => {
 
   try {
     return await AuthenticationService.getServiceWithIdentifier(client_id);
-  } catch (err) {
+  } catch (err: any) {
     throw new OAuthError("invalid_request").withDescription(`Unknown client ID '${client_id}'.`);
   }
 };
@@ -237,7 +237,7 @@ class OAuthController implements Controller {
 
     try {
       service = await extractService(req);
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof OAuthError) {
         throw err.withState(state);
       } else {
@@ -334,7 +334,7 @@ class OAuthController implements Controller {
 
     try {
       user = await UserService.getUserWithUsernameAndPassword(username, password);
-    } catch (err) {
+    } catch (err: any) {
       return res.status(200).render("login", {
         service,
         csrfToken: req.csrfToken(),
@@ -387,7 +387,7 @@ class OAuthController implements Controller {
         throw new OAuthError("access_denied")
           .withDescription("User did not accept the service privacy policy.")
           .withState(state);
-      } catch (ex) {
+      } catch (ex: any) {
         throw new OAuthError("server_error")
           .withDescription("Failed to save privacy policy consent information.")
           .withState(state);
@@ -395,7 +395,7 @@ class OAuthController implements Controller {
     } else {
       try {
         await ConsentService.acceptConsent(user.id, service.id);
-      } catch (ex) {
+      } catch (ex: any) {
         throw new OAuthError("server_error")
           .withDescription("Failed to save privacy policy consent information.")
           .withState(state);
@@ -548,7 +548,7 @@ class OAuthController implements Controller {
 
       try {
         service = await AuthenticationService.getServiceWithIdentifier(serviceIdentifier);
-      } catch (err) {
+      } catch (err: any) {
         throw new ServiceError(403, "Invalid client credentials");
       }
 
@@ -595,7 +595,7 @@ class OAuthController implements Controller {
 
       try {
         user = await UserService.getUserWithUsernameAndPassword(body.username, body.password);
-      } catch (err) {
+      } catch (err: any) {
         throw new OAuthError("access_denied");
       }
 

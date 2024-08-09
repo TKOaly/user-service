@@ -142,7 +142,7 @@ class LoginController implements Controller {
         currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
-    } catch (err) {
+    } catch (err: any) {
       Sentry.captureException(err);
       return res.status(400).render("serviceError", {
         error: err.message,
@@ -177,7 +177,7 @@ class LoginController implements Controller {
     let service: Service;
     try {
       service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier as string);
-    } catch (e) {
+    } catch (e: any) {
       Sentry.captureException(e);
       return res.status(e.httpStatusCode || 500).render("serviceError", {
         error: e.message,
@@ -213,7 +213,7 @@ class LoginController implements Controller {
     let service: Service;
     try {
       service = await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier as string);
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
@@ -235,7 +235,7 @@ class LoginController implements Controller {
       } else {
         // Something is missing here..?
       }
-    } catch (e) {
+    } catch (e: any) {
       return res.status(500).render("login", {
         service,
         errors: [e.message],
@@ -307,7 +307,7 @@ class LoginController implements Controller {
           csrfToken: req.csrfToken(),
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       Sentry.captureException(err);
       return res.status(500).render("login", {
         service,
@@ -373,7 +373,7 @@ class LoginController implements Controller {
       } else {
         token = AuthenticationService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
       }
-    } catch (e) {
+    } catch (e: any) {
       Sentry.captureException(e);
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
@@ -432,7 +432,7 @@ class LoginController implements Controller {
       try {
         await ConsentService.declineConsent(req.session.user.userId, service.id);
         return res.redirect("https://members.tko-aly.fi");
-      } catch (ex) {
+      } catch (ex: any) {
         Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer." + ex.message,
@@ -441,7 +441,7 @@ class LoginController implements Controller {
     } else {
       try {
         await ConsentService.acceptConsent(req.session.user.userId, service.id);
-      } catch (ex) {
+      } catch (ex: any) {
         Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
           error: "Error saving your answer: " + ex.message,
@@ -470,7 +470,7 @@ class LoginController implements Controller {
 
       try {
         await validate(params);
-      } catch (err) {
+      } catch (err: any) {
         if (err instanceof ValidationError) {
           return res.status(err.status).render("serviceError", {
             error: err.message,
@@ -577,7 +577,7 @@ class LoginController implements Controller {
         await UserService.updateUser(user.id, {}, req.body.password1);
 
         return res.render("resetPasswordSuccess");
-      } catch (err) {
+      } catch (err: any) {
         if (err instanceof ValidationError) {
           return res.status(err.status).render("serviceError", {
             error: err.message,

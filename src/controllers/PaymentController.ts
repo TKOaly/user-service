@@ -43,7 +43,7 @@ class PaymentController implements Controller {
         payment = await PaymentService.fetchPayment(paymentIds[0]);
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
-    } catch (err) {
+    } catch (err: any) {
       Sentry.addBreadcrumb({
         message: "Error creating payment",
         data: {
@@ -83,7 +83,7 @@ class PaymentController implements Controller {
       } else {
         return res.status(400).json(new ServiceResponse(null, "Failed to modify payment"));
       }
-    } catch (err) {
+    } catch (err: any) {
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -110,7 +110,7 @@ class PaymentController implements Controller {
           payments = await PaymentService.fetchAllPayments();
       }
       return res.status(200).json(new ServiceResponse(payments, null, true));
-    } catch (err) {
+    } catch (err: any) {
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -129,7 +129,7 @@ class PaymentController implements Controller {
         return res.status(200).json(new ServiceResponse(payment, null, true));
       }
       return res.status(404).json(new ServiceResponse(null, "Payment not found"));
-    } catch (err) {
+    } catch (err: any) {
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
   }
@@ -149,7 +149,7 @@ class PaymentController implements Controller {
       } else {
         return res.status(400);
       }
-    } catch (e) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error marking payment as paid",
         data: {
@@ -171,7 +171,7 @@ class PaymentController implements Controller {
     try {
       await PaymentService.deletePatyment(Number(Number(req.params.id)));
       return res.status(200);
-    } catch (e) {
+    } catch (e: any) {
       Sentry.addBreadcrumb({
         message: "Error deleting payment",
         data: {

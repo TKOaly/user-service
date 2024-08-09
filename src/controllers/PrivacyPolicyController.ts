@@ -19,7 +19,7 @@ class PrivacyPolicyController implements Controller {
       } else {
         return res.status(404).json(new ServiceResponse(null, "Privacy policy not found", false));
       }
-    } catch (err) {
+    } catch (err: any) {
       Sentry.captureException(err);
       return res.status(500).json(new ServiceResponse(null, "Server error", false));
     }

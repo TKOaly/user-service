@@ -34,7 +34,7 @@ class AuthController implements Controller {
 
     try {
       await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier);
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
@@ -54,10 +54,10 @@ class AuthController implements Controller {
         }
 
         return res.status(200).json(new ServiceResponse({ token }, "Authenticated", true));
-      } catch (e) {
+      } catch (e: any) {
         return res.status(500).json(new ServiceResponse(null, e.message));
       }
-    } catch (e) {
+    } catch (e: any) {
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
   }

@@ -52,7 +52,7 @@ class AuthorizeMiddleware {
               user,
             };
             return next();
-          } catch (e) {
+          } catch (e: any) {
             if (returnAsJson) {
               return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
             } else {
@@ -115,7 +115,7 @@ class AuthorizeMiddleware {
             user,
           };
           return next();
-        } catch (e) {
+        } catch (e: any) {
           if (returnAsJson) {
             return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
           } else {
@@ -150,7 +150,7 @@ class AuthorizeMiddleware {
           user,
         };
         return next();
-      } catch (e) {
+      } catch (e: any) {
         return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -164,7 +164,7 @@ class AuthorizeMiddleware {
           user,
         };
         return next();
-      } catch (e) {
+      } catch (e: any) {
         return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
       }
     }

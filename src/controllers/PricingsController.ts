@@ -79,7 +79,7 @@ class UserController implements Controller {
     } else if (req.params.season) {
       try {
         season = parseInt(req.params.season.toString(), 10);
-      } catch (_err) {
+      } catch (_err: any) {
         throw new ServiceError(400, 'invalid value for route parameter "season"');
       }
     } else {
@@ -101,7 +101,7 @@ class UserController implements Controller {
     if (req.query.seasons) {
       try {
         seasons = parseInt(req.query.seasons.toString(), 10);
-      } catch (err) {
+      } catch (err: any) {
         throw new ServiceError(400, 'invalid value for query parameter "seasons"');
       }
     }
