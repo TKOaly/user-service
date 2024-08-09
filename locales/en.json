@@ -68,5 +68,19 @@
 	"privacypolicy_title": "Privacy policy",
 	"gdpr_title": "Data usage request",
 	"serviceError_title": "Error!",
-  "login_title": "Login"
+	"login_title": "Login",
+	"gdpr_FieldName_membership": "Membership status",
+	"gdpr_FieldName_isTKTL": "Is interested in computer science?",
+	"gdpr_TypeValue_boolean_true": "Yes",
+	"gdpr_TypeValue_boolean_false": "No",
+	"gdpr_FieldValue_membership_jasen": "Member",
+	"gdpr_FieldValue_membership_kannatusjasen": "Supporting member",
+	"gdpr_FieldValue_membership_ulkojasen": "Associate member",
+	"gdpr_FieldValue_membership_ei-jasen": "Not a member",
+	"gdpr_FieldValue_membership_erotettu": "Revoked",
+	"gdpr_FieldValue_role_kayttaja": "User",
+	"gdpr_FieldValue_role_virkailija": "Officer",
+	"gdpr_FieldValue_role_tenttiarkistovirkailija": "Exam archive officer",
+	"gdpr_FieldValue_role_jasenvirkailija": "Membership officer",
+	"gdpr_FieldValue_role_yllapitaja": "Admin"
 }

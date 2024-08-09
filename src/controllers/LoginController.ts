@@ -251,7 +251,7 @@ class LoginController implements Controller {
     // @ts-expect-error
     keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map((key: keyof User) => ({
       name: key,
-      value: user[key].toString(),
+      value: user[key],
     }));
 
     // Set session

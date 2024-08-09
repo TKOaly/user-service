@@ -68,5 +68,19 @@
 	"privacypolicy_title": "Tietosuojaseloste",
 	"gdpr_title": "Henkilötietojen käyttöoikeuspyyntö",
 	"serviceError_title": "Virhe!",
-	"login_title": "Kirjaudu palveluun"
+	"login_title": "Kirjaudu palveluun",
+	"gdpr_FieldName_membership": "Jäsenyys",
+	"gdpr_FieldName_isTKTL": "On kiinnostunut tietojenkäsittelytieteestä?",
+	"gdpr_TypeValue_boolean_true": "Kyllä",
+	"gdpr_TypeValue_boolean_false": "Ei",
+	"gdpr_FieldValue_membership_jasen": "Jäsen",
+	"gdpr_FieldValue_membership_kannatusjasen": "Kannatusjäsen",
+	"gdpr_FieldValue_membership_ulkojasen": "Ulkojäsen",
+	"gdpr_FieldValue_membership_ei-jasen": "Ei jäsen",
+	"gdpr_FieldValue_membership_erotettu": "Erotettu",
+	"gdpr_FieldValue_role_kayttaja": "Käyttäjä",
+	"gdpr_FieldValue_role_virkailija": "Virkailija",
+	"gdpr_FieldValue_role_tenttiarkistovirkailija": "Tenttiarkistovirkailija",
+	"gdpr_FieldValue_role_jasenvirkailija": "Jäsenvirkailija",
+	"gdpr_FieldValue_role_yllapitaja": "Ylläpitäjä"
 }

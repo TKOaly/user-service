@@ -11,7 +11,11 @@ block content
     each info in personalInformation
       .entry
         .field #{t("gdpr_FieldName_" + info.name)}
-        .value #{info.value} 
+        .value
+          if info.value instanceof Date
+            | #{new Intl.DateTimeFormat(language).format(info.value)}
+          else
+            | #{t(["gdpr_FieldValue_" + info.name + "_" + info.value, "gdpr_TypeValue_" + (typeof info.value) + "_" + info.value], '' + info.value)} 
 
   p #{t("gdpr_PersonalDataRedirectMessage")} <b>#{redirectTo}</b>
   p #{t("gdpr_PersonalDataReadPrivacyPolicy")} <a href='https://tko-aly.fi/member_privacy' target=_blank>#{t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink")}</a>
