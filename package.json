@@ -64,7 +64,7 @@
     "secure-compare": "^3.0.1",
     "sha1": "^1.1.1",
     "ts-node": "^10.9.2",
-    "typedoc": "^0.25.13",
+    "typedoc": "^0.26.5",
     "validator": "^13.1.17"
   },
   "devDependencies": {
@@ -85,7 +85,7 @@
     "@types/mocha": "^8.0.3",
     "@types/mysql": "^2.15.15",
     "@types/mysql2": "https://github.com/types/mysql2.git",
-    "@types/node": "^14.11.8",
+    "@types/node": "^20.14.8",
     "@types/node-jose": "^1.1.10",
     "@types/nodemailer": "^6.4.15",
     "@types/raven": "^2.5.3",
@@ -113,7 +113,7 @@
     "selenium-webdriver": "^4.0.0-alpha.7",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^4.9.5",
+    "typescript": "^5.5.4",
     "uuid": "^8.3.1"
   },
   "engines": {
