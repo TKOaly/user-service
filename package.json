@@ -34,8 +34,6 @@
   },
   "dependencies": {
     "@sentry/node": "^6.19.3",
-    "@types/lodash": "^4.14.162",
-    "@types/morgan": "^1.9.1",
     "bcrypt": "^5.1.0",
     "connect-session-knex": "^5.0.0",
     "cookie-parser": "^1.4.5",
@@ -114,6 +112,8 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.4",
+    "@types/lodash": "^4.14.162",
+    "@types/morgan": "^1.9.1",
     "uuid": "^8.3.1"
   },
   "engines": {
