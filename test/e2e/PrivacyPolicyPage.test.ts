@@ -1,8 +1,8 @@
+import { describe, test, beforeEach, beforeAll, afterEach, afterAll, expect } from "vitest";
 import { By, WebDriver } from "selenium-webdriver";
 import { cleanupDriver, prepareDriver } from "../WebDriver";
 
-import "mocha";
-import { knexInstance } from "../../src/Db";
+import { knexInstance as knex } from "../../src/Db";
 
 import { ServiceDatabaseObject } from "../../src/models/Service";
 
@@ -11,12 +11,9 @@ import app from "../../src/App";
 
 import en from "../../locales/en.json";
 import fi from "../../locales/fi.json";
-import services = require("../../seeds/seedData/services");
+import services from "../../seeds/seedData/services";
 
 process.env.NODE_ENV = "test";
-
-// Knex instance
-const knex = knexInstance;
 
 const serviceData = services as ServiceDatabaseObject[];
 
@@ -26,42 +23,33 @@ describe("Privacy policy page", () => {
   let browser: WebDriver;
   let express: Server;
 
-  before(done => {
-    prepareDriver().then(driver => {
-      browser = driver;
-      express = app.listen(port, () => {
-        done();
-      });
-    });
+  beforeAll(async () => {
+    browser = await prepareDriver()
+
+    await new Promise<void>((resolve) => {
+      express = app.listen(port, () => resolve());
+    })
   });
 
-  after(done => {
-    cleanupDriver(browser).then(() => {
-      express.close(() => {
-        done();
-      });
-    });
+  afterAll(async () => {
+    await cleanupDriver(browser)
+    await new Promise<void>((resolve) => express.close(() => resolve()));
   });
 
-  beforeEach(done => {
-    // The before hook ensures, that knex runs database migrations and seeds.
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  // Roll back
+  beforeEach(async () => {
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
+    await knex.seed.run();
   });
 
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  // After each
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
   for (const service of serviceData) {
-    it(
+    test(
       "On successful login, privacy policy page is shown for new users (Finnish) - " + service.display_name,
       async () => {
         await browser.get("http://localhost:3010/lang/fi/" + service.service_identifier);
@@ -70,30 +58,28 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.className("accept")).click();
 
         const containerTitle = await browser.findElement(By.id("title")).getText();
-        containerTitle.should.equal(service.display_name + " " + fi.privacypolicy_Title);
+        expect(containerTitle).to.equal(service.display_name + " " + fi.privacypolicy_Title);
 
         const title = await browser.getTitle();
-        title.should.equal(fi.privacypolicy_title + " - TKO-äly ry");
+        expect(title).to.equal(fi.privacypolicy_title + " - TKO-äly ry");
 
         const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
-        cancelVal.should.equal(fi.privacypolicy_Decline);
+        expect(cancelVal).to.equal(fi.privacypolicy_Decline);
 
         const acceptVal = await browser.findElement(By.className("accept")).getAttribute("value");
-        acceptVal.should.equal(fi.privacypolicy_Accept);
+        expect(acceptVal).to.equal(fi.privacypolicy_Accept);
 
         const privacyPolicyRedirect = await browser.findElement(By.className("privacyPolicyRedirect")).getText();
-        privacyPolicyRedirect.should.equal(fi.privacypolicy_YouWillBeRedirected);
+        expect(privacyPolicyRedirect).to.equal(fi.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
-        privacyPolicyDeclined.should.equal(
-          fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2,
-        );
+        expect(privacyPolicyDeclined).to.equal(fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2);
       },
     );
   }
 
   for (const service of serviceData) {
-    it(
+    test(
       "On successful login, privacy policy page is shown for new users (English) - " + service.display_name,
       async () => {
         await browser.get("http://localhost:3010/lang/en/" + service.service_identifier);
@@ -102,25 +88,23 @@ describe("Privacy policy page", () => {
         await browser.findElement(By.className("accept")).click();
 
         const containerTitle = await browser.findElement(By.id("title")).getText();
-        containerTitle.should.equal(service.display_name + en.privacypolicy_Title);
+        expect(containerTitle).to.equal(service.display_name + en.privacypolicy_Title);
 
         const title = await browser.getTitle();
-        title.should.equal(en.privacypolicy_title + " - TKO-äly ry");
+        expect(title).to.equal(en.privacypolicy_title + " - TKO-äly ry");
 
         const cancelVal = await browser.findElement(By.className("cancel")).getAttribute("value");
-        cancelVal.should.equal(en.privacypolicy_Decline);
+        expect(cancelVal).to.equal(en.privacypolicy_Decline);
 
         const acceptVal = await browser.findElement(By.className("accept")).getAttribute("value");
-        acceptVal.should.equal(en.privacypolicy_Accept);
+        expect(acceptVal).to.equal(en.privacypolicy_Accept);
 
         const privacyPolicyRedirect = await browser.findElement(By.className("privacyPolicyRedirect")).getText();
-        privacyPolicyRedirect.should.equal(en.privacypolicy_YouWillBeRedirected);
+        expect(privacyPolicyRedirect).to.equal(en.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
-        privacyPolicyDeclined.should.equal(
-          en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2,
-        );
+        expect(privacyPolicyDeclined).to.equal(en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2);
       },
     );
   }
-}).timeout(5000);
+});

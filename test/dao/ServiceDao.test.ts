@@ -1,17 +1,12 @@
-import "mocha";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import ServiceDao from "../../src/dao/ServiceDao";
 import { ServiceDatabaseObject } from "../../src/models/Service";
 import { knexInstance } from "../../src/Db";
 
-import chai = require("chai");
-
-import serviceFile = require("../../seeds/seedData/services");
+import serviceFile from "../../seeds/seedData/services";
 process.env.NODE_ENV = "test";
 
 const dbServices = serviceFile as ServiceDatabaseObject[];
-const should = chai.should();
-
-// const sleep = (timeout: number) => new Promise((resolve, _reject) => setTimeout(resolve, timeout))
 
 // Knex instance
 const knex = knexInstance;
@@ -34,60 +29,52 @@ describe("ServiceDao", () => {
   });
 
   // After each
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
+  afterEach(async () => {
+    await knex.migrate.rollback();
+  });
+
+  test("Should return all services with findAll()", async () => {
+    const services = await serviceDao.findAll()
+    expect(services.length).toBeDefined();
+    expect(services.length).to.equal(dbServices.length);
+    services.forEach(dbService => {
+      const seedService = dbServices.find(seedSrv => dbService.service_identifier === seedSrv.service_identifier);
+      if (seedService === undefined) {
+        throw new Error("Seeded service not found");
+      }
+
+      expect(seedService).toBeDefined();
+
+      expect(dbService.service_identifier).to.equal(seedService.service_identifier);
+
+      expect(dbService.service_name).toBeDefined();
+      expect(dbService.service_name).to.equal(seedService.service_name);
+
+      expect(dbService.redirect_url).toBeDefined();
+      expect(dbService.redirect_url).to.equal(seedService.redirect_url);
+
+      expect(dbService.id).toBeDefined();
+      expect(dbService.id).to.equal(seedService.id);
+
+      expect(dbService.display_name).toBeDefined();
+      expect(dbService.display_name).to.equal(seedService.display_name);
+
+      expect(dbService.data_permissions).toBeDefined();
+      expect(dbService.data_permissions).to.equal(seedService.data_permissions);
+
+      expect(dbService.created).toBeDefined();
+      expect(dbService.modified).toBeDefined();
     });
   });
 
-  it("Should return all services with findAll()", done => {
-    serviceDao.findAll().then(services => {
-      should.exist(services.length);
-      services.length.should.equal(dbServices.length);
-      services.forEach(dbService => {
-        const seedService = dbServices.find(seedSrv => dbService.service_identifier === seedSrv.service_identifier);
-        if (seedService === undefined) {
-          throw new Error("Seeded service not found");
-        }
-
-        should.exist(seedService);
-
-        dbService.service_identifier.should.equal(seedService.service_identifier);
-
-        should.exist(dbService.service_name);
-        dbService.service_name.should.equal(seedService.service_name);
-
-        should.exist(dbService.redirect_url);
-        dbService.redirect_url.should.equal(seedService.redirect_url);
-
-        should.exist(dbService.id);
-        dbService.id.should.equal(seedService.id);
-
-        should.exist(dbService.display_name);
-        dbService.display_name.should.equal(seedService.display_name);
-
-        should.exist(dbService.data_permissions);
-        dbService.data_permissions.should.equal(seedService.data_permissions);
-
-        should.exist(dbService.created);
-        should.exist(dbService.modified);
-      });
-
-      done();
-    });
+  test("Should remove a service with remove()", async () => {
+    const res = await serviceDao.remove(dbServices[0].id)
+    expect(res).to.equal(1);
+    const services = await serviceDao.findAll()
+    expect(services.length).to.equal(dbServices.length - 1);
   });
 
-  it("Should remove a service with remove()", done => {
-    serviceDao.remove(dbServices[0].id).then(res => {
-      res.should.equal(1);
-      serviceDao.findAll().then(services => {
-        services.length.should.equal(dbServices.length - 1);
-        done();
-      });
-    });
-  });
-
-  it("Should insert a new service with save()", done => {
+  test("Should insert a new service with save()", async () => {
     const newService: Omit<ServiceDatabaseObject, "created" | "modified"> = {
       data_permissions: 666,
       display_name: "Test service",
@@ -98,35 +85,31 @@ describe("ServiceDao", () => {
       secret: "unsecure",
     };
 
-    serviceDao.save(newService).then(res => {
-      should.exist(res);
-      res[0].should.equal(nextDbServiceId);
-      serviceDao.findAll().then(services => {
-        services.length.should.equal(dbServices.length + 1);
-        serviceDao.findByIdentifier(newService.service_identifier).then(dbService => {
-          if (dbService === undefined) {
-            throw new Error("Service not found");
-          }
-          should.exist(dbService.created);
-          should.exist(dbService.modified);
-          should.exist(dbService.data_permissions);
-          should.exist(dbService.display_name);
-          should.exist(dbService.id);
-          should.exist(dbService.redirect_url);
-          should.exist(dbService.service_identifier);
-          should.exist(dbService.service_name);
-          dbService.data_permissions.should.equal(newService.data_permissions);
-          dbService.display_name.should.equal(newService.display_name);
-          dbService.redirect_url.should.equal(newService.redirect_url);
-          dbService.service_identifier.should.equal(newService.service_identifier);
-          dbService.service_name.should.equal(newService.service_name);
-          done();
-        });
-      });
-    });
+    const res = await serviceDao.save(newService)
+    expect(res).toBeDefined();
+    expect(res[0]).to.equal(nextDbServiceId);
+    const services = await serviceDao.findAll()
+    expect(services.length).to.equal(dbServices.length + 1);
+    const dbService = await serviceDao.findByIdentifier(newService.service_identifier)
+    if (dbService === undefined) {
+      throw new Error("Service not found");
+    }
+    expect(dbService.created).toBeDefined();
+    expect(dbService.modified).toBeDefined();
+    expect(dbService.data_permissions).toBeDefined();
+    expect(dbService.display_name).toBeDefined();
+    expect(dbService.id).toBeDefined();
+    expect(dbService.redirect_url).toBeDefined();
+    expect(dbService.service_identifier).toBeDefined();
+    expect(dbService.service_name).toBeDefined();
+    expect(dbService.data_permissions).to.equal(newService.data_permissions);
+    expect(dbService.display_name).to.equal(newService.display_name);
+    expect(dbService.redirect_url).to.equal(newService.redirect_url);
+    expect(dbService.service_identifier).to.equal(newService.service_identifier);
+    expect(dbService.service_name).to.equal(newService.service_name);
   });
 
-  it("Should return a single service with findOne()", async () => {
+  test("Should return a single service with findOne()", async () => {
     const seedService = dbServices[0];
 
     const dbService = await serviceDao.findOne(seedService.id);
@@ -144,12 +127,12 @@ describe("ServiceDao", () => {
       const key = sKey as any as keyof ServiceDatabaseObject;
 
       console.log(key, dbService[key]);
-      should.exist(dbService[key]);
-      should.equal(dbService[key], seedService[key]);
+      expect(dbService[key]).toBeDefined();
+      expect(dbService[key]).to.equal(seedService[key]);
     });
   });
 
-  it("Should return a single service with findByIdentifier()", async () => {
+  test("Should return a single service with findByIdentifier()", async () => {
     const seedService = dbServices[0];
 
     const dbService = await serviceDao.findByIdentifier(seedService.service_identifier);
@@ -167,12 +150,12 @@ describe("ServiceDao", () => {
       const key = sKey as any as keyof ServiceDatabaseObject;
 
       console.log(key, dbService[key]);
-      should.exist(dbService[key]);
-      should.equal(dbService[key], seedService[key]);
+      expect(dbService[key]).toBeDefined();
+      expect(dbService[key]).to.equal(seedService[key]);
     });
   });
 
-  it("Should update a service with update()", async () => {
+  test("Should update a service with update()", async () => {
     const updatedService: Pick<ServiceDatabaseObject, "id" | "service_name" | "data_permissions"> = {
       id: 2,
       service_name: "test_service",
@@ -189,8 +172,8 @@ describe("ServiceDao", () => {
 
     const res = await serviceDao.update(updatedService.id, updatedService);
 
-    should.exist(res);
-    res.should.equal(1);
+    expect(res).toBeDefined();
+    expect(res).to.equal(1);
 
     const service = await serviceDao.findOne(updatedService.id!);
 
@@ -198,17 +181,15 @@ describe("ServiceDao", () => {
       throw new Error("Service not found");
     }
 
-    service.modified.toISOString().should.not.equal(oldService.modified.toISOString());
-    service.created.toISOString().should.equal(oldService.created.toISOString());
-    service.id.should.equal(updatedService.id);
-    service.service_name.should.equal(updatedService.service_name);
-    service.data_permissions.should.equal(7768);
+    expect(service.modified.toISOString()).not.to.equal(oldService.modified.toISOString());
+    expect(service.created.toISOString()).to.equal(oldService.created.toISOString());
+    expect(service.id).to.equal(updatedService.id);
+    expect(service.service_name).to.equal(updatedService.service_name);
+    expect(service.data_permissions).to.equal(7768);
   });
 
-  it("should return undefined if service is not found", done => {
-    serviceDao.findOne(999).then(service => {
-      should.not.exist(service);
-      done();
-    });
+  test("should return undefined if service is not found", async () => {
+    const service = await serviceDao.findOne(999);
+    expect(service).not.toBeDefined();
   });
 });

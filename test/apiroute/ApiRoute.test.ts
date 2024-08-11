@@ -1,28 +1,24 @@
-import "mocha";
 import { apiHeaderMiddleware, generateApiRoute } from "../../src/utils/ApiRoute";
+import { describe, test, expect } from "vitest";
 
-import chai = require("chai");
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
-const should = chai.should();
 
 describe("ApiRoute", () => {
-  it("Creates API route correctly, with API version and route", done => {
+  test("Creates API route correctly, with API version and route", () => {
     const apiVersion = "v2";
     const route = "testroute";
     const apiUrl = generateApiRoute(route, apiVersion);
-    apiUrl.should.equal("/api/" + apiVersion + "/" + route);
-    done();
+    expect(apiUrl).to.equal(`/api/${apiVersion}/${route}`);
   });
 
-  it("Creates API route correctly, with API route", done => {
+  test("Creates API route correctly, with API route", () => {
     const route = "testroute";
     const apiUrl = generateApiRoute(route);
-    apiUrl.should.equal("/api/" + route);
-    done();
+    expect(apiUrl).to.equal(`/api/${route}`);
   });
 
-  it("Middleware sets route and API version headers correctly", done => {
+  test("Middleware sets route and API version headers correctly", () => {
     const apiVersion = "v2";
 
     const headers: Array<{ name: string; val: string }> = [];
@@ -46,20 +42,25 @@ describe("ApiRoute", () => {
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
-    should.exist(headers[0]);
-    should.exist(headers[1]);
+    expect(headers).to.have.length(2);
+    expect(headers[0]).toBeDefined();
+    expect(headers[1]).toBeDefined();
 
-    headers.length.should.equal(2);
-    headers[0].name.should.equal("X-Route-API-version");
-    headers[0].val.should.equal(apiVersion);
-    headers[1].name.should.equal("X-API-version");
-    headers[1].val.should.equal(process.env.API_VERSION);
-    calledNext.should.equal(true);
+    expect(headers).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        name: "X-Route-API-version",
+        val: apiVersion,
+      }),
+      expect.objectContaining({
+        name: "X-API-version",
+        val: process.env.API_VERSION,
+      }),
+    ]))
 
-    done();
+    expect(calledNext).to.equal(true);
   });
 
-  it("Middleware sets API version header correctly", done => {
+  test("Middleware sets API version header correctly", () => {
     const headers: Array<{ name: string; val: string }> = [];
 
     let calledNext = false;
@@ -81,14 +82,15 @@ describe("ApiRoute", () => {
     // Call middleware
     middleware(mockExpress.req, mockExpress.res, mockExpress.next);
 
-    should.exist(headers[0]);
-    should.not.exist(headers[1]);
+    expect(headers).toHaveLength(1);
 
-    headers.length.should.equal(1);
-    headers[0].name.should.equal("X-API-version");
-    headers[0].val.should.equal(process.env.API_VERSION);
-    calledNext.should.equal(true);
+    expect(headers).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        name: "X-API-version",
+        val: process.env.API_VERSION,
+      }),
+    ]));
 
-    done();
+    expect(calledNext).to.equal(true);
   });
 });

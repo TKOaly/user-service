@@ -1,44 +1,34 @@
-import "mocha";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import users from "../../seeds/seedData/users";
 import UserDao from "../../src/dao/UserDao";
 import UserDatabaseObject from "../../src/interfaces/UserDatabaseObject";
-import { knexInstance } from "../../src/Db";
+import { knexInstance as knex } from "../../src/Db";
 import { hashPasswordSync, legacyHashPassword } from "../../src/utils/UserHelpers";
 
-import chai = require("chai");
 process.env.NODE_ENV = "test";
 
 const dbUsers = users;
-const should = chai.should();
-// Knex instance
-const knex = knexInstance;
 
 const userDao = UserDao;
 
 describe("UserDao", () => {
   // Roll back
-  beforeEach(done => {
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
+    await knex.seed.run();
   });
 
   // After each
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
-  it("Returns all users with all fields", async () => {
+  test("Returns all users with all fields", async () => {
     const users = await userDao.findAll();
 
-    should.exist(users.length);
-    users.length.should.equal(dbUsers.length);
+    expect(users.length).toBeDefined();
+    expect(users.length).to.equal(dbUsers.length);
 
     users.forEach(user => {
       const dbUser = user;
@@ -50,84 +40,84 @@ describe("UserDao", () => {
       }
 
       // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
+      expect(dbUser.username).toBeDefined();
+      expect(dbUser.username).to.equal(seedUser.username);
 
       // Screen name
-      should.exist(dbUser.screen_name);
-      dbUser.screen_name.should.equal(seedUser.screen_name);
+      expect(dbUser.screen_name).toBeDefined();
+      expect(dbUser.screen_name).to.equal(seedUser.screen_name);
 
       // Salt
-      should.exist(dbUser.salt);
-      dbUser.salt.should.equal(seedUser.salt);
+      expect(dbUser.salt).toBeDefined();
+      expect(dbUser.salt).to.equal(seedUser.salt);
 
       // Role
-      should.exist(dbUser.role);
-      dbUser.role.should.equal(seedUser.role);
+      expect(dbUser.role).toBeDefined();
+      expect(dbUser.role).to.equal(seedUser.role);
 
       // Residence
-      should.exist(dbUser.residence);
-      dbUser.residence.should.equal(seedUser.residence);
+      expect(dbUser.residence).toBeDefined();
+      expect(dbUser.residence).to.equal(seedUser.residence);
 
       // Phone
-      should.exist(dbUser.phone);
-      dbUser.phone.should.equal(seedUser.phone);
+      expect(dbUser.phone).toBeDefined();
+      expect(dbUser.phone).to.equal(seedUser.phone);
 
       // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
+      expect(dbUser.name).toBeDefined();
+      expect(dbUser.name).to.equal(seedUser.name);
 
       // ModifiedAt
-      should.exist(dbUser.modified);
+      expect(dbUser.modified).toBeDefined();
 
       // Membership
-      should.exist(dbUser.membership);
-      dbUser.membership.should.equal(seedUser.membership);
+      expect(dbUser.membership).toBeDefined();
+      expect(dbUser.membership).to.equal(seedUser.membership);
 
       // isTKTL
-      should.exist(dbUser.tktl);
-      dbUser.tktl.should.equal(seedUser.tktl);
+      expect(dbUser.tktl).toBeDefined();
+      expect(dbUser.tktl).to.equal(seedUser.tktl);
 
       // isHYYMember
-      should.exist(dbUser.hyy_member);
-      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+      expect(dbUser.hyy_member).toBeDefined();
+      expect(dbUser.hyy_member).to.equal(seedUser.hyy_member);
 
       // isDeleted
-      should.exist(dbUser.deleted);
-      dbUser.deleted.should.equal(seedUser.deleted);
+      expect(dbUser.deleted).toBeDefined();
+      expect(dbUser.deleted).to.equal(seedUser.deleted);
 
       // id
-      should.exist(dbUser.id);
-      dbUser.id.should.equal(seedUser.id);
+      expect(dbUser.id).toBeDefined();
+      expect(dbUser.id).to.equal(seedUser.id);
 
       // hashedPassword
-      should.exist(dbUser.hashed_password);
-      dbUser.hashed_password.should.equal(seedUser.hashed_password);
+      expect(dbUser.hashed_password).toBeDefined();
+      expect(dbUser.hashed_password).to.equal(seedUser.hashed_password);
 
-      should.exist(dbUser.password_hash);
-      dbUser.password_hash.should.equal(seedUser.password_hash);
+      expect(dbUser.password_hash).toBeDefined();
+      expect(dbUser.password_hash).to.equal(seedUser.password_hash);
 
       // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+      expect(dbUser.email).toBeDefined();
+      expect(dbUser.email).to.equal(seedUser.email);
 
       // createdAt
-      should.exist(dbUser.created);
-      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+      expect(dbUser.created).toBeDefined();
+      expect(dbUser.created.toDateString()).to.equal(seedUser.created.toDateString());
 
-      should.exist(dbUser.hy_staff);
-      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+      expect(dbUser.hy_staff).toBeDefined();
+      expect(dbUser.hy_staff).to.equal(seedUser.hy_staff);
 
-      should.exist(dbUser.hy_student);
-      dbUser.hy_student.should.equal(seedUser.hy_student);
+      expect(dbUser.hy_student).toBeDefined();
+      expect(dbUser.hy_student).to.equal(seedUser.hy_student);
     });
   });
 
-  it("Returns all users with only a few fields requested", async () => {
+  test("Returns all users with only a few fields requested", async () => {
     const users = await userDao.findAll(["username", "name", "email"]);
 
-    should.exist(users.length);
-    users.length.should.equal(dbUsers.length);
+    expect(users.length).toBeDefined();
+    expect(users.length).to.equal(dbUsers.length);
 
     users.forEach(user => {
       const dbUser = user;
@@ -139,73 +129,73 @@ describe("UserDao", () => {
       }
 
       // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
+      expect(dbUser.username).toBeDefined();
+      expect(dbUser.username).to.equal(seedUser.username);
 
       // Screen name
-      should.not.exist(dbUser.screen_name);
+      expect(dbUser.screen_name).not.toBeDefined();
 
       // Salt
-      should.not.exist(dbUser.salt);
+      expect(dbUser.salt).not.toBeDefined();
 
       // Role
-      should.not.exist(dbUser.role);
+      expect(dbUser.role).not.toBeDefined();
 
       // Residence
-      should.not.exist(dbUser.residence);
+      expect(dbUser.residence).not.toBeDefined();
 
       // Phone
-      should.not.exist(dbUser.phone);
+      expect(dbUser.phone).not.toBeDefined();
 
       // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
+      expect(dbUser.name).toBeDefined();
+      expect(dbUser.name).to.equal(seedUser.name);
 
       // ModifiedAt
-      should.not.exist(dbUser.modified);
+      expect(dbUser.modified).not.toBeDefined();
 
       // Membership
-      should.not.exist(dbUser.membership);
+      expect(dbUser.membership).not.toBeDefined();
 
       // isTKTL
-      should.not.exist(dbUser.tktl);
+      expect(dbUser.tktl).not.toBeDefined();
 
       // isHYYMember
-      should.not.exist(dbUser.hyy_member);
+      expect(dbUser.hyy_member).not.toBeDefined();
 
       // isDeleted
-      should.not.exist(dbUser.deleted);
+      expect(dbUser.deleted).not.toBeDefined();
 
       // id
-      should.not.exist(dbUser.id);
+      expect(dbUser.id).not.toBeDefined();
 
       // hashedPassword
-      should.not.exist(dbUser.hashed_password);
-      should.not.exist(dbUser.password_hash);
+      expect(dbUser.hashed_password).not.toBeDefined();
+      expect(dbUser.password_hash).not.toBeDefined();
 
       // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+      expect(dbUser.email).toBeDefined();
+      expect(dbUser.email).to.equal(seedUser.email);
 
       // createdAt
-      should.not.exist(dbUser.created);
+      expect(dbUser.created).not.toBeDefined();
 
-      should.not.exist(dbUser.hy_staff);
-      should.not.exist(dbUser.hy_student);
+      expect(dbUser.hy_staff).not.toBeDefined();
+      expect(dbUser.hy_student).not.toBeDefined();
     });
   });
 
-  it("Removes a user", async () => {
+  test("Removes a user", async () => {
     const res = await userDao.remove(dbUsers[0].id);
 
-    res.should.equal(1);
+    expect(res).to.equal(1);
 
     const users = await userDao.findAll();
 
-    users.length.should.equal(dbUsers.length - 1);
+    expect(users.length).to.equal(dbUsers.length - 1);
   });
 
-  it("Inserts a new user", async () => {
+  test("Inserts a new user", async () => {
     const newUser: Omit<UserDatabaseObject, "id"> = {
       username: "testuser",
       name: "Test User",
@@ -231,11 +221,11 @@ describe("UserDao", () => {
     // @ts-expect-error
     const res = await userDao.save(newUser);
 
-    res.length.should.equal(1);
+    expect(res.length).to.equal(1);
 
     const users = await userDao.findAll();
 
-    users.length.should.equal(dbUsers.length + 1);
+    expect(users.length).to.equal(dbUsers.length + 1);
 
     const dbUser = await userDao.findByUsername(newUser.username);
 
@@ -243,280 +233,272 @@ describe("UserDao", () => {
       throw new Error("User not found");
     }
 
-    dbUser.username.should.equal(newUser.username);
-    dbUser.name.should.equal(newUser.name);
-    dbUser.screen_name.should.equal(newUser.screen_name);
-    dbUser.email.should.equal(newUser.email);
-    dbUser.residence.should.equal(newUser.residence);
-    dbUser.phone.should.equal(newUser.phone);
-    dbUser.hyy_member.should.equal(newUser.hyy_member);
-    dbUser.membership.should.equal(newUser.membership);
-    dbUser.role.should.equal(newUser.role);
-    dbUser.salt.should.equal(newUser.salt);
-    dbUser.tktl.should.equal(newUser.tktl);
-    dbUser.deleted.should.equal(newUser.deleted);
-    dbUser.hy_staff.should.equal(newUser.hy_staff);
-    dbUser.hy_student.should.equal(newUser.hy_student);
-    dbUser.tktdt_student.should.equal(newUser.tktdt_student);
+    expect(dbUser.username).to.equal(newUser.username);
+    expect(dbUser.name).to.equal(newUser.name);
+    expect(dbUser.screen_name).to.equal(newUser.screen_name);
+    expect(dbUser.email).to.equal(newUser.email);
+    expect(dbUser.residence).to.equal(newUser.residence);
+    expect(dbUser.phone).to.equal(newUser.phone);
+    expect(dbUser.hyy_member).to.equal(newUser.hyy_member);
+    expect(dbUser.membership).to.equal(newUser.membership);
+    expect(dbUser.role).to.equal(newUser.role);
+    expect(dbUser.salt).to.equal(newUser.salt);
+    expect(dbUser.tktl).to.equal(newUser.tktl);
+    expect(dbUser.deleted).to.equal(newUser.deleted);
+    expect(dbUser.hy_staff).to.equal(newUser.hy_staff);
+    expect(dbUser.hy_student).to.equal(newUser.hy_student);
+    expect(dbUser.tktdt_student).to.equal(newUser.tktdt_student);
   });
 
-  it("Returns a single user with findOne()", done => {
-    userDao.findOne(dbUsers[0].id).then(dbUser => {
-      const seedUser = dbUsers[0];
-      if (dbUser === undefined) {
-        throw new Error("User not found");
-      }
+  test("Returns a single user with findOne()", async () => {
+    const dbUser = await userDao.findOne(dbUsers[0].id)
+    const seedUser = dbUsers[0];
+    if (dbUser === undefined) {
+      throw new Error("User not found");
+    }
 
-      // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
+    // Username
+    expect(dbUser.username).toBeDefined();
+    expect(dbUser.username).to.equal(seedUser.username);
 
-      // Screen name
-      should.exist(dbUser.screen_name);
-      dbUser.screen_name.should.equal(seedUser.screen_name);
+    // Screen name
+    expect(dbUser.screen_name).toBeDefined();
+    expect(dbUser.screen_name).to.equal(seedUser.screen_name);
 
-      // Salt
-      should.exist(dbUser.salt);
-      dbUser.salt.should.equal(seedUser.salt);
+    // Salt
+    expect(dbUser.salt).toBeDefined();
+    expect(dbUser.salt).to.equal(seedUser.salt);
 
-      // Role
-      should.exist(dbUser.role);
-      dbUser.role.should.equal(seedUser.role);
+    // Role
+    expect(dbUser.role).toBeDefined();
+    expect(dbUser.role).to.equal(seedUser.role);
 
-      // Residence
-      should.exist(dbUser.residence);
-      dbUser.residence.should.equal(seedUser.residence);
+    // Residence
+    expect(dbUser.residence).toBeDefined();
+    expect(dbUser.residence).to.equal(seedUser.residence);
 
-      // Phone
-      should.exist(dbUser.phone);
-      dbUser.phone.should.equal(seedUser.phone);
+    // Phone
+    expect(dbUser.phone).toBeDefined();
+    expect(dbUser.phone).to.equal(seedUser.phone);
 
-      // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
+    // Name
+    expect(dbUser.name).toBeDefined();
+    expect(dbUser.name).to.equal(seedUser.name);
 
-      // ModifiedAt
-      should.exist(dbUser.modified);
+    // ModifiedAt
+    expect(dbUser.modified).toBeDefined();
 
-      // Membership
-      should.exist(dbUser.membership);
-      dbUser.membership.should.equal(seedUser.membership);
+    // Membership
+    expect(dbUser.membership).toBeDefined();
+    expect(dbUser.membership).to.equal(seedUser.membership);
 
-      // isTKTL
-      should.exist(dbUser.tktl);
-      dbUser.tktl.should.equal(seedUser.tktl);
+    // isTKTL
+    expect(dbUser.tktl).toBeDefined();
+    expect(dbUser.tktl).to.equal(seedUser.tktl);
 
-      // isHYYMember
-      should.exist(dbUser.hyy_member);
-      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+    // isHYYMember
+    expect(dbUser.hyy_member).toBeDefined();
+    expect(dbUser.hyy_member).to.equal(seedUser.hyy_member);
 
-      // isDeleted
-      should.exist(dbUser.deleted);
-      dbUser.deleted.should.equal(seedUser.deleted);
+    // isDeleted
+    expect(dbUser.deleted).toBeDefined();
+    expect(dbUser.deleted).to.equal(seedUser.deleted);
 
-      // isHyStudent
-      should.exist(dbUser.hy_student);
-      dbUser.hy_student.should.equal(seedUser.hy_student);
+    // isHyStudent
+    expect(dbUser.hy_student).toBeDefined();
+    expect(dbUser.hy_student).to.equal(seedUser.hy_student);
 
-      // isHyStaff
-      should.exist(dbUser.hy_staff);
-      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+    // isHyStaff
+    expect(dbUser.hy_staff).toBeDefined();
+    expect(dbUser.hy_staff).to.equal(seedUser.hy_staff);
 
-      // id
-      should.exist(dbUser.id);
-      dbUser.id.should.equal(seedUser.id);
+    // id
+    expect(dbUser.id).toBeDefined();
+    expect(dbUser.id).to.equal(seedUser.id);
 
-      // hashedPassword
-      should.exist(dbUser.hashed_password);
-      dbUser.hashed_password.should.equal(seedUser.hashed_password);
+    // hashedPassword
+    expect(dbUser.hashed_password).toBeDefined();
+    expect(dbUser.hashed_password).to.equal(seedUser.hashed_password);
 
-      should.exist(dbUser.password_hash);
-      dbUser.password_hash.should.equal(seedUser.password_hash);
+    expect(dbUser.password_hash).toBeDefined();
+    expect(dbUser.password_hash).to.equal(seedUser.password_hash);
 
-      // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+    // email
+    expect(dbUser.email).toBeDefined();
+    expect(dbUser.email).to.equal(seedUser.email);
 
-      // createdAt
-      should.exist(dbUser.created);
-      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
-
-      done();
-    });
+    // createdAt
+    expect(dbUser.created).toBeDefined();
+    expect(dbUser.created.toDateString()).to.equal(seedUser.created.toDateString());
   });
 
-  it("Returns a single user with findByUsername()", done => {
-    userDao.findByUsername(dbUsers[0].username).then(dbUser => {
-      const seedUser = dbUsers[0];
-      if (dbUser === undefined) {
-        throw new Error("User not found");
-      }
-      // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
+  test("Returns a single user with findByUsername()", async () => {
+    const dbUser = await userDao.findByUsername(dbUsers[0].username)
+    const seedUser = dbUsers[0];
+    if (dbUser === undefined) {
+      throw new Error("User not found");
+    }
+    // Username
+    expect(dbUser.username).toBeDefined();
+    expect(dbUser.username).to.equal(seedUser.username);
 
-      // Screen name
-      should.exist(dbUser.screen_name);
-      dbUser.screen_name.should.equal(seedUser.screen_name);
+    // Screen name
+    expect(dbUser.screen_name).toBeDefined();
+    expect(dbUser.screen_name).to.equal(seedUser.screen_name);
 
-      // Salt
-      should.exist(dbUser.salt);
-      dbUser.salt.should.equal(seedUser.salt);
+    // Salt
+    expect(dbUser.salt).toBeDefined();
+    expect(dbUser.salt).to.equal(seedUser.salt);
 
-      // Role
-      should.exist(dbUser.role);
-      dbUser.role.should.equal(seedUser.role);
+    // Role
+    expect(dbUser.role).toBeDefined();
+    expect(dbUser.role).to.equal(seedUser.role);
 
-      // Residence
-      should.exist(dbUser.residence);
-      dbUser.residence.should.equal(seedUser.residence);
+    // Residence
+    expect(dbUser.residence).toBeDefined();
+    expect(dbUser.residence).to.equal(seedUser.residence);
 
-      // Phone
-      should.exist(dbUser.phone);
-      dbUser.phone.should.equal(seedUser.phone);
+    // Phone
+    expect(dbUser.phone).toBeDefined();
+    expect(dbUser.phone).to.equal(seedUser.phone);
 
-      // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
+    // Name
+    expect(dbUser.name).toBeDefined();
+    expect(dbUser.name).to.equal(seedUser.name);
 
-      // ModifiedAt
-      should.exist(dbUser.modified);
+    // ModifiedAt
+    expect(dbUser.modified).toBeDefined();
 
-      // Membership
-      should.exist(dbUser.membership);
-      dbUser.membership.should.equal(seedUser.membership);
+    // Membership
+    expect(dbUser.membership).toBeDefined();
+    expect(dbUser.membership).to.equal(seedUser.membership);
 
-      // isTKTL
-      should.exist(dbUser.tktl);
-      dbUser.tktl.should.equal(seedUser.tktl);
+    // isTKTL
+    expect(dbUser.tktl).toBeDefined();
+    expect(dbUser.tktl).to.equal(seedUser.tktl);
 
-      // isHYYMember
-      should.exist(dbUser.hyy_member);
-      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+    // isHYYMember
+    expect(dbUser.hyy_member).toBeDefined();
+    expect(dbUser.hyy_member).to.equal(seedUser.hyy_member);
 
-      // isDeleted
-      should.exist(dbUser.deleted);
-      dbUser.deleted.should.equal(seedUser.deleted);
+    // isDeleted
+    expect(dbUser.deleted).toBeDefined();
+    expect(dbUser.deleted).to.equal(seedUser.deleted);
 
-      // id
-      should.exist(dbUser.id);
-      dbUser.id.should.equal(seedUser.id);
+    // id
+    expect(dbUser.id).toBeDefined();
+    expect(dbUser.id).to.equal(seedUser.id);
 
-      // hashedPassword
-      should.exist(dbUser.hashed_password);
-      dbUser.hashed_password.should.equal(seedUser.hashed_password);
-      should.exist(dbUser.password_hash);
-      dbUser.password_hash.should.equal(seedUser.password_hash);
+    // hashedPassword
+    expect(dbUser.hashed_password).toBeDefined();
+    expect(dbUser.hashed_password).to.equal(seedUser.hashed_password);
+    expect(dbUser.password_hash).toBeDefined();
+    expect(dbUser.password_hash).to.equal(seedUser.password_hash);
 
-      // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+    // email
+    expect(dbUser.email).toBeDefined();
+    expect(dbUser.email).to.equal(seedUser.email);
 
-      // isHyStudent
-      should.exist(dbUser.hy_student);
-      dbUser.hy_student.should.equal(seedUser.hy_student);
+    // isHyStudent
+    expect(dbUser.hy_student).toBeDefined();
+    expect(dbUser.hy_student).to.equal(seedUser.hy_student);
 
-      // isHyStaff
-      should.exist(dbUser.hy_staff);
-      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+    // isHyStaff
+    expect(dbUser.hy_staff).toBeDefined();
+    expect(dbUser.hy_staff).to.equal(seedUser.hy_staff);
 
-      // createdAt
-      should.exist(dbUser.created);
-      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
-
-      done();
-    });
+    // createdAt
+    expect(dbUser.created).toBeDefined();
+    expect(dbUser.created.toDateString()).to.equal(seedUser.created.toDateString());
   });
 
-  it("Returns a single user with findWhere()", done => {
-    userDao.findWhere("Test User").then(dbUsers => {
-      const seedUser = dbUsers.find(usr => usr.username === "test_user");
-      if (seedUser === undefined) {
-        throw new Error("Seeded user not found");
-      }
+  test("Returns a single user with findWhere()", async () => {
+    const dbUsers = await userDao.findWhere("Test User")
 
-      dbUsers.length.should.equal(1);
+    const seedUser = dbUsers.find(usr => usr.username === "test_user");
+    if (seedUser === undefined) {
+      throw new Error("Seeded user not found");
+    }
 
-      const dbUser = dbUsers[0];
+    expect(dbUsers.length).to.equal(1);
 
-      // Username
-      should.exist(dbUser.username);
-      dbUser.username.should.equal(seedUser.username);
+    const dbUser = dbUsers[0];
 
-      // Screen name
-      should.exist(dbUser.screen_name);
-      dbUser.screen_name.should.equal(seedUser.screen_name);
+    // Username
+    expect(dbUser.username).toBeDefined();
+    expect(dbUser.username).to.equal(seedUser.username);
 
-      // Salt
-      should.exist(dbUser.salt);
-      dbUser.salt.should.equal(seedUser.salt);
+    // Screen name
+    expect(dbUser.screen_name).toBeDefined();
+    expect(dbUser.screen_name).to.equal(seedUser.screen_name);
 
-      // Role
-      should.exist(dbUser.role);
-      dbUser.role.should.equal(seedUser.role);
+    // Salt
+    expect(dbUser.salt).toBeDefined();
+    expect(dbUser.salt).to.equal(seedUser.salt);
 
-      // Residence
-      should.exist(dbUser.residence);
-      dbUser.residence.should.equal(seedUser.residence);
+    // Role
+    expect(dbUser.role).toBeDefined();
+    expect(dbUser.role).to.equal(seedUser.role);
 
-      // Phone
-      should.exist(dbUser.phone);
-      dbUser.phone.should.equal(seedUser.phone);
+    // Residence
+    expect(dbUser.residence).toBeDefined();
+    expect(dbUser.residence).to.equal(seedUser.residence);
 
-      // Name
-      should.exist(dbUser.name);
-      dbUser.name.should.equal(seedUser.name);
+    // Phone
+    expect(dbUser.phone).toBeDefined();
+    expect(dbUser.phone).to.equal(seedUser.phone);
 
-      // ModifiedAt
-      should.exist(dbUser.modified);
+    // Name
+    expect(dbUser.name).toBeDefined();
+    expect(dbUser.name).to.equal(seedUser.name);
 
-      // Membership
-      should.exist(dbUser.membership);
-      dbUser.membership.should.equal(seedUser.membership);
+    // ModifiedAt
+    expect(dbUser.modified).toBeDefined();
 
-      // isTKTL
-      should.exist(dbUser.tktl);
-      dbUser.tktl.should.equal(seedUser.tktl);
+    // Membership
+    expect(dbUser.membership).toBeDefined();
+    expect(dbUser.membership).to.equal(seedUser.membership);
 
-      // isHYYMember
-      should.exist(dbUser.hyy_member);
-      dbUser.hyy_member.should.equal(seedUser.hyy_member);
+    // isTKTL
+    expect(dbUser.tktl).toBeDefined();
+    expect(dbUser.tktl).to.equal(seedUser.tktl);
 
-      // isDeleted
-      should.exist(dbUser.deleted);
-      dbUser.deleted.should.equal(seedUser.deleted);
+    // isHYYMember
+    expect(dbUser.hyy_member).toBeDefined();
+    expect(dbUser.hyy_member).to.equal(seedUser.hyy_member);
 
-      // isHyStudent
-      should.exist(dbUser.hy_student);
-      dbUser.hy_student.should.equal(seedUser.hy_student);
+    // isDeleted
+    expect(dbUser.deleted).toBeDefined();
+    expect(dbUser.deleted).to.equal(seedUser.deleted);
 
-      // isHyStaff
-      should.exist(dbUser.hy_staff);
-      dbUser.hy_staff.should.equal(seedUser.hy_staff);
+    // isHyStudent
+    expect(dbUser.hy_student).toBeDefined();
+    expect(dbUser.hy_student).to.equal(seedUser.hy_student);
 
-      // id
-      should.exist(dbUser.id);
-      dbUser.id.should.equal(seedUser.id);
+    // isHyStaff
+    expect(dbUser.hy_staff).toBeDefined();
+    expect(dbUser.hy_staff).to.equal(seedUser.hy_staff);
 
-      // hashedPassword
-      should.exist(dbUser.hashed_password);
-      dbUser.hashed_password.should.equal(seedUser.hashed_password);
-      should.exist(dbUser.password_hash);
-      dbUser.password_hash.should.equal(seedUser.password_hash);
+    // id
+    expect(dbUser.id).toBeDefined();
+    expect(dbUser.id).to.equal(seedUser.id);
 
-      // email
-      should.exist(dbUser.email);
-      dbUser.email.should.equal(seedUser.email);
+    // hashedPassword
+    expect(dbUser.hashed_password).toBeDefined();
+    expect(dbUser.hashed_password).to.equal(seedUser.hashed_password);
+    expect(dbUser.password_hash).toBeDefined();
+    expect(dbUser.password_hash).to.equal(seedUser.password_hash);
 
-      // createdAt
-      should.exist(dbUser.created);
-      dbUser.created.toDateString().should.equal(seedUser.created.toDateString());
+    // email
+    expect(dbUser.email).toBeDefined();
+    expect(dbUser.email).to.equal(seedUser.email);
 
-      done();
-    });
+    // createdAt
+    expect(dbUser.created).toBeDefined();
+    expect(dbUser.created.toDateString()).to.equal(seedUser.created.toDateString());
   });
 
-  it("Editing a user should update modifiedAt timestamp, but not createdAt", async () => {
+  test("Editing a user should update modifiedAt timestamp, but not createdAt", async () => {
     const user = await userDao.findOne(1);
 
     if (user === undefined) {
@@ -539,14 +521,12 @@ describe("UserDao", () => {
       throw new Error("User not found");
     }
 
-    createdAtString.should.equal(user2.created.toISOString());
-    modifiedAtString.should.not.equal(user2.modified.toISOString());
+    expect(createdAtString).to.equal(user2.created.toISOString());
+    expect(modifiedAtString).to.not.equal(user2.modified.toISOString());
   });
 
-  it("should return undefined if user is not found", done => {
-    userDao.findOne(999).then(user => {
-      should.not.exist(user);
-      done();
-    });
+  test("should return undefined if user is not found", async () => {
+    const user = await userDao.findOne(999)
+    expect(user).not.toBeDefined();
   });
 });

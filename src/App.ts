@@ -54,9 +54,6 @@ app.use(cookieParser());
 // Localization
 initLocalization(app);
 
-// Sentry
-app.use(Sentry.Handlers.requestHandler());
-
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -117,7 +114,8 @@ app.use("/", LoginController.createRoutes());
 // Ping route
 app.get("/ping", (_req, res) => res.json({ ok: true }));
 
-app.use(Sentry.Handlers.errorHandler());
+// Sentry
+Sentry.setupExpressErrorHandler(app);
 
 // CSRF
 app.use((err: { code?: string }, _req: express.Request, res: express.Response, next: express.NextFunction) => {

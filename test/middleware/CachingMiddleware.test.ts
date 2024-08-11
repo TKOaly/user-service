@@ -1,4 +1,4 @@
-import "mocha";
+import { describe, test, expect } from "vitest";
 import CachingMiddleware from "../../src/utils/CachingMiddleware";
 
 process.env.NODE_ENV = "test";
@@ -27,21 +27,27 @@ const mockExpress = {
 };
 
 describe("CachingMiddleware", () => {
-  it("Sets headers correctly", done => {
+  test("Sets headers correctly", () => {
     // @ts-ignore
     CachingMiddleware(mockExpress.req, mockExpress.res, mockExpress.next);
-    nextCount.should.equal(1);
-    calledNext.should.equal(true);
-    headers.length.should.equal(3);
-    const cacheHeader: any = headers[0];
-    cacheHeader.name.should.equal("Cache-Control");
-    cacheHeader.val.should.equal("private, no-cache, no-store, must-revalidate");
-    const expiresHeader: any = headers[1];
-    expiresHeader.name.should.equal("Expires");
-    expiresHeader.val.should.equal("-1");
-    const pragmaHeader: any = headers[2];
-    pragmaHeader.name.should.equal("Pragma");
-    pragmaHeader.val.should.equal("no-cache");
-    done();
+
+    expect(nextCount).to.equal(1);
+    expect(calledNext).to.equal(true);
+    expect(headers).toHaveLength(3);
+
+    expect(headers).toEqual(expect.arrayContaining([
+      {
+        name: 'Cache-Control',
+        val: "private, no-cache, no-store, must-revalidate",
+      },
+      {
+        name: 'Expires',
+        val: '-1',
+      },
+      {
+        name: 'Pragma',
+        val: 'no-cache'
+      }
+    ]))
   });
 });

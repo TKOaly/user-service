@@ -1,17 +1,14 @@
-import "mocha";
+import { describe, test, beforeEach, expect } from "vitest";
 import UserRoleString from "../../src/enum/UserRoleString";
 import User from "../../src/models/User";
 import { compareRoles } from "../../src/utils/UserHelpers";
 
-import chai from "chai";
-
 process.env.NODE_ENV = "test";
-const should = chai.should();
 
 let user: User;
 
 describe("User model", () => {
-  beforeEach(done => {
+  beforeEach(() => {
     user = new User({
       id: 1,
       username: "testuser",
@@ -34,358 +31,333 @@ describe("User model", () => {
       hy_student: 0,
       tktdt_student: 0,
     });
-    done();
   });
 
-  it("Sets data correctly", done => {
-    user.id.should.equal(1);
-    user.username.should.equal("testuser");
-    user.name.should.equal("Test User");
-    user.screenName.should.equal("testuser");
-    user.email.should.equal("user@test.com");
-    user.residence.should.equal("helsinki");
-    user.phone.should.equal("12345");
-    user.isHYYMember.should.equal(true);
-    user.isHyStaff.should.equal(true);
-    user.isHyStudent.should.equal(false);
-    user.membership.should.equal("member");
-    user.role.should.equal("yllapitaja");
-    user.salt.should.equal("12345");
-    user.hashedPassword.should.equal("12345");
-    user.passwordHash.should.equal("12345");
-    user.createdAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
-    user.modifiedAt.toDateString().should.equal(new Date(2017, 1, 1).toDateString());
-    user.isTKTL.should.equal(true);
-    user.isDeleted.should.equal(false);
-    done();
+  test("Sets data correctly", () => {
+    expect(user.id).to.equal(1);
+    expect(user.username).to.equal("testuser");
+    expect(user.name).to.equal("Test User");
+    expect(user.screenName).to.equal("testuser");
+    expect(user.email).to.equal("user@test.com");
+    expect(user.residence).to.equal("helsinki");
+    expect(user.phone).to.equal("12345");
+    expect(user.isHYYMember).to.equal(true);
+    expect(user.isHyStaff).to.equal(true);
+    expect(user.isHyStudent).to.equal(false);
+    expect(user.membership).to.equal("member");
+    expect(user.role).to.equal("yllapitaja");
+    expect(user.salt).to.equal("12345");
+    expect(user.hashedPassword).to.equal("12345");
+    expect(user.passwordHash).to.equal("12345");
+    expect(user.createdAt.toDateString()).to.equal(new Date(2017, 1, 1).toDateString());
+    expect(user.modifiedAt.toDateString()).to.equal(new Date(2017, 1, 1).toDateString());
+    expect(user.isTKTL).to.equal(true);
+    expect(user.isDeleted).to.equal(false);
   });
 
-  it("Removing sensitive data should remove salt and hashed_password", done => {
-    should.exist(user.hashedPassword);
-    should.exist(user.passwordHash);
-    should.exist(user.salt);
+  test("Removing sensitive data should remove salt and hashed_password", () => {
+    expect(user).toHaveProperty('hashedPassword');
+    expect(user).toHaveProperty('passwordHash');
+    expect(user).toHaveProperty('salt');
     const newUser = user.removeSensitiveInformation();
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    should.not.exist(newUser.salt);
-    done();
+    expect(newUser).not.toHaveProperty('hashedPassword');
+    expect(newUser).not.toHaveProperty('passwordHash');
+    expect(newUser).not.toHaveProperty('salt');
   });
 
-  it("Requesting database object should return correct information", done => {
+  test("Requesting database object should return correct information", () => {
     const userDatabaseObject = user.getDatabaseObject();
 
     // Username
-    should.exist(userDatabaseObject.username);
-    userDatabaseObject.username.should.equal("testuser");
+    expect(userDatabaseObject.username).toBeDefined();
+    expect(userDatabaseObject.username).to.equal("testuser");
     // TKTL
-    should.exist(userDatabaseObject.tktl);
-    userDatabaseObject.tktl.should.equal(1);
+    expect(userDatabaseObject.tktl).toBeDefined();
+    expect(userDatabaseObject.tktl).to.equal(1);
     // Screen name
-    should.exist(userDatabaseObject.screen_name);
-    userDatabaseObject.screen_name!.should.equal("testuser");
+    expect(userDatabaseObject.screen_name).toBeDefined();
+    expect(userDatabaseObject.screen_name!).to.equal("testuser");
     // Salt
-    should.exist(userDatabaseObject.salt);
-    userDatabaseObject.salt.should.equal("12345");
+    expect(userDatabaseObject.salt).toBeDefined();
+    expect(userDatabaseObject.salt).to.equal("12345");
     // Role
-    should.exist(userDatabaseObject.role);
-    userDatabaseObject.role.should.equal("yllapitaja");
+    expect(userDatabaseObject.role).toBeDefined();
+    expect(userDatabaseObject.role).to.equal("yllapitaja");
     // Residence
-    should.exist(userDatabaseObject.residence);
-    userDatabaseObject.residence.should.equal("helsinki");
+    expect(userDatabaseObject.residence).toBeDefined();
+    expect(userDatabaseObject.residence).to.equal("helsinki");
     // Phone
-    should.exist(userDatabaseObject.phone);
-    userDatabaseObject.phone.should.equal("12345");
+    expect(userDatabaseObject.phone).toBeDefined();
+    expect(userDatabaseObject.phone).to.equal("12345");
     // Name
-    should.exist(userDatabaseObject.name);
-    userDatabaseObject.name.should.equal("Test User");
+    expect(userDatabaseObject.name).toBeDefined();
+    expect(userDatabaseObject.name).to.equal("Test User");
     // Membership
-    should.exist(userDatabaseObject.membership);
-    userDatabaseObject.membership.should.equal("member");
+    expect(userDatabaseObject.membership).toBeDefined();
+    expect(userDatabaseObject.membership).to.equal("member");
     // ID
-    should.exist(userDatabaseObject.id);
-    userDatabaseObject.id.should.equal(1);
+    expect(userDatabaseObject.id).toBeDefined();
+    expect(userDatabaseObject.id).to.equal(1);
     // HYY member
-    should.exist(userDatabaseObject.hyy_member);
-    userDatabaseObject.hyy_member.should.equal(1);
+    expect(userDatabaseObject.hyy_member).toBeDefined();
+    expect(userDatabaseObject.hyy_member).to.equal(1);
     // Hashed password
-    should.exist(userDatabaseObject.hashed_password);
-    userDatabaseObject.hashed_password.should.equal("12345");
-    should.exist(userDatabaseObject.password_hash);
-    userDatabaseObject.password_hash.should.equal("12345");
+    expect(userDatabaseObject.hashed_password).toBeDefined();
+    expect(userDatabaseObject.hashed_password).to.equal("12345");
+    expect(userDatabaseObject.password_hash).toBeDefined();
+    expect(userDatabaseObject.password_hash).to.equal("12345");
     // Email
-    should.exist(userDatabaseObject.email);
-    userDatabaseObject.email.should.equal("user@test.com");
+    expect(userDatabaseObject.email).toBeDefined();
+    expect(userDatabaseObject.email).to.equal("user@test.com");
     // Deleted
-    should.exist(userDatabaseObject.deleted);
-    userDatabaseObject.deleted.should.equal(0);
+    expect(userDatabaseObject.deleted).toBeDefined();
+    expect(userDatabaseObject.deleted).to.equal(0);
     // Created
-    should.exist(userDatabaseObject.created);
-    userDatabaseObject.created.toISOString().should.equal(new Date(2017, 1, 1).toISOString());
+    expect(userDatabaseObject.created).toBeDefined();
+    expect(userDatabaseObject.created.toISOString()).to.equal(new Date(2017, 1, 1).toISOString());
     // HY staff
-    should.exist(userDatabaseObject.hy_staff);
-    userDatabaseObject.hy_staff.should.equal(1);
+    expect(userDatabaseObject.hy_staff).toBeDefined();
+    expect(userDatabaseObject.hy_staff).to.equal(1);
     // HY student
-    should.exist(userDatabaseObject.hy_student);
-    userDatabaseObject.hy_student.should.equal(0);
+    expect(userDatabaseObject.hy_student).toBeDefined();
+    expect(userDatabaseObject.hy_student).to.equal(0);
     // TKTDT student
-    should.exist(userDatabaseObject.tktdt_student);
-    userDatabaseObject.tktdt_student.should.equal(0);
-    done();
+    expect(userDatabaseObject.tktdt_student).toBeDefined();
+    expect(userDatabaseObject.tktdt_student).to.equal(0);
   });
 
-  it("Requesting only id should only return id", done => {
+  test("Requesting only id should only return id", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 0));
-    should.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only username should only return username", done => {
+  test("Requesting only username should only return username", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 1));
-    should.not.exist(newUser.id);
-    should.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only name should only return name", done => {
+  test("Requesting only name should only return name", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 2));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only screenName should only return screenName", done => {
+  test("Requesting only screenName should only return screenName", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 3));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only email should only return email", done => {
+  test("Requesting only email should only return email", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 4));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only residence should only return residence", done => {
+  test("Requesting only residence should only return residence", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 5));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only phone should only return phone", done => {
+  test("Requesting only phone should only return phone", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 6));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only isHYYMember should only return isHYYMember", done => {
+  test("Requesting only isHYYMember should only return isHYYMember", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 7));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only membership should only return membership", done => {
+  test("Requesting only membership should only return membership", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 8));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.exist(newUser.membership);
-    should.not.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).toBeDefined();
+    expect(newUser.role).not.toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it("Requesting only role should only return role", done => {
+  test("Requesting only role should only return role", () => {
     const newUser = user.removeNonRequestedData(Math.pow(2, 9));
-    should.not.exist(newUser.id);
-    should.not.exist(newUser.username);
-    should.not.exist(newUser.name);
-    should.not.exist(newUser.screenName);
-    should.not.exist(newUser.email);
-    should.not.exist(newUser.residence);
-    should.not.exist(newUser.phone);
-    should.not.exist(newUser.isHYYMember);
-    should.not.exist(newUser.membership);
-    should.exist(newUser.role);
-    should.not.exist(newUser.salt);
-    should.not.exist(newUser.hashedPassword);
-    should.not.exist(newUser.passwordHash);
-    done();
+    expect(newUser.id).not.toBeDefined();
+    expect(newUser.username).not.toBeDefined();
+    expect(newUser.name).not.toBeDefined();
+    expect(newUser.screenName).not.toBeDefined();
+    expect(newUser.email).not.toBeDefined();
+    expect(newUser.residence).not.toBeDefined();
+    expect(newUser.phone).not.toBeDefined();
+    expect(newUser.isHYYMember).not.toBeDefined();
+    expect(newUser.membership).not.toBeDefined();
+    expect(newUser.role).toBeDefined();
+    expect(newUser.salt).not.toBeDefined();
+    expect(newUser.hashedPassword).not.toBeDefined();
+    expect(newUser.passwordHash).not.toBeDefined();
   });
 
-  it(
+  test(
     "Requesting username, name, email and membership should" + " only return username, name, email and membership",
-    done => {
+    () => {
       const newUser = user.removeNonRequestedData(Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8));
-      should.not.exist(newUser.id);
-      should.exist(newUser.username);
-      should.exist(newUser.name);
-      should.not.exist(newUser.screenName);
-      should.exist(newUser.email);
-      should.not.exist(newUser.residence);
-      should.not.exist(newUser.phone);
-      should.not.exist(newUser.isHYYMember);
-      should.exist(newUser.membership);
-      should.not.exist(newUser.role);
-      should.not.exist(newUser.salt);
-      should.not.exist(newUser.hashedPassword);
-      should.not.exist(newUser.passwordHash);
-      done();
+      expect(newUser.id).not.toBeDefined();
+      expect(newUser.username).toBeDefined();
+      expect(newUser.name).toBeDefined();
+      expect(newUser.screenName).not.toBeDefined();
+      expect(newUser.email).toBeDefined();
+      expect(newUser.residence).not.toBeDefined();
+      expect(newUser.phone).not.toBeDefined();
+      expect(newUser.isHYYMember).not.toBeDefined();
+      expect(newUser.membership).toBeDefined();
+      expect(newUser.role).not.toBeDefined();
+      expect(newUser.salt).not.toBeDefined();
+      expect(newUser.hashedPassword).not.toBeDefined();
+      expect(newUser.passwordHash).not.toBeDefined();
     },
   );
 
   describe("compareRoles()", () => {
-    it("aN == bN should return 0", done => {
+    test("aN == bN should return 0", () => {
       let role1: UserRoleString = UserRoleString.Jasenvirkailija;
       let role2: UserRoleString = UserRoleString.Jasenvirkailija;
       let roleCompare: number = compareRoles(role1, role2);
-      roleCompare.should.equal(0);
+      expect(roleCompare).to.equal(0);
 
       role1 = UserRoleString.Kayttaja;
       role2 = UserRoleString.Kayttaja;
       roleCompare = compareRoles(role1, role2);
-      roleCompare.should.equal(0);
+      expect(roleCompare).to.equal(0);
 
       role1 = UserRoleString.Tenttiarkistovirkailija;
       role2 = UserRoleString.Tenttiarkistovirkailija;
       roleCompare = compareRoles(role1, role2);
-      roleCompare.should.equal(0);
+      expect(roleCompare).to.equal(0);
 
       role1 = UserRoleString.Virkailija;
       role2 = UserRoleString.Virkailija;
       roleCompare = compareRoles(role1, role2);
-      roleCompare.should.equal(0);
+      expect(roleCompare).to.equal(0);
 
       role1 = UserRoleString.Yllapitaja;
       role2 = UserRoleString.Yllapitaja;
       roleCompare = compareRoles(role1, role2);
-      roleCompare.should.equal(0);
-
-      done();
+      expect(roleCompare).to.equal(0);
     });
 
-    it("aN < bN should return -1", done => {
-      let role1: UserRoleString = UserRoleString.Jasenvirkailija;
-      let role2: UserRoleString = UserRoleString.Kayttaja;
-      let roleCompare: number = compareRoles(role1, role2);
-      roleCompare.should.equal(1);
+    test("aN < bN should return -1", () => { let role1: UserRoleString = UserRoleString.Jasenvirkailija;
+    let role2: UserRoleString = UserRoleString.Kayttaja;
+    let roleCompare: number = compareRoles(role1, role2);
+    expect(roleCompare).to.equal(1);
+    
+    role1 = UserRoleString.Yllapitaja;
+    role2 = UserRoleString.Virkailija;
+    roleCompare = compareRoles(role1, role2);
+    expect(roleCompare).to.equal(1); });
 
-      role1 = UserRoleString.Yllapitaja;
-      role2 = UserRoleString.Virkailija;
-      roleCompare = compareRoles(role1, role2);
-      roleCompare.should.equal(1);
-
-      done();
-    });
-
-    it("aN > bN should return 1", done => {
-      const role1: UserRoleString = UserRoleString.Jasenvirkailija;
-      const role2: UserRoleString = UserRoleString.Kayttaja;
-      const roleCompare: number = compareRoles(role2, role1);
-
-      roleCompare.should.equal(-1);
-
-      done();
-    });
+    test("aN > bN should return 1", () => { const role1: UserRoleString = UserRoleString.Jasenvirkailija;
+    const role2: UserRoleString = UserRoleString.Kayttaja;
+    const roleCompare: number = compareRoles(role2, role1);
+    
+    expect(roleCompare).to.equal(-1); });
   });
 });

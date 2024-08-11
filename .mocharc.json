@@ -1,0 +1,8 @@
+{
+  "exit": true,
+  "recursive": true,
+  "timeout": 10000,
+  "extension": ["tsx", "ts"],
+  "loader": "ts-node/esm",
+  "spec": "test/**/*.test.ts"
+}

@@ -1,325 +1,270 @@
-import "mocha";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import app from "../../src/App";
+import request from "supertest";
 import users from "../../seeds/seedData/users";
 import User from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
-import { knexInstance } from "../../src/Db";
+import { knexInstance as knex } from "../../src/Db";
 import Service, { ServiceDatabaseObject } from "../../src/models/Service";
-import chai = require("chai");
 
 process.env.NODE_ENV = "test";
-
-// Knex instance
-const knex = knexInstance;
-const should = chai.should();
-const chaiHttp = require("chai-http");
-chai.use(chaiHttp);
 
 const authService = AuthenticationService;
 const url = "/api/users";
 
 describe("UserController", () => {
   // Roll back
-  beforeEach(done => {
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
+    await knex.seed.run();
   });
 
   // After each
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
   describe("Returns all users", () => {
-    // Roll back
-    beforeEach(done => {
-      knex.migrate.rollback().then(() => {
-        knex.migrate.latest().then(() => {
-          knex.seed.run().then(() => {
-            done();
-          });
-        });
+    test("GET /api/users : As an authenticated user, returns all users", async () => {
+      const res = await request(app)
+        .get(url)
+        .set("Authorization", "Bearer " + generateToken(2));
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.message).to.equal("Success");
+      expect(res.status).to.equal(200);
+      expect(res.body.payload.length).to.equal(users.length);
+      expect(res.body.ok).to.equal(true);
+
+      res.body.payload.forEach((payloadObject: User, _i: number) => {
+        const user_2 = new User(users.find(usr => usr.id === payloadObject.id)!);
+
+        expect(payloadObject.id).toBeDefined();
+        expect(payloadObject.id).to.equal(user_2.id);
+
+        expect(payloadObject.createdAt).toBeDefined();
+
+        expect(payloadObject.isDeleted).toBeDefined();
+        expect(payloadObject.isDeleted).to.equal(user_2.isDeleted);
+
+        expect(payloadObject.email).toBeDefined();
+        expect(payloadObject.email).to.equal(user_2.email);
+
+        expect(payloadObject.isHYYMember).toBeDefined();
+        expect(payloadObject.isHYYMember).to.equal(user_2.isHYYMember);
+
+        expect(payloadObject.membership).toBeDefined();
+        expect(payloadObject.membership).to.equal(user_2.membership);
+
+        expect(payloadObject.modifiedAt).toBeDefined();
+
+        expect(payloadObject.name).toBeDefined();
+        expect(payloadObject.name).to.equal(user_2.name);
+
+        expect(payloadObject.phone).toBeDefined();
+        expect(payloadObject.phone).to.equal(user_2.phone);
+
+        expect(payloadObject.residence).toBeDefined();
+        expect(payloadObject.residence).to.equal(user_2.residence);
+
+        expect(payloadObject.role).toBeDefined();
+        expect(payloadObject.role).to.equal(user_2.role);
+
+        expect(payloadObject.screenName).toBeDefined();
+        expect(payloadObject.screenName).to.equal(user_2.screenName);
+
+        expect(payloadObject.isTKTL).toBeDefined();
+        expect(payloadObject.isTKTL).to.equal(user_2.isTKTL);
+
+        expect(payloadObject.isHyStaff).toBeDefined();
+        expect(payloadObject.isHyStaff).to.equal(user_2.isHyStaff);
+
+        expect(payloadObject.isHyStudent).toBeDefined();
+        expect(payloadObject.isHyStudent).to.equal(user_2.isHyStudent);
+
+        expect(payloadObject.username).toBeDefined();
+        expect(payloadObject.username).to.equal(user_2.username);
       });
     });
 
-    // After each
-    afterEach(done => {
-      knex.migrate.rollback().then(() => {
-        done();
-      });
-    });
-
-    it("GET /api/users : As an authenticated user, returns all users", done => {
-      chai
-        .request(app)
+    test("GET /api/users : As an unauthenticated user, returns unauthorized", async () => {
+      const res = await request(app)
         .get(url)
-        .set("Authorization", "Bearer " + generateToken(2))
-        .end((err, res) => {
-          should.not.exist(err);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
-          should.exist(res.body.payload);
-          should.exist(res.body.message);
-          res.body.message.should.equal("Success");
-          res.status.should.equal(200);
-          res.body.payload.length.should.equal(users.length);
-          res.body.ok.should.equal(true);
 
-          res.body.payload.forEach((payloadObject: User, _i: number) => {
-            const user_2 = new User(users.find(usr => usr.id === payloadObject.id)!);
-
-            should.exist(payloadObject.id);
-            payloadObject.id.should.equal(user_2.id);
-
-            should.exist(payloadObject.createdAt);
-
-            should.exist(payloadObject.isDeleted);
-            payloadObject.isDeleted.should.equal(user_2.isDeleted);
-
-            should.exist(payloadObject.email);
-            payloadObject.email.should.equal(user_2.email);
-
-            should.exist(payloadObject.isHYYMember);
-            payloadObject.isHYYMember.should.equal(user_2.isHYYMember);
-
-            should.exist(payloadObject.membership);
-            payloadObject.membership.should.equal(user_2.membership);
-
-            should.exist(payloadObject.modifiedAt);
-
-            should.exist(payloadObject.name);
-            payloadObject.name.should.equal(user_2.name);
-
-            should.exist(payloadObject.phone);
-            payloadObject.phone.should.equal(user_2.phone);
-
-            should.exist(payloadObject.residence);
-            payloadObject.residence.should.equal(user_2.residence);
-
-            should.exist(payloadObject.role);
-            payloadObject.role.should.equal(user_2.role);
-
-            should.exist(payloadObject.screenName);
-            payloadObject.screenName.should.equal(user_2.screenName);
-
-            should.exist(payloadObject.isTKTL);
-            payloadObject.isTKTL.should.equal(user_2.isTKTL);
-
-            should.exist(payloadObject.isHyStaff);
-            payloadObject.isHyStaff.should.equal(user_2.isHyStaff);
-
-            should.exist(payloadObject.isHyStudent);
-            payloadObject.isHyStudent.should.equal(user_2.isHyStudent);
-
-            should.exist(payloadObject.username);
-            payloadObject.username.should.equal(user_2.username);
-          });
-          done();
-        });
-    });
-
-    it("GET /api/users : As an unauthenticated user, returns unauthorized", done => {
-      chai
-        .request(app)
-        .get(url)
-        .end((err, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
   });
 
   describe("Returns a single user", () => {
-    it("GET /api/users/{id} : As an authenticated user, returns a single user", done => {
-      chai
-        .request(app)
+    test("GET /api/users/{id} : As an authenticated user, returns a single user", async () => {
+      const res = await request(app)
         .get(url + "/1")
-        .set("Authorization", "Bearer " + generateToken(2))
-        .end((err, res) => {
-          res.status.should.equal(200);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
-          should.exist(res.body.payload);
-          should.exist(res.body.message);
-          res.body.message.should.equal("Success");
+        .set("Authorization", "Bearer " + generateToken(2));
 
-          const user_2: User = new User(users.find(user => user.id === 1)!);
+      expect(res.status).to.equal(200);
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.message).to.equal("Success");
 
-          should.exist(user_2);
+      const user_2: User = new User(users.find(user => user.id === 1)!);
 
-          const payloadObject: User = res.body.payload;
+      expect(user_2).toBeDefined();
 
-          should.exist(payloadObject.id);
-          payloadObject.id.should.equal(user_2.id);
+      const payloadObject: User = res.body.payload;
 
-          should.exist(payloadObject.createdAt);
+      expect(payloadObject.id).toBeDefined();
+      expect(payloadObject.id).to.equal(user_2.id);
 
-          should.exist(payloadObject.isDeleted);
-          payloadObject.isDeleted.should.equal(user_2.isDeleted);
+      expect(payloadObject.createdAt).toBeDefined();
 
-          should.exist(payloadObject.email);
-          payloadObject.email.should.equal(user_2.email);
+      expect(payloadObject.isDeleted).toBeDefined();
+      expect(payloadObject.isDeleted).to.equal(user_2.isDeleted);
 
-          should.exist(payloadObject.isHYYMember);
-          payloadObject.isHYYMember.should.equal(user_2.isHYYMember);
+      expect(payloadObject.email).toBeDefined();
+      expect(payloadObject.email).to.equal(user_2.email);
 
-          should.exist(payloadObject.membership);
-          payloadObject.membership.should.equal(user_2.membership);
+      expect(payloadObject.isHYYMember).toBeDefined();
+      expect(payloadObject.isHYYMember).to.equal(user_2.isHYYMember);
 
-          should.exist(payloadObject.modifiedAt);
+      expect(payloadObject.membership).toBeDefined();
+      expect(payloadObject.membership).to.equal(user_2.membership);
 
-          should.exist(payloadObject.name);
-          payloadObject.name.should.equal(user_2.name);
+      expect(payloadObject.modifiedAt).toBeDefined();
 
-          should.exist(payloadObject.phone);
-          payloadObject.phone.should.equal(user_2.phone);
+      expect(payloadObject.name).toBeDefined();
+      expect(payloadObject.name).to.equal(user_2.name);
 
-          should.exist(payloadObject.residence);
-          payloadObject.residence.should.equal(user_2.residence);
+      expect(payloadObject.phone).toBeDefined();
+      expect(payloadObject.phone).to.equal(user_2.phone);
 
-          should.exist(payloadObject.role);
-          payloadObject.role.should.equal(user_2.role);
+      expect(payloadObject.residence).toBeDefined();
+      expect(payloadObject.residence).to.equal(user_2.residence);
 
-          should.exist(payloadObject.screenName);
-          payloadObject.screenName.should.equal(user_2.screenName);
+      expect(payloadObject.role).toBeDefined();
+      expect(payloadObject.role).to.equal(user_2.role);
 
-          should.exist(payloadObject.isTKTL);
-          payloadObject.isTKTL.should.equal(user_2.isTKTL);
+      expect(payloadObject.screenName).toBeDefined();
+      expect(payloadObject.screenName).to.equal(user_2.screenName);
 
-          should.exist(payloadObject.username);
-          payloadObject.username.should.equal(user_2.username);
+      expect(payloadObject.isTKTL).toBeDefined();
+      expect(payloadObject.isTKTL).to.equal(user_2.isTKTL);
 
-          should.exist(payloadObject.isHyStaff);
-          payloadObject.isHyStaff.should.equal(user_2.isHyStaff);
+      expect(payloadObject.username).toBeDefined();
+      expect(payloadObject.username).to.equal(user_2.username);
 
-          should.exist(payloadObject.isHyStudent);
-          payloadObject.isHyStudent.should.equal(user_2.isHyStudent);
+      expect(payloadObject.isHyStaff).toBeDefined();
+      expect(payloadObject.isHyStaff).to.equal(user_2.isHyStaff);
 
-          done();
-        });
+      expect(payloadObject.isHyStudent).toBeDefined();
+      expect(payloadObject.isHyStudent).to.equal(user_2.isHyStudent);
     });
 
-    it("GET /api/users/{id} : As an unauthenticated user, returns unauthorized", done => {
-      chai
-        .request(app)
-        .get(url + "/1")
-        .end((err, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+    test("GET /api/users/{id} : As an unauthenticated user, returns unauthorized", async () => {
+      const res = await request(app)
+        .get(url + "/1");
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
   });
 
   describe("Returns my information", () => {
-    it("GET /api/users/me : Returns an error if no service is defined", done => {
-      chai
-        .request(app)
+    test("GET /api/users/me : Returns an error if no service is defined", async () => {
+      const res = await request(app)
         .get(url + "/me")
-        .set("Authorization", "Bearer " + generateToken(1, [kjyrIdentifier]))
-        .end((err, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("No service defined");
-          res.status.should.equal(400);
-          done();
-        });
+        .set("Authorization", "Bearer " + generateToken(1, [kjyrIdentifier]));
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("No service defined");
+      expect(res.status).to.equal(400);
     });
 
-    it("GET /api/users/me: Trying to get information from" + " a service the user is not authenticated to", done => {
-      chai
-        .request(app)
+    test("GET /api/users/me: Trying to get information from" + " a service the user is not authenticated to", async () => {
+      const res = await request(app)
         .get(url + "/me")
         .set("Authorization", "Bearer " + generateToken(1, []))
-        .set("Service", kjyrIdentifier)
-        .end((err, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("User not authorized to service");
-          res.status.should.equal(403);
-          done();
-        });
+        .set("Service", kjyrIdentifier);
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("User not authorized to service");
+      expect(res.status).to.equal(403);
     });
 
-    it("GET /api/users/me : Removes unwanted information" + " and returns my information from every service", done => {
-      authService
-        .getServices()
-        .then((dbServices: Service[]) => {
-          const services: ServiceDatabaseObject[] = dbServices.map((dbService: Service) =>
-            dbService.getDatabaseObject(),
-          );
-          // Loop through services
-          for (const service of services) {
-            const serviceIdentifier = service.service_identifier;
-            const permissionNumber = service.data_permissions;
+    test("GET /api/users/me : Removes unwanted information" + " and returns my information from every service", async () => {
+      const dbServices = await authService.getServices()
 
-            chai
-              .request(app)
-              .get(url + "/me")
-              .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier!]))
-              .set("Service", serviceIdentifier!)
-              .end((err, res) => {
-                res.status.should.equal(200);
-                should.exist(res.body.ok);
-                res.body.ok.should.equal(true);
-                should.exist(res.body.payload);
-                should.exist(res.body.message);
-                res.body.message.should.equal("Success");
+      const services: ServiceDatabaseObject[] = dbServices.map((dbService: Service) =>
+        dbService.getDatabaseObject(),
+      );
 
-                const user_2: User = new User(users.find(user => user.id === 1)!);
+      // Loop through services
+      for (const service of services) {
+        const serviceIdentifier = service.service_identifier;
+        const permissionNumber = service.data_permissions;
 
-                should.exist(user_2);
+        const res = await request(app)
+          .get(url + "/me")
+          .set("Authorization", "Bearer " + generateToken(1, [serviceIdentifier!]))
+          .set("Service", serviceIdentifier!);
 
-                const payloadObject: User = res.body.payload;
+        expect(res.status).to.equal(200);
+        expect(res.body.ok).toBeDefined();
+        expect(res.body.ok).to.equal(true);
+        expect(res.body.payload).toBeDefined();
+        expect(res.body.message).toBeDefined();
+        expect(res.body.message).to.equal("Success");
 
-                const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
+        const user_2: User = new User(users.find(user => user.id === 1)!);
 
-                // @ts-expect-error
-                delete user.createdAt;
-                // @ts-expect-error
-                delete user.modifiedAt;
+        expect(user_2).toBeDefined();
 
-                const allFields = Object.keys(user) as Array<keyof User>;
+        const payloadObject: User = res.body.payload;
 
-                const required: string[] = Object.keys(
-                  user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber!),
-                );
-                for (const field of allFields) {
-                  if (required.find((requiredField: string) => requiredField === field)) {
-                    // Should expect and equal
-                    should.exist(payloadObject[field]);
-                    payloadObject[field].should.equal(user_2[field]);
-                  } else {
-                    // Should not exist
-                    should.not.exist(payloadObject[field]);
-                  }
-                }
-              });
+        const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
+
+        // @ts-expect-error
+        delete user.createdAt;
+        // @ts-expect-error
+        delete user.modifiedAt;
+
+        const allFields = Object.keys(user) as Array<keyof User>;
+
+        const required: string[] = Object.keys(
+          user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber!),
+        );
+        for (const field of allFields) {
+          if (required.find((requiredField: string) => requiredField === field)) {
+            // Should expect and equal
+            expect(payloadObject[field]).toBeDefined();
+            expect(payloadObject[field]).to.equal(user_2[field]);
+          } else {
+            // Should not exist
+            expect(payloadObject).not.toHaveProperty(field);
           }
-          done();
-        })
-        .catch(err => console.error(err));
+        }
+      }
     });
   });
 });

@@ -1,90 +1,82 @@
-import "mocha";
-import chai from "chai";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import { knexInstance } from "../../src/Db";
 import PaymentDao from "../../src/dao/PaymentDao";
 
 process.env.NODE_ENV = "test";
-const should = chai.should();
 
 describe("PaymentDao", () => {
   // Roll back
-  beforeEach(done => {
-    knexInstance.migrate.rollback().then(() => {
-      knexInstance.migrate.latest().then(() => {
-        knexInstance.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    await knexInstance.migrate.rollback();
+    await knexInstance.migrate.latest();
+    await knexInstance.seed.run();
   });
 
   // After each
-  afterEach(done => {
-    knexInstance.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knexInstance.migrate.rollback();
   });
 
-  it("Should return a single payment", async () => {
+  test("Should return a single payment", async () => {
     const payment = await PaymentDao.findOne(1);
     if (payment === undefined) {
       throw new Error("Payment not found");
     }
-    payment.id.should.equal(1);
-    payment.payer_id.should.equal(1);
-    payment.confirmer_id.should.equal(1);
-    payment.created.toISOString().should.equal("2016-02-01T00:00:00.000Z");
-    payment.reference_number.should.equal("123456789");
-    payment.amount.should.equal("55.55");
-    payment.valid_until.toISOString().should.equal("2019-02-01T00:00:00.000Z");
-    payment.paid.toISOString().should.equal("2016-02-01T00:00:00.000Z");
-    payment.payment_type.should.equal("jasenmaksu");
-    payment.membership_applied_for.should.equal("jasen");
+    expect(payment.id).to.equal(1);
+    expect(payment.payer_id).to.equal(1);
+    expect(payment.confirmer_id).to.equal(1);
+    expect(payment.created.toISOString()).to.equal("2016-02-01T00:00:00.000Z");
+    expect(payment.reference_number).to.equal("123456789");
+    expect(payment.amount).to.equal("55.55");
+    expect(payment.valid_until.toISOString()).to.equal("2019-02-01T00:00:00.000Z");
+    expect(payment.paid.toISOString()).to.equal("2016-02-01T00:00:00.000Z");
+    expect(payment.payment_type).to.equal("jasenmaksu");
+    expect(payment.membership_applied_for).to.equal("jasen");
   });
 
-  it("Should return all payments", async () => {
+  test("Should return all payments", async () => {
     const payments = await PaymentDao.findAll();
-    payments.length.should.equal(2);
+    expect(payments.length).to.equal(2);
 
-    payments[0].id.should.equal(1);
-    payments[0].payer_id.should.equal(1);
-    payments[0].confirmer_id.should.equal(1);
-    payments[0].created.toISOString().should.equal("2016-02-01T00:00:00.000Z");
-    payments[0].reference_number.should.equal("123456789");
-    payments[0].amount.should.equal("55.55");
-    payments[0].valid_until.toISOString().should.equal("2019-02-01T00:00:00.000Z");
-    payments[0].paid.toISOString().should.equal("2016-02-01T00:00:00.000Z");
-    payments[0].payment_type.should.equal("jasenmaksu");
-    payments[0].membership_applied_for.should.equal("jasen");
+    expect(payments[0].id).to.equal(1);
+    expect(payments[0].payer_id).to.equal(1);
+    expect(payments[0].confirmer_id).to.equal(1);
+    expect(payments[0].created.toISOString()).to.equal("2016-02-01T00:00:00.000Z");
+    expect(payments[0].reference_number).to.equal("123456789");
+    expect(payments[0].amount).to.equal("55.55");
+    expect(payments[0].valid_until.toISOString()).to.equal("2019-02-01T00:00:00.000Z");
+    expect(payments[0].paid.toISOString()).to.equal("2016-02-01T00:00:00.000Z");
+    expect(payments[0].payment_type).to.equal("jasenmaksu");
+    expect(payments[0].membership_applied_for).to.equal("jasen");
 
-    payments[1].id.should.equal(2);
-    payments[1].payer_id.should.equal(2);
-    payments[1].confirmer_id.should.equal(1);
-    payments[1].created.toISOString().should.equal("2015-02-01T00:00:00.000Z");
-    payments[1].reference_number.should.equal("234567890");
-    payments[1].amount.should.equal("44.44");
-    payments[1].valid_until.toISOString().should.equal("2018-02-01T00:00:00.000Z");
-    payments[1].paid.toISOString().should.equal("2015-02-01T00:00:00.000Z");
-    payments[1].payment_type.should.equal("jasenmaksu");
-    payments[1].membership_applied_for.should.equal("jasen");
+    expect(payments[1].id).to.equal(2);
+    expect(payments[1].payer_id).to.equal(2);
+    expect(payments[1].confirmer_id).to.equal(1);
+    expect(payments[1].created.toISOString()).to.equal("2015-02-01T00:00:00.000Z");
+    expect(payments[1].reference_number).to.equal("234567890");
+    expect(payments[1].amount).to.equal("44.44");
+    expect(payments[1].valid_until.toISOString()).to.equal("2018-02-01T00:00:00.000Z");
+    expect(payments[1].paid.toISOString()).to.equal("2015-02-01T00:00:00.000Z");
+    expect(payments[1].payment_type).to.equal("jasenmaksu");
+    expect(payments[1].membership_applied_for).to.equal("jasen");
   });
 
-  it("Should remove a payment", async () => {
+  test("Should remove a payment", async () => {
     const payments = await PaymentDao.findAll();
-    payments.length.should.equal(2);
+    expect(payments.length).to.equal(2);
     const affectedRows = await PaymentDao.remove(2);
-    affectedRows.should.equal(1);
+    expect(affectedRows).to.equal(1);
     const payments2 = await PaymentDao.findAll();
-    payments2.length.should.equal(1);
+    expect(payments2.length).to.equal(1);
   });
 
-  it("Should return zero affected rows if trying to remove a payment that does not exist", async () => {
+  test("Should return zero affected rows if trying to remove a payment that does not exist", async () => {
     const affectedRows = await PaymentDao.remove(999);
-    affectedRows.should.equal(0);
+    expect(affectedRows).to.equal(0);
   });
 
-  it("Should return undefined if payment is not found", async () => {
+  test("Should return undefined if payment is not found", async () => {
     const payment = await PaymentDao.findOne(999);
-    should.not.exist(payment);
+    expect(payment).not.toBeDefined();
   });
 });
