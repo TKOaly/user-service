@@ -9,7 +9,7 @@ RUN apk --no-cache add --virtual native-deps \
 COPY package*.json /app/
 RUN npm install --development
 
-COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.ts ./
+COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.mjs ./
 COPY ./src /app/src
 COPY ./test /app/test
 COPY ./views /app/views
