@@ -128,9 +128,7 @@ class PaymentService {
     _seasons: number,
     _membership: string,
   ): Promise<Payment> {
-    // TO DO
-    // @ts-expect-error
-    return Promise.resolve(new Payment({}));
+    throw new Error('Not implemented.');
   }
 }
 

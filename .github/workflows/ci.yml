@@ -25,4 +25,4 @@ jobs:
       run: docker compose run web npm run typecheck
 
     - name: Run tests
-      run: docker compose run web npm test
+      run: docker compose run web npm test run

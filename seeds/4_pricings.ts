@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { type Knex } from "knex";
 
 exports.seed = async (knex: Knex) => {
   if (process.env.NODE_ENV === "production") {

@@ -1,10 +1,33 @@
-import Knex from "knex";
+import { Knex } from "knex";
 import Dao from "../interfaces/Dao";
-import UserDatabaseObject from "../interfaces/UserDatabaseObject";
+import UserDatabaseObject, { UserPaymentDatabaseObject } from "../interfaces/UserDatabaseObject";
 import { knexInstance } from "../Db";
 import _ from "lodash";
 
 const tableName = "users";
+
+type UserSaveModel = Required<
+      Pick<
+        UserDatabaseObject,
+        | "username"
+        | "name"
+        | "screen_name"
+        | "email"
+        | "residence"
+        | "phone"
+        | "hyy_member"
+        | "membership"
+        | "role"
+        | "salt"
+        | "hashed_password"
+        | "password_hash"
+        | "tktl"
+        | "deleted"
+        | "hy_student"
+        | "hy_staff"
+        | "tktdt_student"
+      >
+    > & Partial<Pick<UserDatabaseObject, 'id'>>
 
 class UserDao implements Dao<UserDatabaseObject> {
   public findOne(id: number): PromiseLike<UserDatabaseObject | undefined> {
@@ -45,7 +68,7 @@ class UserDao implements Dao<UserDatabaseObject> {
     );
   }
 
-  public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserDatabaseObject[]> {
+  public findAll(fields?: string[], conditions?: string[]): PromiseLike<UserPaymentDatabaseObject[]> {
     const query: Knex.QueryBuilder = knexInstance<UserDatabaseObject>(tableName)
       .max("payments.valid_until")
       .leftOuterJoin(
@@ -82,7 +105,7 @@ class UserDao implements Dao<UserDatabaseObject> {
       });
     }
 
-    return Promise.resolve<UserDatabaseObject[]>(query);
+    return Promise.resolve<UserPaymentDatabaseObject[]>(query);
   }
 
   /**
@@ -142,29 +165,7 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public save(
-    entity: Required<
-      Pick<
-        UserDatabaseObject,
-        | "id"
-        | "username"
-        | "name"
-        | "screen_name"
-        | "email"
-        | "residence"
-        | "phone"
-        | "hyy_member"
-        | "membership"
-        | "role"
-        | "salt"
-        | "hashed_password"
-        | "password_hash"
-        | "tktl"
-        | "deleted"
-        | "hy_student"
-        | "hy_staff"
-        | "tktdt_student"
-      >
-    >,
+    entity: UserSaveModel,
   ): PromiseLike<number[]> {
     const savedObj = {
       ...entity,

@@ -3,6 +3,7 @@ import PrivacyPolicyDao from "../dao/PrivacyPolicyDao";
 import * as Sentry from "@sentry/node";
 import Controller from "../interfaces/Controller";
 import ServiceResponse from "../utils/ServiceResponse";
+import ServiceError from "../utils/ServiceError";
 
 class PrivacyPolicyController implements Controller {
   private route: Express.Router;
@@ -19,8 +20,13 @@ class PrivacyPolicyController implements Controller {
       } else {
         return res.status(404).json(new ServiceResponse(null, "Privacy policy not found", false));
       }
-    } catch (err: any) {
+    } catch (err) {
       Sentry.captureException(err);
+
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(500).json(new ServiceResponse(null, "Server error", false));
     }
   }

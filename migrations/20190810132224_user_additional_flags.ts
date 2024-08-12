@@ -1,4 +1,4 @@
-import Knex from "knex";
+import { Knex } from "knex";
 
 exports.up = async function (knex: Knex): Promise<void> {
   const hasHyStaff = await knex.schema.hasColumn("users", "hy_staff");

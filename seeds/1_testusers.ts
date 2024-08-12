@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { Knex } from "knex";
 import users from "./seedData/users";
 
 exports.seed = async function (knex: Knex): Promise<void> {

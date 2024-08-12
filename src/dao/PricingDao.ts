@@ -1,4 +1,4 @@
-import { QueryCallbackWithArgs } from "knex";
+import { Knex } from "knex";
 import { knexInstance as knex } from "../Db";
 import { MembershipType, PUBLIC_MEMBERSIHP_TYPES } from "../enum/Membership";
 import Dao from "../interfaces/Dao";
@@ -27,6 +27,8 @@ class PricingDao implements Dao<PricingDatabaseObject> {
     seasons: number | null,
     season: number,
   ): Promise<PricingDatabaseObject[]> {
+    type QueryCallbackWithArgs = Parameters<Knex.QueryBuilder['modify']>[0]
+
     const conditionalFilter: QueryCallbackWithArgs = (builder, column, value) => {
       if (value !== null) {
         builder.andWhere(column, "=", value);

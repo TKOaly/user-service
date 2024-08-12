@@ -1,6 +1,6 @@
 import csrf from "csurf";
 import querystring from "querystring";
-import { Router } from "express";
+import { RequestHandler, Router } from "express";
 import * as express from "express";
 import crypto from "crypto";
 import moment from "moment";
@@ -8,16 +8,18 @@ import * as Sentry from "@sentry/node";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
-import User from "../models/User";
+import User, { removeNonRequestedData, removeSensitiveInformation } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { LoginStep } from "../utils/AuthorizeMiddleware";
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { flow } from "lodash";
+import { map } from "lodash/fp";
 import EmailService from "../services/EmailService";
+import ServiceError from "../utils/ServiceError";
 
 class ValidationError extends Error {
   name = "ValidationError";
@@ -87,10 +89,7 @@ class LoginController implements Controller {
     });
   }
 
-  public async getLoginView(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  public getLoginView: express.RequestHandler = async (req, res) => {
     if (req.query.response_type) {
       const query = querystring.stringify(
         flow(
@@ -142,10 +141,11 @@ class LoginController implements Controller {
         currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
-    } catch (err: any) {
+    } catch (err) {
       Sentry.captureException(err);
+
       return res.status(400).render("serviceError", {
-        error: err.message,
+        error: err instanceof Error ? err.message : 'Unknown error',
       });
     }
   }
@@ -153,7 +153,7 @@ class LoginController implements Controller {
   /**
    * Sets the language of the page.
    */
-  public setLanguage(req: IASRequest, res: express.Response) {
+  public setLanguage: RequestHandler = async (req, res) => {
     res.clearCookie("tkoaly_locale");
     res.cookie("tkoaly_locale", req.params.language, {
       maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -162,7 +162,7 @@ class LoginController implements Controller {
     return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
   }
 
-  public async logOut(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  logOut: RequestHandler = async (req, res) => {
     if (!req.query.serviceIdentifier) {
       return res.status(400).render("serviceError", {
         error: "Missing service identifier",
@@ -177,20 +177,25 @@ class LoginController implements Controller {
     let service: Service;
     try {
       service = await AuthenticationService.getServiceWithIdentifier(req.query.serviceIdentifier as string);
-    } catch (e: any) {
+    } catch (e) {
       Sentry.captureException(e);
-      return res.status(e.httpStatusCode || 500).render("serviceError", {
-        error: e.message,
-      });
+
+      if (e instanceof ServiceError) {
+        res.status(e.httpErrorCode || 500).render("serviceError", {
+          error: e.message,
+        });
+      }
+
+      return
     }
 
     const token = AuthenticationService.removeServiceAuthenticationToToken(
-      req.authorization.token,
+      req.authorization!.token,
       service.serviceIdentifier,
     );
 
     // this token had one service left which was remove -> clear token
-    if (req.authorization.token.authenticatedTo.length === 1) {
+    if (req.authorization!.token.authenticatedTo.length === 1) {
       res.clearCookie("token", { domain: process.env.COOKIE_DOMAIN });
     } else {
       res.cookie("token", token, {
@@ -205,7 +210,7 @@ class LoginController implements Controller {
     return res.render("logout", { serviceName: service.displayName });
   }
 
-  public async login(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  login: RequestHandler = async (req, res) => {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
       return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
@@ -213,7 +218,11 @@ class LoginController implements Controller {
     let service: Service;
     try {
       service = await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier as string);
-    } catch (e: any) {
+    } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
@@ -223,7 +232,7 @@ class LoginController implements Controller {
       }
     }
 
-    let keys: Array<{ name: string; value: string }> = [];
+    let keys: Array<{ name: string; value: unknown }> = [];
     let user: User;
     try {
       user = await UserService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
@@ -235,10 +244,10 @@ class LoginController implements Controller {
       } else {
         // Something is missing here..?
       }
-    } catch (e: any) {
+    } catch (e) {
       return res.status(500).render("login", {
         service,
-        errors: [e.message],
+        errors: [e instanceof Error ? e.message : 'Unknown error'],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -248,11 +257,12 @@ class LoginController implements Controller {
 
     // Removes data that are not needed when making a request
     // We require user id and role every time, regardless of permissions in services
-    // @ts-expect-error
-    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map((key: keyof User) => ({
-      name: key,
-      value: user[key],
-    }));
+    keys = flow(
+      removeSensitiveInformation,
+      (data) => removeNonRequestedData(data, service.dataPermissions | 512 | 1),
+      Object.entries,
+      map(([ name, value ]) => ({ name, value })),
+    )(user);
 
     // Set session
     if (!user.id) {
@@ -307,11 +317,12 @@ class LoginController implements Controller {
           csrfToken: req.csrfToken(),
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       Sentry.captureException(err);
+
       return res.status(500).render("login", {
         service,
-        errors: [err.message],
+        errors: [err instanceof Error ? err.message : 'Unknown error'],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -332,10 +343,7 @@ class LoginController implements Controller {
   /**
    * Handles GDPR template and redirects the user forward
    */
-  public async loginConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  loginConfirm: RequestHandler = async (req, res) => {
     const body: {
       permission: string;
     } = req.body;
@@ -373,9 +381,9 @@ class LoginController implements Controller {
       } else {
         token = AuthenticationService.createToken(req.session.user.userId, [req.session.user.serviceIdentifier]);
       }
-    } catch (e: any) {
+    } catch (e) {
       Sentry.captureException(e);
-      return res.status(500).json(new ServiceResponse(null, e.message));
+      return res.status(500).json(new ServiceResponse(null, e instanceof Error ? e.message : 'Unknown error'));
     }
 
     const redirectTo: string = req.session.user.redirectTo;
@@ -396,10 +404,7 @@ class LoginController implements Controller {
   /**
    * Handles privacy policy confirmation.
    */
-  public async privacyPolicyConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  privacyPolicyConfirm: RequestHandler = async (req, res) => {
     const body: {
       accept: string;
     } = req.body;
@@ -432,19 +437,19 @@ class LoginController implements Controller {
       try {
         await ConsentService.declineConsent(req.session.user.userId, service.id);
         return res.redirect("https://members.tko-aly.fi");
-      } catch (ex: any) {
+      } catch (ex) {
         Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
-          error: "Error saving your answer." + ex.message,
+          error: `Error saving your answer. ${ex}`,
         });
       }
     } else {
       try {
         await ConsentService.acceptConsent(req.session.user.userId, service.id);
-      } catch (ex: any) {
+      } catch (ex) {
         Sentry.captureException(ex);
         return res.status(500).render("serviceError", {
-          error: "Error saving your answer: " + ex.message,
+          error: `Error saving your answer: ${ex}`,
         });
       }
     }
@@ -470,7 +475,7 @@ class LoginController implements Controller {
 
       try {
         await validate(params);
-      } catch (err: any) {
+      } catch (err) {
         if (err instanceof ValidationError) {
           return res.status(err.status).render("serviceError", {
             error: err.message,
@@ -577,7 +582,7 @@ class LoginController implements Controller {
         await UserService.updateUser(user.id, {}, req.body.password1);
 
         return res.render("resetPasswordSuccess");
-      } catch (err: any) {
+      } catch (err) {
         if (err instanceof ValidationError) {
           return res.status(err.status).render("serviceError", {
             error: err.message,
@@ -594,37 +599,37 @@ class LoginController implements Controller {
   public createRoutes(): express.Router {
     this.route.get(
       "/",
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.getLoginView.bind(this),
+      this.csrfMiddleware,
+      cachingMiddleware,
+      AuthorizeMiddleware.loadToken,
+      this.getLoginView,
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.login.bind(this),
+      this.login,
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.privacyPolicyConfirm.bind(this),
+      this.privacyPolicyConfirm,
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.loginConfirm.bind(this),
-    ); // @ts-expect-error
-    this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this));
+      this.loginConfirm,
+    );
+    this.route.get("/logout", AuthorizeMiddleware.authorize(false), this.logOut);
     this.route.get("/reset-password", this.resetPassword.bind(this));
     this.route.post("/reset-password", this.resetPassword.bind(this));
-    // @ts-expect-error
-    this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage.bind(this.setLanguage));
+
+    this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage);
     return this.route;
   }
 }

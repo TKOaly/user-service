@@ -1,16 +1,14 @@
-import "mocha";
+import { describe, test, beforeEach, expect } from "vitest";
 import PrivacyPolicyDatabaseObject from "../../src/interfaces/PrivacyPolicyDatabaseObject";
 import PrivacyPolicy from "../../src/models/PrivacyPolicy";
 
-import chai = require("chai");
 process.env.NODE_ENV = "test";
-const should: Chai.Should = chai.should();
 
 let policy: PrivacyPolicyDatabaseObject;
 let policyModel: PrivacyPolicy;
 
 describe("Privacy policy model", () => {
-  beforeEach(done => {
+  beforeEach(() => {
     policy = {
       id: 552,
       created: new Date(2015, 1, 1),
@@ -19,54 +17,41 @@ describe("Privacy policy model", () => {
       text: "Hello World",
     };
     policyModel = new PrivacyPolicy(policy);
-    done();
   });
 
-  it("Sets data correctly (PrivacyPolicyDatabaseObject)", done => {
-    should.exist(policyModel.id);
-    policyModel.id.should.equal(552);
-    should.exist(policyModel.created);
-    policyModel.created.toDateString().should.equal(new Date(2015, 1, 1).toDateString());
-    should.exist(policyModel.modified);
-    policyModel.modified.toDateString().should.equal(new Date(2015, 1, 3).toDateString());
-    should.exist(policyModel.service_id);
-    policyModel.service_id.should.equal(22);
-    should.exist(policyModel.text);
-    policyModel.text.should.equal("Hello World");
-    done();
-  });
+  test("Sets data correctly (PrivacyPolicyDatabaseObject)", () => { expect(policyModel.id).toBeDefined();
+  expect(policyModel.id).to.equal(552);
+  expect(policyModel.created).toBeDefined();
+  expect(policyModel.created.toDateString()).to.equal(new Date(2015, 1, 1).toDateString());
+  expect(policyModel.modified).toBeDefined();
+  expect(policyModel.modified.toDateString()).to.equal(new Date(2015, 1, 3).toDateString());
+  expect(policyModel.service_id).toBeDefined();
+  expect(policyModel.service_id).to.equal(22);
+  expect(policyModel.text).toBeDefined();
+  expect(policyModel.text).to.equal("Hello World"); });
 
-  it("Sets partial data correctly (PrivacyPolicyDatabaseObject)", done => {
-    const policy2: Pick<PrivacyPolicy, "id" | "text"> = {
-      id: 225,
-      text: "Hello World 2",
-    };
+  test("Sets partial data correctly (PrivacyPolicyDatabaseObject)", () => { const policy2: Pick<PrivacyPolicy, "id" | "text"> = {
+    id: 225,
+    text: "Hello World 2",
+  };
+  
+  expect(policy2.id).toBeDefined();
+  expect(policy2.id).to.equal(225);
+  expect(policy2.text).toBeDefined();
+  expect(policy2.text).to.equal("Hello World 2");
+  
+  expect(policy2.created).not.toBeDefined();
+  expect(policy2.modified).not.toBeDefined();
+  expect(policy2.service_id).not.toBeDefined(); });
 
-    should.exist(policy2.id);
-    policy2.id.should.equal(225);
-    should.exist(policy2.text);
-    policy2.text.should.equal("Hello World 2");
-
-    // @ts-expect-error
-    should.not.exist(policy2.created);
-    // @ts-expect-error
-    should.not.exist(policy2.modified);
-    // @ts-expect-error
-    should.not.exist(policy2.service_id);
-    done();
-  });
-
-  it("Sets data correctly (PrivacyPolicy)", done => {
-    should.exist(policy.id);
-    policy.id.should.equal(552);
-    should.exist(policy.created);
-    policy.created.toDateString().should.equal(new Date(2015, 1, 1).toDateString());
-    should.exist(policy.modified);
-    policy.modified.toDateString().should.equal(new Date(2015, 1, 3).toDateString());
-    should.exist(policy.service_id);
-    policy.service_id.should.equal(22);
-    should.exist(policy.text);
-    policy.text.should.equal("Hello World");
-    done();
-  });
+  test("Sets data correctly (PrivacyPolicy)", () => { expect(policy.id).toBeDefined();
+  expect(policy.id).to.equal(552);
+  expect(policy.created).toBeDefined();
+  expect(policy.created.toDateString()).to.equal(new Date(2015, 1, 1).toDateString());
+  expect(policy.modified).toBeDefined();
+  expect(policy.modified.toDateString()).to.equal(new Date(2015, 1, 3).toDateString());
+  expect(policy.service_id).toBeDefined();
+  expect(policy.service_id).to.equal(22);
+  expect(policy.text).toBeDefined();
+  expect(policy.text).to.equal("Hello World"); });
 });

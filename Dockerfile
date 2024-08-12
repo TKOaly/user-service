@@ -1,4 +1,4 @@
-FROM node:16.17.0-alpine3.15 AS development
+FROM node:20.9.0-alpine AS development
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN apk --no-cache add --virtual native-deps \
 COPY package*.json /app/
 RUN npm install --development
 
-COPY knexfile.ts .prettierrc .mocharc.js .eslintrc.js .eslintignore ./
+COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.mjs ./
 COPY ./src /app/src
 COPY ./test /app/test
 COPY ./views /app/views

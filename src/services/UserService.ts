@@ -72,8 +72,6 @@ class UserService {
 
     const results = await UserDao.findAll(fields, conditionQuery);
 
-    // @ts-ignore
-    // FIXME: Wrong typings
     return results.map(u => new UserPayment(u));
   }
 

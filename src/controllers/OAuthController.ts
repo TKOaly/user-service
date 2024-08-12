@@ -1,18 +1,18 @@
-import express, { NextFunction, Request, RequestHandler, Response } from "express";
+import { Request, Response, RequestHandler, ErrorRequestHandler, Router } from "express";
 import JWT from "jsonwebtoken";
 import { JWK } from "node-jose";
 import csrf from "csurf";
 import moment from "moment";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
-import User from "../models/User";
+import User, { removeNonRequestedData } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
 import UserService from "../services/UserService";
 import { pick } from "lodash";
 import ServiceError from "../utils/ServiceError";
 import { stringToServiceToken } from "../token/Token";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { AuthorizedRequestHandler } from "../utils/AuthorizeMiddleware";
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import { OAuthError } from "../utils/OAuthError";
@@ -155,19 +155,10 @@ type FlowStateLogin = {
   step: "login";
 };
 
-type FlowStateGdpr = Omit<FlowStateLogin, "step"> & { step: "gdpr" };
-type FlowStatePrivacy = Omit<FlowStateGdpr, "step"> & { step: "privacy"; user: User };
+type FlowStateGdpr = Omit<FlowStatePrivacy, "step"> & { step: "gdpr" };
+type FlowStatePrivacy = Omit<FlowStateLogin, "step"> & { step: "privacy"; user: User };
 
 type FlowState = FlowStateLogin | FlowStateGdpr | FlowStatePrivacy;
-
-interface RequestWithFlowState<S extends string> extends Request {
-  flow: Extract<FlowState, { step: S }>;
-  updateFlow: (state: FlowState) => void;
-}
-
-interface RequestWithService extends Request {
-  service: Service;
-}
 
 type FlowInitOptions = Pick<FlowState, "state" | "service" | "scope" | "responseType" | "redirectUrl">;
 
@@ -190,20 +181,20 @@ const extractService = async (req: Request) => {
 
   try {
     return await AuthenticationService.getServiceWithIdentifier(client_id);
-  } catch (err: any) {
+  } catch {
     throw new OAuthError("invalid_request").withDescription(`Unknown client ID '${client_id}'.`);
   }
 };
 
 class OAuthController implements Controller {
-  private route: express.Router;
+  private route: Router;
   private flows: Map<string, FlowState> = new Map();
   private codes: Map<string, AuthorizationCodeContext> = new Map();
   private openidPrivateKey: JWK.Key | null = null;
-  public csrfMiddleware: express.RequestHandler;
+  public csrfMiddleware: RequestHandler;
 
   constructor() {
-    this.route = express.Router();
+    this.route = Router();
 
     this.csrfMiddleware = csrf({
       cookie: true,
@@ -230,14 +221,14 @@ class OAuthController implements Controller {
     return id;
   }
 
-  private async auth(req: Request & IASRequest, res: Response) {
+  private auth: AuthorizedRequestHandler = async (req, res) => {
     const state = req.query.state ? String(req.query.state) : null;
 
     let service;
 
     try {
       service = await extractService(req);
-    } catch (err: any) {
+    } catch (err) {
       if (err instanceof OAuthError) {
         throw err.withState(state);
       } else {
@@ -316,8 +307,8 @@ class OAuthController implements Controller {
     return res.status(302).redirect(`/oauth/flow/${flowId}/login`);
   }
 
-  private async loginForm(req: RequestWithFlowState<"login">, res: Response) {
-    const { service } = req.flow;
+  private loginForm: RequestHandler = async (req, res) => {
+    const { service } = this.getFlowState(req, 'login');
 
     return res.status(200).render("login", {
       service,
@@ -326,25 +317,25 @@ class OAuthController implements Controller {
     });
   }
 
-  private async handleLogin(req: RequestWithFlowState<"login">, res: Response) {
+  private handleLogin: RequestHandler = async (req, res) => {
     const { username, password } = req.body;
-    const { service } = req.flow;
+    const flow = this.getFlowState(req, 'login');
 
     let user;
 
     try {
       user = await UserService.getUserWithUsernameAndPassword(username, password);
-    } catch (err: any) {
+    } catch {
       return res.status(200).render("login", {
-        service,
+        service: flow.service,
         csrfToken: req.csrfToken(),
         submitUrl: `/oauth/flow/${req.params.id}/login`,
         errors: ["Invalid credentials."],
       });
     }
 
-    req.updateFlow({
-      ...req.flow,
+    this.setFlowState(req, {
+      ...flow,
       user,
       step: "privacy",
     });
@@ -352,14 +343,15 @@ class OAuthController implements Controller {
     return res.status(302).redirect(`/oauth/flow/${req.params.id}/privacy`);
   }
 
-  private async privacyForm(req: RequestWithFlowState<"privacy">, res: Response) {
-    const { user, service } = req.flow;
+  private privacyForm: RequestHandler = async (req, res) => {
+    const flow = this.getFlowState(req, 'privacy');
+    const { user, service } = flow;
 
     const consent = await ConsentService.findByUserAndService(user.id, service.id);
 
     if (consent?.consent === PrivacyPolicyConsent.Accepted) {
-      req.updateFlow({
-        ...req.flow,
+      this.setFlowState(req, {
+        ...flow,
         step: "gdpr",
       });
 
@@ -377,8 +369,9 @@ class OAuthController implements Controller {
     });
   }
 
-  private async handlePrivacy(req: RequestWithFlowState<"privacy">, res: Response) {
-    const { user, service, state } = req.flow;
+  private handlePrivacy: RequestHandler = async (req, res) => {
+    const flow = this.getFlowState(req, 'privacy');
+    const { user, service, state } = flow;
 
     if (!req.body.accept) {
       try {
@@ -387,7 +380,7 @@ class OAuthController implements Controller {
         throw new OAuthError("access_denied")
           .withDescription("User did not accept the service privacy policy.")
           .withState(state);
-      } catch (ex: any) {
+      } catch {
         throw new OAuthError("server_error")
           .withDescription("Failed to save privacy policy consent information.")
           .withState(state);
@@ -395,15 +388,15 @@ class OAuthController implements Controller {
     } else {
       try {
         await ConsentService.acceptConsent(user.id, service.id);
-      } catch (ex: any) {
+      } catch {
         throw new OAuthError("server_error")
           .withDescription("Failed to save privacy policy consent information.")
           .withState(state);
       }
     }
 
-    req.updateFlow({
-      ...req.flow,
+    this.setFlowState(req, {
+      ...flow,
       step: "gdpr",
     });
 
@@ -461,12 +454,13 @@ class OAuthController implements Controller {
     return res.status(302).redirect(url.toString());
   }
 
-  private async gdprForm(req: RequestWithFlowState<"privacy">, res: Response) {
-    const { service, scope, user } = req.flow;
+  private gdprForm: RequestHandler = async (req, res) => {
+    const flow = this.getFlowState(req, 'gdpr');
+    const { service, scope, user } = flow;
 
     const claimKeys = mapClaimsToUserProperties(getClaimNames(scope));
 
-    const keys = (Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)) as Array<keyof User>)
+    const keys = (Object.keys(removeNonRequestedData(user, service.dataPermissions | 512 | 1)) as Array<keyof User>)
       .filter(key => claimKeys.includes(key))
       .map((key: keyof User) => ({
         name: key,
@@ -482,50 +476,42 @@ class OAuthController implements Controller {
     });
   }
 
-  private async handleGdpr(req: RequestWithFlowState<"privacy">, res: Response) {
+  private handleGdpr: RequestHandler = async (req, res) => {
+    const flow = this.getFlowState(req, 'gdpr');
+
     if (req.body.permission === "yes") {
-      await this.grantAuthorization(req, res, req.flow);
+      await this.grantAuthorization(req, res, flow);
     } else {
       throw new OAuthError("access_denied")
         .withDescription("User denied the authorization request.")
-        .withState(req.flow.state);
+        .withState(flow.state);
     }
   }
 
-  private assertFlowStep(step: string): RequestHandler {
-    return (req: Request, res: Response, next: NextFunction) => {
-      if (!req.params.id) {
-        return res.status(500).render("serviceError", {
-          error: "Internal Server Error",
-        });
-      }
+  private getFlowState = <S extends FlowState['step']>(req: Request, step: S): Extract<FlowState, { step: S }> => {
+    if (!req.params.id) {
+      throw new ServiceError(500, "Internal Server Error");
+    }
 
-      const flowState = this.flows.get(req.params.id);
+    const flowState = this.flows.get(req.params.id);
 
-      if (flowState === undefined) {
-        return res.status(400).render("serviceError", {
-          error: "Invalid flow ID",
-        });
-      }
+    if (flowState === undefined) {
+      throw new ServiceError(400, "Invalid flow ID");
+    }
 
-      if (flowState.step !== step) {
-        return res.status(400).render("serviceError", {
-          error: "Unexpected flow step",
-        });
-      }
+    if (flowState.step !== step) {
+      throw new ServiceError(400, "Unexpected flow step");
+    }
 
-      Object.assign(req, {
-        flow: flowState,
+    return flowState as Extract<FlowState, { step: S }>;
+  }
 
-        updateFlow: (state: FlowState) => this.flows.set(req.params.id, state),
-      });
-
-      next();
-    };
+  private setFlowState = (req: Request, state: FlowState) => {
+    this.flows.set(req.params.id, state);
   }
 
   private requireClientAuthentication(): RequestHandler {
-    return async (req, res, next) => {
+    return async (req, _res, next) => {
       let serviceIdentifier;
       let serviceSecret;
 
@@ -548,7 +534,7 @@ class OAuthController implements Controller {
 
       try {
         service = await AuthenticationService.getServiceWithIdentifier(serviceIdentifier);
-      } catch (err: any) {
+      } catch {
         throw new ServiceError(403, "Invalid client credentials");
       }
 
@@ -556,13 +542,13 @@ class OAuthController implements Controller {
         throw new ServiceError(403, "Invalid client credentials");
       }
 
-      (req as any).service = service;
+      req.service = service;
 
       next();
     };
   }
 
-  private async token(req: RequestWithService, res: Response) {
+  private token: RequestHandler = async (req, res) => {
     const body = req.body;
     let user;
     let scope: string[] = [];
@@ -595,7 +581,7 @@ class OAuthController implements Controller {
 
       try {
         user = await UserService.getUserWithUsernameAndPassword(body.username, body.password);
-      } catch (err: any) {
+      } catch {
         throw new OAuthError("access_denied");
       }
 
@@ -616,7 +602,7 @@ class OAuthController implements Controller {
     });
   }
 
-  private async jsonErrorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
+  private jsonErrorHandler: ErrorRequestHandler = async (err, _req, res, _next) => {
     console.log(err);
 
     const error: OAuthError =
@@ -630,7 +616,7 @@ class OAuthController implements Controller {
     });
   }
 
-  private async redirectErrorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
+  private redirectErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {
     console.log(err);
 
     let state;
@@ -688,7 +674,7 @@ class OAuthController implements Controller {
     res.status(302).redirect(target.toString());
   }
 
-  private discovery(_req: Request, res: Response) {
+  private discovery: RequestHandler = (_req, res) => {
     res.status(200).json({
       issuer: process.env.ISSUER_ID,
       authorization_endpoint: `${process.env.PUBLIC_URL}/oauth/authorize`,
@@ -702,7 +688,7 @@ class OAuthController implements Controller {
     });
   }
 
-  private async jwks(_req: Request, res: Response) {
+  private jwks: RequestHandler = async (_req, res) => {
     const key = await this.getOpenIDPrivateKey();
 
     res.status(200).json({
@@ -711,71 +697,65 @@ class OAuthController implements Controller {
   }
 
   public createDiscoveryRoute(): RequestHandler {
-    return this.discovery.bind(this) as any;
+    return this.discovery.bind(this);
   }
 
-  public createRoutes(): express.Router {
-    const authorizationFlowRouter = express.Router();
-    const backChannelRouter = express.Router();
+  public createRoutes(): Router {
+    const authorizationFlowRouter = Router();
+    const backChannelRouter = Router();
 
     authorizationFlowRouter.get(
       "/authorize",
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware) as any,
-      this.auth.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      AuthorizeMiddleware.loadToken,
+      this.auth as RequestHandler,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.get(
       "/flow/:id/login",
-      this.assertFlowStep("login"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.loginForm.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.loginForm,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.post(
       "/flow/:id/login",
-      this.assertFlowStep("login"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.handleLogin.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.handleLogin,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.get(
       "/flow/:id/privacy",
-      this.assertFlowStep("privacy"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.privacyForm.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.privacyForm,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.post(
       "/flow/:id/privacy",
-      this.assertFlowStep("privacy"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.handlePrivacy.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.handlePrivacy,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.get(
       "/flow/:id/gdpr",
-      this.assertFlowStep("gdpr"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.gdprForm.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.gdprForm,
+      this.redirectErrorHandler,
     );
 
     authorizationFlowRouter.post(
       "/flow/:id/gdpr",
-      this.assertFlowStep("gdpr"),
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      this.handleGdpr.bind(this) as any,
-      this.redirectErrorHandler.bind(this),
+      this.csrfMiddleware,
+      this.handleGdpr,
+      this.redirectErrorHandler,
     );
 
-    backChannelRouter.post("/token", this.requireClientAuthentication(), this.token.bind(this) as any);
+    backChannelRouter.post("/token", this.requireClientAuthentication(), this.token);
 
-    backChannelRouter.use(this.jsonErrorHandler.bind(this));
+    backChannelRouter.use(this.jsonErrorHandler);
 
     this.route.use(backChannelRouter);
     this.route.use(authorizationFlowRouter);

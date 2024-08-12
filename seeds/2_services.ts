@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { Knex } from "knex";
 import privacyPolicies from "./seedData/privacy_policies";
 import consentData from "./seedData/privacy_policy_consent_datas";
 import services from "./seedData/services";
@@ -16,14 +16,14 @@ exports.seed = async function (knex: Knex) {
     for (const service of services) {
       try {
         await knex("services").insert([service]);
-      } catch (e) {
+      } catch {
         console.error(`Error while seeding service, skipping it...`, service);
       }
     }
     for (const policy of privacyPolicies) {
       try {
         await knex("privacy_policies").insert([policy]);
-      } catch (e) {
+      } catch {
         console.error(`Error while seeding privacy policy, skipping it...`, policy);
       }
     }
