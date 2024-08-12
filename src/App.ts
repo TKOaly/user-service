@@ -29,6 +29,8 @@ import { LoginStep } from "./utils/AuthorizeMiddleware";
 dotenv.config();
 
 declare global {
+  // express typings just work this way
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       service: Service;
@@ -150,7 +152,6 @@ app.use(((err, _req, res, next) => {
 
   return res.status(403).render("serviceError", {
     error: "Invalid CSRF token",
-    errorId: (res as any)?.sentry,
   });
 }) satisfies ErrorRequestHandler);
 

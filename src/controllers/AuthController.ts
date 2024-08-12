@@ -3,8 +3,9 @@ import Controller from "../interfaces/Controller";
 import User, { removeSensitiveInformation } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
+import ServiceError from "../utils/ServiceError";
 
 class AuthController implements Controller {
   private route: express.Router;
@@ -13,14 +14,14 @@ class AuthController implements Controller {
     this.route = express.Router();
   }
 
-  public async check(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  check: RequestHandler = async (req, res) => {
     const service = req.get("service");
 
     if (service === undefined) {
       return res.status(400).json(new ServiceResponse(null, "No service defined"));
     }
 
-    if (req.authorization.token.authenticatedTo.indexOf(service) > -1) {
+    if (req.authorization!.token.authenticatedTo.indexOf(service) > -1) {
       return res.status(200).json(new ServiceResponse(null, "Success"));
     } else {
       return res.status(403).json(new ServiceResponse(null, "Not authorized to service"));
@@ -34,7 +35,11 @@ class AuthController implements Controller {
 
     try {
       await AuthenticationService.getServiceWithIdentifier(req.body.serviceIdentifier);
-    } catch (e: any) {
+    } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
 
@@ -54,10 +59,18 @@ class AuthController implements Controller {
         }
 
         return res.status(200).json(new ServiceResponse({ token }, "Authenticated", true));
-      } catch (e: any) {
+      } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
         return res.status(500).json(new ServiceResponse(null, e.message));
       }
-    } catch (e: any) {
+    } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
   }
@@ -152,8 +165,7 @@ class AuthController implements Controller {
    * Creates routes for authentication controller.
    */
   public createRoutes(): express.Router {
-    // @ts-expect-error
-    this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
+    this.route.get("/check", AuthorizeMiddleware.authorize(true), this.check);
     this.route.post(
       "/authenticate",
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
