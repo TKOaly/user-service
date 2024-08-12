@@ -40,11 +40,8 @@ describe("Privacy policy model", () => {
   expect(policy2.text).toBeDefined();
   expect(policy2.text).to.equal("Hello World 2");
   
-  // @ts-expect-error
   expect(policy2.created).not.toBeDefined();
-  // @ts-expect-error
   expect(policy2.modified).not.toBeDefined();
-  // @ts-expect-error
   expect(policy2.service_id).not.toBeDefined(); });
 
   test("Sets data correctly (PrivacyPolicy)", () => { expect(policy.id).toBeDefined();

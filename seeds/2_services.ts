@@ -16,14 +16,14 @@ exports.seed = async function (knex: Knex) {
     for (const service of services) {
       try {
         await knex("services").insert([service]);
-      } catch (e) {
+      } catch (_e) {
         console.error(`Error while seeding service, skipping it...`, service);
       }
     }
     for (const policy of privacyPolicies) {
       try {
         await knex("privacy_policies").insert([policy]);
-      } catch (e) {
+      } catch (_e) {
         console.error(`Error while seeding privacy policy, skipping it...`, policy);
       }
     }

@@ -6,6 +6,7 @@ import UserService from "../services/UserService";
 import ServiceToken, { stringToServiceToken } from "../token/Token";
 import ServiceResponse from "./ServiceResponse";
 import AuthenticationService from "../services/AuthenticationService";
+import ServiceError from "./ServiceError";
 
 export enum LoginStep {
   PrivacyPolicy,
@@ -25,6 +26,14 @@ interface ISession extends Session {
   keys: Array<{ name: string; value: string }>;
 }
 
+export type AuthorizedRequestHandler = 
+  (
+    req: IASRequest,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => void;
+
+
 export interface IASRequest extends express.Request {
   authorization: {
     user: User;
@@ -36,8 +45,7 @@ export interface IASRequest extends express.Request {
 
 class AuthorizeMiddleware {
   public authorize =
-    (returnAsJson: boolean): ((req: IASRequest, res: express.Response, next: express.NextFunction) => void) =>
-    async (req: IASRequest, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
+    (returnAsJson: boolean) => async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
       const headerValue = req.get("authorization");
 
       if (headerValue) {
@@ -52,11 +60,15 @@ class AuthorizeMiddleware {
               user,
             };
             return next();
-          } catch (e: any) {
+          } catch (e) {
+            if (!(e instanceof ServiceError)) {
+              throw e;
+            }
+
             if (returnAsJson) {
-              return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+              return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
             } else {
-              return res.status(e.httpStatusCode || 500).render("serviceError", {
+              return res.status(e.httpErrorCode || 500).render("serviceError", {
                 error: e.message,
               });
             }
@@ -115,11 +127,15 @@ class AuthorizeMiddleware {
             user,
           };
           return next();
-        } catch (e: any) {
+        } catch (e) {
+          if (!(e instanceof ServiceError)) {
+            throw e;
+          }
+
           if (returnAsJson) {
-            return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+            return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
           } else {
-            return res.status(e.httpStatusCode || 500).render("serviceError", {
+            return res.status(e.httpErrorCode || 500).render("serviceError", {
               error: e.message,
             });
           }
@@ -135,23 +151,23 @@ class AuthorizeMiddleware {
       }
     };
 
-  public async loadToken(
-    req: IASRequest,
-    res: express.Response,
-    next: express.NextFunction,
-  ): Promise<express.Response | void> {
+  public loadToken: express.RequestHandler = async (req, res, next) => {
     const token = req.get("authorization");
     if (token && token.toString().startsWith("Bearer ")) {
       try {
         const parsedToken = stringToServiceToken(token.slice(7).toString());
         const user = await UserService.fetchUser(parsedToken.userId);
-        req.authorization = {
+        (req as IASRequest).authorization = {
           token: parsedToken,
           user,
         };
         return next();
-      } catch (e: any) {
-        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+      } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
+        return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
 
@@ -159,13 +175,17 @@ class AuthorizeMiddleware {
       try {
         const parsedToken = stringToServiceToken(req.cookies.token);
         const user = await UserService.fetchUser(parsedToken.userId);
-        req.authorization = {
+        (req as IASRequest).authorization = {
           token: parsedToken,
           user,
         };
         return next();
-      } catch (e: any) {
-        return res.status(e.httpStatusCode || 500).json(new ServiceResponse(null, e.message));
+      } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
+        return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
     return next();

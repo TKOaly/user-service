@@ -191,8 +191,10 @@ describe("AuthController", () => {
       const token: string = res.body.payload.token;
       
       // Set calendar token to request
-      const secondCreds: any = correctCreds;
-      secondCreds.serviceIdentifier = calendarIdentifier;
+      const secondCreds = {
+        ...correctCreds,
+        serviceIdentifier: calendarIdentifier,
+      };
       
       // Secondly, authenticate to calendar
       const res2 = await request(app)

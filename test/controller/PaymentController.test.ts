@@ -5,6 +5,7 @@ import request from "supertest";
 import app from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
 import { knexInstance as knex } from "../../src/Db";
+import { omit } from "lodash";
 
 process.env.NODE_ENV = "test";
 
@@ -358,20 +359,15 @@ describe("PaymentController", () => {
       const newRefNum = "00000001111111";
       const newPaymentType = "HelloWorld";
 
-      // PATCH excepts all object params to exist
-      // @ts-expect-error
-      delete payment.confirmer_id;
-
       // Then, do a PATCH request
       const res2 = await request(app)
         .patch(url + "/" + payment.id)
         .set("Authorization", "Bearer " + generateToken(1))
-        .send(
-          Object.assign({}, payment, {
-            reference_number: newRefNum,
-            payment_type: newPaymentType,
-          }),
-        );
+        .send({
+          ...omit(payment, ['confirmer_id']),
+          reference_number: newRefNum,
+          payment_type: newPaymentType,
+        });
 
       expect(res2.body.ok).toBeDefined();
       expect(res2.body.message).toBeDefined();

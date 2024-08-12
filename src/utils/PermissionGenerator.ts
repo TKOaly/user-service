@@ -123,8 +123,7 @@ class PermissionGenerator {
   public all() {
     let newGenerator = new PermissionGenerator(this.PermissionByte, this.PermissionList);
     Object.keys(newGenerator.PermissionModel).forEach(
-      // @ts-expect-error
-      (key: keyof UserDatabaseObject) => (newGenerator = newGenerator.helper(key)),
+      (key) => (newGenerator = newGenerator.helper(key as keyof UserDatabaseObject)),
     );
     return newGenerator;
   }

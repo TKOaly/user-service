@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error missing typings
 import compare from "secure-compare";
 import sha1 from "sha1";
 import ServiceDao from "../dao/ServiceDao";

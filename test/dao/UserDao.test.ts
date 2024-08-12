@@ -218,7 +218,6 @@ describe("UserDao", () => {
       tktdt_student: 0,
     };
 
-    // @ts-expect-error
     const res = await userDao.save(newUser);
 
     expect(res.length).to.equal(1);

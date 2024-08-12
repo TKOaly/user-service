@@ -1,6 +1,6 @@
 import csrf from "csurf";
 import querystring from "querystring";
-import { Router } from "express";
+import { RequestHandler, Router } from "express";
 import * as express from "express";
 import crypto from "crypto";
 import moment from "moment";
@@ -8,7 +8,7 @@ import * as Sentry from "@sentry/node";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
-import User from "../models/User";
+import User, { removeNonRequestedData, removeSensitiveInformation } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
@@ -17,6 +17,7 @@ import AuthorizeMiddleware, { IASRequest, LoginStep } from "../utils/AuthorizeMi
 import cachingMiddleware from "../utils/CachingMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { flow } from "lodash";
+import { map } from "lodash/fp";
 import EmailService from "../services/EmailService";
 
 class ValidationError extends Error {
@@ -87,10 +88,7 @@ class LoginController implements Controller {
     });
   }
 
-  public async getLoginView(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  public getLoginView: express.RequestHandler = async (req, res) => {
     if (req.query.response_type) {
       const query = querystring.stringify(
         flow(
@@ -142,10 +140,11 @@ class LoginController implements Controller {
         currentLocale: req.language,
         csrfToken: req.csrfToken(),
       });
-    } catch (err: any) {
+    } catch (err) {
       Sentry.captureException(err);
+
       return res.status(400).render("serviceError", {
-        error: err.message,
+        error: `${err}`,
       });
     }
   }
@@ -205,7 +204,7 @@ class LoginController implements Controller {
     return res.render("logout", { serviceName: service.displayName });
   }
 
-  public async login(req: express.Request & IASRequest, res: express.Response): Promise<express.Response | void> {
+  login: RequestHandler = async (req, res) => {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
       return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
@@ -223,7 +222,7 @@ class LoginController implements Controller {
       }
     }
 
-    let keys: Array<{ name: string; value: string }> = [];
+    let keys: Array<{ name: string; value: unknown }> = [];
     let user: User;
     try {
       user = await UserService.getUserWithUsernameAndPassword(req.body.username, req.body.password);
@@ -248,11 +247,12 @@ class LoginController implements Controller {
 
     // Removes data that are not needed when making a request
     // We require user id and role every time, regardless of permissions in services
-    // @ts-expect-error
-    keys = Object.keys(user.removeNonRequestedData(service.dataPermissions | 512 | 1)).map((key: keyof User) => ({
-      name: key,
-      value: user[key],
-    }));
+    keys = flow(
+      removeSensitiveInformation,
+      (data) => removeNonRequestedData(data, service.dataPermissions | 512 | 1),
+      Object.entries,
+      map(([ name, value ]) => ({ name, value })),
+    )(user);
 
     // Set session
     if (!user.id) {
@@ -332,10 +332,7 @@ class LoginController implements Controller {
   /**
    * Handles GDPR template and redirects the user forward
    */
-  public async loginConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  loginConfirm: RequestHandler = async (req, res) => {
     const body: {
       permission: string;
     } = req.body;
@@ -396,10 +393,7 @@ class LoginController implements Controller {
   /**
    * Handles privacy policy confirmation.
    */
-  public async privacyPolicyConfirm(
-    req: express.Request & IASRequest,
-    res: express.Response,
-  ): Promise<express.Response | void> {
+  privacyPolicyConfirm: RequestHandler = async (req, res) => {
     const body: {
       accept: string;
     } = req.body;
@@ -594,31 +588,31 @@ class LoginController implements Controller {
   public createRoutes(): express.Router {
     this.route.get(
       "/",
-      this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.getLoginView.bind(this),
+      this.csrfMiddleware,
+      cachingMiddleware,
+      AuthorizeMiddleware.loadToken,
+      this.getLoginView,
     );
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.login.bind(this),
+      this.login,
     );
     this.route.post(
       "/privacypolicy_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.privacyPolicyConfirm.bind(this),
+      this.privacyPolicyConfirm,
     );
     this.route.post(
       "/login_confirm",
       this.csrfMiddleware.bind(this.csrfMiddleware),
-      cachingMiddleware, // @ts-expect-error
+      cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.loginConfirm.bind(this),
+      this.loginConfirm,
     ); // @ts-expect-error
     this.route.get("/logout", AuthorizeMiddleware.authorize(false).bind(AuthorizeMiddleware), this.logOut.bind(this));
     this.route.get("/reset-password", this.resetPassword.bind(this));

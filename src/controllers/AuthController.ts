@@ -1,6 +1,6 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import Controller from "../interfaces/Controller";
-import User from "../models/User";
+import User, { removeSensitiveInformation } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import UserService from "../services/UserService";
 import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
@@ -27,7 +27,7 @@ class AuthController implements Controller {
     }
   }
 
-  public async authenticateUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  authenticateUser: RequestHandler = async (req, res) => {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
       return res.status(400).json(new ServiceResponse(null, "Invalid request params"));
     }
@@ -65,7 +65,7 @@ class AuthController implements Controller {
   /**
    * Renders a view to calculate service permissions.
    */
-  public calcPermissions(req: express.Request, res: express.Response): void {
+  public calcPermissions(_req: express.Request, res: express.Response): void {
     const dummyObject: User = new User({
       created: new Date(),
       deleted: 0,
@@ -104,7 +104,7 @@ class AuthController implements Controller {
       delete wantedPermissions.submit;
     }
 
-    const dummyObject: User = new User({
+    const dummyObject = removeSensitiveInformation(new User({
       created: new Date(),
       deleted: 0,
       email: "",
@@ -125,11 +125,11 @@ class AuthController implements Controller {
       hy_staff: 0,
       hy_student: 0,
       tktdt_student: 0,
-    }).removeSensitiveInformation();
+    }));
 
     let permissionInteger = 0;
 
-    Object.keys(dummyObject.removeSensitiveInformation()).forEach((value: string, i: number) => {
+    Object.keys(dummyObject).forEach((value: string, i: number) => {
       Object.keys(wantedPermissions).forEach((bodyValue: string, _a) => {
         if (value === bodyValue) {
           if (permissionInteger === 0) {
@@ -155,9 +155,9 @@ class AuthController implements Controller {
     // @ts-expect-error
     this.route.get("/check", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.check.bind(this));
     this.route.post(
-      "/authenticate", // @ts-expect-error
+      "/authenticate",
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.authenticateUser.bind(this),
+      this.authenticateUser,
     );
     if (process.env.NODE_ENV !== "production") {
       this.route.get("/calcPermissions", this.calcPermissions.bind(this));

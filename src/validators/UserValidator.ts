@@ -394,8 +394,8 @@ export function checkModifyPermission(
   user: Partial<UserDatabaseObject>,
   allowedEdits: SelfEditKey[] | JVDataKey[] | AdminDataKey[],
 ) {
-  const error = "Forbidden modify action"; // @ts-expect-error
-  Object.keys(user).forEach((key: keyof UserDatabaseObject) => {
+  const error = "Forbidden modify action";
+  Object.keys(user).forEach((key) => {
     if (!allowedEdits.find(allowedEdit => allowedEdit === key) && key !== "id") {
       throw new ServiceError(403, error);
     }

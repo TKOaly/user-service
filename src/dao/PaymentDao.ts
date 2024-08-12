@@ -1,6 +1,7 @@
 import Dao from "../interfaces/Dao";
 import { PaymentDatabaseObject, PaymentListingDatabaseObject } from "../models/Payment";
 import { knexInstance } from "../Db";
+import { omit } from "lodash";
 
 const tableName = "payments";
 
@@ -38,13 +39,9 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public save(entity: Omit<PaymentDatabaseObject, "created" | "modified">): PromiseLike<number[]> {
-    // Delete id because it's auto-assigned
-    if (entity.id) {
-      // @ts-expect-error
-      delete entity.id;
-    }
-    const savedObj: PaymentDatabaseObject = {
-      ...entity,
+    const savedObj: Partial<PaymentDatabaseObject> = {
+      // Omit id because it's auto-assigned
+      ...omit(entity, ['id']),
       created: new Date(),
     };
     return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).insert(savedObj));

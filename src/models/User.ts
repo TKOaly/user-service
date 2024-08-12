@@ -1,7 +1,45 @@
+import { omit } from "lodash";
 import UserRoleString from "../enum/UserRoleString";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 
-export default class User {
+interface UserData {
+  id: number;
+  username: string;
+  name: string;
+  screenName: string;
+  email: string;
+  residence: string;
+  phone: string;
+  isHYYMember: boolean;
+  membership: string;
+  role: UserRoleString;
+  salt: string;
+  hashedPassword: string;
+  passwordHash: string;
+  createdAt: Date;
+  modifiedAt: Date;
+  isTKTL: boolean;
+  isDeleted: boolean;
+  isHyStaff: boolean;
+  isHyStudent: boolean;
+  isTKTDTStudent: boolean;
+}
+
+export function removeSensitiveInformation<D extends Partial<UserData>>(data: D): Omit<D, 'salt' | 'passwordHash' | 'hashedPassword'> {
+  return omit(data, ['salt', 'passwordHash', 'hashedPassword']);
+}
+
+export function removeNonRequestedData<D extends Partial<UserData>>(data: D, dataRequest: number): Partial<D> {
+  const entries = Object.entries(data)
+    .filter((_, i) => {
+      const val: number = Math.pow(2, i);
+      return !(val === null || (val & dataRequest) !== val)
+    })
+
+  return Object.fromEntries(entries) as Partial<D>;
+}
+
+export default class User implements UserData {
   public id: number;
   public username: string;
   public name: string;
@@ -55,28 +93,6 @@ export default class User {
     this.isHyStaff = userDatabaseObject.hy_staff === 1;
     this.isHyStudent = userDatabaseObject.hy_student === 1;
     this.isTKTDTStudent = userDatabaseObject.tktdt_student === 1;
-  }
-
-  public removeSensitiveInformation(): User {
-    // @ts-expect-error
-    delete this.salt; // @ts-expect-error
-    delete this.hashedPassword; // @ts-expect-error
-    delete this.passwordHash;
-    return this;
-  }
-
-  /**
-   * Removes non-requested user data.
-   */
-  public removeNonRequestedData(dataRequest: number): Partial<User> {
-    // @ts-expect-error
-    Object.keys(this.removeSensitiveInformation()).forEach((key: keyof User, i) => {
-      const val: number = Math.pow(2, i);
-      if (val === null || (val & dataRequest) !== val) {
-        delete this[key];
-      }
-    });
-    return this;
   }
 
   public getDatabaseObject(): UserDatabaseObject {

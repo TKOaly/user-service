@@ -2,7 +2,7 @@ import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import app from "../../src/App";
 import request from "supertest";
 import users from "../../seeds/seedData/users";
-import User from "../../src/models/User";
+import User, { removeNonRequestedData, removeSensitiveInformation } from "../../src/models/User";
 import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 import { knexInstance as knex } from "../../src/Db";
@@ -242,17 +242,12 @@ describe("UserController", () => {
 
         const payloadObject: User = res.body.payload;
 
-        const user: User = new User(user_2.getDatabaseObject()).removeSensitiveInformation();
+        const user = removeSensitiveInformation(new User(user_2.getDatabaseObject()))
 
-        // @ts-expect-error
-        delete user.createdAt;
-        // @ts-expect-error
-        delete user.modifiedAt;
-
-        const allFields = Object.keys(user) as Array<keyof User>;
+        const allFields = Object.keys(user).filter(key => !['createdAt', 'modifiedAt'].includes(key));
 
         const required: string[] = Object.keys(
-          user_2.removeSensitiveInformation().removeNonRequestedData(permissionNumber!),
+          removeNonRequestedData(removeSensitiveInformation(user_2), permissionNumber!),
         );
         for (const field of allFields) {
           if (required.find((requiredField: string) => requiredField === field)) {

@@ -1,6 +1,6 @@
 import { describe, test, beforeEach, expect } from "vitest";
 import UserRoleString from "../../src/enum/UserRoleString";
-import User from "../../src/models/User";
+import User, { removeNonRequestedData, removeSensitiveInformation } from "../../src/models/User";
 import { compareRoles } from "../../src/utils/UserHelpers";
 
 process.env.NODE_ENV = "test";
@@ -59,7 +59,7 @@ describe("User model", () => {
     expect(user).toHaveProperty('hashedPassword');
     expect(user).toHaveProperty('passwordHash');
     expect(user).toHaveProperty('salt');
-    const newUser = user.removeSensitiveInformation();
+    const newUser = removeSensitiveInformation(user);
     expect(newUser).not.toHaveProperty('hashedPassword');
     expect(newUser).not.toHaveProperty('passwordHash');
     expect(newUser).not.toHaveProperty('salt');
@@ -127,7 +127,7 @@ describe("User model", () => {
   });
 
   test("Requesting only id should only return id", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 0));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 0));
     expect(newUser.id).toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -144,7 +144,7 @@ describe("User model", () => {
   });
 
   test("Requesting only username should only return username", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 1));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 1));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -161,7 +161,7 @@ describe("User model", () => {
   });
 
   test("Requesting only name should only return name", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 2));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 2));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).toBeDefined();
@@ -178,7 +178,7 @@ describe("User model", () => {
   });
 
   test("Requesting only screenName should only return screenName", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 3));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 3));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -195,7 +195,7 @@ describe("User model", () => {
   });
 
   test("Requesting only email should only return email", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 4));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 4));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -212,7 +212,7 @@ describe("User model", () => {
   });
 
   test("Requesting only residence should only return residence", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 5));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 5));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -229,7 +229,7 @@ describe("User model", () => {
   });
 
   test("Requesting only phone should only return phone", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 6));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 6));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -246,7 +246,7 @@ describe("User model", () => {
   });
 
   test("Requesting only isHYYMember should only return isHYYMember", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 7));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 7));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -263,7 +263,7 @@ describe("User model", () => {
   });
 
   test("Requesting only membership should only return membership", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 8));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 8));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -280,7 +280,7 @@ describe("User model", () => {
   });
 
   test("Requesting only role should only return role", () => {
-    const newUser = user.removeNonRequestedData(Math.pow(2, 9));
+    const newUser = removeNonRequestedData(user, Math.pow(2, 9));
     expect(newUser.id).not.toBeDefined();
     expect(newUser.username).not.toBeDefined();
     expect(newUser.name).not.toBeDefined();
@@ -299,7 +299,7 @@ describe("User model", () => {
   test(
     "Requesting username, name, email and membership should" + " only return username, name, email and membership",
     () => {
-      const newUser = user.removeNonRequestedData(Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8));
+      const newUser = removeNonRequestedData(user, Math.pow(2, 1) | Math.pow(2, 2) | Math.pow(2, 4) | Math.pow(2, 8));
       expect(newUser.id).not.toBeDefined();
       expect(newUser.username).toBeDefined();
       expect(newUser.name).toBeDefined();

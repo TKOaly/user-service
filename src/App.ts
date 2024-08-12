@@ -3,14 +3,14 @@ import "express-async-errors";
 
 import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import session from "express-session";
 import helmet from "helmet";
 import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
 import OAuthController from "./controllers/OAuthController";
-import LoginController from "./controllers/LoginController";
+import LoginController, { ISessionUser } from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
@@ -22,7 +22,32 @@ import morgan from "morgan";
 import { generateApiRoute } from "./utils/ApiRoute";
 import { ConnectSessionKnexStore } from "connect-session-knex";
 import { knexInstance } from "./Db";
+import Service from "./models/Service";
+import User from "./models/User";
+import ServiceToken from "./token/Token";
+import { LoginStep } from "./utils/AuthorizeMiddleware";
 dotenv.config();
+
+declare global {
+  namespace Express {
+    interface Request {
+      service: Service;
+      authorization?: {
+        user: User;
+        token: ServiceToken;
+      };
+    }
+  }
+}
+
+declare module "express-session" {
+  interface SessionData {
+    user?: ISessionUser;
+    loginStep?: LoginStep;
+    keys: Array<{ name: string; value: unknown }>;
+  }
+}
+
 
 if (!process.env.NODE_ENV) {
   throw new Error("NODE_ENV environment variable must be set.");
@@ -118,7 +143,7 @@ app.get("/ping", (_req, res) => res.json({ ok: true }));
 Sentry.setupExpressErrorHandler(app);
 
 // CSRF
-app.use((err: { code?: string }, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use(((err, _req, res, next) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }
@@ -127,6 +152,6 @@ app.use((err: { code?: string }, _req: express.Request, res: express.Response, n
     error: "Invalid CSRF token",
     errorId: (res as any)?.sentry,
   });
-});
+}) satisfies ErrorRequestHandler);
 
 export default app;

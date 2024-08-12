@@ -19,13 +19,9 @@ const nextDbServiceId = dbServices.map(s => s.id).sort(descending)[0] + 1;
 describe("ServiceDao", () => {
   // Roll back
   beforeEach(async () => {
-    console.log("ROLLBACK!");
     await knex.migrate.rollback();
-    console.log("MIGRATE!");
     await knex.migrate.latest();
-    console.log("SEED!");
     await knex.seed.run();
-    console.log("DONE!");
   });
 
   // After each
@@ -118,15 +114,12 @@ describe("ServiceDao", () => {
       throw new Error("Service not found");
     }
 
-    Object.keys(dbService).forEach(sKey => {
-      if (["modified", "created"].includes(sKey)) {
+    Object.keys(dbService).forEach(key => {
+      if (["modified", "created"].includes(key)) {
         // We can't compare modified and created dates
         return;
       }
 
-      const key = sKey as any as keyof ServiceDatabaseObject;
-
-      console.log(key, dbService[key]);
       expect(dbService[key]).toBeDefined();
       expect(dbService[key]).to.equal(seedService[key]);
     });
@@ -141,15 +134,12 @@ describe("ServiceDao", () => {
       throw new Error("Service not found");
     }
 
-    Object.keys(dbService).forEach(sKey => {
-      if (["modified", "created"].includes(sKey)) {
+    Object.keys(dbService).forEach(key => {
+      if (["modified", "created"].includes(key)) {
         // We can't compare modified and created dates
         return;
       }
 
-      const key = sKey as any as keyof ServiceDatabaseObject;
-
-      console.log(key, dbService[key]);
       expect(dbService[key]).toBeDefined();
       expect(dbService[key]).to.equal(seedService[key]);
     });

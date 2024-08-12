@@ -1,5 +1,7 @@
 import { apiHeaderMiddleware, generateApiRoute } from "../../src/utils/ApiRoute";
 import { describe, test, expect } from "vitest";
+import express from "express";
+import request from "supertest";
 
 process.env.NODE_ENV = "test";
 process.env.API_VERSION = "v5";
@@ -18,79 +20,26 @@ describe("ApiRoute", () => {
     expect(apiUrl).to.equal(`/api/${route}`);
   });
 
-  test("Middleware sets route and API version headers correctly", () => {
+  test("Middleware sets route and API version headers correctly", async () => {
     const apiVersion = "v2";
 
-    const headers: Array<{ name: string; val: string }> = [];
+    const app = express();
+    app.use(apiHeaderMiddleware(apiVersion));
+    const res = await request(app).get("/");
 
-    let calledNext = false;
-
-    // Mocked express
-    const mockExpress: any = {
-      req: {},
-      res: {
-        setHeader: (name: string, val: string): void => {
-          headers.push({ name, val });
-        },
-      },
-      next: (): void => {
-        calledNext = true;
-      },
-    };
-
-    const middleware = apiHeaderMiddleware(apiVersion);
-    // Call middleware
-    middleware(mockExpress.req, mockExpress.res, mockExpress.next);
-
-    expect(headers).to.have.length(2);
-    expect(headers[0]).toBeDefined();
-    expect(headers[1]).toBeDefined();
-
-    expect(headers).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        name: "X-Route-API-version",
-        val: apiVersion,
-      }),
-      expect.objectContaining({
-        name: "X-API-version",
-        val: process.env.API_VERSION,
-      }),
-    ]))
-
-    expect(calledNext).to.equal(true);
+    expect(res.headers).toEqual(expect.objectContaining({
+      "x-route-api-version": apiVersion,
+      "x-api-version": process.env.API_VERSION,
+    }))
   });
 
-  test("Middleware sets API version header correctly", () => {
-    const headers: Array<{ name: string; val: string }> = [];
+  test("Middleware sets API version header correctly", async () => {
+    const app = express();
+    app.use(apiHeaderMiddleware());
+    const res = await request(app).get("/");
 
-    let calledNext = false;
-
-    // Mocked express
-    const mockExpress: any = {
-      req: {},
-      res: {
-        setHeader: (name: string, val: string): void => {
-          headers.push({ name, val });
-        },
-      },
-      next: (): void => {
-        calledNext = true;
-      },
-    };
-
-    const middleware = apiHeaderMiddleware();
-    // Call middleware
-    middleware(mockExpress.req, mockExpress.res, mockExpress.next);
-
-    expect(headers).toHaveLength(1);
-
-    expect(headers).toEqual(expect.arrayContaining([
-      expect.objectContaining({
-        name: "X-API-version",
-        val: process.env.API_VERSION,
-      }),
-    ]));
-
-    expect(calledNext).to.equal(true);
+    expect(res.headers).toEqual(expect.objectContaining({
+      "x-api-version": process.env.API_VERSION,
+    }));
   });
 });
