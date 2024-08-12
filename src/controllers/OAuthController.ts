@@ -155,8 +155,8 @@ type FlowStateLogin = {
   step: "login";
 };
 
-type FlowStateGdpr = Omit<FlowStateLogin, "step"> & { step: "gdpr" };
-type FlowStatePrivacy = Omit<FlowStateGdpr, "step"> & { step: "privacy"; user: User };
+type FlowStateGdpr = Omit<FlowStatePrivacy, "step"> & { step: "gdpr" };
+type FlowStatePrivacy = Omit<FlowStateLogin, "step"> & { step: "privacy"; user: User };
 
 type FlowState = FlowStateLogin | FlowStateGdpr | FlowStatePrivacy;
 
@@ -455,7 +455,7 @@ class OAuthController implements Controller {
   }
 
   private gdprForm: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'privacy');
+    const flow = this.getFlowState(req, 'gdpr');
     const { service, scope, user } = flow;
 
     const claimKeys = mapClaimsToUserProperties(getClaimNames(scope));
@@ -477,7 +477,7 @@ class OAuthController implements Controller {
   }
 
   private handleGdpr: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'privacy');
+    const flow = this.getFlowState(req, 'gdpr');
 
     if (req.body.permission === "yes") {
       await this.grantAuthorization(req, res, flow);
