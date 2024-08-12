@@ -365,7 +365,6 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
 
     if (userId === modifiedBy.id) {
       // Self edit
-      console.log("self edit");
       updatedData.id = userId;
       allowed = [...allowed, ...allowedSelfEdit];
     }

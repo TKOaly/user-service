@@ -29,8 +29,8 @@ export function removeSensitiveInformation<D extends Partial<UserData>>(data: D)
   return omit(data, ['salt', 'passwordHash', 'hashedPassword']);
 }
 
-export function removeNonRequestedData<D extends Partial<UserData>>(data: D, dataRequest: number): Partial<D> {
-  const entries = Object.entries(data)
+export function removeNonRequestedData<D extends Partial<UserData>>(data: D, dataRequest: number): Partial<Omit<D, 'salt' | 'passwordHash' | 'hashedPassword'>> {
+  const entries = Object.entries(removeSensitiveInformation(data))
     .filter((_, i) => {
       const val: number = Math.pow(2, i);
       return !(val === null || (val & dataRequest) !== val)

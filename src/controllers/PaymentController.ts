@@ -22,7 +22,7 @@ class PaymentController implements Controller {
     this.paymentValidator = new PaymentValidator();
   }
 
-  public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+  createPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       const endSeason = await PricingService.getSeasonInfo(PricingService.getSeason(req.body.seasons - 1));
       const [price] = await PricingService.findPricings("current", req.body.membership_applied_for, req.body.seasons);
@@ -63,7 +63,7 @@ class PaymentController implements Controller {
     }
   }
 
-  public async modifyPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+  modifyPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       // PATCH request requires the whole object to be passed
       if (

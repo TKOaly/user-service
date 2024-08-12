@@ -145,7 +145,7 @@ class LoginController implements Controller {
       Sentry.captureException(err);
 
       return res.status(400).render("serviceError", {
-        error: `${err}`,
+        error: err instanceof Error ? err.message : 'Unknown error',
       });
     }
   }
@@ -247,7 +247,7 @@ class LoginController implements Controller {
     } catch (e) {
       return res.status(500).render("login", {
         service,
-        errors: [`${e}`],
+        errors: [e instanceof Error ? e.message : 'Unknown error'],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -322,7 +322,7 @@ class LoginController implements Controller {
 
       return res.status(500).render("login", {
         service,
-        errors: [`${err}`],
+        errors: [err instanceof Error ? err.message : 'Unknown error'],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -383,7 +383,7 @@ class LoginController implements Controller {
       }
     } catch (e) {
       Sentry.captureException(e);
-      return res.status(500).json(new ServiceResponse(null, `${e}`));
+      return res.status(500).json(new ServiceResponse(null, e instanceof Error ? e.message : 'Unknown error'));
     }
 
     const redirectTo: string = req.session.user.redirectTo;
