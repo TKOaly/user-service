@@ -19,7 +19,7 @@ deploy-keys/key.pem
 aws-credentials.csv
 .sessions
 public/styles/*
-
+.eslintcache
 
 # Created by https://www.toptal.com/developers/gitignore/api/terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform
