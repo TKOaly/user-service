@@ -26,6 +26,7 @@ import Service from "./models/Service";
 import User from "./models/User";
 import ServiceToken from "./token/Token";
 import { LoginStep } from "./utils/AuthorizeMiddleware";
+import { generateToken } from "./csrf";
 dotenv.config();
 
 declare global {
@@ -121,6 +122,11 @@ app.use((req, res, next) => {
 });
 
 app.set("view engine", "pug");
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = generateToken(req);
+  next();
+});
 
 app.use(express.static(join(process.cwd(), "public")));
 

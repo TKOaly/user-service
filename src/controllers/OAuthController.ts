@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, ErrorRequestHandler, Router } from "express";
 import JWT from "jsonwebtoken";
 import { JWK } from "node-jose";
-import csrf from "csurf";
+import { csrfSynchronisedProtection as checkCsrf } from "../csrf";
 import moment from "moment";
 import Controller from "../interfaces/Controller";
 import Service from "../models/Service";
@@ -191,14 +191,9 @@ class OAuthController implements Controller {
   private flows: Map<string, FlowState> = new Map();
   private codes: Map<string, AuthorizationCodeContext> = new Map();
   private openidPrivateKey: JWK.Key | null = null;
-  public csrfMiddleware: RequestHandler;
 
   constructor() {
     this.route = Router();
-
-    this.csrfMiddleware = csrf({
-      cookie: true,
-    });
   }
 
   async getOpenIDPrivateKey() {
@@ -313,7 +308,6 @@ class OAuthController implements Controller {
     return res.status(200).render("login", {
       service,
       submitUrl: `/oauth/flow/${req.params.id}/login`,
-      csrfToken: req.csrfToken(),
     });
   };
 
@@ -328,7 +322,6 @@ class OAuthController implements Controller {
     } catch {
       return res.status(200).render("login", {
         service: flow.service,
-        csrfToken: req.csrfToken(),
         submitUrl: `/oauth/flow/${req.params.id}/login`,
         errors: ["Invalid credentials."],
       });
@@ -364,7 +357,6 @@ class OAuthController implements Controller {
       serviceDisplayName: service.displayName,
       policy: policy.text,
       policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm"),
-      csrfToken: req.csrfToken(),
       submitUrl: `/oauth/flow/${req.params.id}/privacy`,
     });
   };
@@ -468,7 +460,6 @@ class OAuthController implements Controller {
       }));
 
     return res.status(200).render("gdpr", {
-      csrfToken: req.csrfToken(),
       personalInformation: keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ?? service.redirectUrl,
@@ -711,22 +702,22 @@ class OAuthController implements Controller {
       this.redirectErrorHandler,
     );
 
-    authorizationFlowRouter.get("/flow/:id/login", this.csrfMiddleware, this.loginForm, this.redirectErrorHandler);
+    authorizationFlowRouter.get("/flow/:id/login", this.loginForm, this.redirectErrorHandler);
 
-    authorizationFlowRouter.post("/flow/:id/login", this.csrfMiddleware, this.handleLogin, this.redirectErrorHandler);
+    authorizationFlowRouter.post("/flow/:id/login", checkCsrf, this.handleLogin, this.redirectErrorHandler);
 
-    authorizationFlowRouter.get("/flow/:id/privacy", this.csrfMiddleware, this.privacyForm, this.redirectErrorHandler);
+    authorizationFlowRouter.get("/flow/:id/privacy", this.privacyForm, this.redirectErrorHandler);
 
     authorizationFlowRouter.post(
       "/flow/:id/privacy",
-      this.csrfMiddleware,
+      checkCsrf,
       this.handlePrivacy,
       this.redirectErrorHandler,
     );
 
-    authorizationFlowRouter.get("/flow/:id/gdpr", this.csrfMiddleware, this.gdprForm, this.redirectErrorHandler);
+    authorizationFlowRouter.get("/flow/:id/gdpr", this.gdprForm, this.redirectErrorHandler);
 
-    authorizationFlowRouter.post("/flow/:id/gdpr", this.csrfMiddleware, this.handleGdpr, this.redirectErrorHandler);
+    authorizationFlowRouter.post("/flow/:id/gdpr", checkCsrf, this.handleGdpr, this.redirectErrorHandler);
 
     backChannelRouter.post("/token", this.requireClientAuthentication(), this.token);
 

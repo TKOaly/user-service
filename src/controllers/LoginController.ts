@@ -1,6 +1,6 @@
-import csrf from "csurf";
 import querystring from "querystring";
 import { RequestHandler, Router } from "express";
+import { csrfSynchronisedProtection as checkCsrf } from "../csrf";
 import * as express from "express";
 import crypto from "crypto";
 import moment from "moment";
@@ -80,13 +80,8 @@ const validate = async (params: { user: string; hash: string; nonce: string; exp
 class LoginController implements Controller {
   public route: Router;
 
-  public csrfMiddleware: express.RequestHandler;
-
   constructor() {
     this.route = Router();
-    this.csrfMiddleware = csrf({
-      cookie: true,
-    });
   }
 
   public getLoginView: express.RequestHandler = async (req, res) => {
@@ -139,7 +134,6 @@ class LoginController implements Controller {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
-        csrfToken: req.csrfToken(),
       });
     } catch (err) {
       Sentry.captureException(err);
@@ -251,7 +245,6 @@ class LoginController implements Controller {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
-        csrfToken: req.csrfToken(),
       });
     }
 
@@ -272,7 +265,6 @@ class LoginController implements Controller {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
-        csrfToken: req.csrfToken(),
       });
     }
 
@@ -284,7 +276,6 @@ class LoginController implements Controller {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
-        csrfToken: req.csrfToken(),
       });
     }
 
@@ -314,7 +305,6 @@ class LoginController implements Controller {
           serviceDisplayName: service.displayName,
           policy: policy.text,
           policyUpdateDate: moment(policy.modified).format("DD.MM.YYYY HH:mm"),
-          csrfToken: req.csrfToken(),
         });
       }
     } catch (err) {
@@ -326,14 +316,12 @@ class LoginController implements Controller {
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
-        csrfToken: req.csrfToken(),
       });
     }
     // Set login step
     req.session.loginStep = LoginStep.GDPR;
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
-      csrfToken: req.csrfToken(),
       personalInformation: keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
@@ -456,7 +444,6 @@ class LoginController implements Controller {
     req.session.loginStep = LoginStep.GDPR;
     // Render GDPR template, that shows required personal information.
     return res.render("gdpr", {
-      csrfToken: req.csrfToken(),
       personalInformation: req.session.keys,
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
@@ -597,31 +584,31 @@ class LoginController implements Controller {
   }
 
   public createRoutes(): express.Router {
-    this.route.get("/", this.csrfMiddleware, cachingMiddleware, AuthorizeMiddleware.loadToken, this.getLoginView);
+    this.route.get("/", cachingMiddleware, AuthorizeMiddleware.loadToken, this.getLoginView);
     this.route.post(
       "/login",
-      this.csrfMiddleware.bind(this.csrfMiddleware),
+      checkCsrf,
       cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.login,
     );
     this.route.post(
       "/privacypolicy_confirm",
-      this.csrfMiddleware.bind(this.csrfMiddleware),
+      checkCsrf,
       cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.privacyPolicyConfirm,
     );
     this.route.post(
       "/login_confirm",
-      this.csrfMiddleware.bind(this.csrfMiddleware),
+      checkCsrf,
       cachingMiddleware,
       AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
       this.loginConfirm,
     );
     this.route.get("/logout", AuthorizeMiddleware.authorize(false), this.logOut);
     this.route.get("/reset-password", this.resetPassword.bind(this));
-    this.route.post("/reset-password", this.resetPassword.bind(this));
+    this.route.post("/reset-password", checkCsrf, this.resetPassword.bind(this));
 
     this.route.get("/lang/:language/:serviceIdentifier?", this.setLanguage);
     return this.route;
