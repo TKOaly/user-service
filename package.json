@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "node dist/src/index.js",
-    "watch": "concurrently \"npm:watch:*\"",
+    "watch": "concurrently \"pnpm:watch:*\"",
     "watch:server": "ts-node-dev src/index.ts",
     "watch:scss": "sass --watch scss/:public/styles/",
     "test": "vitest",
@@ -26,7 +26,7 @@
     "lint": "eslint '*/**/*.{ts,tsx}'",
     "fix-ts": "eslint '*/**/*.{ts,tsx}' --fix",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "build": "npm run build:server && npm run build:scss",
+    "build": "pnpm run build:server && pnpm run build:scss",
     "build:server": "tsc -p tsconfig.json",
     "build:scss": "sass scss/:public/styles/",
     "build-docker": "docker build . -t user-service",
@@ -97,8 +97,7 @@
     "vitest": "^2.0.5"
   },
   "engines": {
-    "node": ">=20.9.0",
-    "yarn": ">=1.6.0"
+    "node": ">=20.16.0"
   },
   "nyc": {
     "extension": [
@@ -128,5 +127,6 @@
       "lcov"
     ],
     "all": true
-  }
+  },
+  "packageManager": "pnpm@8.10.5"
 }

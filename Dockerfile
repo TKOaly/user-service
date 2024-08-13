@@ -6,8 +6,8 @@ RUN apk --no-cache add --virtual native-deps \
   g++ gcc libgcc libstdc++ linux-headers make python3 git \
   chromium chromium-chromedriver curl
 
-COPY package*.json /app/
-RUN npm install --development
+COPY package.json pnpm-lock.yaml /app/
+RUN pnpm install
 
 COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.mjs ./
 COPY ./src /app/src
@@ -25,14 +25,14 @@ COPY tsconfig.json ./
 HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
 
 EXPOSE 3001
-CMD ["npm", "run", "watch"]
+CMD ["pnpm", "run", "watch"]
 
 FROM development AS production
 
-RUN npm run build && \
-  npm prune --production
+RUN pnpm run build && \
+  pnpm prune --prod
 
 HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
 
 EXPOSE 3001
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
