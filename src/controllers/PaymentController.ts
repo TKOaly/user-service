@@ -61,7 +61,7 @@ class PaymentController implements Controller {
 
       throw err;
     }
-  }
+  };
 
   modifyPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -99,7 +99,7 @@ class PaymentController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   getAllPayments: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
@@ -130,7 +130,7 @@ class PaymentController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   getSinglePayment: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -153,7 +153,7 @@ class PaymentController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   markPaymentAsPaid: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
@@ -187,7 +187,7 @@ class PaymentController implements Controller {
 
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   deletePayment: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
@@ -216,7 +216,7 @@ class PaymentController implements Controller {
 
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   public createRoutes(): express.Router {
     this.route.use(AuthorizeMiddleware.authorize(true));

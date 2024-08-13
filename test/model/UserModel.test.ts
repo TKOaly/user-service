@@ -56,13 +56,13 @@ describe("User model", () => {
   });
 
   test("Removing sensitive data should remove salt and hashed_password", () => {
-    expect(user).toHaveProperty('hashedPassword');
-    expect(user).toHaveProperty('passwordHash');
-    expect(user).toHaveProperty('salt');
+    expect(user).toHaveProperty("hashedPassword");
+    expect(user).toHaveProperty("passwordHash");
+    expect(user).toHaveProperty("salt");
     const newUser = removeSensitiveInformation(user);
-    expect(newUser).not.toHaveProperty('hashedPassword');
-    expect(newUser).not.toHaveProperty('passwordHash');
-    expect(newUser).not.toHaveProperty('salt');
+    expect(newUser).not.toHaveProperty("hashedPassword");
+    expect(newUser).not.toHaveProperty("passwordHash");
+    expect(newUser).not.toHaveProperty("salt");
   });
 
   test("Requesting database object should return correct information", () => {
@@ -344,20 +344,24 @@ describe("User model", () => {
       expect(roleCompare).to.equal(0);
     });
 
-    test("aN < bN should return -1", () => { let role1: UserRoleString = UserRoleString.Jasenvirkailija;
-    let role2: UserRoleString = UserRoleString.Kayttaja;
-    let roleCompare: number = compareRoles(role1, role2);
-    expect(roleCompare).to.equal(1);
-    
-    role1 = UserRoleString.Yllapitaja;
-    role2 = UserRoleString.Virkailija;
-    roleCompare = compareRoles(role1, role2);
-    expect(roleCompare).to.equal(1); });
+    test("aN < bN should return -1", () => {
+      let role1: UserRoleString = UserRoleString.Jasenvirkailija;
+      let role2: UserRoleString = UserRoleString.Kayttaja;
+      let roleCompare: number = compareRoles(role1, role2);
+      expect(roleCompare).to.equal(1);
 
-    test("aN > bN should return 1", () => { const role1: UserRoleString = UserRoleString.Jasenvirkailija;
-    const role2: UserRoleString = UserRoleString.Kayttaja;
-    const roleCompare: number = compareRoles(role2, role1);
-    
-    expect(roleCompare).to.equal(-1); });
+      role1 = UserRoleString.Yllapitaja;
+      role2 = UserRoleString.Virkailija;
+      roleCompare = compareRoles(role1, role2);
+      expect(roleCompare).to.equal(1);
+    });
+
+    test("aN > bN should return 1", () => {
+      const role1: UserRoleString = UserRoleString.Jasenvirkailija;
+      const role2: UserRoleString = UserRoleString.Kayttaja;
+      const roleCompare: number = compareRoles(role2, role1);
+
+      expect(roleCompare).to.equal(-1);
+    });
   });
 });

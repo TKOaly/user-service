@@ -27,7 +27,7 @@ class PricingDao implements Dao<PricingDatabaseObject> {
     seasons: number | null,
     season: number,
   ): Promise<PricingDatabaseObject[]> {
-    type QueryCallbackWithArgs = Parameters<Knex.QueryBuilder['modify']>[0]
+    type QueryCallbackWithArgs = Parameters<Knex.QueryBuilder["modify"]>[0];
 
     const conditionalFilter: QueryCallbackWithArgs = (builder, column, value) => {
       if (value !== null) {

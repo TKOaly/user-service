@@ -3,7 +3,7 @@ import { Knex } from "knex";
 exports.up = async function (knex: Knex): Promise<void> {
   const hasTable = await knex.schema.hasTable("privacy_policy_consent_data");
   if (!hasTable) {
-    await knex.schema.createTable("privacy_policy_consent_data", (t: Knex.CreateTableBuilder)=>{
+    await knex.schema.createTable("privacy_policy_consent_data", (t: Knex.CreateTableBuilder) => {
       t.increments("id").primary();
       t.integer("user_id").unsigned().notNullable().index().references("id").inTable("users");
       t.integer("service_id").unsigned().notNullable().index().references("id").inTable("services");

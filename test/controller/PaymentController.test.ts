@@ -45,7 +45,7 @@ describe("PaymentController", () => {
     test("GET /api/payments : As an authenticated user, returns all payments", async () => {
       const res = await request(app)
         .get(url)
-        .set("Authorization", "Bearer " + generateToken(2))
+        .set("Authorization", "Bearer " + generateToken(2));
 
       expect(res.body.ok).toBeDefined();
       expect(res.body.payload).toBeDefined();
@@ -73,15 +73,16 @@ describe("PaymentController", () => {
         expect(Date.parse(res.body.payload[i].created)).to.equal(Date.parse(payment_2.created!.toLocaleDateString()));
         expect(res.body.payload[i].reference_number).to.equal(payment_2.reference_number);
         expect(parseFloat(res.body.payload[i].amount)).to.equal(payment_2.amount);
-        expect(Date.parse(res.body.payload[i].valid_until)).to.equal(Date.parse(payment_2.valid_until!.toLocaleDateString()));
+        expect(Date.parse(res.body.payload[i].valid_until)).to.equal(
+          Date.parse(payment_2.valid_until!.toLocaleDateString()),
+        );
         expect(Date.parse(res.body.payload[i].paid)).to.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
         expect(res.body.payload[i].payment_type).to.equal(payment_2.payment_type);
       }
     });
 
     test("GET /api/payments : As an unauthenticated user, returns unauthorized", async () => {
-      const res = await request(app)
-        .get(url)
+      const res = await request(app).get(url);
 
       expect(res.body.ok).toBeDefined();
       expect(res.body.message).toBeDefined();
@@ -119,14 +120,15 @@ describe("PaymentController", () => {
       expect(Date.parse(res.body.payload.created)).to.equal(Date.parse(payment_2.created!.toLocaleDateString()));
       expect(res.body.payload.reference_number).to.equal(payment_2.reference_number);
       expect(parseFloat(res.body.payload.amount)).to.equal(payment_2.amount);
-      expect(Date.parse(res.body.payload.valid_until)).to.equal(Date.parse(payment_2.valid_until!.toLocaleDateString()));
+      expect(Date.parse(res.body.payload.valid_until)).to.equal(
+        Date.parse(payment_2.valid_until!.toLocaleDateString()),
+      );
       expect(Date.parse(res.body.payload.paid)).to.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
       expect(res.body.payload.payment_type).to.equal(payment_2.payment_type);
     });
 
     test("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", async () => {
-      const res = await request(app)
-        .get(url + "/1");
+      const res = await request(app).get(url + "/1");
 
       expect(res.body.ok).toBeDefined();
       expect(res.body.message).toBeDefined();
@@ -150,9 +152,7 @@ describe("PaymentController", () => {
         membership_applied_for: "jasen",
         reference_number: "123456789",
       };
-      const res = await request(app)
-        .post(url)
-        .send(newPayment);
+      const res = await request(app).post(url).send(newPayment);
 
       expect(res.body.ok).toBeDefined();
       expect(res.body.message).toBeDefined();
@@ -364,7 +364,7 @@ describe("PaymentController", () => {
         .patch(url + "/" + payment.id)
         .set("Authorization", "Bearer " + generateToken(1))
         .send({
-          ...omit(payment, ['confirmer_id']),
+          ...omit(payment, ["confirmer_id"]),
           reference_number: newRefNum,
           payment_type: newPaymentType,
         });

@@ -1,5 +1,5 @@
-exports.up = function(knex, Promise) {
-  return knex.schema.hasTable("services").then(function(exists) {
+exports.up = function (knex, Promise) {
+  return knex.schema.hasTable("services").then(function (exists) {
     if (!exists) {
       return knex.schema.createTable("services", table => {
         table.increments("id").primary();
@@ -10,11 +10,11 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Do not drop database tables in production");
   }
-  return knex.schema.hasTable("services").then(function(exists) {
+  return knex.schema.hasTable("services").then(function (exists) {
     if (exists) {
       return knex.schema.dropTable("services");
     }

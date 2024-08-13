@@ -1,13 +1,13 @@
 @import "_vars";
 
 #personaldata {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   overflow: auto;
   width: 100%;
   display: grid;
   grid-template-columns: minmax(max-content, 1fr) minmax(max-content, 1fr);
-  padding: .5rem;
-  border-radius: .25rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
   margin: 2em 0;
 
   .entry {
@@ -16,8 +16,9 @@
     grid-column: 1 / -1;
   }
 
-  .field, .value {
-    padding: .5em 1em;
+  .field,
+  .value {
+    padding: 0.5em 1em;
   }
 
   .value {
@@ -27,14 +28,14 @@
 
   .entry:nth-child(odd) {
     background: rgba(255, 255, 255, 0.025);
-    border-radius: .25rem;
+    border-radius: 0.25rem;
 
     &:not(:first-child) {
-      margin-top: .25rem;
+      margin-top: 0.25rem;
     }
 
     &:not(:last-child) {
-      margin-bottom: .25rem;
+      margin-bottom: 0.25rem;
     }
   }
 }

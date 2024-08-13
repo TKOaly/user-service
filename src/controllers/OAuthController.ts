@@ -40,7 +40,7 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
 
 const SUPPORTED_RESPONSE_TYPES = ["code", "token", "id_token"] as const;
 
-type ResponseType = typeof SUPPORTED_RESPONSE_TYPES[number];
+type ResponseType = (typeof SUPPORTED_RESPONSE_TYPES)[number];
 
 function isSupportedResponseType(value: unknown): value is ResponseType {
   return typeof value === "string" && ["code", "token", "id_token"].indexOf(value) !== -1;
@@ -305,21 +305,21 @@ class OAuthController implements Controller {
     }
 
     return res.status(302).redirect(`/oauth/flow/${flowId}/login`);
-  }
+  };
 
   private loginForm: RequestHandler = async (req, res) => {
-    const { service } = this.getFlowState(req, 'login');
+    const { service } = this.getFlowState(req, "login");
 
     return res.status(200).render("login", {
       service,
       submitUrl: `/oauth/flow/${req.params.id}/login`,
       csrfToken: req.csrfToken(),
     });
-  }
+  };
 
   private handleLogin: RequestHandler = async (req, res) => {
     const { username, password } = req.body;
-    const flow = this.getFlowState(req, 'login');
+    const flow = this.getFlowState(req, "login");
 
     let user;
 
@@ -341,10 +341,10 @@ class OAuthController implements Controller {
     });
 
     return res.status(302).redirect(`/oauth/flow/${req.params.id}/privacy`);
-  }
+  };
 
   private privacyForm: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'privacy');
+    const flow = this.getFlowState(req, "privacy");
     const { user, service } = flow;
 
     const consent = await ConsentService.findByUserAndService(user.id, service.id);
@@ -367,10 +367,10 @@ class OAuthController implements Controller {
       csrfToken: req.csrfToken(),
       submitUrl: `/oauth/flow/${req.params.id}/privacy`,
     });
-  }
+  };
 
   private handlePrivacy: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'privacy');
+    const flow = this.getFlowState(req, "privacy");
     const { user, service, state } = flow;
 
     if (!req.body.accept) {
@@ -401,7 +401,7 @@ class OAuthController implements Controller {
     });
 
     return res.status(302).redirect(`/oauth/flow/${req.params.id}/gdpr`);
-  }
+  };
 
   private async grantAuthorization(req: Request, res: Response, flow: Extract<FlowState, { user: User }>) {
     const { service, state, user, scope, responseType } = flow;
@@ -455,7 +455,7 @@ class OAuthController implements Controller {
   }
 
   private gdprForm: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'gdpr');
+    const flow = this.getFlowState(req, "gdpr");
     const { service, scope, user } = flow;
 
     const claimKeys = mapClaimsToUserProperties(getClaimNames(scope));
@@ -474,10 +474,10 @@ class OAuthController implements Controller {
       redirectTo: req.body.loginRedirect ?? service.redirectUrl,
       submitUrl: `/oauth/flow/${req.params.id}/gdpr`,
     });
-  }
+  };
 
   private handleGdpr: RequestHandler = async (req, res) => {
-    const flow = this.getFlowState(req, 'gdpr');
+    const flow = this.getFlowState(req, "gdpr");
 
     if (req.body.permission === "yes") {
       await this.grantAuthorization(req, res, flow);
@@ -486,9 +486,9 @@ class OAuthController implements Controller {
         .withDescription("User denied the authorization request.")
         .withState(flow.state);
     }
-  }
+  };
 
-  private getFlowState = <S extends FlowState['step']>(req: Request, step: S): Extract<FlowState, { step: S }> => {
+  private getFlowState = <S extends FlowState["step"]>(req: Request, step: S): Extract<FlowState, { step: S }> => {
     if (!req.params.id) {
       throw new ServiceError(500, "Internal Server Error");
     }
@@ -504,11 +504,11 @@ class OAuthController implements Controller {
     }
 
     return flowState as Extract<FlowState, { step: S }>;
-  }
+  };
 
   private setFlowState = (req: Request, state: FlowState) => {
     this.flows.set(req.params.id, state);
-  }
+  };
 
   private requireClientAuthentication(): RequestHandler {
     return async (req, _res, next) => {
@@ -600,7 +600,7 @@ class OAuthController implements Controller {
       token_type: "bearer",
       id_token: token,
     });
-  }
+  };
 
   private jsonErrorHandler: ErrorRequestHandler = async (err, _req, res, _next) => {
     console.log(err);
@@ -614,7 +614,7 @@ class OAuthController implements Controller {
       error_uri: error.options.uri,
       state: error.options.state,
     });
-  }
+  };
 
   private redirectErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {
     console.log(err);
@@ -672,7 +672,7 @@ class OAuthController implements Controller {
     }
 
     res.status(302).redirect(target.toString());
-  }
+  };
 
   private discovery: RequestHandler = (_req, res) => {
     res.status(200).json({
@@ -686,7 +686,7 @@ class OAuthController implements Controller {
       subject_types_supported: ["public"],
       id_token_signing_alg_values_supported: ["RS256"], // RS256
     });
-  }
+  };
 
   private jwks: RequestHandler = async (_req, res) => {
     const key = await this.getOpenIDPrivateKey();
@@ -694,7 +694,7 @@ class OAuthController implements Controller {
     res.status(200).json({
       keys: [key.toJSON()],
     });
-  }
+  };
 
   public createDiscoveryRoute(): RequestHandler {
     return this.discovery.bind(this);
@@ -711,26 +711,11 @@ class OAuthController implements Controller {
       this.redirectErrorHandler,
     );
 
-    authorizationFlowRouter.get(
-      "/flow/:id/login",
-      this.csrfMiddleware,
-      this.loginForm,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.get("/flow/:id/login", this.csrfMiddleware, this.loginForm, this.redirectErrorHandler);
 
-    authorizationFlowRouter.post(
-      "/flow/:id/login",
-      this.csrfMiddleware,
-      this.handleLogin,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.post("/flow/:id/login", this.csrfMiddleware, this.handleLogin, this.redirectErrorHandler);
 
-    authorizationFlowRouter.get(
-      "/flow/:id/privacy",
-      this.csrfMiddleware,
-      this.privacyForm,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.get("/flow/:id/privacy", this.csrfMiddleware, this.privacyForm, this.redirectErrorHandler);
 
     authorizationFlowRouter.post(
       "/flow/:id/privacy",
@@ -739,19 +724,9 @@ class OAuthController implements Controller {
       this.redirectErrorHandler,
     );
 
-    authorizationFlowRouter.get(
-      "/flow/:id/gdpr",
-      this.csrfMiddleware,
-      this.gdprForm,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.get("/flow/:id/gdpr", this.csrfMiddleware, this.gdprForm, this.redirectErrorHandler);
 
-    authorizationFlowRouter.post(
-      "/flow/:id/gdpr",
-      this.csrfMiddleware,
-      this.handleGdpr,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.post("/flow/:id/gdpr", this.csrfMiddleware, this.handleGdpr, this.redirectErrorHandler);
 
     backChannelRouter.post("/token", this.requireClientAuthentication(), this.token);
 

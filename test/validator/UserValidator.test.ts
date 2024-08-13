@@ -182,7 +182,7 @@ describe("UserValidator", () => {
           isTKTL: false,
           isHyStudent: false,
           isTKTDTStudent: false,
-        })
+        });
 
         expect.fail();
       } catch (err) {
@@ -196,23 +196,22 @@ describe("UserValidator", () => {
 
     test("Throws a service error when email address is already taken", async () => {
       try {
-        await userValidator
-          .validateCreate({
-            username: "testuser",
-            name: "testuser",
-            screenName: "jee",
-            email: "test@user.com",
-            residence: "123",
-            phone: "12345",
-            password1: "testpassword",
-            password2: "testpassword",
-            isHyStaff: true,
-            isHYYMember: true,
-            isTKTL: false,
-            isHyStudent: false,
-            isTKTDTStudent: false,
-          });
-          expect.fail('Expected to throw!');
+        await userValidator.validateCreate({
+          username: "testuser",
+          name: "testuser",
+          screenName: "jee",
+          email: "test@user.com",
+          residence: "123",
+          phone: "12345",
+          password1: "testpassword",
+          password2: "testpassword",
+          isHyStaff: true,
+          isHYYMember: true,
+          isTKTL: false,
+          isHyStudent: false,
+          isTKTDTStudent: false,
+        });
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -224,23 +223,22 @@ describe("UserValidator", () => {
 
     test("Throws a service error if the email address is malformed", async () => {
       try {
-        await userValidator
-          .validateCreate({
-            username: "testuser",
-            name: "testUser",
-            screenName: "jee",
-            email: "test.com",
-            residence: "123",
-            phone: "12345",
-            password1: "testpassword",
-            password2: "testpassword",
-            isHyStaff: true,
-            isHYYMember: true,
-            isTKTL: false,
-            isHyStudent: false,
-            isTKTDTStudent: false,
-          });
-        expect.fail('Expected to throw!');
+        await userValidator.validateCreate({
+          username: "testuser",
+          name: "testUser",
+          screenName: "jee",
+          email: "test.com",
+          residence: "123",
+          phone: "12345",
+          password1: "testpassword",
+          password2: "testpassword",
+          isHyStaff: true,
+          isHYYMember: true,
+          isTKTL: false,
+          isHyStudent: false,
+          isTKTDTStudent: false,
+        });
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -252,24 +250,23 @@ describe("UserValidator", () => {
 
     test("Throws a service error if the email address is too long", async () => {
       try {
-        await userValidator
-          .validateCreate({
-            username: "testuser",
-            name: "testUser",
-            screenName: "jee",
-            email:
+        await userValidator.validateCreate({
+          username: "testuser",
+          name: "testUser",
+          screenName: "jee",
+          email:
             "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest@test.com",
-            residence: "123",
-            phone: "12345",
-            password1: "testpassword",
-            password2: "testpassword",
-            isHyStaff: true,
-            isHYYMember: true,
-            isTKTL: false,
-            isHyStudent: false,
-            isTKTDTStudent: false,
-          });
-        expect.fail('Expected to throw!');
+          residence: "123",
+          phone: "12345",
+          password1: "testpassword",
+          password2: "testpassword",
+          isHyStaff: true,
+          isHYYMember: true,
+          isTKTL: false,
+          isHyStudent: false,
+          isTKTDTStudent: false,
+        });
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -281,23 +278,22 @@ describe("UserValidator", () => {
 
     test("Throws a service error if the passwords do not match", async () => {
       try {
-        await userValidator
-          .validateCreate({
-            username: "testuser",
-            name: "testUser",
-            screenName: "jee",
-            email: "test@test.com",
-            residence: "123",
-            phone: "12345",
-            password1: "testpassword",
-            password2: "testpassword1",
-            isHyStaff: true,
-            isHYYMember: true,
-            isTKTL: false,
-            isHyStudent: false,
-            isTKTDTStudent: false,
-          });
-        expect.fail('Expected to throw!');
+        await userValidator.validateCreate({
+          username: "testuser",
+          name: "testUser",
+          screenName: "jee",
+          email: "test@test.com",
+          residence: "123",
+          phone: "12345",
+          password1: "testpassword",
+          password2: "testpassword1",
+          isHyStaff: true,
+          isHYYMember: true,
+          isTKTL: false,
+          isHyStudent: false,
+          isTKTDTStudent: false,
+        });
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeDefined(ServiceError);
         expect(err.message).toBeDefined();
@@ -308,36 +304,34 @@ describe("UserValidator", () => {
     });
 
     test("If no errors occur, return nothing", async () => {
-      await userValidator
-        .validateCreate({
-          username: "testuser",
-          name: "testUser",
-          screenName: "jee",
-          email: "test@test.com",
-          residence: "123",
-          phone: "12345",
-          password1: "testpassword",
-          password2: "testpassword",
-          isHyStaff: true,
-          isHYYMember: true,
-          isTKTL: false,
-          isHyStudent: false,
-          isTKTDTStudent: false,
-        })
+      await userValidator.validateCreate({
+        username: "testuser",
+        name: "testUser",
+        screenName: "jee",
+        email: "test@test.com",
+        residence: "123",
+        phone: "12345",
+        password1: "testpassword",
+        password2: "testpassword",
+        isHyStaff: true,
+        isHYYMember: true,
+        isTKTL: false,
+        isHyStudent: false,
+        isTKTDTStudent: false,
+      });
     });
   });
 
   describe("validateUpdate()", () => {
     test("Throws a service error when a normal user tries to modify a forbidden value", async () => {
-      const user = await userDao.findOne(1)
+      const user = await userDao.findOne(1);
       if (user === undefined) {
         throw new Error("User not found");
       }
 
       try {
-        await userValidator
-          .validateUpdate(user.id, { username: "test_user_123" }, new User(user))
-        expect.fail('Expected to throw!');
+        await userValidator.validateUpdate(user.id, { username: "test_user_123" }, new User(user));
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -350,7 +344,7 @@ describe("UserValidator", () => {
     test(
       "Throws a service error when an elevated user" + " tries to set email address to an already used email address",
       async () => {
-        const user = await userDao.findOne(2)
+        const user = await userDao.findOne(2);
 
         if (user === undefined) {
           throw new Error("User not found");
@@ -358,7 +352,7 @@ describe("UserValidator", () => {
 
         try {
           await userValidator.validateUpdate(1, { email: "admin@user.com" }, new User(user));
-          expect.fail('Expected to throw!');
+          expect.fail("Expected to throw!");
         } catch (err) {
           expect(err).toBeInstanceOf(ServiceError);
           expect(err.message).toBeDefined();
@@ -370,13 +364,13 @@ describe("UserValidator", () => {
     );
 
     test("Throws a service error when an elevated user" + " tries to set a malformed used email address", async () => {
-      const user = await userDao.findOne(2)
+      const user = await userDao.findOne(2);
       if (user === undefined) {
         throw new Error("User not found");
       }
       try {
-        await userValidator.validateUpdate(1, { email: "test123" }, new User(user))
-        expect.fail('Expected to throw!');
+        await userValidator.validateUpdate(1, { email: "test123" }, new User(user));
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -393,14 +387,17 @@ describe("UserValidator", () => {
     });
 
     test("Throws a service error when a user" + " tries to set a new password that doesn't match", async () => {
-      const user = await userDao.findOne(1)
+      const user = await userDao.findOne(1);
       if (user === undefined) {
         throw new Error("User not found");
       }
       try {
-        await userValidator
-          .validateUpdate(1, { password1: "test_password", password2: "test_password2" }, new User(user))
-        expect.fail('Expected to throw!');
+        await userValidator.validateUpdate(
+          1,
+          { password1: "test_password", password2: "test_password2" },
+          new User(user),
+        );
+        expect.fail("Expected to throw!");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.message).toBeDefined();
@@ -414,19 +411,18 @@ describe("UserValidator", () => {
       "Throws a service error with two validation errors when a user" +
         " tries to set a new password that doesn't match and a malformed email",
       async () => {
-        const user = await userDao.findOne(1)
+        const user = await userDao.findOne(1);
         if (user === undefined) {
           throw new Error("User not found");
         }
 
         try {
-          await userValidator
-            .validateUpdate(
-              1,
-              { password1: "test_password", password2: "test_password2", email: "HelloWorld" },
-              new User(user),
-            )
-          expect.fail('Expected to throw!');
+          await userValidator.validateUpdate(
+            1,
+            { password1: "test_password", password2: "test_password2", email: "HelloWorld" },
+            new User(user),
+          );
+          expect.fail("Expected to throw!");
         } catch (err) {
           expect(err).toBeInstanceOf(ServiceError);
           expect(err.message).toBeDefined();
@@ -441,14 +437,13 @@ describe("UserValidator", () => {
       "Throws a service error when a jasenvirkailija tries to" + " modify another user with a forbidden value",
       async () => {
         // Seed user #3 is a jasenvirkailija and wants to update a user.
-        const user = await userDao.findOne(3)
+        const user = await userDao.findOne(3);
         if (user === undefined) {
           throw new Error("User not found");
         }
         try {
-          await userValidator
-            .validateUpdate(2, { role: UserRoleString.Kayttaja }, new User(user))
-          expect.fail('Expected to throw!');
+          await userValidator.validateUpdate(2, { role: UserRoleString.Kayttaja }, new User(user));
+          expect.fail("Expected to throw!");
         } catch (err) {
           expect(err).toBeInstanceOf(ServiceError);
           expect(err.message).toBeDefined();
@@ -460,23 +455,22 @@ describe("UserValidator", () => {
     );
 
     test("Succeeds when jasenvirkailija tries to" + " modify another user with a valid value", async () => {
-      const user = await userDao.findOne(3)
+      const user = await userDao.findOne(3);
       expect(user).toBeDefined();
-      await userValidator
-        .validateUpdate(2, { username: "tester" }, new User(user))
+      await userValidator.validateUpdate(2, { username: "tester" }, new User(user));
     });
 
     test(
       "Throws a service error when a user" + " with an unknown set of permissions tries to modify another user",
       async () => {
         // Seed user #4 is a tenttiarkistovirkailija
-        const user = await userDao.findOne(4)
+        const user = await userDao.findOne(4);
         if (user === undefined) {
           throw new Error("User not found");
         }
         try {
-          await userValidator.validateUpdate(1, { email: "test123" }, new User(user))
-          expect.fail('Expected to throw!');
+          await userValidator.validateUpdate(1, { email: "test123" }, new User(user));
+          expect.fail("Expected to throw!");
         } catch (err) {
           expect(err).toBeInstanceOf(ServiceError);
           expect(err.message).toBeDefined();

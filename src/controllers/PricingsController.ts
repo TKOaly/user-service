@@ -41,14 +41,21 @@ const validateUpdateSeasonPricesBody = (body: unknown): body is UpdateSeasonPric
   const validateItem = (item: unknown) => {
     if (typeof item !== "object" || item === null) return false;
 
-    if (!("membership" in item) || typeof item.membership !== "string" || !("price" in item) || typeof item.price !== "number" || !("seasons" in item) || typeof item.seasons !== "number") {
+    if (
+      !("membership" in item) ||
+      typeof item.membership !== "string" ||
+      !("price" in item) ||
+      typeof item.price !== "number" ||
+      !("seasons" in item) ||
+      typeof item.seasons !== "number"
+    ) {
       return false;
     }
 
     return true;
   };
 
-  if (body.prices.some((item) => !validateItem(item))) {
+  if (body.prices.some(item => !validateItem(item))) {
     return false;
   }
 

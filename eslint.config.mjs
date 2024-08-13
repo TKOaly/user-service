@@ -1,6 +1,6 @@
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import prettier from "eslint-config-prettier"
+import prettier from "eslint-config-prettier";
 
 export default [
   {
@@ -21,5 +21,5 @@ export default [
     },
   },
   prettier,
-  ...tseslint.configs.recommended
-]
+  ...tseslint.configs.recommended,
+];

@@ -26,13 +26,7 @@ interface ISession extends Session {
   keys: Array<{ name: string; value: string }>;
 }
 
-export type AuthorizedRequestHandler = 
-  (
-    req: IASRequest,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => void;
-
+export type AuthorizedRequestHandler = (req: IASRequest, res: express.Response, next: express.NextFunction) => void;
 
 export interface IASRequest extends express.Request {
   authorization: {
@@ -45,7 +39,12 @@ export interface IASRequest extends express.Request {
 
 class AuthorizeMiddleware {
   public authorize =
-    (returnAsJson: boolean) => async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Response | void> => {
+    (returnAsJson: boolean) =>
+    async (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ): Promise<express.Response | void> => {
       const headerValue = req.get("authorization");
 
       if (headerValue) {
@@ -189,7 +188,7 @@ class AuthorizeMiddleware {
       }
     }
     return next();
-  }
+  };
 }
 
 export default new AuthorizeMiddleware();

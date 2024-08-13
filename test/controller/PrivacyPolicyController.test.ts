@@ -23,8 +23,7 @@ describe("PrivacyPolicyController", () => {
 
   describe("Privacy policy route", () => {
     test("GET /api/policy/KJYR_SERVICE_IDENTIFIER : Returns an existing privacy policy for KJYR", async () => {
-      const response = await request(app)
-        .get(`${policyUrl}/${kjyrIdentifier}`)
+      const response = await request(app).get(`${policyUrl}/${kjyrIdentifier}`);
 
       expect(response.ok).toBeTruthy();
       expect(response.status).to.equal(200);
@@ -38,12 +37,11 @@ describe("PrivacyPolicyController", () => {
           modified: expect.any(String),
           created: expect.any(String),
         },
-      })
+      });
     });
 
     test("GET /api/policy/something : Returns an error if the privacy policy is not found", async () => {
-      const response = await request(app)
-        .get(`${policyUrl}/1-2-3-4-5`)
+      const response = await request(app).get(`${policyUrl}/1-2-3-4-5`);
 
       expect(response.ok).toBeFalsy();
       expect(response.status).to.equal(404);

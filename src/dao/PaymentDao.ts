@@ -41,7 +41,7 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   public save(entity: Omit<PaymentDatabaseObject, "created" | "modified">): PromiseLike<number[]> {
     const savedObj: Partial<PaymentDatabaseObject> = {
       // Omit id because it's auto-assigned
-      ...omit(entity, ['id']),
+      ...omit(entity, ["id"]),
       created: new Date(),
     };
     return Promise.resolve(knexInstance<PaymentDatabaseObject>(tableName).insert(savedObj));
@@ -92,9 +92,10 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public deletePayment(id: number): Promise<boolean> {
-    return knexInstance<PaymentDatabaseObject>(tableName).where({ id })
-    .del()
-    .then(count => count > 0);
+    return knexInstance<PaymentDatabaseObject>(tableName)
+      .where({ id })
+      .del()
+      .then(count => count > 0);
   }
 }
 

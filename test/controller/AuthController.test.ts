@@ -47,7 +47,8 @@ describe("AuthController", () => {
     test("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", async () => {
       const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(incorrectCreds); expect(res.body.ok).toBeDefined();
+        .send(incorrectCreds);
+      expect(res.body.ok).toBeDefined();
       expect(res.body.message).toBeDefined();
       expect(res.body.payload).toBeNull();
       expect(res.status).to.equal(401);
@@ -127,10 +128,10 @@ describe("AuthController", () => {
       expect(res.body.payload.token).toBeDefined();
       expect(res.body.ok).toBeDefined();
       expect(res.body.ok).to.equal(true);
-      
+
       // Token to be passed forwards
       const token: string = res.body.payload.token;
-      
+
       // Next, check that the user is authenticated to KJYR (as an example)
       const res2 = await request(app)
         .get(authUrl + "/check")
@@ -157,10 +158,10 @@ describe("AuthController", () => {
         expect(res.body.payload.token).toBeDefined();
         expect(res.body.ok).toBeDefined();
         expect(res.body.ok).to.equal(true);
-        
+
         // Token to be passed forwards
         const token: string = res.body.payload.token;
-        
+
         // Next, check that the user is not authenticated to calendar (as an example)
         const res2 = await request(app)
           .get(authUrl + "/check")
@@ -186,16 +187,16 @@ describe("AuthController", () => {
       expect(res.body.payload.token).toBeDefined();
       expect(res.body.ok).toBeDefined();
       expect(res.body.ok).to.equal(true);
-      
+
       // Token
       const token: string = res.body.payload.token;
-      
+
       // Set calendar token to request
       const secondCreds = {
         ...correctCreds,
         serviceIdentifier: calendarIdentifier,
       };
-      
+
       // Secondly, authenticate to calendar
       const res2 = await request(app)
         .post(authUrl + "/authenticate")
@@ -207,15 +208,15 @@ describe("AuthController", () => {
       expect(res2.body.payload.token).toBeDefined();
       expect(res2.body.ok).toBeDefined();
       expect(res2.body.ok).to.equal(true);
-  
+
       const token2: string = res2.body.payload.token;
-  
+
       // Next, check auth for KJYR
       const res3 = await request(app)
         .get(authUrl + "/check")
         .set("Authorization", "Bearer " + token2)
         .set("service", kjyrIdentifier);
-      
+
       expect(res3.status).to.equal(200);
       expect(res3.body.ok).toBeDefined();
       expect(res3.body.message).toBeDefined();
@@ -245,10 +246,10 @@ describe("AuthController", () => {
       expect(res.body.payload.token).toBeDefined();
       expect(res.body.ok).toBeDefined();
       expect(res.body.ok).to.equal(true);
-      
+
       // Token
       const token: string = res.body.payload.token;
-      
+
       // Check auth for kjyr
       const res2 = await request(app)
         .get(authUrl + "/check")

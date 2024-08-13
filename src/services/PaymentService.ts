@@ -128,7 +128,7 @@ class PaymentService {
     _seasons: number,
     _membership: string,
   ): Promise<Payment> {
-    throw new Error('Not implemented.');
+    throw new Error("Not implemented.");
   }
 }
 

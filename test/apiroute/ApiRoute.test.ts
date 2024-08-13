@@ -27,10 +27,12 @@ describe("ApiRoute", () => {
     app.use(apiHeaderMiddleware(apiVersion));
     const res = await request(app).get("/");
 
-    expect(res.headers).toEqual(expect.objectContaining({
-      "x-route-api-version": apiVersion,
-      "x-api-version": process.env.API_VERSION,
-    }))
+    expect(res.headers).toEqual(
+      expect.objectContaining({
+        "x-route-api-version": apiVersion,
+        "x-api-version": process.env.API_VERSION,
+      }),
+    );
   });
 
   test("Middleware sets API version header correctly", async () => {
@@ -38,8 +40,10 @@ describe("ApiRoute", () => {
     app.use(apiHeaderMiddleware());
     const res = await request(app).get("/");
 
-    expect(res.headers).toEqual(expect.objectContaining({
-      "x-api-version": process.env.API_VERSION,
-    }));
+    expect(res.headers).toEqual(
+      expect.objectContaining({
+        "x-api-version": process.env.API_VERSION,
+      }),
+    );
   });
 });

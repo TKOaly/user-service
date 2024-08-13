@@ -24,16 +24,16 @@ describe("Privacy policy page", () => {
   let express: Server;
 
   beforeAll(async () => {
-    browser = await prepareDriver()
+    browser = await prepareDriver();
 
-    await new Promise<void>((resolve) => {
+    await new Promise<void>(resolve => {
       express = app.listen(port, () => resolve());
-    })
+    });
   });
 
   afterAll(async () => {
-    await cleanupDriver(browser)
-    await new Promise<void>((resolve) => express.close(() => resolve()));
+    await cleanupDriver(browser);
+    await new Promise<void>(resolve => express.close(() => resolve()));
   });
 
   // Roll back
@@ -73,7 +73,9 @@ describe("Privacy policy page", () => {
         expect(privacyPolicyRedirect).to.equal(fi.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
-        expect(privacyPolicyDeclined).to.equal(fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2);
+        expect(privacyPolicyDeclined).to.equal(
+          fi.privacypolicy_IfYouDecline_1 + " " + service.display_name + fi.privacypolicy_IfYouDecline_2,
+        );
       },
     );
   }
@@ -103,7 +105,9 @@ describe("Privacy policy page", () => {
         expect(privacyPolicyRedirect).to.equal(en.privacypolicy_YouWillBeRedirected);
 
         const privacyPolicyDeclined = await browser.findElement(By.className("privacyPolicyDeclineMessage")).getText();
-        expect(privacyPolicyDeclined).to.equal(en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2);
+        expect(privacyPolicyDeclined).to.equal(
+          en.privacypolicy_IfYouDecline_1 + service.display_name + en.privacypolicy_IfYouDecline_2,
+        );
       },
     );
   }

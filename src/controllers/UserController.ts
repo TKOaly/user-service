@@ -56,7 +56,7 @@ class UserController implements Controller {
 
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   getUser: AuthorizedRequestHandler = async (req, res) => {
     if (req.params.id !== "me") {
@@ -103,7 +103,7 @@ class UserController implements Controller {
 
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   /**
    * Returns all users.
@@ -172,7 +172,7 @@ class UserController implements Controller {
 
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   getAllUnpaidUsers: AuthorizedRequestHandler = async (req, res) => {
     if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
@@ -189,7 +189,7 @@ class UserController implements Controller {
 
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   modifyUser: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -221,7 +221,7 @@ class UserController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   /**
    * Modifies a user (me).
@@ -248,7 +248,7 @@ class UserController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   createUser: express.RequestHandler = async (req, res) => {
     try {
@@ -285,7 +285,7 @@ class UserController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   findUserPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -315,7 +315,7 @@ class UserController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   findMePayment: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -340,7 +340,7 @@ class UserController implements Controller {
 
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   setUserMembership: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -381,7 +381,7 @@ class UserController implements Controller {
       }
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   deleteUser: AuthorizedRequestHandler = async (req, res) => {
     try {
@@ -409,12 +409,12 @@ class UserController implements Controller {
       }
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   public createRoutes(): express.Router {
-    const authorized = express.Router()
+    const authorized = express.Router();
 
-    authorized.use(AuthorizeMiddleware.authorize(true))
+    authorized.use(AuthorizeMiddleware.authorize(true));
 
     authorized.get("/:id", this.getUser as express.RequestHandler);
     authorized.get("/me", this.getMe as express.RequestHandler);
@@ -422,10 +422,10 @@ class UserController implements Controller {
     authorized.get("/payments/unpaid", this.getAllUnpaidUsers as express.RequestHandler);
     authorized.patch("/:id(\\d+)", this.modifyUser as express.RequestHandler);
     authorized.patch("/me", this.modifyMe as express.RequestHandler);
-    authorized.get( "/:id(\\d+)/payments", this.findUserPayment as express.RequestHandler);
-    authorized.get( "/me/payments", this.findMePayment as express.RequestHandler);
-    authorized.put( "/:id(\\d+)/membership", this.setUserMembership as express.RequestHandler);
-    authorized.delete( "/:id(\\d+)", this.deleteUser as express.RequestHandler);
+    authorized.get("/:id(\\d+)/payments", this.findUserPayment as express.RequestHandler);
+    authorized.get("/me/payments", this.findMePayment as express.RequestHandler);
+    authorized.put("/:id(\\d+)/membership", this.setUserMembership as express.RequestHandler);
+    authorized.delete("/:id(\\d+)", this.deleteUser as express.RequestHandler);
 
     this.route.post("/", this.createUser);
 

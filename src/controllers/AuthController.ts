@@ -26,7 +26,7 @@ class AuthController implements Controller {
     } else {
       return res.status(403).json(new ServiceResponse(null, "Not authorized to service"));
     }
-  }
+  };
 
   authenticateUser: RequestHandler = async (req, res) => {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
@@ -73,7 +73,7 @@ class AuthController implements Controller {
 
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   /**
    * Renders a view to calculate service permissions.
@@ -117,28 +117,30 @@ class AuthController implements Controller {
       delete wantedPermissions.submit;
     }
 
-    const dummyObject = removeSensitiveInformation(new User({
-      created: new Date(),
-      deleted: 0,
-      email: "",
-      hashed_password: "",
-      password_hash: "",
-      hyy_member: 1,
-      id: -1,
-      membership: "jasen",
-      modified: new Date(),
-      name: "",
-      phone: "",
-      residence: "",
-      role: "",
-      salt: "",
-      screen_name: "",
-      tktl: 1,
-      username: "",
-      hy_staff: 0,
-      hy_student: 0,
-      tktdt_student: 0,
-    }));
+    const dummyObject = removeSensitiveInformation(
+      new User({
+        created: new Date(),
+        deleted: 0,
+        email: "",
+        hashed_password: "",
+        password_hash: "",
+        hyy_member: 1,
+        id: -1,
+        membership: "jasen",
+        modified: new Date(),
+        name: "",
+        phone: "",
+        residence: "",
+        role: "",
+        salt: "",
+        screen_name: "",
+        tktl: 1,
+        username: "",
+        hy_staff: 0,
+        hy_student: 0,
+        tktdt_student: 0,
+      }),
+    );
 
     let permissionInteger = 0;
 
@@ -166,11 +168,7 @@ class AuthController implements Controller {
    */
   public createRoutes(): express.Router {
     this.route.get("/check", AuthorizeMiddleware.authorize(true), this.check);
-    this.route.post(
-      "/authenticate",
-      AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware),
-      this.authenticateUser,
-    );
+    this.route.post("/authenticate", AuthorizeMiddleware.loadToken.bind(AuthorizeMiddleware), this.authenticateUser);
     if (process.env.NODE_ENV !== "production") {
       this.route.get("/calcPermissions", this.calcPermissions.bind(this));
       this.route.post("/calcPermissions", this.calcPermissionsPost.bind(this));

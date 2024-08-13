@@ -50,7 +50,6 @@ declare module "express-session" {
   }
 }
 
-
 if (!process.env.NODE_ENV) {
   throw new Error("NODE_ENV environment variable must be set.");
 }
@@ -97,7 +96,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "unsafe",
     store: new ConnectSessionKnexStore({
       knex: knexInstance,
-      tableName: 'knex_sessions',
+      tableName: "knex_sessions",
       createTable: true,
     }),
   }),

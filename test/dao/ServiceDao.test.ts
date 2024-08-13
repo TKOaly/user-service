@@ -30,7 +30,7 @@ describe("ServiceDao", () => {
   });
 
   test("Should return all services with findAll()", async () => {
-    const services = await serviceDao.findAll()
+    const services = await serviceDao.findAll();
     expect(services.length).toBeDefined();
     expect(services.length).to.equal(dbServices.length);
     services.forEach(dbService => {
@@ -64,9 +64,9 @@ describe("ServiceDao", () => {
   });
 
   test("Should remove a service with remove()", async () => {
-    const res = await serviceDao.remove(dbServices[0].id)
+    const res = await serviceDao.remove(dbServices[0].id);
     expect(res).to.equal(1);
-    const services = await serviceDao.findAll()
+    const services = await serviceDao.findAll();
     expect(services.length).to.equal(dbServices.length - 1);
   });
 
@@ -81,12 +81,12 @@ describe("ServiceDao", () => {
       secret: "unsecure",
     };
 
-    const res = await serviceDao.save(newService)
+    const res = await serviceDao.save(newService);
     expect(res).toBeDefined();
     expect(res[0]).to.equal(nextDbServiceId);
-    const services = await serviceDao.findAll()
+    const services = await serviceDao.findAll();
     expect(services.length).to.equal(dbServices.length + 1);
-    const dbService = await serviceDao.findByIdentifier(newService.service_identifier)
+    const dbService = await serviceDao.findByIdentifier(newService.service_identifier);
     if (dbService === undefined) {
       throw new Error("Service not found");
     }

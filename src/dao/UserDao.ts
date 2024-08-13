@@ -7,27 +7,28 @@ import _ from "lodash";
 const tableName = "users";
 
 type UserSaveModel = Required<
-      Pick<
-        UserDatabaseObject,
-        | "username"
-        | "name"
-        | "screen_name"
-        | "email"
-        | "residence"
-        | "phone"
-        | "hyy_member"
-        | "membership"
-        | "role"
-        | "salt"
-        | "hashed_password"
-        | "password_hash"
-        | "tktl"
-        | "deleted"
-        | "hy_student"
-        | "hy_staff"
-        | "tktdt_student"
-      >
-    > & Partial<Pick<UserDatabaseObject, 'id'>>
+  Pick<
+    UserDatabaseObject,
+    | "username"
+    | "name"
+    | "screen_name"
+    | "email"
+    | "residence"
+    | "phone"
+    | "hyy_member"
+    | "membership"
+    | "role"
+    | "salt"
+    | "hashed_password"
+    | "password_hash"
+    | "tktl"
+    | "deleted"
+    | "hy_student"
+    | "hy_staff"
+    | "tktdt_student"
+  >
+> &
+  Partial<Pick<UserDatabaseObject, "id">>;
 
 class UserDao implements Dao<UserDatabaseObject> {
   public findOne(id: number): PromiseLike<UserDatabaseObject | undefined> {
@@ -164,9 +165,7 @@ class UserDao implements Dao<UserDatabaseObject> {
     return Promise.resolve(knexInstance<UserDatabaseObject>(tableName).update(savedObj).where({ id: entityId }));
   }
 
-  public save(
-    entity: UserSaveModel,
-  ): PromiseLike<number[]> {
+  public save(entity: UserSaveModel): PromiseLike<number[]> {
     const savedObj = {
       ...entity,
       created: new Date(),

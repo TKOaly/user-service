@@ -26,7 +26,6 @@ if (
   throw new Error("Database configuration is invalid, please set all environment variables!");
 }
 
-
 export const production: Knex.Config = {
   client: "mysql2",
   version: "5.7",
@@ -71,7 +70,7 @@ export const staging: Knex.Config = {
   },
   seeds: {
     seedSource: new EsmFsSeedSource(),
-  }
+  },
 };
 
 export const development: Knex.Config = {

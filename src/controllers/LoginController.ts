@@ -145,10 +145,10 @@ class LoginController implements Controller {
       Sentry.captureException(err);
 
       return res.status(400).render("serviceError", {
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message : "Unknown error",
       });
     }
-  }
+  };
 
   /**
    * Sets the language of the page.
@@ -160,7 +160,7 @@ class LoginController implements Controller {
       domain: process.env.COOKIE_DOMAIN,
     });
     return res.redirect(req.params.serviceIdentifier ? "/?serviceIdentifier=" + req.params.serviceIdentifier : "/");
-  }
+  };
 
   logOut: RequestHandler = async (req, res) => {
     if (!req.query.serviceIdentifier) {
@@ -186,7 +186,7 @@ class LoginController implements Controller {
         });
       }
 
-      return
+      return;
     }
 
     const token = AuthenticationService.removeServiceAuthenticationToToken(
@@ -208,7 +208,7 @@ class LoginController implements Controller {
     res.set("Access-Control-Allow-Credentials", "true");
 
     return res.render("logout", { serviceName: service.displayName });
-  }
+  };
 
   login: RequestHandler = async (req, res) => {
     if (!req.body.serviceIdentifier || !req.body.username || !req.body.password) {
@@ -247,7 +247,7 @@ class LoginController implements Controller {
     } catch (e) {
       return res.status(500).render("login", {
         service,
-        errors: [e instanceof Error ? e.message : 'Unknown error'],
+        errors: [e instanceof Error ? e.message : "Unknown error"],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -259,9 +259,9 @@ class LoginController implements Controller {
     // We require user id and role every time, regardless of permissions in services
     keys = flow(
       removeSensitiveInformation,
-      (data) => removeNonRequestedData(data, service.dataPermissions | 512 | 1),
+      data => removeNonRequestedData(data, service.dataPermissions | 512 | 1),
       Object.entries,
-      map(([ name, value ]) => ({ name, value })),
+      map(([name, value]) => ({ name, value })),
     )(user);
 
     // Set session
@@ -322,7 +322,7 @@ class LoginController implements Controller {
 
       return res.status(500).render("login", {
         service,
-        errors: [err instanceof Error ? err.message : 'Unknown error'],
+        errors: [err instanceof Error ? err.message : "Unknown error"],
         logoutRedirect: "/?serviceIdentifier=" + service.serviceIdentifier,
         loginRedirect: req.query.loginRedirect || undefined,
         currentLocale: req.language,
@@ -338,7 +338,7 @@ class LoginController implements Controller {
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
     });
-  }
+  };
 
   /**
    * Handles GDPR template and redirects the user forward
@@ -383,7 +383,7 @@ class LoginController implements Controller {
       }
     } catch (e) {
       Sentry.captureException(e);
-      return res.status(500).json(new ServiceResponse(null, e instanceof Error ? e.message : 'Unknown error'));
+      return res.status(500).json(new ServiceResponse(null, e instanceof Error ? e.message : "Unknown error"));
     }
 
     const redirectTo: string = req.session.user.redirectTo;
@@ -399,7 +399,7 @@ class LoginController implements Controller {
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Credentials", "true");
     return res.redirect(redirectTo);
-  }
+  };
 
   /**
    * Handles privacy policy confirmation.
@@ -461,7 +461,7 @@ class LoginController implements Controller {
       serviceDisplayName: service.displayName,
       redirectTo: req.body.loginRedirect ? req.body.loginRedirect : service.redirectUrl,
     });
-  }
+  };
 
   public async resetPassword(req: express.Request, res: express.Response): Promise<express.Response | void> {
     if (req.method === "GET" && req.query.user) {
@@ -597,13 +597,7 @@ class LoginController implements Controller {
   }
 
   public createRoutes(): express.Router {
-    this.route.get(
-      "/",
-      this.csrfMiddleware,
-      cachingMiddleware,
-      AuthorizeMiddleware.loadToken,
-      this.getLoginView,
-    );
+    this.route.get("/", this.csrfMiddleware, cachingMiddleware, AuthorizeMiddleware.loadToken, this.getLoginView);
     this.route.post(
       "/login",
       this.csrfMiddleware.bind(this.csrfMiddleware),

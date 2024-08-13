@@ -250,7 +250,7 @@ describe("UserDao", () => {
   });
 
   test("Returns a single user with findOne()", async () => {
-    const dbUser = await userDao.findOne(dbUsers[0].id)
+    const dbUser = await userDao.findOne(dbUsers[0].id);
     const seedUser = dbUsers[0];
     if (dbUser === undefined) {
       throw new Error("User not found");
@@ -332,7 +332,7 @@ describe("UserDao", () => {
   });
 
   test("Returns a single user with findByUsername()", async () => {
-    const dbUser = await userDao.findByUsername(dbUsers[0].username)
+    const dbUser = await userDao.findByUsername(dbUsers[0].username);
     const seedUser = dbUsers[0];
     if (dbUser === undefined) {
       throw new Error("User not found");
@@ -412,7 +412,7 @@ describe("UserDao", () => {
   });
 
   test("Returns a single user with findWhere()", async () => {
-    const dbUsers = await userDao.findWhere("Test User")
+    const dbUsers = await userDao.findWhere("Test User");
 
     const seedUser = dbUsers.find(usr => usr.username === "test_user");
     if (seedUser === undefined) {
@@ -525,7 +525,7 @@ describe("UserDao", () => {
   });
 
   test("should return undefined if user is not found", async () => {
-    const user = await userDao.findOne(999)
+    const user = await userDao.findOne(999);
     expect(user).not.toBeDefined();
   });
 });

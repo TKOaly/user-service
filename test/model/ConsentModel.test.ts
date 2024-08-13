@@ -26,7 +26,7 @@ describe("Consent model", () => {
       user_id: 5,
       created: expect.any(Date),
       modified: expect.any(Date),
-    })
+    });
 
     expect(consent.created.toDateString()).to.equal(new Date(2017, 1, 1).toDateString());
     expect(consent.modified.toDateString()).to.equal(new Date(2017, 1, 1).toDateString());

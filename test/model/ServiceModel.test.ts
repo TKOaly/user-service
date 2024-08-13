@@ -23,10 +23,10 @@ describe("Service model", () => {
     expect(service).toMatchObject({
       id: 1,
       dataPermissions: Math.pow(2, 6),
-      displayName: 'Test service',
-      redirectUrl: 'https://localhost',
-      serviceIdentifier: '1-2-3-4-5',
-      serviceName: 'testService',
+      displayName: "Test service",
+      redirectUrl: "https://localhost",
+      serviceIdentifier: "1-2-3-4-5",
+      serviceName: "testService",
     });
   });
 

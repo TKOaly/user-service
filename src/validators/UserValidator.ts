@@ -394,7 +394,7 @@ export function checkModifyPermission(
   allowedEdits: SelfEditKey[] | JVDataKey[] | AdminDataKey[],
 ) {
   const error = "Forbidden modify action";
-  Object.keys(user).forEach((key) => {
+  Object.keys(user).forEach(key => {
     if (!allowedEdits.find(allowedEdit => allowedEdit === key) && key !== "id") {
       throw new ServiceError(403, error);
     }

@@ -16,10 +16,9 @@ describe("ServiceToken", () => {
     const token = serviceToken.toString();
 
     expect(token).toBeDefined();
-    expect(token).not.to.equal('');
-
+    expect(token).not.to.equal("");
   });
   test("Should throw an exception when a malformed JWT is given", () => {
-    expect(stringToServiceToken).to.throw(ServiceError)
+    expect(stringToServiceToken).to.throw(ServiceError);
   });
 });
