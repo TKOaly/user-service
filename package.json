@@ -31,7 +31,7 @@
     "build:scss": "sass scss/:public/styles/",
     "build-docker": "docker build . -t user-service",
     "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service",
-    "prepare": "husky",
+    "prepare": "[[ -z \"$NODE_END\" || \"$NODE_ENV\" = \"development\" ]] && husky || true",
     "knex": "tsx ./node_modules/knex/bin/cli.js"
   },
   "dependencies": {
