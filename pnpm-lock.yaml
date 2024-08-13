@@ -106,9 +106,6 @@ devDependencies:
   '@types/cookie-parser':
     specifier: ^1.4.7
     version: 1.4.7
-  '@types/csurf':
-    specifier: ^1.11.5
-    version: 1.11.5
   '@types/express':
     specifier: ^4.17.21
     version: 4.17.21
@@ -1571,12 +1568,6 @@ packages:
 
   /@types/cookiejar@2.1.5:
     resolution: {integrity: sha512-he+DHOWReW0nghN24E1WUqM0efK4kI9oTqDm6XmK8ZPe2djZ90BSNdGnIyCLzCPw7/pogPlGbzI2wHGGmi4O/Q==}
-    dev: true
-
-  /@types/csurf@1.11.5:
-    resolution: {integrity: sha512-5rw87+5YGixyL2W8wblSUl5DSZi5YOlXE6Awwn2ofLvqKr/1LruKffrQipeJKUX44VaxKj8m5es3vfhltJTOoA==}
-    dependencies:
-      '@types/express-serve-static-core': 4.19.5
     dev: true
 
   /@types/estree@1.0.5:
