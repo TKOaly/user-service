@@ -7,7 +7,10 @@ RUN apk --no-cache add --virtual native-deps \
   chromium chromium-chromedriver curl
 
 COPY package.json pnpm-lock.yaml /app/
-RUN pnpm install
+
+ENV PNPM_HOME="/pnpm"
+RUN corepack enable && corepack install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.mjs ./
 COPY ./src /app/src
@@ -27,12 +30,23 @@ HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
 EXPOSE 3001
 CMD ["pnpm", "run", "watch"]
 
-FROM development AS production
+FROM development AS production-builder
 
 RUN pnpm run build && \
   pnpm prune --prod
 
-HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
-
 EXPOSE 3001
 CMD ["pnpm", "start"]
+
+FROM node:20.16.0-alpine AS production
+
+WORKDIR /app
+
+COPY --from=production-builder /app/node_modules /app/node_modules
+COPY --from=production-builder /app/dist /app/dist
+COPY --from=production-builder /app/public /app/public
+
+EXPOSE 3001
+CMD ["dist/src/index.js"]
+
+HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
