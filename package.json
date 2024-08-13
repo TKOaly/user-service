@@ -30,7 +30,8 @@
     "build:server": "tsc -p tsconfig.json",
     "build:scss": "sass scss/:public/styles/",
     "build-docker": "docker build . -t user-service",
-    "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service"
+    "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@sentry/node": "^8.25.0",
@@ -127,5 +128,9 @@
     ],
     "all": true
   },
-  "packageManager": "pnpm@8.10.5"
+  "packageManager": "pnpm@8.10.5",
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "*.{js,ts,scss,json,md}": "prettier --write"
+  }
 }
