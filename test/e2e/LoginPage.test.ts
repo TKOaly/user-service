@@ -33,7 +33,7 @@ describe("Login page", () => {
 
   afterAll(async () => {
     await cleanupDriver(browser);
-    await new Promise<void>(resolve => express.close(() => resolve()));
+    await new Promise<void>(resolve => (express ? express.close(() => resolve()) : resolve()));
   });
 
   // Roll back

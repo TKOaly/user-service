@@ -9,7 +9,7 @@ export const prepareDriver: () => Promise<WebDriver> = async (): Promise<WebDriv
     .setLoggingPrefs({ browser: "ALL", driver: "ALL" })
     .build();
 
-  process.on("beforeExit", () => browser && browser.quit());
+  process.on("beforeExit", () => cleanupDriver(browser));
 
   return browser;
 };
