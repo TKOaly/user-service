@@ -4,29 +4,35 @@ block content
   #login
     if (loggedUser && logoutRedirect)
       #session-info
-        h5 #{t("login_LoggedInAs")} #{loggedUser}
-        - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`
-        a(href=link fsty) #{t("login_DestroySession")}
-    form#loginForm(action=(submitUrl || '/login'), method='POST')
+        h5 #{ t("login_LoggedInAs") } #{ loggedUser }
+        - let link = `/logout?serviceIdentifier=*&redirect=${logoutRedirect}`;
+        a(href=link, fsty) #{ t("login_DestroySession") }
+    form#loginForm(action=submitUrl || "/login", method="POST")
       .form-group
-        label(for='username', class='usernameLabel') #{t("login_UsernameLabel")}
-        - let unameVal = loggedUser || '';
-        input.input(required type='text', value=unameVal name='username', id='username' placeholder=t("login_UsernamePlaceholder"))
+        label.usernameLabel(for="username") #{ t("login_UsernameLabel") }
+        - let unameVal = loggedUser || "";
+        input#username.input(
+          required,
+          type="text",
+          value=unameVal,
+          name="username",
+          placeholder=t("login_UsernamePlaceholder")
+        )
       .form-group
-        label(for='password', class='passwordLabel') #{t("login_PasswordLabel")}
-        input.input(required type='password', name='password', id='password' placeholder=t("login_PasswordPlaceholder"))
-      input(type='hidden', name='serviceIdentifier', value=service.serviceIdentifier)
-      input(type='hidden', name='loginRedirect', value=loginRedirect)
-      input(type='hidden', name='_csrf', value=csrfToken)
+        label.passwordLabel(for="password") #{ t("login_PasswordLabel") }
+        input#password.input(required, type="password", name="password", placeholder=t("login_PasswordPlaceholder"))
+      input(type="hidden", name="serviceIdentifier", value=service.serviceIdentifier)
+      input(type="hidden", name="loginRedirect", value=loginRedirect)
+      input(type="hidden", name="_csrf", value=csrfToken)
       .form-group
-        input.input.accept(type='submit', name='accept', value=t("login_LoginButton"))
+        input.input.accept(type="submit", name="accept", value=t("login_LoginButton"))
     ul#links
       li
-        a(href='https://members.tko-aly.fi/users/add', class='applyToBeAMember') #{t("login_RegisterToServiceText")}
+        a.applyToBeAMember(href="https://members.tko-aly.fi/users/add") #{ t("login_RegisterToServiceText") }
       li
-        a(href='/reset-password', class='applyToBeAMember') #{t("login_ForgotPassword")}
+        a.applyToBeAMember(href="/reset-password") #{ t("login_ForgotPassword") }
       li
-       if (currentLocale === "fi")
-        a(href='/lang/en/' + service.serviceIdentifier, class='loginInEnglish') #{t("login_InEnglish")}
-       else
-        a(href='/lang/fi/' + service.serviceIdentifier, class='loginInFinnish') #{t("login_InFinnish")}
+        if (currentLocale === "fi")
+          a.loginInEnglish(href="/lang/en/" + service.serviceIdentifier) #{ t("login_InEnglish") }
+        else
+          a.loginInFinnish(href="/lang/fi/" + service.serviceIdentifier) #{ t("login_InFinnish") }

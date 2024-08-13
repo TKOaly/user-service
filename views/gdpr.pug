@@ -1,30 +1,30 @@
 extends layouts/common.pug
 
 block append head
-  link(rel='stylesheet', href='/styles/gdpr.css')
+  link(rel="stylesheet", href="/styles/gdpr.css")
 
 block content
-  p <b class='service'>#{serviceDisplayName}</b>#{t("gdpr_PersonalDataServiceRequires")}
-  p #{t("gdpr_PersonalDataFollowingData")}
+  p <b class='service'>#{ serviceDisplayName }</b>#{ t("gdpr_PersonalDataServiceRequires") }
+  p #{ t("gdpr_PersonalDataFollowingData") }
 
   #personaldata
     each info in personalInformation
       .entry
-        .field #{t("gdpr_FieldName_" + info.name)}
+        .field #{ t("gdpr_FieldName_" + info.name) }
         .value
           if info.value instanceof Date
-            | #{new Intl.DateTimeFormat(language).format(info.value)}
+            | #{ new Intl.DateTimeFormat(language).format(info.value) }
           else
-            | #{t(["gdpr_FieldValue_" + info.name + "_" + info.value, "gdpr_TypeValue_" + (typeof info.value) + "_" + info.value], '' + info.value)} 
+            | #{ t(["gdpr_FieldValue_" + info.name + "_" + info.value, "gdpr_TypeValue_" + (typeof info.value) + "_" + info.value], '' + info.value) } 
 
-  p #{t("gdpr_PersonalDataRedirectMessage")} <b>#{redirectTo}</b>
-  p #{t("gdpr_PersonalDataReadPrivacyPolicy")} <a href='https://tko-aly.fi/member_privacy' target=_blank>#{t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink")}</a>
+  p #{ t("gdpr_PersonalDataRedirectMessage") } <b>#{ redirectTo }</b>
+  p #{ t("gdpr_PersonalDataReadPrivacyPolicy") } <a href='https://tko-aly.fi/member_privacy' target=_blank>#{ t("gdpr_PersonalDataReadPrivacyPolicyUsingThisLink") }</a>
 
 block confirmation
-  form(id='formSubmitReject', action=(submitUrl || '/login_confirm'), method='POST')
-    input(type='hidden', name='_csrf', value=csrfToken)
-    input.cancel(type='submit', name='cancel', value=t("gdpr_PersonalDataDecline"))
-  form(id='formSubmitAccept', action=(submitUrl || '/login_confirm'), method='POST')
-    input(type='hidden', name='_csrf', value=csrfToken)
-    input(type='hidden', name='permission', value='yes')
-    input.accept(type='submit', name='accept', value=t("gdpr_PersonalDataAccept"))
+  form#formSubmitReject(action=submitUrl || "/login_confirm", method="POST")
+    input(type="hidden", name="_csrf", value=csrfToken)
+    input.cancel(type="submit", name="cancel", value=t("gdpr_PersonalDataDecline"))
+  form#formSubmitAccept(action=submitUrl || "/login_confirm", method="POST")
+    input(type="hidden", name="_csrf", value=csrfToken)
+    input(type="hidden", name="permission", value="yes")
+    input.accept(type="submit", name="accept", value=t("gdpr_PersonalDataAccept"))
