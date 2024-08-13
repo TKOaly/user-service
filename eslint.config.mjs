@@ -1,5 +1,6 @@
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import prettier from "eslint-config-prettier"
 
 export default [
   {
@@ -19,5 +20,6 @@ export default [
       "@typescript-eslint/explicit-module-boundary-types": "off",
     },
   },
-  ...tseslint.configs.recommended,
+  prettier,
+  ...tseslint.configs.recommended
 ]
