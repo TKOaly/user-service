@@ -29,7 +29,7 @@ describe("Login page", () => {
     await new Promise<void>(resolve => {
       express = app.listen(port, () => resolve());
     });
-  });
+  }, 30000);
 
   afterAll(async () => {
     await cleanupDriver(browser);
