@@ -1,4 +1,4 @@
-import type Knex from "knex";
+import { Knex } from "knex";
 import _ from "lodash/fp";
 import users from "./seedData/users";
 

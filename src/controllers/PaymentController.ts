@@ -1,15 +1,17 @@
 import * as express from "express";
+import { RequestHandler } from "express";
 import * as Sentry from "@sentry/node";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
 import { PaymentListing } from "../models/PaymentListing";
 import PaymentService from "../services/PaymentService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { AuthorizedRequestHandler } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import PaymentValidator from "../validators/PaymentValidator";
 import PricingService from "../services/PricingService";
+import ServiceError from "../utils/ServiceError";
 
 class PaymentController implements Controller {
   private route: express.Router;
@@ -20,7 +22,7 @@ class PaymentController implements Controller {
     this.paymentValidator = new PaymentValidator();
   }
 
-  public async createPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+  createPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       const endSeason = await PricingService.getSeasonInfo(PricingService.getSeason(req.body.seasons - 1));
       const [price] = await PricingService.findPricings("current", req.body.membership_applied_for, req.body.seasons);
@@ -44,17 +46,24 @@ class PaymentController implements Controller {
       }
       return res.status(201).json(new ServiceResponse(payment, "Payment created", true));
     } catch (err) {
-      Sentry.addBreadcrumb({
-        message: "Error creating payment",
-        data: {
-          errorMessage: err.message,
-        },
-      });
-      return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
-    }
-  }
+      if (err instanceof Error) {
+        Sentry.addBreadcrumb({
+          message: "Error creating payment",
+          data: {
+            errorMessage: err.message,
+          },
+        });
+      }
 
-  public async modifyPayment(req: express.Request, res: express.Response): Promise<express.Response> {
+      if (err instanceof ServiceError) {
+        return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+      }
+
+      throw err;
+    }
+  };
+
+  modifyPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       // PATCH request requires the whole object to be passed
       if (
@@ -84,11 +93,15 @@ class PaymentController implements Controller {
         return res.status(400).json(new ServiceResponse(null, "Failed to modify payment"));
       }
     } catch (err) {
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async getAllPayments(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getAllPayments: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -111,11 +124,15 @@ class PaymentController implements Controller {
       }
       return res.status(200).json(new ServiceResponse(payments, null, true));
     } catch (err) {
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async getSinglePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getSinglePayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       const payment: Payment = await PaymentService.fetchPayment(Number(req.params.id));
 
@@ -130,11 +147,15 @@ class PaymentController implements Controller {
       }
       return res.status(404).json(new ServiceResponse(null, "Payment not found"));
     } catch (err) {
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async markPaymentAsPaid(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  markPaymentAsPaid: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -159,11 +180,16 @@ class PaymentController implements Controller {
         },
       });
       Sentry.captureException(e);
+
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
-  public async deletePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  deletePayment: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -172,41 +198,36 @@ class PaymentController implements Controller {
       await PaymentService.deletePatyment(Number(Number(req.params.id)));
       return res.status(200);
     } catch (e) {
-      Sentry.addBreadcrumb({
-        message: "Error deleting payment",
-        data: {
-          paymentId: Number(req.params.id),
-          errorMessage: e.message,
-        },
-      });
+      if (e instanceof Error) {
+        Sentry.addBreadcrumb({
+          message: "Error deleting payment",
+          data: {
+            paymentId: Number(req.params.id),
+            errorMessage: e.message,
+          },
+        });
+      }
+
       Sentry.captureException(e);
+
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   public createRoutes(): express.Router {
-    this.route.get(
-      "/:id(\\d+)/", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.getSinglePayment.bind(this),
-    ); // @ts-expect-error
-    this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllPayments.bind(this));
-    this.route.patch(
-      "/:id(\\d+)/", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.modifyPayment.bind(this),
-    );
-    this.route.put(
-      "/:id(\\d+)/pay/:method", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.markPaymentAsPaid.bind(this),
-    );
-    this.route.delete(
-      "/:id(\\d+)", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.deletePayment.bind(this),
-    ); // @ts-expect-error
-    this.route.post("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.createPayment.bind(this));
+    this.route.use(AuthorizeMiddleware.authorize(true));
+
+    this.route.get("/:id(\\d+)/", this.getSinglePayment as RequestHandler);
+    this.route.get("/", this.getAllPayments as RequestHandler);
+    this.route.patch("/:id(\\d+)/", this.modifyPayment as RequestHandler);
+    this.route.put("/:id(\\d+)/pay/:method", this.markPaymentAsPaid as RequestHandler);
+    this.route.delete("/:id(\\d+)", this.deletePayment as RequestHandler);
+    this.route.post("/", this.createPayment as RequestHandler);
+
     return this.route;
   }
 }

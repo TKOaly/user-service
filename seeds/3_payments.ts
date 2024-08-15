@@ -1,5 +1,5 @@
-import type Knex from "knex";
-const payments = require("./seedData/payments");
+import { Knex } from "knex";
+import payments from "./seedData/payments";
 
 exports.seed = async function (knex: Knex) {
   if (process.env.NODE_ENV === "production") {

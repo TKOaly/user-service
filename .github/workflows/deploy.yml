@@ -10,50 +10,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Log into registry
-      if: github.event_name != 'pull_request'
-      uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-      with:
-        registry: ${{ secrets.PRIVATE_REGISTRY_URL }}
-        username: ${{ secrets.PRIVATE_REGISTRY_USER }}
-        password: ${{ secrets.PRIVATE_REGISTRY_PW }}
+      - name: Log into registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ secrets.PRIVATE_REGISTRY_URL }}
+          username: ${{ secrets.PRIVATE_REGISTRY_USER }}
+          password: ${{ secrets.PRIVATE_REGISTRY_PW }}
 
-    - name: Extract Docker metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ secrets.PRIVATE_REGISTRY_URL }}/user-service
-        tags: |
-          type=schedule
-          type=ref,event=branch
-          type=ref,event=tag
-          type=ref,event=pr
-          type=sha
-          ${{ github.event_name == 'release' && format('type=raw,value={0}', github.event.release.tag_name) }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.PRIVATE_REGISTRY_URL }}/user-service
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=sha
+            ${{ github.event_name == 'release' && format('type=raw,value={0}', github.event.release.tag_name) }}
 
-    # Build and push Docker image with Buildx (don't push on PR)
-    # https://github.com/docker/build-push-action
-    - name: Build and push Docker image
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-to: type=gha
-        cache-from: type=gha
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-to: type=gha
+          cache-from: type=gha
 
-    - name: Trigger deployment
-      uses: aurelien-baudet/workflow-dispatch@v2
-      if: ${{ github.event_name == 'release' }}
-      with:
-        token: ${{ secrets.DEPLOYMENT_PAT }}
-        workflow: Bump Service
-        inputs: '{"service": "user-service", "tag": "${{ github.event.release.tag_name }}"}'
-        repo: TKOaly/tko-aly-k8s-configs
-        ref: main
+      - name: Trigger deployment
+        uses: aurelien-baudet/workflow-dispatch@v2
+        if: ${{ github.event_name == 'release' }}
+        with:
+          token: ${{ secrets.DEPLOYMENT_PAT }}
+          workflow: Bump Service
+          inputs: '{"service": "user-service", "tag": "${{ github.event.release.tag_name }}"}'
+          repo: TKOaly/tko-aly-k8s-configs
+          ref: main

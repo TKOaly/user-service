@@ -1,15 +1,13 @@
-import express, { RequestHandler, Router } from "express";
+import { RequestHandler, Router } from "express";
 import PricingDao from "../dao/PricingDao";
 import { MembershipType } from "../enum/Membership";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import PricingService, { Season } from "../services/PricingService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { AuthorizedRequestHandler } from "../utils/AuthorizeMiddleware";
 import ServiceError from "../utils/ServiceError";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
-
-type IASRequestHandler = (req: IASRequest, res: express.Response, next: express.NextFunction) => void;
 
 const isMembershipType = (value: string): value is MembershipType =>
   ["jasen", "kannatusjasen", "kunniajasen", "ulkojasen"].includes(value);
@@ -23,7 +21,7 @@ type UpdateSeasonPricesBody = {
   }[];
 };
 
-const validateUpdateSeasonPricesBody = (body: any): body is UpdateSeasonPricesBody => {
+const validateUpdateSeasonPricesBody = (body: unknown): body is UpdateSeasonPricesBody => {
   if (typeof body !== "object" || body === null) {
     return false;
   }
@@ -40,17 +38,24 @@ const validateUpdateSeasonPricesBody = (body: any): body is UpdateSeasonPricesBo
     return false;
   }
 
-  const validateItem = (item: any) => {
+  const validateItem = (item: unknown) => {
     if (typeof item !== "object" || item === null) return false;
 
-    if (typeof item.membership !== "string" || typeof item.price !== "number" || typeof item.seasons !== "number") {
+    if (
+      !("membership" in item) ||
+      typeof item.membership !== "string" ||
+      !("price" in item) ||
+      typeof item.price !== "number" ||
+      !("seasons" in item) ||
+      typeof item.seasons !== "number"
+    ) {
       return false;
     }
 
     return true;
   };
 
-  if (body.prices.some((item: any) => !validateItem(item))) {
+  if (body.prices.some(item => !validateItem(item))) {
     return false;
   }
 
@@ -79,7 +84,7 @@ class UserController implements Controller {
     } else if (req.params.season) {
       try {
         season = parseInt(req.params.season.toString(), 10);
-      } catch (_err) {
+      } catch {
         throw new ServiceError(400, 'invalid value for route parameter "season"');
       }
     } else {
@@ -102,6 +107,10 @@ class UserController implements Controller {
       try {
         seasons = parseInt(req.query.seasons.toString(), 10);
       } catch (err) {
+        if (!(err instanceof ServiceError)) {
+          throw err;
+        }
+
         throw new ServiceError(400, 'invalid value for query parameter "seasons"');
       }
     }
@@ -116,7 +125,7 @@ class UserController implements Controller {
     res.json(new ServiceResponse(result));
   };
 
-  updateSeasonPrices: IASRequestHandler = async (req, res) => {
+  updateSeasonPrices: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
       res.status(403).json(new ServiceResponse(null, "Forbidden"));
       return;
@@ -151,7 +160,7 @@ class UserController implements Controller {
     router.get("/prices/:season(\\d+|next|current)?", this.findPricings);
     router.patch(
       "/prices/:season(\\d+|next|current)?",
-      AuthorizeMiddleware.authorize(true) as RequestHandler,
+      AuthorizeMiddleware.authorize(true),
       this.updateSeasonPrices as RequestHandler,
     );
 

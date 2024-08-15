@@ -1,20 +1,13 @@
-import chaiHttp from "chai-http";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import * as JWT from "jsonwebtoken";
-import "mocha";
 import payments from "../../seeds/seedData/payments";
+import request from "supertest";
 import app from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
-import { knexInstance } from "../../src/Db";
+import { knexInstance as knex } from "../../src/Db";
+import { omit } from "lodash";
 
-import chai = require("chai");
 process.env.NODE_ENV = "test";
-
-// Knex instance
-const knex = knexInstance;
-
-const should = chai.should();
-
-chai.use(chaiHttp);
 
 const url = "/api/payments";
 
@@ -37,138 +30,117 @@ const generateToken = (
 
 describe("PaymentController", () => {
   // Roll back
-  beforeEach(done => {
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
+    await knex.seed.run();
   });
 
   // After each
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
   describe("Returns all payments", () => {
-    it("GET /api/payments : As an authenticated user, returns all payments", done => {
-      chai
-        .request(app)
+    test("GET /api/payments : As an authenticated user, returns all payments", async () => {
+      const res = await request(app)
         .get(url)
-        .set("Authorization", "Bearer " + generateToken(2))
-        .end((err, res) => {
-          should.not.exist(err);
-          should.exist(res.body.ok);
-          should.exist(res.body.payload);
-          should.not.exist(res.body.message);
-          res.status.should.equal(200);
-          res.body.payload.length.should.equal(payments.length);
-          res.body.ok.should.equal(true);
+        .set("Authorization", "Bearer " + generateToken(2));
 
-          for (let i = 0; i < res.body.payload.length; i++) {
-            should.exist(res.body.payload[i]);
-            should.exist(res.body.payload[i].id);
-            should.exist(res.body.payload[i].payer_id);
-            should.exist(res.body.payload[i].confirmer_id);
-            should.exist(res.body.payload[i].created);
-            should.exist(res.body.payload[i].reference_number);
-            should.exist(res.body.payload[i].amount);
-            should.exist(res.body.payload[i].valid_until);
-            should.exist(res.body.payload[i].paid);
-            should.exist(res.body.payload[i].payment_type);
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.message).toBeNull();
+      expect(res.status).to.equal(200);
+      expect(res.body.payload.length).to.equal(payments.length);
+      expect(res.body.ok).to.equal(true);
 
-            const payment_2: PaymentDatabaseObject = payments[i];
-            res.body.payload[i].id.should.equal(payment_2.id);
-            res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
-            res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
-            Date.parse(res.body.payload[i].created).should.equal(Date.parse(payment_2.created!.toLocaleDateString()));
-            res.body.payload[i].reference_number.should.equal(payment_2.reference_number);
-            parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
-            Date.parse(res.body.payload[i].valid_until).should.equal(
-              Date.parse(payment_2.valid_until!.toLocaleDateString()),
-            );
-            Date.parse(res.body.payload[i].paid).should.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
-            res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
-          }
-          done();
-        });
+      for (let i = 0; i < res.body.payload.length; i++) {
+        expect(res.body.payload[i]).toBeDefined();
+        expect(res.body.payload[i].id).toBeDefined();
+        expect(res.body.payload[i].payer_id).toBeDefined();
+        expect(res.body.payload[i].confirmer_id).toBeDefined();
+        expect(res.body.payload[i].created).toBeDefined();
+        expect(res.body.payload[i].reference_number).toBeDefined();
+        expect(res.body.payload[i].amount).toBeDefined();
+        expect(res.body.payload[i].valid_until).toBeDefined();
+        expect(res.body.payload[i].paid).toBeDefined();
+        expect(res.body.payload[i].payment_type).toBeDefined();
+
+        const payment_2: PaymentDatabaseObject = payments[i];
+        expect(res.body.payload[i].id).to.equal(payment_2.id);
+        expect(res.body.payload[i].payer_id).to.equal(payment_2.payer_id);
+        expect(res.body.payload[i].confirmer_id).to.equal(payment_2.confirmer_id);
+        expect(Date.parse(res.body.payload[i].created)).to.equal(Date.parse(payment_2.created!.toLocaleDateString()));
+        expect(res.body.payload[i].reference_number).to.equal(payment_2.reference_number);
+        expect(parseFloat(res.body.payload[i].amount)).to.equal(payment_2.amount);
+        expect(Date.parse(res.body.payload[i].valid_until)).to.equal(
+          Date.parse(payment_2.valid_until!.toLocaleDateString()),
+        );
+        expect(Date.parse(res.body.payload[i].paid)).to.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
+        expect(res.body.payload[i].payment_type).to.equal(payment_2.payment_type);
+      }
     });
 
-    it("GET /api/payments : As an unauthenticated user, returns unauthorized", done => {
-      chai
-        .request(app)
-        .get(url)
-        .end((_, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+    test("GET /api/payments : As an unauthenticated user, returns unauthorized", async () => {
+      const res = await request(app).get(url);
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
   });
 
   describe("Returns a single payment", () => {
-    it("GET /api/payments/{id} : As an authenticated user, returns a single payment", done => {
-      chai
-        .request(app)
+    test("GET /api/payments/{id} : As an authenticated user, returns a single payment", async () => {
+      const res = await request(app)
         .get(url + "/1")
-        .set("Authorization", "Bearer " + generateToken(1))
-        .end((_, res) => {
-          res.status.should.equal(200);
-          should.exist(res.body.ok);
-          should.exist(res.body.payload);
-          should.not.exist(res.body.message);
-          should.exist(res.body.payload.id);
-          should.exist(res.body.payload.payer_id);
-          should.exist(res.body.payload.confirmer_id);
-          should.exist(res.body.payload.created);
-          should.exist(res.body.payload.reference_number);
-          should.exist(res.body.payload.amount);
-          should.exist(res.body.payload.valid_until);
-          should.exist(res.body.payload.paid);
-          should.exist(res.body.payload.payment_type);
-          res.body.ok.should.equal(true);
-          const payment_2: PaymentDatabaseObject = payments[0];
-          res.body.payload.id.should.equal(payment_2.id);
-          res.body.payload.payer_id.should.equal(payment_2.payer_id);
-          res.body.payload.confirmer_id.should.equal(payment_2.confirmer_id);
-          Date.parse(res.body.payload.created).should.equal(Date.parse(payment_2.created!.toLocaleDateString()));
-          res.body.payload.reference_number.should.equal(payment_2.reference_number);
-          parseFloat(res.body.payload.amount).should.equal(payment_2.amount);
-          Date.parse(res.body.payload.valid_until).should.equal(
-            Date.parse(payment_2.valid_until!.toLocaleDateString()),
-          );
-          Date.parse(res.body.payload.paid).should.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
-          res.body.payload.payment_type.should.equal(payment_2.payment_type);
-          done();
-        });
+        .set("Authorization", "Bearer " + generateToken(1));
+
+      expect(res.status).to.equal(200);
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.message).toBeNull();
+      expect(res.body.payload.id).toBeDefined();
+      expect(res.body.payload.payer_id).toBeDefined();
+      expect(res.body.payload.confirmer_id).toBeDefined();
+      expect(res.body.payload.created).toBeDefined();
+      expect(res.body.payload.reference_number).toBeDefined();
+      expect(res.body.payload.amount).toBeDefined();
+      expect(res.body.payload.valid_until).toBeDefined();
+      expect(res.body.payload.paid).toBeDefined();
+      expect(res.body.payload.payment_type).toBeDefined();
+      expect(res.body.ok).to.equal(true);
+      const payment_2: PaymentDatabaseObject = payments[0];
+      expect(res.body.payload.id).to.equal(payment_2.id);
+      expect(res.body.payload.payer_id).to.equal(payment_2.payer_id);
+      expect(res.body.payload.confirmer_id).to.equal(payment_2.confirmer_id);
+      expect(Date.parse(res.body.payload.created)).to.equal(Date.parse(payment_2.created!.toLocaleDateString()));
+      expect(res.body.payload.reference_number).to.equal(payment_2.reference_number);
+      expect(parseFloat(res.body.payload.amount)).to.equal(payment_2.amount);
+      expect(Date.parse(res.body.payload.valid_until)).to.equal(
+        Date.parse(payment_2.valid_until!.toLocaleDateString()),
+      );
+      expect(Date.parse(res.body.payload.paid)).to.equal(Date.parse(payment_2.paid!.toLocaleDateString()));
+      expect(res.body.payload.payment_type).to.equal(payment_2.payment_type);
     });
 
-    it("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", done => {
-      chai
-        .request(app)
-        .get(url + "/1")
-        .end((_, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+    test("GET /api/payments/{id} : As an unauthenticated user, returns unauthorized", async () => {
+      const res = await request(app).get(url + "/1");
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
   });
 
   describe("Adds a new payment", () => {
-    it("POST /api/payments : As an unauthenticated user, returns unauthorized", done => {
+    test("POST /api/payments : As an unauthenticated user, returns unauthorized", async () => {
       const newPayment: Omit<PaymentDatabaseObject, "id"> = {
         payer_id: 2,
         confirmer_id: 1,
@@ -180,182 +152,166 @@ describe("PaymentController", () => {
         membership_applied_for: "jasen",
         reference_number: "123456789",
       };
-      chai
-        .request(app)
-        .post(url)
-        .send(newPayment)
-        .end((_, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+      const res = await request(app).post(url).send(newPayment);
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
 
-    it("POST /api/payments : As an authenticated user, adds a new payment", done => {
+    test("POST /api/payments : As an authenticated user, adds a new payment", async () => {
       const newPayment = {
         payer_id: 2,
         seasons: 3,
         payment_type: "tilisiirto",
         membership_applied_for: "jasen",
       };
-      chai
-        .request(app)
+
+      const res1 = await request(app)
         .post(url)
         .set("Authorization", "Bearer " + generateToken(2))
-        .send(newPayment)
-        .end((_, res) => {
-          console.log(res.body);
-          res.status.should.equal(201);
-          should.exist(res.body.ok);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.id);
-          should.exist(res.body.payload.payer_id);
-          should.exist(res.body.payload.created);
-          should.exist(res.body.payload.reference_number);
-          should.exist(res.body.payload.amount);
-          should.exist(res.body.payload.valid_until);
-          should.exist(res.body.payload.payment_type);
-          res.body.ok.should.equal(true);
-          res.body.message.should.equal("Payment created");
-          res.body.payload.id.should.equal(payments.length + 1);
-          res.body.payload.payer_id.should.equal(newPayment.payer_id);
-          parseFloat(res.body.payload.amount).should.equal(10);
-          res.body.payload.payment_type.should.equal(newPayment.payment_type);
+        .send(newPayment);
 
-          const endDate = new Date();
+      expect(res1.status).to.equal(201);
+      expect(res1.body.ok).toBeDefined();
+      expect(res1.body.payload).toBeDefined();
+      expect(res1.body.payload.id).toBeDefined();
+      expect(res1.body.payload.payer_id).toBeDefined();
+      expect(res1.body.payload.created).toBeDefined();
+      expect(res1.body.payload.reference_number).toBeDefined();
+      expect(res1.body.payload.amount).toBeDefined();
+      expect(res1.body.payload.valid_until).toBeDefined();
+      expect(res1.body.payload.payment_type).toBeDefined();
+      expect(res1.body.ok).to.equal(true);
+      expect(res1.body.message).to.equal("Payment created");
+      expect(res1.body.payload.id).to.equal(payments.length + 1);
+      expect(res1.body.payload.payer_id).to.equal(newPayment.payer_id);
+      expect(parseFloat(res1.body.payload.amount)).to.equal(10);
+      expect(res1.body.payload.payment_type).to.equal(newPayment.payment_type);
 
-          endDate.setMonth(6);
-          endDate.setDate(31);
-          endDate.setHours(23);
-          endDate.setMinutes(59);
-          endDate.setSeconds(59);
-          endDate.setMilliseconds(0);
+      const endDate = new Date();
 
-          if (endDate.valueOf() >= Date.now()) {
-            endDate.setFullYear(endDate.getFullYear() - 1);
-          }
+      endDate.setMonth(6);
+      endDate.setDate(31);
+      endDate.setHours(23);
+      endDate.setMinutes(59);
+      endDate.setSeconds(59);
+      endDate.setMilliseconds(0);
 
-          endDate.setFullYear(endDate.getFullYear() + newPayment.seasons);
+      if (endDate.valueOf() >= Date.now()) {
+        endDate.setFullYear(endDate.getFullYear() - 1);
+      }
 
-          res.body.payload.valid_until.should.equal(endDate.toISOString());
+      endDate.setFullYear(endDate.getFullYear() + newPayment.seasons);
 
-          // Next, get all post and check for a match
-          chai
-            .request(app)
-            .get(url)
-            .set("Authorization", "Bearer " + generateToken(2))
-            .end((err, res) => {
-              should.not.exist(err);
-              should.exist(res.body.ok);
-              should.exist(res.body.payload);
-              should.not.exist(res.body.message);
-              res.status.should.equal(200);
-              // Check addition of post
-              res.body.payload.length.should.equal(payments.length + 1);
-              res.body.ok.should.equal(true);
+      expect(res1.body.payload.valid_until).to.equal(endDate.toISOString());
 
-              // Loop through
-              // Old entries
-              for (let i = 0; i < res.body.payload.length - 1; i++) {
-                should.exist(res.body.payload[i]);
-                should.exist(res.body.payload[i].id);
-                should.exist(res.body.payload[i].payer_id);
-                should.exist(res.body.payload[i].confirmer_id);
-                should.exist(res.body.payload[i].created);
-                should.exist(res.body.payload[i].reference_number);
-                should.exist(res.body.payload[i].amount);
-                should.exist(res.body.payload[i].valid_until);
-                should.exist(res.body.payload[i].paid);
-                should.exist(res.body.payload[i].payment_type);
+      // Next, get all post and check for a match
+      const res2 = await request(app)
+        .get(url)
+        .set("Authorization", "Bearer " + generateToken(2));
 
-                const payment_2: PaymentDatabaseObject = payments[i];
-                res.body.payload[i].id.should.equal(payment_2.id);
-                res.body.payload[i].payer_id.should.equal(payment_2.payer_id);
-                res.body.payload[i].confirmer_id.should.equal(payment_2.confirmer_id);
-                /* Date.parse(res.body.payload[i].created).should.equal(
-                  Date.parse(payment_2.created.toLocaleDateString())
-                ); */
-                parseFloat(res.body.payload[i].amount).should.equal(payment_2.amount);
-                /* Date.parse(res.body.payload[i].valid_until).should.equal(
-                  Date.parse(payment_2.valid_until.toLocaleDateString())
-                );
-                Date.parse(res.body.payload[i].paid).should.equal(
-                  Date.parse(payment_2.paid.toLocaleDateString())
-                ); */
-                res.body.payload[i].payment_type.should.equal(payment_2.payment_type);
-              }
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.payload).toBeDefined();
+      expect(res2.body.message).toBeNull();
+      expect(res2.status).to.equal(200);
+      // Check addition of post
+      expect(res2.body.payload.length).to.equal(payments.length + 1);
+      expect(res2.body.ok).to.equal(true);
 
-              // New entry
-              const payment_2 = res.body.payload[2];
-              payment_2.id.should.equal(3);
-              payment_2.payer_id.should.equal(newPayment.payer_id);
-              /* Date.parse(payment_2.created).should.equal(
-                Date.parse(newPayment.created.toLocaleDateString())
-              ); */
-              parseFloat(payment_2.amount).should.equal(10);
-              /* Date.parse(payment_2.valid_until).should.equal(
-                Date.parse(newPayment.valid_until.toLocaleDateString())
-              );
-              Date.parse(payment_2.paid).should.equal(
-                Date.parse(newPayment.paid.toLocaleDateString())
-              ); */
-              payment_2.payment_type.should.equal(newPayment.payment_type);
-              done();
-            });
-        });
+      // Loop through
+      // Old entries
+      for (let i = 0; i < res2.body.payload.length - 1; i++) {
+        expect(res2.body.payload[i]).toBeDefined();
+        expect(res2.body.payload[i].id).toBeDefined();
+        expect(res2.body.payload[i].payer_id).toBeDefined();
+        expect(res2.body.payload[i].confirmer_id).toBeDefined();
+        expect(res2.body.payload[i].created).toBeDefined();
+        expect(res2.body.payload[i].reference_number).toBeDefined();
+        expect(res2.body.payload[i].amount).toBeDefined();
+        expect(res2.body.payload[i].valid_until).toBeDefined();
+        expect(res2.body.payload[i].paid).toBeDefined();
+        expect(res2.body.payload[i].payment_type).toBeDefined();
+
+        const payment_2: PaymentDatabaseObject = payments[i];
+        expect(res2.body.payload[i].id).to.equal(payment_2.id);
+        expect(res2.body.payload[i].payer_id).to.equal(payment_2.payer_id);
+        expect(res2.body.payload[i].confirmer_id).to.equal(payment_2.confirmer_id);
+        /* Date.parse(res2.body.payload[i].created).should.equal(
+          Date.parse(payment_2.created.toLocaleDateString())
+        ); */
+        expect(parseFloat(res2.body.payload[i].amount)).to.equal(payment_2.amount);
+        /* Date.parse(res2.body.payload[i].valid_until).should.equal(
+          Date.parse(payment_2.valid_until.toLocaleDateString())
+        );
+        Date.parse(res2.body.payload[i].paid).should.equal(
+          Date.parse(payment_2.paid.toLocaleDateString())
+        ); */
+        expect(res2.body.payload[i].payment_type).to.equal(payment_2.payment_type);
+      }
+
+      // New entry
+      const payment_2 = res2.body.payload[2];
+      expect(payment_2.id).to.equal(3);
+      expect(payment_2.payer_id).to.equal(newPayment.payer_id);
+      /* Date.parse(payment_2.created).should.equal(
+        Date.parse(newPayment.created.toLocaleDateString())
+      ); */
+      expect(parseFloat(payment_2.amount)).to.equal(10);
+      /* Date.parse(payment_2.valid_until).should.equal(
+        Date.parse(newPayment.valid_until.toLocaleDateString())
+      );
+      Date.parse(payment_2.paid).should.equal(
+        Date.parse(newPayment.paid.toLocaleDateString())
+      ); */
+      expect(payment_2.payment_type).to.equal(newPayment.payment_type);
     });
   });
 
   describe("Modifies a payment", () => {
-    it("PATCH /api/payments/{id} : As an authenticated user, can modify a payment with valid information", done => {
+    test("PATCH /api/payments/{id} : As an authenticated user, can modify a payment with valid information", async () => {
       // First, fetch a payment that will be modified.
-      chai
-        .request(app)
+      const res1 = await request(app)
         .get(url + "/1")
+        .set("Authorization", "Bearer " + generateToken(1));
+
+      const payment: PaymentDatabaseObject = res1.body.payload;
+      // Set reference number and payment type, except them to be changed
+      const newRefNum = "00000001111111";
+      const newPaymentType = "HelloWorld";
+      // Then, do a PATCH request
+      const res2 = await request(app)
+        .patch(url + "/" + payment.id)
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((_, res) => {
-          const payment: PaymentDatabaseObject = res.body.payload;
-          // Set reference number and payment type, except them to be changed
-          const newRefNum = "00000001111111";
-          const newPaymentType = "HelloWorld";
-          // Then, do a PATCH request
-          chai
-            .request(app)
-            .patch(url + "/" + payment.id)
-            .set("Authorization", "Bearer " + generateToken(1))
-            .send(
-              Object.assign({}, payment, {
-                reference_number: newRefNum,
-                payment_type: newPaymentType,
-              }),
-            )
-            .end((_, res) => {
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.exist(res.body.payload);
-              should.exist(res.body.payload.id);
-              should.exist(res.body.payload.payer_id);
-              should.exist(res.body.payload.created);
-              should.exist(res.body.payload.reference_number);
-              should.exist(res.body.payload.amount);
-              should.exist(res.body.payload.valid_until);
-              should.exist(res.body.payload.paid);
-              should.exist(res.body.payload.payment_type);
-              res.body.payload.payment_type.should.equal(newPaymentType);
-              res.body.payload.reference_number.should.equal(newRefNum);
-              res.status.should.equal(200);
-              res.body.ok.should.equal(true);
-              res.body.message.should.equal("Payment modified");
-              done();
-            });
-        });
+        .send(
+          Object.assign({}, payment, {
+            reference_number: newRefNum,
+            payment_type: newPaymentType,
+          }),
+        );
+
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.message).toBeDefined();
+      expect(res2.body.payload).toBeDefined();
+      expect(res2.body.payload.id).toBeDefined();
+      expect(res2.body.payload.payer_id).toBeDefined();
+      expect(res2.body.payload.created).toBeDefined();
+      expect(res2.body.payload.reference_number).toBeDefined();
+      expect(res2.body.payload.amount).toBeDefined();
+      expect(res2.body.payload.valid_until).toBeDefined();
+      expect(res2.body.payload.paid).toBeDefined();
+      expect(res2.body.payload.payment_type).toBeDefined();
+      expect(res2.body.payload.payment_type).to.equal(newPaymentType);
+      expect(res2.body.payload.reference_number).to.equal(newRefNum);
+      expect(res2.status).to.equal(200);
+      expect(res2.body.ok).to.equal(true);
+      expect(res2.body.message).to.equal("Payment modified");
     });
 
-    it("PATCH /api/payments/{id} : As an unauthenticated user, returns unauthorized", done => {
+    test("PATCH /api/payments/{id} : As an unauthenticated user, returns unauthorized", async () => {
       const newPayment: PaymentDatabaseObject = {
         id: 1,
         payer_id: 2,
@@ -368,69 +324,57 @@ describe("PaymentController", () => {
         payment_type: "jasenmaksu",
         membership_applied_for: "jasen",
       };
-      chai
-        .request(app)
+
+      const res = await request(app)
         .patch(url + "/" + newPayment.id)
-        .send(newPayment)
-        .end((_, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Unauthorized");
-          res.status.should.equal(401);
-          done();
-        });
+        .send(newPayment);
+
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Unauthorized");
+      expect(res.status).to.equal(401);
     });
 
-    it("PATCH /api/payments/{id} : As an unauthenticated user, cannot modify a payment, with missing request parameters", done => {
+    test("PATCH /api/payments/{id} : As an unauthenticated user, cannot modify a payment, with missing request parameters", async () => {
       // First, fetch a payment that will be modified.
-      chai
-        .request(app)
+      const res1 = await request(app)
         .get(url + "/1")
+        .set("Authorization", "Bearer " + generateToken(1));
+
+      const payment: PaymentDatabaseObject = {
+        id: res1.body.payload.id,
+        amount: res1.body.payload.amount,
+        confirmer_id: res1.body.payload.confirmer_id,
+        created: res1.body.payload.created,
+        paid: res1.body.payload.created,
+        payer_id: res1.body.payload.payer_id,
+        payment_type: res1.body.payload.payment_type,
+        reference_number: res1.body.payload.payment_type,
+        valid_until: res1.body.payload.valid_until,
+        membership_applied_for: res1.body.payload.membership_applied_for,
+      };
+      // Set reference number and payment type, except them to be changed
+      const newRefNum = "00000001111111";
+      const newPaymentType = "HelloWorld";
+
+      // Then, do a PATCH request
+      const res2 = await request(app)
+        .patch(url + "/" + payment.id)
         .set("Authorization", "Bearer " + generateToken(1))
-        .end((_, res) => {
-          const payment: PaymentDatabaseObject = {
-            id: res.body.payload.id,
-            amount: res.body.payload.amount,
-            confirmer_id: res.body.payload.confirmer_id,
-            created: res.body.payload.created,
-            paid: res.body.payload.created,
-            payer_id: res.body.payload.payer_id,
-            payment_type: res.body.payload.payment_type,
-            reference_number: res.body.payload.payment_type,
-            valid_until: res.body.payload.valid_until,
-            membership_applied_for: res.body.payload.membership_applied_for,
-          };
-          // Set reference number and payment type, except them to be changed
-          const newRefNum = "00000001111111";
-          const newPaymentType = "HelloWorld";
-
-          // PATCH excepts all object params to exist
-          // @ts-expect-error
-          delete payment.confirmer_id;
-
-          // Then, do a PATCH request
-          chai
-            .request(app)
-            .patch(url + "/" + payment.id)
-            .set("Authorization", "Bearer " + generateToken(1))
-            .send(
-              Object.assign({}, payment, {
-                reference_number: newRefNum,
-                payment_type: newPaymentType,
-              }),
-            )
-            .end((_, res) => {
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.not.exist(res.body.payload);
-              res.status.should.equal(400);
-              res.body.ok.should.equal(false);
-              res.body.message.should.equal("Failed to modify payment: missing request parameters");
-              done();
-            });
+        .send({
+          ...omit(payment, ["confirmer_id"]),
+          reference_number: newRefNum,
+          payment_type: newPaymentType,
         });
+
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.message).toBeDefined();
+      expect(res2.body.payload).toBeNull();
+      expect(res2.status).to.equal(400);
+      expect(res2.body.ok).to.equal(false);
+      expect(res2.body.message).to.equal("Failed to modify payment: missing request parameters");
     });
   });
 });

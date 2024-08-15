@@ -1,4 +1,4 @@
-import "mocha";
+import { describe, test } from "vitest";
 
 process.env.NODE_ENV = "test";
 // const chai: Chai.ChaiStatic = require("chai");
@@ -37,7 +37,5 @@ const mockExpress = {
 };
 */
 describe("AuthorizeMiddleware", () => {
-  it("Example test", done => {
-    done();
-  });
+  test("Example test", () => {});
 });

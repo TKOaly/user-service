@@ -1,47 +1,22 @@
-import "mocha";
+import { describe, test, expect } from "vitest";
+import express from "express";
 import CachingMiddleware from "../../src/utils/CachingMiddleware";
+import request from "supertest";
 
 process.env.NODE_ENV = "test";
 
-const headers: Array<{ name: string; val: string }> = [];
-
-let calledNext = false;
-let nextCount = 0;
-
-// Mocked express
-// tslint:disable-next-line:typedef
-const mockExpress = {
-  req: {
-    cookies: {},
-    headers: {},
-  },
-  res: {
-    header: (name: string, val: string): void => {
-      headers.push({ name, val });
-    },
-  },
-  next: (): void => {
-    nextCount++;
-    calledNext = true;
-  },
-};
-
 describe("CachingMiddleware", () => {
-  it("Sets headers correctly", done => {
-    // @ts-ignore
-    CachingMiddleware(mockExpress.req, mockExpress.res, mockExpress.next);
-    nextCount.should.equal(1);
-    calledNext.should.equal(true);
-    headers.length.should.equal(3);
-    const cacheHeader: any = headers[0];
-    cacheHeader.name.should.equal("Cache-Control");
-    cacheHeader.val.should.equal("private, no-cache, no-store, must-revalidate");
-    const expiresHeader: any = headers[1];
-    expiresHeader.name.should.equal("Expires");
-    expiresHeader.val.should.equal("-1");
-    const pragmaHeader: any = headers[2];
-    pragmaHeader.name.should.equal("Pragma");
-    pragmaHeader.val.should.equal("no-cache");
-    done();
+  test("Sets headers correctly", async () => {
+    const app = express();
+
+    app.use(CachingMiddleware);
+
+    const res = await request(app).get("/");
+
+    expect(res.headers).toMatchObject({
+      "cache-control": "private, no-cache, no-store, must-revalidate",
+      expires: "-1",
+      pragma: "no-cache",
+    });
   });
 });

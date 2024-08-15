@@ -75,12 +75,7 @@ class UserService {
     }
 
     const results = await UserDao.findAll(fields, conditionQuery);
-    if (!results.length) {
-      throw new ServiceError(404, "No results returned");
-    }
 
-    // @ts-ignore
-    // FIXME: Wrong typings
     return results.map(u => new UserPayment(u));
   }
 
@@ -114,7 +109,7 @@ class UserService {
       await UserDao.reserveUsername(username);
       return true;
     } catch (err) {
-      if ("code" in err && err.code === "ER_DUP_ENTRY") {
+      if (typeof err === "object" && err && "code" in err && err.code === "ER_DUP_ENTRY") {
         return false;
       }
 
@@ -127,7 +122,7 @@ class UserService {
       await UserDao.reserveEmail(email);
       return true;
     } catch (err) {
-      if ("code" in err && err.code === "ER_DUP_ENTRY") {
+      if (typeof err === "object" && err && "code" in err && err.code === "ER_DUP_ENTRY") {
         return false;
       }
 

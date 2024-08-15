@@ -1,11 +1,11 @@
-import "mocha";
+import { describe, beforeEach, test, expect } from "vitest";
 import Service from "../../src/models/Service";
 
 process.env.NODE_ENV = "test";
 let service: Service;
 
 describe("Service model", () => {
-  beforeEach(done => {
+  beforeEach(() => {
     service = new Service({
       id: 1,
       data_permissions: Math.pow(2, 6),
@@ -17,27 +17,29 @@ describe("Service model", () => {
       modified: new Date(2017, 1, 1),
       secret: "unsecure",
     });
-    done();
   });
 
-  it("Sets data correctly", done => {
-    service.id.should.equal(1);
-    service.dataPermissions.should.equal(Math.pow(2, 6));
-    service.displayName.should.equal("Test service");
-    service.redirectUrl.should.equal("https://localhost");
-    service.serviceIdentifier.should.equal("1-2-3-4-5");
-    service.serviceName.should.equal("testService");
-    done();
+  test("Sets data correctly", () => {
+    expect(service).toMatchObject({
+      id: 1,
+      dataPermissions: Math.pow(2, 6),
+      displayName: "Test service",
+      redirectUrl: "https://localhost",
+      serviceIdentifier: "1-2-3-4-5",
+      serviceName: "testService",
+    });
   });
 
-  it("getDatabaseObject() returns a correct object", done => {
+  test("getDatabaseObject() returns a correct object", () => {
     const dbObj = service.getDatabaseObject();
-    dbObj.id!.should.equal(service.id);
-    dbObj.data_permissions!.should.equal(service.dataPermissions);
-    dbObj.display_name!.should.equal(service.displayName);
-    dbObj.redirect_url!.should.equal(service.redirectUrl);
-    dbObj.service_identifier!.should.equal(service.serviceIdentifier);
-    dbObj.service_name!.should.equal(service.serviceName);
-    done();
+
+    expect(dbObj).toMatchObject({
+      id: service.id,
+      data_permissions: service.dataPermissions,
+      display_name: service.displayName,
+      redirect_url: service.redirectUrl,
+      service_identifier: service.serviceIdentifier,
+      service_name: service.serviceName,
+    });
   });
 });

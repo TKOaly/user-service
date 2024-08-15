@@ -1,32 +1,27 @@
-import "mocha";
+import { describe, test, expect } from "vitest";
 import { stringToBoolean } from "../../src/utils/UserHelpers";
 
 process.env.NODE_ENV = "test";
 
 describe("stringToBoolean()", () => {
-  it("'0' returns false", done => {
+  test("'0' returns false", () => {
     const returnValue = stringToBoolean("0");
-    returnValue.should.equal(false);
-    done();
+    expect(returnValue).to.equal(false);
   });
-  it("'1' returns true", done => {
+  test("'1' returns true", () => {
     const returnValue = stringToBoolean("1");
-    returnValue.should.equal(true);
-    done();
+    expect(returnValue).to.equal(true);
   });
-  it("'false' returns false", done => {
+  test("'false' returns false", () => {
     const returnValue = stringToBoolean("false");
-    returnValue.should.equal(false);
-    done();
+    expect(returnValue).to.equal(false);
   });
-  it("'true' returns true", done => {
+  test("'true' returns true", () => {
     const returnValue = stringToBoolean("true");
-    returnValue.should.equal(true);
-    done();
+    expect(returnValue).to.equal(true);
   });
-  it("anything else returns false", done => {
+  test("anything else returns false", () => {
     const returnValue = stringToBoolean("shouldReturnFalse");
-    returnValue.should.equal(false);
-    done();
+    expect(returnValue).to.equal(false);
   });
 });

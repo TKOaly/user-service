@@ -8,7 +8,7 @@ module.exports = [
     data_permissions: 6143,
     created: new Date(),
     modified: new Date(),
-    secret: "secret" 
+    secret: "secret",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ module.exports = [
     data_permissions: 89,
     created: new Date(),
     modified: new Date(),
-    secret: null
+    secret: null,
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ module.exports = [
     data_permissions: 514,
     created: new Date(),
     modified: new Date(),
-    secret: null
+    secret: null,
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ module.exports = [
     data_permissions: 514,
     created: new Date(),
     modified: new Date(),
-    secret: null
+    secret: null,
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ module.exports = [
     data_permissions: 514,
     created: new Date(),
     modified: new Date(),
-    secret: null
+    secret: null,
   },
   {
     id: 6,
@@ -63,6 +63,6 @@ module.exports = [
     data_permissions: 262143,
     created: new Date(),
     modified: new Date(),
-    secret: "secret"
+    secret: "secret",
   },
 ];

@@ -1,4 +1,4 @@
-import Knex from "knex";
+import { Knex } from "knex";
 
 exports.up = async function (knex: Knex): Promise<void> {
   const hasTable = await knex.schema.hasTable("privacy_policies");

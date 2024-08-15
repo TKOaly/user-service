@@ -1,16 +1,9 @@
-import "mocha";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
+import request from "supertest";
 import app from "../../src/App";
-import { knexInstance } from "../../src/Db";
+import { knexInstance as knex } from "../../src/Db";
 
-import chai = require("chai");
-import chaiHttp = require("chai-http");
 process.env.NODE_ENV = "test";
-
-// Knex instance
-const knex = knexInstance;
-const should = chai.should();
-
-chai.use(chaiHttp);
 
 const authUrl = "/api/auth";
 const kjyrIdentifier = "433f7cd9-e7db-42fb-aceb-c3716c6ef2b7";
@@ -28,318 +21,246 @@ const incorrectCreds: { [value: string]: string } = {
 
 describe("AuthController", () => {
   // Roll back
-  beforeEach("Knex migrate & seed", done => {
-    knex.migrate.rollback().then(() => {
-      knex.migrate.latest().then(() => {
-        knex.seed.run().then(() => {
-          done();
-        });
-      });
-    });
+  beforeEach(async () => {
+    await knex.migrate.rollback();
+    await knex.migrate.latest();
+    await knex.seed.run();
   });
 
   // After each
-  afterEach("Knex migrate rollback", done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
   describe("Authentication", () => {
-    it("POST /api/auth/authenticate : Authenticates with correct credentials", done => {
-      chai
-        .request(app)
+    test("POST /api/auth/authenticate : Authenticates with correct credentials", async () => {
+      const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
-          done();
-        });
+        .send(correctCreds);
+      expect(res.status).to.equal(200);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.payload.token).toBeDefined();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", done => {
-      chai
-        .request(app)
+    test("POST /api/auth/authenticate : Does not authenticate with incorrect credentials", async () => {
+      const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(incorrectCreds)
-        .end((err, res) => {
-          should.exist(res.body.ok);
-          should.exist(res.body.message);
-          should.not.exist(res.body.payload);
-          res.status.should.equal(401);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Invalid username or password");
-          done();
-        });
+        .send(incorrectCreds);
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.message).toBeDefined();
+      expect(res.body.payload).toBeNull();
+      expect(res.status).to.equal(401);
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Invalid username or password");
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing username", done => {
-      chai
-        .request(app)
+    test("POST /api/auth/authenticate : Does not authenticate with missing username", async () => {
+      const res = await request(app)
         .post(authUrl + "/authenticate")
         .send({
           password: "test",
           serviceIdentifier: kjyrIdentifier,
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(400);
-          should.not.exist(res.body.payload);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Invalid request params");
-          done();
         });
+      expect(res.status).to.equal(400);
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Invalid request params");
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing password", done => {
-      chai
-        .request(app)
+    test("POST /api/auth/authenticate : Does not authenticate with missing password", async () => {
+      const res = await request(app)
         .post(authUrl + "/authenticate")
         .send({
           username: "test",
           serviceIdentifier: kjyrIdentifier,
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(400);
-          should.not.exist(res.body.payload);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Invalid request params");
-          done();
         });
+      expect(res.status).to.equal(400);
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Invalid request params");
     });
 
-    it("POST /api/auth/authenticate : Does not authenticate with missing service identifier", done => {
-      chai
-        .request(app)
+    test("POST /api/auth/authenticate : Does not authenticate with missing service identifier", async () => {
+      const res = await request(app)
         .post(authUrl + "/authenticate")
         .send({
           username: "test",
           password: "test",
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(400);
-          should.not.exist(res.body.payload);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(false);
-          res.body.message.should.equal("Invalid request params");
-          done();
         });
+      expect(res.status).to.equal(400);
+      expect(res.body.payload).toBeNull();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(false);
+      expect(res.body.message).to.equal("Invalid request params");
     });
 
-    it(
+    test(
       "POST /api/auth/authenticate : Returns an error when trying to" + " authenticate with a nonexistent service",
-      done => {
-        chai
-          .request(app)
+      async () => {
+        const res = await request(app)
           .post(authUrl + "/authenticate")
           .send({
             username: "test",
             password: "test",
             serviceIdentifier: "invalidServiceIdentifier",
-          })
-          .end((err, res) => {
-            should.not.exist(err);
-            res.status.should.equal(404);
-            should.not.exist(res.body.payload);
-            should.exist(res.body.ok);
-            res.body.ok.should.equal(false);
-            res.body.message.should.equal("Service not found");
-            done();
           });
+        expect(res.status).to.equal(404);
+        expect(res.body.payload).toBeNull();
+        expect(res.body.ok).toBeDefined();
+        expect(res.body.ok).to.equal(false);
+        expect(res.body.message).to.equal("Service not found");
       },
     );
   });
 
   describe("Service check", () => {
-    it("POST /api/auth/authenticate : " + "Checks that the correct service has been authenticated to", done => {
+    test("POST /api/auth/authenticate : " + "Checks that the correct service has been authenticated to", async () => {
       // The default credentials authenticate to KJYR
-      chai
-        .request(app)
+      const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
+        .send(correctCreds);
+      expect(res.status).to.equal(200);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.payload.token).toBeDefined();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
 
-          // Token to be passed forwards
-          const token: string = res.body.payload.token;
+      // Token to be passed forwards
+      const token: string = res.body.payload.token;
 
-          // Next, check that the user is authenticated to KJYR (as an example)
-          chai
-            .request(app)
-            .get(authUrl + "/check")
-            .set("Authorization", "Bearer " + token)
-            .set("service", kjyrIdentifier)
-            .end((err, res) => {
-              should.not.exist(err);
-              res.status.should.equal(200);
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.not.exist(res.body.payload);
-              res.body.ok.should.equal(true);
-              res.body.message.should.equal("Success");
-              done();
-            });
-        });
+      // Next, check that the user is authenticated to KJYR (as an example)
+      const res2 = await request(app)
+        .get(authUrl + "/check")
+        .set("Authorization", "Bearer " + token)
+        .set("service", kjyrIdentifier);
+
+      expect(res2.status).to.equal(200);
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.message).toBeDefined();
+      expect(res2.body.payload).toBeNull();
+      expect(res2.body.ok).to.equal(true);
+      expect(res2.body.message).to.equal("Success");
     });
 
-    it(
+    test(
       "POST /api/auth/authenticate : " + "Check that the user has not been authenticated to an incorrect service",
-      done => {
+      async () => {
         // The default credentials authenticate to KJYR
-        chai
-          .request(app)
+        const res = await request(app)
           .post(authUrl + "/authenticate")
-          .send(correctCreds)
-          .end((err, res) => {
-            should.not.exist(err);
-            res.status.should.equal(200);
-            should.exist(res.body.payload);
-            should.exist(res.body.payload.token);
-            should.exist(res.body.ok);
-            res.body.ok.should.equal(true);
+          .send(correctCreds);
+        expect(res.status).to.equal(200);
+        expect(res.body.payload).toBeDefined();
+        expect(res.body.payload.token).toBeDefined();
+        expect(res.body.ok).toBeDefined();
+        expect(res.body.ok).to.equal(true);
 
-            // Token to be passed forwards
-            const token: string = res.body.payload.token;
+        // Token to be passed forwards
+        const token: string = res.body.payload.token;
 
-            // Next, check that the user is not authenticated to calendar (as an example)
-            chai
-              .request(app)
-              .get(authUrl + "/check")
-              .set("Authorization", "Bearer " + token)
-              .set("service", calendarIdentifier)
-              .end((err, res) => {
-                res.status.should.equal(403);
-                should.exist(res.body.ok);
-                should.exist(res.body.message);
-                should.not.exist(res.body.payload);
-                res.body.ok.should.equal(false);
-                res.body.message.should.equal("Not authorized to service");
+        // Next, check that the user is not authenticated to calendar (as an example)
+        const res2 = await request(app)
+          .get(authUrl + "/check")
+          .set("Authorization", "Bearer " + token)
+          .set("service", calendarIdentifier);
 
-                done();
-              });
-          });
+        expect(res2.body.ok).toBeDefined();
+        expect(res2.body.message).toBeDefined();
+        expect(res2.body.payload).toBeNull();
+        expect(res2.body.ok).to.equal(false);
+        expect(res2.body.message).to.equal("Not authorized to service");
       },
     );
 
-    it("GET /api/auth/check : Can authenticate to multiple services", done => {
+    test("GET /api/auth/check : Can authenticate to multiple services", async () => {
       // First, authenticate to KJYR
-      chai
-        .request(app)
+      const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
+        .send(correctCreds);
 
-          // Token
-          const token: string = res.body.payload.token;
+      expect(res.status).to.equal(200);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.payload.token).toBeDefined();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
 
-          // Set calendar token to request
-          const secondCreds: any = correctCreds;
-          secondCreds.serviceIdentifier = calendarIdentifier;
+      // Token
+      const token: string = res.body.payload.token;
 
-          // Secondly, authenticate to calendar
-          chai
-            .request(app)
-            .post(authUrl + "/authenticate")
-            .set("Authorization", "Bearer " + token)
-            .send(secondCreds)
-            .end((err, res) => {
-              should.not.exist(err);
-              res.status.should.equal(200);
-              should.exist(res.body.payload);
-              should.exist(res.body.payload.token);
-              should.exist(res.body.ok);
-              res.body.ok.should.equal(true);
+      // Set calendar token to request
+      const secondCreds = {
+        ...correctCreds,
+        serviceIdentifier: calendarIdentifier,
+      };
 
-              const token2: string = res.body.payload.token;
+      // Secondly, authenticate to calendar
+      const res2 = await request(app)
+        .post(authUrl + "/authenticate")
+        .set("Authorization", "Bearer " + token)
+        .send(secondCreds);
 
-              // Next, check auth for KJYR
-              chai
-                .request(app)
-                .get(authUrl + "/check")
-                .set("Authorization", "Bearer " + token2)
-                .set("service", kjyrIdentifier)
-                .end((err, res) => {
-                  should.not.exist(err);
-                  res.status.should.equal(200);
-                  should.exist(res.body.ok);
-                  should.exist(res.body.message);
-                  should.not.exist(res.body.payload);
-                  res.body.ok.should.equal(true);
-                  res.body.message.should.equal("Success");
-                  // Check calendar permission
-                  chai
-                    .request(app)
-                    .get(authUrl + "/check")
-                    .set("Authorization", "Bearer " + token2)
-                    .set("service", calendarIdentifier)
-                    .end((err, res) => {
-                      should.not.exist(err);
-                      res.status.should.equal(200);
-                      should.exist(res.body.ok);
-                      should.exist(res.body.message);
-                      should.not.exist(res.body.payload);
-                      res.body.ok.should.equal(true);
-                      res.body.message.should.equal("Success");
-                      done();
-                    });
-                });
-            });
-        });
+      expect(res2.status).to.equal(200);
+      expect(res2.body.payload).toBeDefined();
+      expect(res2.body.payload.token).toBeDefined();
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.ok).to.equal(true);
+
+      const token2: string = res2.body.payload.token;
+
+      // Next, check auth for KJYR
+      const res3 = await request(app)
+        .get(authUrl + "/check")
+        .set("Authorization", "Bearer " + token2)
+        .set("service", kjyrIdentifier);
+
+      expect(res3.status).to.equal(200);
+      expect(res3.body.ok).toBeDefined();
+      expect(res3.body.message).toBeDefined();
+      expect(res3.body.payload).toBeNull();
+      expect(res3.body.ok).to.equal(true);
+      expect(res3.body.message).to.equal("Success");
+      // Check calendar permission
+      const res4 = await request(app)
+        .get(authUrl + "/check")
+        .set("Authorization", "Bearer " + token2)
+        .set("service", calendarIdentifier);
+      expect(res4.status).to.equal(200);
+      expect(res4.body.ok).toBeDefined();
+      expect(res4.body.message).toBeDefined();
+      expect(res4.body.payload).toBeNull();
+      expect(res4.body.ok).to.equal(true);
+      expect(res4.body.message).to.equal("Success");
     });
 
-    it("GET /api/auth/check : Returns error if service is not defined", done => {
+    test("GET /api/auth/check : Returns error if service is not defined", async () => {
       // First, authenticate to KJYR
-      chai
-        .request(app)
+      const res = await request(app)
         .post(authUrl + "/authenticate")
-        .send(correctCreds)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.status.should.equal(200);
-          should.exist(res.body.payload);
-          should.exist(res.body.payload.token);
-          should.exist(res.body.ok);
-          res.body.ok.should.equal(true);
+        .send(correctCreds);
+      expect(res.status).to.equal(200);
+      expect(res.body.payload).toBeDefined();
+      expect(res.body.payload.token).toBeDefined();
+      expect(res.body.ok).toBeDefined();
+      expect(res.body.ok).to.equal(true);
 
-          // Token
-          const token: string = res.body.payload.token;
+      // Token
+      const token: string = res.body.payload.token;
 
-          // Check auth for kjyr
-          chai
-            .request(app)
-            .get(authUrl + "/check")
-            .set("Authorization", "Bearer " + token)
-            .end((err, res) => {
-              should.not.exist(err);
-              res.status.should.equal(400);
-              should.exist(res.body.ok);
-              should.exist(res.body.message);
-              should.not.exist(res.body.payload);
-              res.body.ok.should.equal(false);
-              res.body.message.should.equal("No service defined");
-              done();
-            });
-        });
+      // Check auth for kjyr
+      const res2 = await request(app)
+        .get(authUrl + "/check")
+        .set("Authorization", "Bearer " + token);
+
+      expect(res2.status).to.equal(400);
+      expect(res2.body.ok).toBeDefined();
+      expect(res2.body.message).toBeDefined();
+      expect(res2.body.payload).toBeNull();
+      expect(res2.body.ok).to.equal(false);
+      expect(res2.body.message).to.equal("No service defined");
     });
   });
 });

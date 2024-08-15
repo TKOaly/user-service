@@ -23,7 +23,7 @@ export default class ServiceToken {
         createdAt: this.createdAt,
       };
       return JWT.sign(parsedTokenContents, process.env.JWT_SECRET);
-    } catch (e) {
+    } catch {
       throw new ServiceError(500, "Failed to parse token");
     }
   }
@@ -36,7 +36,7 @@ export function stringToServiceToken(token: string) {
   let parsedToken: string | object | null = null;
   try {
     parsedToken = JWT.verify(token, process.env.JWT_SECRET);
-  } catch (e) {
+  } catch {
     throw new ServiceError(500, "Failed to parse token");
   }
   const tokenContents = parsedToken as ParsedTokenContents;

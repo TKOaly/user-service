@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return knex.schema.hasColumn("services", "display_name").then(hasDisplayName => {
     return knex.schema.hasColumn("services", "redirect_url").then(hasRedirectUrl => {
       if (!hasDisplayName && !hasRedirectUrl) {
@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   if (process.env.NODE_ENV === "production") {
     throw new Error("Do not drop database tables in production");
   }

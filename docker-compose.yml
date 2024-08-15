@@ -52,7 +52,6 @@ services:
       JWT_SECRET: unsecure
       COOKIE_DOMAIN: localhost
       DEFAULT_LOCALE: fi
-      DEBUG: knex:query
       NATS_HOST: nats
       NATS_USER: ruser
       NATS_PASSWORD: T0pS3cr3t

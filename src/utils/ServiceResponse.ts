@@ -1,5 +1,4 @@
 export default class ServiceResponse<T> {
-  // @ts-expect-error
   public ok: boolean;
   public message: string | null;
   public payload: T;
@@ -11,7 +10,10 @@ export default class ServiceResponse<T> {
       this.ok = false;
     } else if (ok !== null) {
       this.ok = ok;
+    } else {
+      this.ok = false;
     }
+
     this.message = message;
     this.payload = payload;
   }

@@ -3,13 +3,15 @@ import * as Sentry from "@sentry/node";
 import UserRoleString from "../enum/UserRoleString";
 import Controller from "../interfaces/Controller";
 import Payment from "../models/Payment";
+import { removeNonRequestedData, removeSensitiveInformation } from "../models/User";
 import AuthenticationService from "../services/AuthenticationService";
 import PaymentService from "../services/PaymentService";
 import UserService from "../services/UserService";
-import AuthorizeMiddleware, { IASRequest } from "../utils/AuthorizeMiddleware";
+import AuthorizeMiddleware, { AuthorizedRequestHandler } from "../utils/AuthorizeMiddleware";
 import ServiceResponse from "../utils/ServiceResponse";
 import { compareRoles } from "../utils/UserHelpers";
 import UserValidator, { isValidUser } from "../validators/UserValidator";
+import ServiceError from "../utils/ServiceError";
 
 class UserController implements Controller {
   public route: express.Router;
@@ -23,7 +25,7 @@ class UserController implements Controller {
   /**
    * Returns the currently logged in user's data.
    */
-  public async getMe(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getMe: AuthorizedRequestHandler = async (req, res) => {
     const serviceHeader = req.header("service");
     if (!serviceHeader) {
       return res.status(400).json(new ServiceResponse(null, "No service defined"));
@@ -42,17 +44,21 @@ class UserController implements Controller {
         .json(
           new ServiceResponse(
             serviceDataPermissions
-              ? user.removeNonRequestedData(serviceDataPermissions)
-              : user.removeSensitiveInformation(),
+              ? removeNonRequestedData(user, serviceDataPermissions)
+              : removeSensitiveInformation(user),
             "Success",
           ),
         );
     } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
-  public async getUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getUser: AuthorizedRequestHandler = async (req, res) => {
     if (req.params.id !== "me") {
       if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
@@ -85,20 +91,24 @@ class UserController implements Controller {
         .json(
           new ServiceResponse(
             serviceDataPermissions
-              ? user.removeNonRequestedData(serviceDataPermissions)
-              : user.removeSensitiveInformation(),
+              ? removeNonRequestedData(user, serviceDataPermissions)
+              : removeSensitiveInformation(user),
             "Success",
           ),
         );
     } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
   /**
    * Returns all users.
    */
-  public async getAllUsers(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getAllUsers: AuthorizedRequestHandler = async (req, res) => {
     if (compareRoles(req.authorization.user.role, UserRoleString.Kayttaja) <= 0) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
@@ -107,8 +117,12 @@ class UserController implements Controller {
     if (req.query.searchTerm) {
       try {
         const users = await UserService.searchUsers(req.query.searchTerm as string);
-        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+        return res.status(200).json(new ServiceResponse(users.map(u => removeSensitiveInformation(u))));
       } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -121,8 +135,12 @@ class UserController implements Controller {
           req.query.conditions ? req.query.conditions.toString().split(",") : undefined,
         );
 
-        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+        return res.status(200).json(new ServiceResponse(users.map(u => removeSensitiveInformation(u))));
       } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
@@ -134,34 +152,46 @@ class UserController implements Controller {
           req.query.conditions.toString().split(","),
         );
 
-        return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+        return res.status(200).json(new ServiceResponse(users.map(u => removeSensitiveInformation(u))));
       } catch (e) {
+        if (!(e instanceof ServiceError)) {
+          throw e;
+        }
+
         return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
       }
     }
 
     try {
       const users = await UserService.fetchAllUsers();
-      return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+      return res.status(200).json(new ServiceResponse(users.map(u => removeSensitiveInformation(u))));
     } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(e.httpErrorCode || 500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
-  public async getAllUnpaidUsers(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  getAllUnpaidUsers: AuthorizedRequestHandler = async (req, res) => {
     if (req.authorization.user.role !== UserRoleString.Yllapitaja) {
       return res.status(403).json(new ServiceResponse(null, "Forbidden"));
     }
 
     try {
       const users = await UserService.fetchAllUnpaidUsers();
-      return res.status(200).json(new ServiceResponse(users.map(u => u.removeSensitiveInformation())));
+      return res.status(200).json(new ServiceResponse(users.map(u => removeSensitiveInformation(u))));
     } catch (e) {
+      if (!(e instanceof ServiceError)) {
+        throw e;
+      }
+
       return res.status(500).json(new ServiceResponse(null, e.message));
     }
-  }
+  };
 
-  public async modifyUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  modifyUser: AuthorizedRequestHandler = async (req, res) => {
     try {
       const transformedBody = await this.userValidator.validateUpdate(
         Number(req.params.id),
@@ -189,14 +219,19 @@ class UserController implements Controller {
       });
 
       Sentry.captureException(err);
+
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   /**
    * Modifies a user (me).
    */
-  public async modifyMe(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  modifyMe: AuthorizedRequestHandler = async (req, res) => {
     // Edit me
     try {
       await this.userValidator.validateUpdate(req.authorization.user.id, req.body, req.authorization.user);
@@ -209,12 +244,18 @@ class UserController implements Controller {
           userId: req.params.id,
         },
       });
+
       Sentry.captureException(err);
+
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async createUser(req: express.Request, res: express.Response): Promise<express.Response> {
+  createUser: express.RequestHandler = async (req, res) => {
     try {
       // Make sure request body is the correct type
       const validatedBody = req.body;
@@ -231,7 +272,7 @@ class UserController implements Controller {
       return res.status(200).json(
         new ServiceResponse(
           {
-            ...user.removeSensitiveInformation(),
+            ...removeSensitiveInformation(user),
             accessToken: AuthenticationService.createToken(userId, [req.headers.service?.toString() ?? ""]),
           },
           "Success",
@@ -242,11 +283,16 @@ class UserController implements Controller {
         message: "Error creating user",
       });
       Sentry.captureException(err);
+
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async findUserPayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  findUserPayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       let id: number;
       if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
@@ -268,11 +314,15 @@ class UserController implements Controller {
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
     } catch (err) {
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async findMePayment(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  findMePayment: AuthorizedRequestHandler = async (req, res) => {
     try {
       const id: number = req.authorization.user.id;
 
@@ -289,11 +339,15 @@ class UserController implements Controller {
 
       return res.status(200).json(new ServiceResponse(payment, "Success"));
     } catch (err) {
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
+
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async setUserMembership(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  setUserMembership: AuthorizedRequestHandler = async (req, res) => {
     try {
       if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
@@ -327,11 +381,14 @@ class UserController implements Controller {
         },
       });
       Sentry.captureException(err);
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
-  public async deleteUser(req: express.Request & IASRequest, res: express.Response): Promise<express.Response> {
+  deleteUser: AuthorizedRequestHandler = async (req, res) => {
     try {
       if (compareRoles(req.authorization.user.role, UserRoleString.Yllapitaja) !== 0) {
         return res.status(403).json(new ServiceResponse(null, "Forbidden"));
@@ -352,47 +409,33 @@ class UserController implements Controller {
         },
       });
       Sentry.captureException(err);
+      if (!(err instanceof ServiceError)) {
+        throw err;
+      }
       return res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
     }
-  }
+  };
 
   public createRoutes(): express.Router {
-    // @ts-expect-error
-    this.route.get("/:id", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getUser.bind(this)); // @ts-expect-error
-    this.route.get("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getMe.bind(this)); // @ts-expect-error
-    this.route.get("/", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.getAllUsers.bind(this));
-    this.route.get(
-      "/payments/unpaid", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.getAllUnpaidUsers.bind(this),
-    );
-    this.route.patch(
-      "/:id(\\d+)", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.modifyUser.bind(this),
-    ); // @ts-expect-error
-    this.route.patch("/me", AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware), this.modifyMe.bind(this));
-    this.route.get(
-      "/:id(\\d+)/payments", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.findUserPayment.bind(this),
-    );
-    this.route.get(
-      "/me/payments", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.findMePayment.bind(this),
-    );
-    this.route.put(
-      "/:id(\\d+)/membership", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.setUserMembership.bind(this),
-    );
-    this.route.delete(
-      "/:id(\\d+)", // @ts-expect-error
-      AuthorizeMiddleware.authorize(true).bind(AuthorizeMiddleware),
-      this.deleteUser.bind(this),
-    );
-    this.route.post("/", this.createUser.bind(this));
+    const authorized = express.Router();
+
+    authorized.use(AuthorizeMiddleware.authorize(true));
+
+    authorized.get("/:id", this.getUser as express.RequestHandler);
+    authorized.get("/me", this.getMe as express.RequestHandler);
+    authorized.get("/", this.getAllUsers as express.RequestHandler);
+    authorized.get("/payments/unpaid", this.getAllUnpaidUsers as express.RequestHandler);
+    authorized.patch("/:id(\\d+)", this.modifyUser as express.RequestHandler);
+    authorized.patch("/me", this.modifyMe as express.RequestHandler);
+    authorized.get("/:id(\\d+)/payments", this.findUserPayment as express.RequestHandler);
+    authorized.get("/me/payments", this.findMePayment as express.RequestHandler);
+    authorized.put("/:id(\\d+)/membership", this.setUserMembership as express.RequestHandler);
+    authorized.delete("/:id(\\d+)", this.deleteUser as express.RequestHandler);
+
+    this.route.post("/", this.createUser);
+
+    this.route.use(authorized);
+
     return this.route;
   }
 }

@@ -3,42 +3,54 @@ import "express-async-errors";
 
 import * as Sentry from "@sentry/node";
 import cookieParser from "cookie-parser";
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import session from "express-session";
 import helmet from "helmet";
 import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
 import OAuthController from "./controllers/OAuthController";
-import LoginController from "./controllers/LoginController";
+import LoginController, { ISessionUser } from "./controllers/LoginController";
 import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
 import PricingsController from "./controllers/PricingsController";
 
-import LocalizationMiddleware from "./utils/LocalizationMiddleware";
-
-import i18n from "./i18n.config";
+import initLocalization from "./i18n.config";
 
 import morgan from "morgan";
-import { Environment } from "./Db";
-import * as knexfile from "../knexfile";
 import { generateApiRoute } from "./utils/ApiRoute";
 import UserService from "./services/UserService";
-
-// Temporary polyfill for the Awaited type.
-// Remove when we are running on a more recent TypeScript version.
-declare global {
-  type Awaited<T> = T extends null | undefined
-    ? T
-    : T extends object & { then(onfulfilled: infer F): any }
-    ? F extends (value: infer V, ...args: any) => any
-      ? Awaited<V>
-      : never
-    : T;
-}
-const MySQLSessionStore = require("express-mysql-session")(session);
+import { ConnectSessionKnexStore } from "connect-session-knex";
+import { knexInstance } from "./Db";
+import Service from "./models/Service";
+import User from "./models/User";
+import ServiceToken from "./token/Token";
+import { LoginStep } from "./utils/AuthorizeMiddleware";
+import { generateToken } from "./csrf";
 dotenv.config();
+
+declare global {
+  // express typings just work this way
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface Request {
+      service: Service;
+      authorization?: {
+        user: User;
+        token: ServiceToken;
+      };
+    }
+  }
+}
+
+declare module "express-session" {
+  interface SessionData {
+    user?: ISessionUser;
+    loginStep?: LoginStep;
+    keys: Array<{ name: string; value: unknown }>;
+  }
+}
 
 if (!process.env.NODE_ENV) {
   throw new Error("NODE_ENV environment variable must be set.");
@@ -68,11 +80,7 @@ app.set("trust proxy", 1);
 app.use(cookieParser());
 
 // Localization
-app.use(LocalizationMiddleware);
-app.use(i18n.init);
-
-// Sentry
-app.use(Sentry.Handlers.requestHandler());
+initLocalization(app);
 
 app.use(express.json());
 app.use(
@@ -88,18 +96,38 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
-    store: new MySQLSessionStore({
-      ...(knexfile[process.env.NODE_ENV! as Environment].connection as Record<string, unknown>),
+    store: new ConnectSessionKnexStore({
+      knex: knexInstance,
+      tableName: "knex_sessions",
+      createTable: true,
     }),
   }),
 );
+
+app.locals.currentYear = () => new Date().getFullYear();
 
 app.use((req, _res, next) => {
   Sentry.setContext("session", req.session ?? {});
   next();
 });
 
+app.use((req, res, next) => {
+  const render = res.render.bind(res);
+
+  res.render = (...[view, ...args]: Parameters<typeof render>) => {
+    res.locals.title = req.t(`${view}_title`);
+    render(view, ...args);
+  };
+
+  next();
+});
+
 app.set("view engine", "pug");
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = generateToken(req);
+  next();
+});
 
 app.use(express.static(join(process.cwd(), "public")));
 
@@ -117,21 +145,21 @@ app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());
 
 // Ping route
-app.get("/ping", (req, res) => res.json({ ok: true }));
+app.get("/ping", (_req, res) => res.json({ ok: true }));
 
-app.use(Sentry.Handlers.errorHandler());
+// Sentry
+Sentry.setupExpressErrorHandler(app);
 
 // CSRF
-app.use((err: { code?: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use(((err, _req, res, next) => {
   if (err.code !== "EBADCSRFTOKEN") {
     return next(err);
   }
 
   return res.status(403).render("serviceError", {
     error: "Invalid CSRF token",
-    errorId: (res as any)?.sentry,
   });
-});
+}) satisfies ErrorRequestHandler);
 
 UserService.start();
 
