@@ -65,4 +65,15 @@ module.exports = [
     modified: new Date(),
     secret: "secret",
   },
+  {
+    id: 7,
+    service_identifier: "f1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+    service_name: "members",
+    display_name: "Membership registry and event calendar",
+    redirect_url: "http://members.tko-aly.localhost/authentications/callback",
+    data_permissions: 262143,
+    created: new Date(),
+    modified: new Date(),
+    secret: "secret"
+  }
 ];
