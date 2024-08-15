@@ -1,11 +1,15 @@
-import { Browser, Builder, WebDriver } from "selenium-webdriver";
-import { Options } from "selenium-webdriver/chrome";
+import { Browser, Builder, Capabilities, WebDriver } from "selenium-webdriver";
 
 export const prepareDriver: () => Promise<WebDriver> = async (): Promise<WebDriver> => {
+  const capabilities = Capabilities.chrome();
+  capabilities.set("goog:chromeOptions", {
+    args: ["--no-sandbox", "--headless"],
+  });
+
   const browser = await new Builder()
     .disableEnvironmentOverrides()
     .forBrowser(Browser.CHROME)
-    .setChromeOptions(new Options().addArguments("--no-sandbox", "--headless=new"))
+    .withCapabilities(capabilities)
     .setLoggingPrefs({ browser: "ALL", driver: "ALL" })
     .build();
 
