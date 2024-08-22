@@ -30,31 +30,12 @@ HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
 EXPOSE 3001
 CMD ["pnpm", "run", "watch"]
 
-FROM development AS production-builder
+FROM development AS production
 
 RUN pnpm run build && \
   pnpm prune --prod
 
 EXPOSE 3001
 CMD ["pnpm", "start"]
-
-FROM node:20.16.0-alpine AS production
-
-WORKDIR /app
-
-COPY --from=development /app/package.json /app/package.json
-COPY --from=development /app/knexfile.ts /app/knexfile.ts
-COPY --from=development /app/knex-esm-compat.ts /app/knex-esm-compat.ts
-COPY --from=development /app/migrations /app/migrations
-COPY --from=development /app/seeds /app/seeds
-COPY --from=development /app/locales /app/locales
-RUN corepack enable
-
-COPY --from=production-builder /app/node_modules /app/node_modules
-COPY --from=production-builder /app/dist /app/dist
-COPY --from=production-builder /app/public /app/public
-
-EXPOSE 3001
-CMD ["dist/src/index.js"]
 
 HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
