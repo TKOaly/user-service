@@ -46,6 +46,8 @@ COPY --from=development /app/package.json /app/package.json
 COPY --from=development /app/knexfile.ts /app/knexfile.ts
 COPY --from=development /app/knex-esm-compat.ts /app/knex-esm-compat.ts
 COPY --from=development /app/migrations /app/migrations
+COPY --from=development /app/seeds /app/seeds
+COPY --from=development /app/locales /app/locales
 RUN corepack enable
 
 COPY --from=production-builder /app/node_modules /app/node_modules
