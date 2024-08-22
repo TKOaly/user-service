@@ -22,6 +22,7 @@ describe("UserService", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 
