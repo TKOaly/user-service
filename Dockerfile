@@ -43,6 +43,8 @@ FROM node:20.16.0-alpine AS production
 WORKDIR /app
 
 COPY --from=development /app/package.json /app/package.json
+COPY --from=development /app/knexfile.ts /app/knexfile.ts
+COPY --from=development /app/knex-esm-compat.ts /app/knex-esm-compat.ts
 RUN corepack enable
 
 COPY --from=production-builder /app/node_modules /app/node_modules
