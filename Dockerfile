@@ -30,23 +30,12 @@ HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
 EXPOSE 3001
 CMD ["pnpm", "run", "watch"]
 
-FROM development AS production-builder
+FROM development AS production
 
 RUN pnpm run build && \
   pnpm prune --prod
 
 EXPOSE 3001
 CMD ["pnpm", "start"]
-
-FROM node:20.16.0-alpine AS production
-
-WORKDIR /app
-
-COPY --from=production-builder /app/node_modules /app/node_modules
-COPY --from=production-builder /app/dist /app/dist
-COPY --from=production-builder /app/public /app/public
-
-EXPOSE 3001
-CMD ["dist/src/index.js"]
 
 HEALTHCHECK CMD curl -f http://localhost:3030/ping || exit 1
