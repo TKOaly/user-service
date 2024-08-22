@@ -238,7 +238,7 @@ export default class NatsService {
     });
 
     options?.signal?.handle(async () => {
-      await messages.close();
+      messages.stop();
       await stopPromise;
     });
 
