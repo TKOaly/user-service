@@ -1,22 +1,17 @@
-import "mocha";
+import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import UserService from "../../src/services/UserService";
-import { assert } from "chai";
 import User from "../../src/models/User";
 import NatsService from "../../src/services/NatsService";
 import { knexInstance as knex } from "../../src/Db";
 import ServiceError from "../../src/utils/ServiceError";
-import _ from "lodash";
+import { omit } from "lodash";
 
 describe("UserService", () => {
   // Roll back
   beforeEach(async () => {
-    console.log("ROLLBACK!");
     await knex.migrate.rollback();
-    console.log("MIGRATE!");
     await knex.migrate.latest();
-    console.log("SEED!");
     await knex.seed.run();
-    console.log("DONE!");
   });
 
   beforeEach(async () => {
@@ -26,13 +21,11 @@ describe("UserService", () => {
   });
 
   // After each
-  afterEach(done => {
-    knex.migrate.rollback().then(() => {
-      done();
-    });
+  afterEach(async () => {
+    await knex.migrate.rollback();
   });
 
-  it("Should be possible to create an user", async () => {
+  test("Should be possible to create an user", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -60,7 +53,7 @@ describe("UserService", () => {
     await UserService.createUser(user, "pass");
   });
 
-  it("Created user should be fetchable", async () => {
+  test("Created user should be fetchable", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -88,22 +81,22 @@ describe("UserService", () => {
     const id = await UserService.createUser(user, "pass");
     const created = await UserService.fetchUser(id);
 
-    assert.equal(user.username, created.username);
-    assert.equal(user.name, created.name);
-    assert.equal(user.screenName, created.screenName);
-    assert.equal(user.email, created.email);
-    assert.equal(user.residence, created.residence);
-    assert.equal(user.phone, created.phone);
-    assert.equal(user.isHYYMember, created.isHYYMember);
-    assert.equal(user.isHyStaff, created.isHyStaff);
-    assert.equal(user.isHyStudent, created.isHyStudent);
-    assert.equal(user.role, created.role);
-    assert.equal(user.membership, created.membership);
-    assert.equal(user.isTKTL, created.isTKTL);
-    assert.equal(user.isTKTDTStudent, created.isTKTDTStudent);
+    expect(user.username).to.equal(created.username);
+    expect(user.name).to.equal(created.name);
+    expect(user.screenName).to.equal(created.screenName);
+    expect(user.email).to.equal(created.email);
+    expect(user.residence).to.equal(created.residence);
+    expect(user.phone).to.equal(created.phone);
+    expect(user.isHYYMember).to.equal(created.isHYYMember);
+    expect(user.isHyStaff).to.equal(created.isHyStaff);
+    expect(user.isHyStudent).to.equal(created.isHyStudent);
+    expect(user.role).to.equal(created.role);
+    expect(user.membership).to.equal(created.membership);
+    expect(user.isTKTL).to.equal(created.isTKTL);
+    expect(user.isTKTDTStudent).to.equal(created.isTKTDTStudent);
   });
 
-  it("Should not be possible to use the same username twice", async () => {
+  test("Should not be possible to use the same username twice", async () => {
     const userDetails = {
       id: 0,
       username: "testuser",
@@ -138,14 +131,14 @@ describe("UserService", () => {
       await UserService.createUser(new User({ ...userDetails, email: "user2@test.com" }), "pass");
       success = true;
     } catch (err) {
-      assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, "Username already in use!");
+      expect(err).toBeInstanceOf(ServiceError);
+      expect(err.message).to.equal("Username already in use!");
     }
 
-    assert.isFalse(success, "Should not succeed!");
+    expect(success).toBeFalsy();
   });
 
-  it("Should not be possible to use the same username twice", async () => {
+  test("Should not be possible to use the same username twice", async () => {
     const userDetails = {
       id: 0,
       username: "testuser",
@@ -180,14 +173,14 @@ describe("UserService", () => {
       await UserService.createUser(new User({ ...userDetails, username: "testuser2" }), "pass");
       success = true;
     } catch (err) {
-      assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, "Email address already in use!");
+      expect(err).toBeInstanceOf(ServiceError);
+      expect(err.message).to.equal("Email address already in use!");
     }
 
-    assert.isFalse(success, "Should not succeed!");
+    expect(success).toBeFalsy();
   });
 
-  it("Should be possible to update user details", async () => {
+  test("Should be possible to update user details", async () => {
     const user = new User({
       id: 0,
       username: "testuser",
@@ -215,19 +208,19 @@ describe("UserService", () => {
     const id = await UserService.createUser(user, "pass");
     const created = await UserService.fetchUser(id);
 
-    assert.equal(user.username, created.username);
-    assert.equal(user.name, created.name);
-    assert.equal(user.screenName, created.screenName);
-    assert.equal(user.email, created.email);
-    assert.equal(user.residence, created.residence);
-    assert.equal(user.phone, created.phone);
-    assert.equal(user.isHYYMember, created.isHYYMember);
-    assert.equal(user.isHyStaff, created.isHyStaff);
-    assert.equal(user.isHyStudent, created.isHyStudent);
-    assert.equal(user.role, created.role);
-    assert.equal(user.membership, created.membership);
-    assert.equal(user.isTKTL, created.isTKTL);
-    assert.equal(user.isTKTDTStudent, created.isTKTDTStudent);
+    expect(user.username).to.equal(created.username);
+    expect(user.name).to.equal(created.name);
+    expect(user.screenName).to.equal(created.screenName);
+    expect(user.email).to.equal(created.email);
+    expect(user.residence).to.equal(created.residence);
+    expect(user.phone).to.equal(created.phone);
+    expect(user.isHYYMember).to.equal(created.isHYYMember);
+    expect(user.isHyStaff).to.equal(created.isHyStaff);
+    expect(user.isHyStudent).to.equal(created.isHyStudent);
+    expect(user.role).to.equal(created.role);
+    expect(user.membership).to.equal(created.membership);
+    expect(user.isTKTL).to.equal(created.isTKTL);
+    expect(user.isTKTDTStudent).to.equal(created.isTKTDTStudent);
 
     const updateData = {
       username: "testuserx",
@@ -255,10 +248,11 @@ describe("UserService", () => {
 
     const updated = await UserService.fetchUser(id);
 
-    assert.hasAllKeys(_.omit(updated.getDatabaseObject(), ["id", "last_seq"]), updateData);
+    expect(updated.getDatabaseObject()).toMatchObject(omit(updateData, ["modified"]));
+    expect(updated.getDatabaseObject().modified).not.to.equal(updateData.modified);
   });
 
-  it("Should not be possible to change user's email to an email already in use", async () => {
+  test("Should not be possible to change user's email to an email already in use", async () => {
     const user2 = new User({
       id: 0,
       username: "testuser2",
@@ -321,14 +315,14 @@ describe("UserService", () => {
       await UserService.updateUser(id, updateData);
       success = true;
     } catch (err) {
-      assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, "Email already in use!");
+      expect(err).toBeInstanceOf(ServiceError);
+      expect(err.message).to.equal("Email already in use!");
     }
 
-    assert.isFalse(success, "Should not succeed!");
+    expect(success).toBeFalsy();
   });
 
-  it("Should not be possible to change user's username to an username already in use", async () => {
+  test("Should not be possible to change user's username to an username already in use", async () => {
     const user2 = new User({
       id: 0,
       username: "testuser2",
@@ -391,10 +385,10 @@ describe("UserService", () => {
       await UserService.updateUser(id, updateData);
       success = true;
     } catch (err) {
-      assert.instanceOf(err, ServiceError);
-      assert.equal(err.message, "Username already in use!");
+      expect(err).toBeInstanceOf(ServiceError);
+      expect(err.message).to.equal("Username already in use!");
     }
 
-    assert.isFalse(success, "Should not succeed!");
+    expect(success).toBeFalsy();
   });
 });

@@ -1,5 +1,4 @@
-import "mocha";
-import { assert } from "chai";
+import { describe, test, beforeEach, expect } from "vitest";
 import NatsService from "../../src/services/NatsService";
 
 describe("NatsService", () => {
@@ -8,17 +7,17 @@ describe("NatsService", () => {
     await nats.reset();
   });
 
-  it("Should be able to initialize the service", async () => {
+  test("Should be able to initialize the service", async () => {
     const nats = await NatsService.get();
-    assert.exists(nats);
+    expect(nats).toBeDefined();
   });
 
-  it("Should be able to publish messages", async () => {
+  test("Should be able to publish messages", async () => {
     const nats = await NatsService.get();
     await nats.publish("members.test", { data: 123 });
   });
 
-  it("Should be able to receive published messages", async () => {
+  test("Should be able to receive published messages", async () => {
     const nats = await NatsService.get();
 
     let setSent!: (seq: number) => void;
@@ -31,8 +30,8 @@ describe("NatsService", () => {
 
         if (msg.seq !== sentSeq) return;
 
-        assert.exists(payload);
-        assert.hasAllKeys(payload, {
+        expect(payload).toBeDefined();
+        expect(payload).toMatchObject({
           data: 321,
         });
 
@@ -48,7 +47,7 @@ describe("NatsService", () => {
     await promise;
   });
 
-  it("Should be able to fetch message history", async () => {
+  test("Should be able to fetch message history", async () => {
     const nats = await NatsService.get();
 
     for (let i = 0; i < 5; i++) {
@@ -57,14 +56,14 @@ describe("NatsService", () => {
 
     const messages = await nats.fetch("members.test");
 
-    assert.lengthOf(messages, 5);
+    expect(messages).toHaveLength(5);
 
     for (let i = 0; i < 5; i++) {
       const data = messages[i].json();
-      assert.deepEqual(data, { data: i });
+      expect(data).toEqual({ data: i });
 
       if (i > 0) {
-        assert.isAtLeast(messages[i].info.timestampNanos, messages[i - 1].info.timestampNanos);
+        expect(messages[i].info.timestampNanos).toBeGreaterThanOrEqual(messages[i - 1].info.timestampNanos);
       }
     }
   });

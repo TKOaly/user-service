@@ -7,10 +7,39 @@ import {
   NatsConnection,
   RetentionPolicy,
 } from "nats";
+import { EventEmitter } from "node:stream";
 
 const STREAM = "members";
 const ACK_STREAM = "members-ack";
 const CONSUMER = "user-service";
+
+export class ConsumerAbortSignal extends EventEmitter {
+  private abortedPromise: Promise<void>;
+  private aborted: boolean = false;
+
+  private resolve!: () => void;
+
+  constructor() {
+    super();
+
+    this.abortedPromise = new Promise(resolve => {
+      this.resolve = resolve;
+    });
+  }
+
+  async abort() {
+    if (this.aborted) return;
+    this.emit("abort");
+    return this.abortedPromise;
+  }
+
+  handle(handler: () => Promise<unknown>) {
+    this.on("abort", async () => {
+      await handler();
+      this.resolve();
+    });
+  }
+}
 
 /**
  * Luokka, joka vastaa NATS-palvelun kanssa keskustelemisesta.
@@ -137,7 +166,7 @@ export default class NatsService {
   /**
    * Lähtettään NATS-palvelimelle julkaistavan viestin.
    */
-  public async publish(subject: string, message?: any, options?: Partial<JetStreamPublishOptions>, wait = false) {
+  public async publish(subject: string, message?: unknown, options?: Partial<JetStreamPublishOptions>, wait = false) {
     const js = this.conn.jetstream();
 
     try {
@@ -189,6 +218,7 @@ export default class NatsService {
     handler: (data: unknown, message: JsMsg) => Promise<boolean | void> | boolean | void,
     options?: {
       onReady?: () => void;
+      signal?: ConsumerAbortSignal;
     },
   ) {
     const js = this.conn.jetstream();
@@ -199,7 +229,11 @@ export default class NatsService {
 
     options?.onReady?.();
 
-    for await (const message of await c2.consume()) {
+    const messages = await c2.consume();
+
+    options?.signal?.handle(() => messages.close());
+
+    for await (const message of messages) {
       const data = message.json();
 
       try {

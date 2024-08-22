@@ -6,13 +6,18 @@ import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
 import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
-import { Worker } from "worker_threads";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
-import NatsService from "../services/NatsService";
+import NatsService, { ConsumerAbortSignal } from "../services/NatsService";
 import { JetStreamPublishOptions, JsMsg, headers, JsHeaders } from "nats";
-import * as UserServiceWorker from "./UserServiceWorker";
+
+type UsersEvent =
+  | { type: "create" | "import"; fields: UserDatabaseObject }
+  | { type: "set"; fields: Partial<UserDatabaseObject> }
+  | { type: "delete" };
 
 class UserService {
+  abortSignal?: ConsumerAbortSignal;
+
   public async fetchUser(userId: number): Promise<User> {
     const result = await UserDao.findOne(userId);
     if (!result) {
@@ -318,59 +323,17 @@ class UserService {
     return user;
   }
 
-  private restartOnExit = true;
-  private worker: Worker | null = null;
-
   public async restart() {
     await this.stop();
     await this.start();
   }
 
   public async stop() {
-    this.restartOnExit = false;
-
-    if (!this.worker) {
-      return;
-    }
-
-    const result = this.worker.terminate();
-
-    this.worker = null;
-
-    return result;
+    await this.abortSignal?.abort();
   }
 
   public async start() {
-    if (this.worker) {
-      return;
-    }
-
-    const onError = async (err?: Error) => {
-      if (!this.worker) {
-        return;
-      }
-
-      await this.worker.terminate();
-      this.worker = null;
-
-      console.log("User service worker exited! Value:", err);
-
-      if (this.restartOnExit) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        this.start();
-      }
-    };
-
-    try {
-      this.restartOnExit = true;
-      this.worker = await UserServiceWorker.start();
-      console.log("User service worker started!");
-      this.worker.addListener("error", onError);
-      this.worker.addListener("exit", onError);
-    } catch (err) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      await this.start();
-    }
+    await this.listen();
   }
 
   /**
@@ -380,29 +343,33 @@ class UserService {
   public async listen() {
     const nats = await NatsService.get();
 
+    this.abortSignal = new ConsumerAbortSignal();
+
     return new Promise<void>(resolve => {
-      const handler = async ({ type, fields }: any, msg: JsMsg) => {
+      const handler = async (pEvent: unknown, msg: JsMsg) => {
+        const event = pEvent as UsersEvent;
+
         const userId = parseInt(msg.subject.split(".")[1], 10);
 
-        if (type === "set") {
+        if (event.type === "set") {
           // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
 
-          if (fields.created) {
+          if (event.fields.created) {
             // Tämä piti tehdä jostain syystä. Syyttäkää user-serviceä älkääkä NATSia.
-            fields.created = new Date(fields.created);
+            event.fields.created = new Date(event.fields.created);
           }
 
           // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
-          await UserDao.update(userId, fields);
-        } else if (type === "create" || type === "import") {
+          await UserDao.update(userId, event.fields);
+        } else if (event.type === "create" || event.type === "import") {
           await UserDao.save({
-            ...fields,
+            ...event.fields,
             id: userId,
             last_seq: msg.seq,
           });
 
           return;
-        } else if (type === "delete") {
+        } else if (event.type === "delete") {
           await UserDao.remove(userId);
           return;
         }
@@ -414,6 +381,7 @@ class UserService {
 
       nats.subscribe(handler, {
         onReady: () => resolve(),
+        signal: this.abortSignal,
       });
     });
   }

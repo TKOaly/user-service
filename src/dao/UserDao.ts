@@ -25,6 +25,7 @@ type UserSaveModel = Required<
     | "hy_student"
     | "hy_staff"
     | "tktdt_student"
+    | "last_seq"
   >
 > &
   Partial<Pick<UserDatabaseObject, "id">>;

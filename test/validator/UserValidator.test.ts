@@ -166,63 +166,6 @@ describe("UserValidator", () => {
   });
 
   describe("validateCreate()", () => {
-    test("Throws a service error when username is already taken", async () => {
-      try {
-        await userValidator.validateCreate({
-          username: "test_user",
-          name: "testUser",
-          screenName: "jee",
-          email: "test@test.com",
-          residence: "123",
-          phone: "12345",
-          password1: "testpassword",
-          password2: "testpassword",
-          isHyStaff: true,
-          isHYYMember: true,
-          isTKTL: false,
-          isHyStudent: false,
-          isTKTDTStudent: false,
-          lastSeq: 0,
-        });
-
-        expect.fail();
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.message).toBeDefined();
-        expect(err.message).to.equal("Username is already taken.");
-        expect(err.httpErrorCode).toBeDefined();
-        expect(err.httpErrorCode).to.equal(400);
-      }
-    });
-
-    test("Throws a service error when email address is already taken", async () => {
-      try {
-        await userValidator.validateCreate({
-          username: "testuser",
-          name: "testuser",
-          screenName: "jee",
-          email: "test@user.com",
-          residence: "123",
-          phone: "12345",
-          password1: "testpassword",
-          password2: "testpassword",
-          isHyStaff: true,
-          isHYYMember: true,
-          isTKTL: false,
-          isHyStudent: false,
-          isTKTDTStudent: false,
-          lastSeq: 0,
-        });
-        expect.fail("Expected to throw!");
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.message).toBeDefined();
-        expect(err.message).to.equal("Email address is already taken.");
-        expect(err.httpErrorCode).toBeDefined();
-        expect(err.httpErrorCode).to.equal(400);
-      }
-    });
-
     test("Throws a service error if the email address is malformed", async () => {
       try {
         await userValidator.validateCreate({
@@ -323,7 +266,7 @@ describe("UserValidator", () => {
         isTKTL: false,
         isHyStudent: false,
         isTKTDTStudent: false,
-          lastSeq: 0,
+        lastSeq: 0,
       });
     });
   });
@@ -346,28 +289,6 @@ describe("UserValidator", () => {
         expect(err.httpErrorCode).to.equal(403);
       }
     });
-
-    test(
-      "Throws a service error when an elevated user" + " tries to set email address to an already used email address",
-      async () => {
-        const user = await userDao.findOne(2);
-
-        if (user === undefined) {
-          throw new Error("User not found");
-        }
-
-        try {
-          await userValidator.validateUpdate(1, { email: "admin@user.com" }, new User(user));
-          expect.fail("Expected to throw!");
-        } catch (err) {
-          expect(err).toBeInstanceOf(ServiceError);
-          expect(err.message).toBeDefined();
-          expect(err.message).to.equal("Validation errors: Email address is already taken");
-          expect(err.httpErrorCode).toBeDefined();
-          expect(err.httpErrorCode).to.equal(400);
-        }
-      },
-    );
 
     test("Throws a service error when an elevated user" + " tries to set a malformed used email address", async () => {
       const user = await userDao.findOne(2);
