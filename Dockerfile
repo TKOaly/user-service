@@ -42,6 +42,8 @@ FROM node:20.16.0-alpine AS production
 
 WORKDIR /app
 
+RUN corepack enable
+
 COPY --from=production-builder /app/node_modules /app/node_modules
 COPY --from=production-builder /app/dist /app/dist
 COPY --from=production-builder /app/public /app/public
