@@ -20,7 +20,6 @@ import initLocalization from "./i18n.config";
 
 import morgan from "morgan";
 import { generateApiRoute } from "./utils/ApiRoute";
-import UserService from "./services/UserService";
 import { ConnectSessionKnexStore } from "connect-session-knex";
 import { knexInstance } from "./Db";
 import Service from "./models/Service";
@@ -160,7 +159,5 @@ app.use(((err, _req, res, next) => {
     error: "Invalid CSRF token",
   });
 }) satisfies ErrorRequestHandler);
-
-UserService.start();
 
 export default app;
