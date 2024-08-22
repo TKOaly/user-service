@@ -231,7 +231,16 @@ export default class NatsService {
 
     const messages = await c2.consume();
 
-    options?.signal?.handle(() => messages.close());
+    let onStopped!: () => void;
+
+    const stopPromise = new Promise<void>(resolve => {
+      onStopped = resolve;
+    });
+
+    options?.signal?.handle(async () => {
+      await messages.close();
+      await stopPromise;
+    });
 
     for await (const message of messages) {
       const data = message.json();
@@ -259,6 +268,8 @@ export default class NatsService {
         throw err;
       }
     }
+
+    onStopped();
   }
 
   /**
