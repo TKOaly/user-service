@@ -242,34 +242,38 @@ export default class NatsService {
       await stopPromise;
     });
 
-    for await (const message of messages) {
-      const data = message.json();
+    try {
+      for await (const message of messages) {
+        const data = message.json();
 
-      try {
-        // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
-        // jolloin timeout-ajastin nollataan.
-        message.working();
+        try {
+          // Kerrotaan palvelimelle, että viestin käsittely on aloitettu,
+          // jolloin timeout-ajastin nollataan.
+          message.working();
 
-        // Käsitellään viesti.
-        const result = await Promise.resolve(handler(data, message));
+          // Käsitellään viesti.
+          const result = await Promise.resolve(handler(data, message));
 
-        // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
-        // tietää, että olemme sen käsitelleet.
-        await js.publish(`ack.${message.seq}.user-service`);
+          // Julkaistaan vahvistusviesti, jotta viestin julkaisija voi halutessaan
+          // tietää, että olemme sen käsitelleet.
+          await js.publish(`ack.${message.seq}.user-service`);
 
-        // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
-        message.ack();
+          // Kerrotaan palvelimelle, että viestin käsittely onnistui, eikä sitä tarvitse lähettää uudestaan.
+          message.ack();
 
-        if (result === false) break;
-      } catch (err) {
-        // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
-        message.nak();
+          if (result === false) break;
+        } catch (err) {
+          // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
+          message.nak();
 
-        throw err;
+          console.error("Error while processing a NATS message:", err);
+
+          throw err;
+        }
       }
+    } finally {
+      onStopped();
     }
-
-    onStopped();
   }
 
   /**
