@@ -6,6 +6,7 @@ import app from "../../src/App";
 import { PaymentDatabaseObject } from "../../src/models/Payment";
 import { knexInstance as knex } from "../../src/Db";
 import { omit } from "lodash";
+import UserService from "../../src/services/UserService";
 
 process.env.NODE_ENV = "test";
 
@@ -38,6 +39,7 @@ describe("PaymentController", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 

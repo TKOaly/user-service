@@ -2,6 +2,7 @@ import { describe, test, beforeEach, afterEach, expect } from "vitest";
 import request from "supertest";
 import app from "../../src/App";
 import { knexInstance as knex } from "../../src/Db";
+import UserService from "../../src/services/UserService";
 
 process.env.NODE_ENV = "test";
 
@@ -29,6 +30,7 @@ describe("AuthController", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 

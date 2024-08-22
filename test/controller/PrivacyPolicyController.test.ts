@@ -3,6 +3,7 @@ import request from "supertest";
 import app from "../../src/App";
 import { kjyrIdentifier } from "../TestUtils";
 import { knexInstance as knex } from "../../src/Db";
+import UserService from "../../src/services/UserService";
 
 process.env.NODE_ENV = "test";
 
@@ -18,6 +19,7 @@ describe("PrivacyPolicyController", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 

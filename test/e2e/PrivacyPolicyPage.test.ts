@@ -12,6 +12,7 @@ import app from "../../src/App";
 import en from "../../locales/en.json";
 import fi from "../../locales/fi.json";
 import services from "../../seeds/seedData/services";
+import UserService from "../../src/services/UserService";
 
 process.env.NODE_ENV = "test";
 
@@ -45,6 +46,7 @@ describe("Privacy policy page", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 

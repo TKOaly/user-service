@@ -7,6 +7,7 @@ import AuthenticationService from "../../src/services/AuthenticationService";
 import { generateToken, kjyrIdentifier } from "../TestUtils";
 import { knexInstance as knex } from "../../src/Db";
 import Service, { ServiceDatabaseObject } from "../../src/models/Service";
+import UserService from "../../src/services/UserService";
 
 process.env.NODE_ENV = "test";
 
@@ -23,6 +24,7 @@ describe("UserController", () => {
 
   // After each
   afterEach(async () => {
+    await UserService.stop();
     await knex.migrate.rollback();
   });
 
