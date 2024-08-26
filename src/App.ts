@@ -68,7 +68,15 @@ if (process.env.NODE_ENV === "production") {
 const app = express();
 
 // Helmet
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "form-action": null,
+      },
+    },
+  }),
+);
 
 app.use(morgan("tiny"));
 
