@@ -75,18 +75,30 @@ export default class NatsService {
   /**
    * Alustaa yhteyden NATS-palveluun.
    */
-  private async init() {
+  private async init(retries = 30) {
     // Muodostetaan yhteys NATS-palveluun.
     const host = process.env.NATS_HOST ?? "localhost";
     const port = process.env.NATS_PORT ?? 4222;
     const user = process.env.NATS_USER;
     const pass = process.env.NATS_PASSWORD;
 
-    this.conn = await connect({
-      servers: `${host}:${port}`,
-      user,
-      pass,
-    });
+    try {
+      this.conn = await connect({
+        servers: `${host}:${port}`,
+        user,
+        pass,
+      });
+    } catch (err) {
+      if (retries > 0) {
+        console.error(err);
+        console.error(`Failed to connect to NATS. Retyring in 1s... (${retries} retries remaining)`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await this.init(retries - 1);
+      } else {
+        console.error("Failed to connect to NATS. Giving up.");
+        throw err;
+      }
+    }
 
     await this.setup();
   }
