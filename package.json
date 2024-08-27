@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@sentry/node": "^8.25.0",
+    "arg": "^5.0.2",
     "bcrypt": "^5.1.1",
     "connect-session-knex": "^5.0.0",
     "cookie-parser": "^1.4.6",

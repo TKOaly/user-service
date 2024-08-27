@@ -167,6 +167,10 @@ export default class NatsService {
     });
   }
 
+  public async close() {
+    await this.conn.close();
+  }
+
   public async reset() {
     const jsm = await this.conn.jetstreamManager();
     await jsm.streams.purge(STREAM);
