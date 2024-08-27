@@ -15,12 +15,12 @@ export async function up(knex: Knex): Promise<void> {
   `);
 
   if (await knex.schema.hasColumn("users", "last_seq")) {
-    await knex("users").update({ last_seq: null });
-  } else {
-    await knex.schema.table("users", table => {
-      table.integer("last_seq").nullable();
-    });
+    await knex.schema.alterTable("users", table => table.dropColumn("last_seq"));
   }
+
+  await knex.schema.table("users", table => {
+    table.integer("last_seq").nullable();
+  });
 
   if (await knex.schema.hasTable("user_ids")) {
     await knex("user_ids").truncate();
