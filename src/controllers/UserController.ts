@@ -207,7 +207,7 @@ class UserController implements Controller {
       if (update === 1) {
         return res.status(200).json(new ServiceResponse(req.body, "Success"));
       } else {
-        return res.status(200).json(new ServiceResponse(req.body, "User was not modified"));
+        return res.status(200).json(new ServiceResponse(req.body, "User was not modified", true));
       }
     } catch (err) {
       Sentry.addBreadcrumb({
