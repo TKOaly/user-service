@@ -178,7 +178,7 @@ class UserService {
       }
 
       if (usernameCaptured) {
-        await UserDao.releaseEmail(userData.username);
+        await UserDao.releaseUsername(userData.username);
       }
 
       throw err;
