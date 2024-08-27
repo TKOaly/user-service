@@ -1,4 +1,5 @@
 import UserRoleString from "../src/enum/UserRoleString";
+import UserDatabaseObject from "../src/interfaces/UserDatabaseObject";
 import User from "../src/models/User";
 import UserService from "../src/services/UserService";
 import arg from "arg";
@@ -67,8 +68,8 @@ const main = async () => {
       last_seq: 0,
       deleted: 0,
       modified: new Date(),
-      id: args["--id"] ?? 0,
-    }),
+      id: args["--id"],
+    } as UserDatabaseObject),
     password,
   );
 
