@@ -15,6 +15,7 @@ const parseArgs = () =>
     "--residence": String,
     "--phone": String,
     "--password": String,
+    "--membership": String,
     "--created-at": String,
     "--is-tktl": Boolean,
     "--is-hy-staff": Boolean,
