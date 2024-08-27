@@ -167,8 +167,15 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public async reserveId(id?: number) {
-    const [result] = await knexInstance("user_ids").insert({ id });
-    return result;
+    if (id == undefined) {
+      [id] = await knexInstance("user_ids").max("id");
+
+      if (id == undefined) id = 0;
+    }
+
+    await knexInstance("user_ids").insert({ id });
+
+    return id;
   }
 
   public async reserveEmail(email: string) {

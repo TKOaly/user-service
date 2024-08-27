@@ -26,7 +26,8 @@ export async function up(knex: Knex): Promise<void> {
     await knex("user_ids").truncate();
   } else {
     await knex.schema.createTable("user_ids", table => {
-      table.increments("id").unique().nullable().unsigned();
+      table.increments("iid");
+      table.integer("id").unique().nullable().unsigned();
       table.string("email").unique().nullable();
       table.string("username").unique().nullable();
     });
