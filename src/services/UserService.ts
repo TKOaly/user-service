@@ -152,7 +152,7 @@ class UserService {
         throw new ServiceError(400, "Username already in use!");
       }
 
-      userData.id = await UserDao.reserveId();
+      userData.id = await UserDao.reserveId(userData.id);
 
       const { password, salt } = await mkHashedPassword(rawPassword);
       userData.hashedPassword = password;
