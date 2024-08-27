@@ -135,7 +135,7 @@ class UserService {
     }
   }
 
-  public async createUser(userData: User, rawPassword: string): Promise<number> {
+  public async createUser(userData: User, rawPassword: string, wait = true): Promise<number> {
     let usernameCaptured = false;
     let emailCaptured = false;
 
@@ -168,7 +168,7 @@ class UserService {
           fields: userData.getDatabaseObject(),
         },
         undefined,
-        true,
+        wait,
       );
 
       return userData.id;

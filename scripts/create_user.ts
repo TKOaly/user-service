@@ -23,6 +23,7 @@ const parseArgs = () =>
     "--is-hy-student": Boolean,
     "--is-hyy-member": Boolean,
     "--is-tktdt-student": Boolean,
+    "--wait": Boolean,
   });
 
 const main = async () => {
@@ -71,6 +72,7 @@ const main = async () => {
       id: args["--id"],
     } as UserDatabaseObject),
     password,
+    !!args["--wait"],
   );
 
   process.exit(0);
