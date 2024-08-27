@@ -167,14 +167,16 @@ class UserDao implements Dao<UserDatabaseObject> {
   }
 
   public async reserveId(id?: number) {
-    if (id == undefined) {
+    if (id === undefined) {
       const [{ max }] = await knexInstance("user_ids").max("id", { as: "max" });
 
-      if (max === null) {
-        id = 1;
-      } else {
+      if (max !== null && max !== undefined) {
         id = max + 1;
       }
+    }
+
+    if (id === undefined) {
+      id = 1;
     }
 
     await knexInstance("user_ids").insert({ id });
