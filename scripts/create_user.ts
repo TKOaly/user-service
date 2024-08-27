@@ -6,6 +6,7 @@ import moment from "moment";
 
 const parseArgs = () =>
   arg({
+    "--id": Number,
     "--username": String,
     "--name": String,
     "--role": String,
@@ -65,7 +66,7 @@ const main = async () => {
       last_seq: 0,
       deleted: 0,
       modified: new Date(),
-      id: 0,
+      id: args["--id"] ?? 0,
     }),
     password,
   );
