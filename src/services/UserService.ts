@@ -8,15 +8,53 @@ import { validateLegacyPassword } from "./AuthenticationService";
 import UserDatabaseObject from "../interfaces/UserDatabaseObject";
 import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpers";
 import NatsService, { ConsumerAbortSignal } from "../services/NatsService";
-import { JetStreamPublishOptions, JsMsg, headers, JsHeaders } from "nats";
+import { JetStreamPublishOptions, JsMsg, headers, JsHeaders, PubAck } from "nats";
+import z from "zod";
 
-type UsersEvent =
-  | { type: "create" | "import"; fields: UserDatabaseObject }
-  | { type: "set"; fields: Partial<UserDatabaseObject> }
-  | { type: "delete" };
+const UserFields = z.record(z.string(), z.any()).transform(v => v as UserDatabaseObject);
+
+const PartialUserFields = z.record(z.string(), z.any()).transform(v => v as Partial<UserDatabaseObject>);
+
+const UserCreateEvent = z.object({
+  type: z.literal("create"),
+  user: z.number(),
+  fields: UserFields,
+});
+
+const UserImportEvent = z.object({
+  type: z.literal("import"),
+  user: z.number(),
+  fields: UserFields,
+});
+
+const UserSetEvent = z.object({
+  type: z.literal("set"),
+  user: z.number(),
+  fields: PartialUserFields,
+  subject: z.number().optional(),
+});
+
+const UserDeleteEvent = z.object({
+  type: z.literal("delete"),
+  user: z.number(),
+});
+
+const UserEvent = z.discriminatedUnion("type", [UserCreateEvent, UserImportEvent, UserSetEvent, UserDeleteEvent]);
+
+type UserEvent = z.infer<typeof UserEvent>;
 
 class UserService {
   abortSignal?: ConsumerAbortSignal;
+
+  private async publish(
+    subject: string,
+    payload: UserEvent,
+    options?: Partial<JetStreamPublishOptions>,
+    wait?: boolean,
+  ): Promise<PubAck> {
+    const nats = await NatsService.get();
+    return nats.publish(subject, UserEvent.parse(payload), options, wait);
+  }
 
   public async fetchUser(userId: number): Promise<User> {
     const result = await UserDao.findOne(userId);
@@ -161,12 +199,11 @@ class UserService {
       userData.salt = salt;
       userData.passwordHash = await hashPasswordAsync(rawPassword);
 
-      const nats = await NatsService.get();
-
-      await nats.publish(
+      await this.publish(
         `members.${userData.id}`,
         {
           type: "create",
+          user: userData.id,
           fields: userData.getDatabaseObject(),
         },
         undefined,
@@ -228,8 +265,6 @@ class UserService {
         });
       }
 
-      const nats = await NatsService.get();
-
       const user = await this.fetchUser(userId);
 
       // Kerrotaan NATS-palvelimelle, että tämä on viimeisin käsittelemämme
@@ -254,12 +289,12 @@ class UserService {
       }
 
       // Jukaistaan viesti, jossa kerrotaan, että asetamme käyttäjälle uudet pyynnön mukana saadut arvot.
-      await nats.publish(
+      await this.publish(
         `members.${userId}`,
         {
           type: "set",
           user: userId,
-          fields: Object.fromEntries(changedFields),
+          fields: Object.fromEntries(changedFields) as Partial<UserDatabaseObject>,
           subject: subject?.id,
         },
         opts,
@@ -349,7 +384,7 @@ class UserService {
 
     return new Promise<void>(resolve => {
       const handler = async (pEvent: unknown, msg: JsMsg) => {
-        const event = pEvent as UsersEvent;
+        const event = UserEvent.parse(pEvent);
 
         const userId = parseInt(msg.subject.split(".")[1], 10);
 
