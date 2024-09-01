@@ -1,4 +1,4 @@
-import * as Knex from "knex";
+import { Knex } from "knex";
 import NatsService from "../src/services/NatsService";
 
 export async function up(knex: Knex): Promise<void> {
