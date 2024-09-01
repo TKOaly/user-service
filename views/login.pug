@@ -32,7 +32,7 @@ block content
       li
         a.applyToBeAMember(href="/reset-password") #{ t("login_ForgotPassword") }
       li
-        if (currentLocale === "fi")
-          a.loginInEnglish(href="/lang/en/" + service.serviceIdentifier) #{ t("login_InEnglish") }
+        if (language === "fi")
+          a.loginInEnglish(href="./lang/en/" + service.serviceIdentifier) #{ t("login_InEnglish") }
         else
-          a.loginInFinnish(href="/lang/fi/" + service.serviceIdentifier) #{ t("login_InFinnish") }
+          a.loginInFinnish(href="./lang/fi/" + service.serviceIdentifier) #{ t("login_InFinnish") }

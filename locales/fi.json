@@ -86,5 +86,6 @@
   "resetPasswordChoice_title": "Salasanan palautus",
   "resetPasswordSent_title": "Salasanan palautus",
   "resetPasswordForm_title": "Salasanan palautus",
-  "resetPasswordSuccess_title": "Salasana palautettu"
+  "resetPasswordSuccess_title": "Salasana palautettu",
+  "resetPassword_title": "Salasanan palautus"
 }

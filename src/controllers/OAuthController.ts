@@ -687,6 +687,19 @@ class OAuthController implements Controller {
     });
   };
 
+  /**
+   * Sets the language of the page.
+   */
+  public setLanguage: RequestHandler = (req, res) => {
+    res.clearCookie("tkoaly_locale");
+    res.cookie("tkoaly_locale", req.params.lang, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain: process.env.COOKIE_DOMAIN,
+    });
+
+    res.redirect(`/oauth/flow/${encodeURIComponent(req.params.id)}/login`);
+  };
+
   public createDiscoveryRoute(): RequestHandler {
     return this.discovery.bind(this);
   }
@@ -708,16 +721,13 @@ class OAuthController implements Controller {
 
     authorizationFlowRouter.get("/flow/:id/privacy", this.privacyForm, this.redirectErrorHandler);
 
-    authorizationFlowRouter.post(
-      "/flow/:id/privacy",
-      checkCsrf,
-      this.handlePrivacy,
-      this.redirectErrorHandler,
-    );
+    authorizationFlowRouter.post("/flow/:id/privacy", checkCsrf, this.handlePrivacy, this.redirectErrorHandler);
 
     authorizationFlowRouter.get("/flow/:id/gdpr", this.gdprForm, this.redirectErrorHandler);
 
     authorizationFlowRouter.post("/flow/:id/gdpr", checkCsrf, this.handleGdpr, this.redirectErrorHandler);
+
+    authorizationFlowRouter.get("/flow/:id/lang/:lang/:serviceIdentifier?", this.setLanguage);
 
     backChannelRouter.post("/token", this.requireClientAuthentication(), this.token);
 

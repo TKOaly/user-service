@@ -86,5 +86,6 @@
   "resetPasswordChoice_title": "Password recovery",
   "resetPasswordSent_title": "Password recovery",
   "resetPasswordForm_title": "Password recovery",
-  "resetPasswordSuccess_title": "Password changed"
+  "resetPasswordSuccess_title": "Password changed",
+  "resetPassword_title": "Password recovery"
 }
