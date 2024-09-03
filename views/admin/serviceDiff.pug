@@ -8,7 +8,7 @@ block content
       div
         h2 Details
         if changes.length === 0
-          p No changes
+          p.dim No changes
         else
           each change in changes
             div.change
@@ -19,7 +19,7 @@ block content
       div
         h2 Permissions
         if addedPermissions.length === 0 && removedPermissions.length === 0
-          p No permission changes
+          p.dim No permission changes
 
         if addedPermissions.length
           h3 Added permissions
@@ -40,6 +40,15 @@ block content
                   li= claim
               else
                 li= permission
+      
+      div(style="grid-column: span 2;")
+        h2 Privacy policy
+        if privacyPolicyChanged
+          div.split
+            span.previous= oldPrivacyPolicy
+            span.new= newPrivacyPolicy
+        else
+          p.dim No changes
       
       // Hidden field to pass along changes
       input(type='hidden', name='newService', value=JSON.stringify(newService))

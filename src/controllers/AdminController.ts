@@ -8,6 +8,7 @@ import { CLAIMS, getAllowedClaims } from "./OAuthController";
 import { hasKey } from "../utils/TypescriptHelpers";
 import Service from "../models/Service";
 import { generateFromIndexes, getChangedClaims, getClaims, permissionsIncludesIndex } from "../utils/Permission";
+import PrivacyPolicyService from "../services/PrivacyPolicyService";
 
 const mappedPermissions = CLAIMS.map((claims, index) => ({
   index,
@@ -63,7 +64,14 @@ class AdminController implements Controller {
       });
     }
 
+    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+
     return res.status(200).render("admin/service", {
+      privacyPolicy: {
+        ...privacyPolicy,
+        createdAt: moment(privacyPolicy.created).format("DD.MM.YYYY HH:mm"),
+        modifiedAt: moment(privacyPolicy.modified).format("DD.MM.YYYY HH:mm"),
+      },
       service: {
         ...service,
         createdAt: moment(service.createdAt).format("DD.MM.YYYY HH:mm"),
@@ -156,8 +164,11 @@ class AdminController implements Controller {
       });
     }
 
+    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+
     return res.status(200).render("admin/serviceEdit", {
       service,
+      privacyPolicy,
       permissions: mappedPermissions.map(permission => ({
         ...permission,
         selected: permissionsIncludesIndex(service.dataPermissions, permission.index),
@@ -173,6 +184,8 @@ class AdminController implements Controller {
         error: "Service not found",
       });
     }
+
+    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
 
     const permissionsArray = Array.isArray(req.body.permissions ?? [])
       ? (req.body.permissions ?? [])
@@ -190,6 +203,10 @@ class AdminController implements Controller {
       (acc, key) => {
         // Empty secret is not a change, keeps the old secret
         if (key === "secret" && newService[key] === "") {
+          return acc;
+        }
+
+        if (key === "privacyPolicy") {
           return acc;
         }
 
@@ -215,7 +232,14 @@ class AdminController implements Controller {
       newService.dataPermissions,
     );
 
-    if (changes.length === 0 && addedPermissions.length === 0 && removedPermissions.length === 0) {
+    const privacyPolicyChanged = newService.privacyPolicy !== privacyPolicy.text;
+
+    if (
+      !privacyPolicyChanged &&
+      changes.length === 0 &&
+      addedPermissions.length === 0 &&
+      removedPermissions.length === 0
+    ) {
       return res.status(500).render("serviceError", {
         error: "No changes detected",
       });
@@ -226,6 +250,9 @@ class AdminController implements Controller {
       changes,
       addedPermissions: emphasizeUnusedClaims(addedPermissions),
       removedPermissions: emphasizeUnusedClaims(removedPermissions),
+      privacyPolicyChanged,
+      oldPrivacyPolicy: privacyPolicy.text,
+      newPrivacyPolicy: newService.privacyPolicy,
       newService,
     });
   };
@@ -258,8 +285,29 @@ class AdminController implements Controller {
         });
       }
       return res.status(500).render("serviceError", {
-        error: "Unknown error",
+        error: "Unknown error while updating the service",
       });
+    }
+
+    if (newService.privacyPolicy) {
+      const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+
+      try {
+        await PrivacyPolicyService.update(privacyPolicy.id, {
+          service_id: privacyPolicy.service_id,
+          text: newService.privacyPolicy,
+        });
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          return res.status(500).render("serviceError", {
+            error: e.message,
+          });
+        }
+
+        return res.status(500).render("serviceError", {
+          error: "Unknown error while updating the privacy policy",
+        });
+      }
     }
 
     return res.status(200).redirect(`/admin/service/${serviceId}`);

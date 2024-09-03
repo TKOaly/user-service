@@ -24,8 +24,11 @@ class PrivacyPolicyService implements Service<PrivacyPolicy> {
     throw new Error("Method not implemented.");
   }
 
-  public update(_entity_id: number, _entity: PrivacyPolicy): Promise<number> {
-    throw new Error("Method not implemented.");
+  public async update(
+    id: number,
+    privacyPolicy: Partial<PrivacyPolicy> & Pick<PrivacyPolicy, "service_id" | "text">,
+  ): Promise<number> {
+    return PrivacyPolicyDao.update(id, privacyPolicy);
   }
 
   public delete(_entity_id: number): Promise<number> {

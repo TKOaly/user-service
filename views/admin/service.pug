@@ -28,11 +28,25 @@ block content
             th Created
             td= service.createdAt
 
+        h3(style="margin-top: 0.5em") Privacy Policy
+        table
+          tr
+            th Text
+            td
+              span= privacyPolicy.text
+          tr
+            th Modified
+            td= privacyPolicy.modifiedAt
+          tr
+            th Created
+            td= privacyPolicy.createdAt
+        
         .actions
           a(href='/admin/service/' + service.serviceIdentifier + '/edit') 
             button Edit
           a(href='/admin/service/' + service.serviceIdentifier + '/delete') 
             button.danger Delete
+
       .right
         h3 Permissions
         table.fit-content
@@ -43,7 +57,8 @@ block content
                     ul
                       each c in claim
                         li= c
-            th= service.dataPermissions
+            tr
+              th= service.dataPermissions
           else
             tr
               td No permissions

@@ -52,6 +52,13 @@ block content
             name='secret'
           )
 
+        .form-group
+          label(for='privacyPolicy') Privacy policy
+          textarea#privacyPolicy.input(
+            placeholder="https://service.tko-aly.fi/privacy", 
+            name='privacyPolicy'
+          ) #{privacyPolicy.text}
+
       .form-group
         label(for='permissions') Permissions
         #permissions
