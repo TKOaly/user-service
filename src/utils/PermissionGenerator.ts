@@ -25,6 +25,7 @@ class PermissionGenerator {
     hy_staff: Math.pow(2, 14),
     hy_student: Math.pow(2, 15),
     tktdt_student: Math.pow(2, 16),
+    registration_ban_bypass_until: Math.pow(2, 17),
     last_seq: NOT_ACTUALLY_AVAILABLE,
   };
 

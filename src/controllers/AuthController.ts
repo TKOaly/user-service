@@ -101,6 +101,7 @@ class AuthController implements Controller {
       hy_student: 0,
       tktdt_student: 0,
       last_seq: 0,
+      registration_ban_bypass_until: null,
     });
     return res.render("calcPermissions", {
       userKeys: Object.keys(dummyObject),
@@ -141,6 +142,7 @@ class AuthController implements Controller {
         hy_student: 0,
         tktdt_student: 0,
         last_seq: 0,
+        registration_ban_bypass_until: null,
       }),
     );
 
