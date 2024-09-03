@@ -20,61 +20,6 @@ header {
   max-width: unset;
 }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-radius: 0.25rem;
-  border-spacing: 0;
-  border-top: 1px solid var(--primary);
-}
-tr {
-  th {
-    background: var(--primary-dark);
-    color: var(--background);
-    text-align: left;
-    padding: 0.5em;
-  }
-
-  th,
-  td {
-    border-right: 1px solid var(--primary);
-    border-bottom: 1px solid var(--primary);
-
-    &:first-child {
-      border-left: 1px solid var(--primary);
-    }
-  }
-
-  &:first-child {
-    th:first-child {
-      border-top-left-radius: 0.25rem;
-    }
-    th:last-child {
-      border-top-right-radius: 0.25rem;
-    }
-  }
-  &:last-child {
-    td:first-child {
-      border-bottom-left-radius: 0.25rem;
-    }
-    td:last-child {
-      border-bottom-right-radius: 0.25rem;
-    }
-  }
-}
-th {
-  font-weight: bold;
-  padding-bottom: 0.5em;
-
-  &.sort::after {
-    content: "🡑";
-    margin-left: 0.5em;
-  }
-}
-td {
-  padding: 0.5em;
-}
-
 @media (max-width: 600px) {
   input[type="text"] {
     width: 100%;
