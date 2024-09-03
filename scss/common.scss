@@ -10,15 +10,9 @@
   --background: #171613;
   --text-background: #25231f;
   --text-foreground: rgb(232, 228, 218);
+  --red: rgb(180, 28, 28);
+  --green: rgb(30, 164, 50);
 }
-
-/*:root {
-  --primary: #ffd54f;
-  --primary-dark: #facc15;
-  --background: white;
-  --text-background: white;
-  --text-foreground: black;
-}*/
 
 body {
   display: flex;
@@ -93,6 +87,43 @@ input[type="submit"] {
     border-bottom-width: 0px;
     height: calc(var(--button-height) - 0.25rem);
   }
+
+  &.danger {
+    background-color: var(--red);
+    border-bottom-color: #810000;
+    color: var(--text-foreground);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  }
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  margin-right: 0.5em;
+
+  &::before {
+    content: "";
+    width: 1.4rem;
+    height: 1.4rem;
+    background-color: #1c1b17;
+    border-radius: 0.25rem;
+  }
+  &:checked::before {
+    content: "✔";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+  }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+  }
 }
 
 *:focus {
@@ -126,6 +157,13 @@ input[type="email"] {
     font-size: 0.9em;
     margin-bottom: 0.5em;
     padding-left: 0.25em;
+
+    &.checkbox {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      width: fit-content;
+    }
   }
 }
 
@@ -157,11 +195,17 @@ footer {
   stroke-width: 1;
 }
 
-#login {
+.split {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: min-content 1fr;
   column-gap: 2em;
+
+  button[type="submit"] {
+    grid-column: 2;
+    width: max-content;
+    margin-left: auto;
+  }
 }
 
 #loginForm {
@@ -213,14 +257,38 @@ footer {
   }
 }
 
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 1em;
+}
+.card {
+  display: grid;
+  padding: 1em;
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+
+  h3 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+}
+
 @media (max-width: 600px) {
   body {
     padding: 2em;
   }
 
-  #login {
+  .split {
     grid-template-columns: 1fr;
     row-gap: 1em;
+
+    button[type="submit"] {
+      grid-column: 1;
+      width: 100%;
+      margin-left: unset;
+    }
   }
 
   input[type="text"],
@@ -285,4 +353,22 @@ p {
   padding: 0.5rem 0.5rem 0.5rem 0.75rem;
   border-radius: 0.25rem;
   border-left: 0.25rem solid var(--primary);
+}
+
+hr {
+  border: unset;
+  border-top: 1px solid var(--primary);
+  border-bottom: 1px solid var(--primary-dark);
+  margin: 1em 0;
+}
+
+.fit-content {
+  width: fit-content;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-top: 1em;
 }

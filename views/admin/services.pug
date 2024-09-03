@@ -1,0 +1,17 @@
+extends ../layouts/admin.pug
+
+block content
+  #services
+    a(href='/admin/services/new') 
+      button#add-service New service
+    hr
+    .cards
+      each service in services
+        div.card.service
+          h3= service.displayName
+          p= service.redirectUrl
+          .actions
+            a(href='/admin/service/' + service.serviceIdentifier) 
+              button Details
+            a(href='/admin/service/' + service.serviceIdentifier + '/edit') 
+              button Edit

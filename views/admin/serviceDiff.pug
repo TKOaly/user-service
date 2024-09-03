@@ -1,0 +1,47 @@
+extends ../layouts/service.pug
+
+block content
+  #serviceDiff
+    p You are about to make the following changes to the service #{service.displayName}
+    hr
+    form.split(method='post' action='/admin/service/' + service.serviceIdentifier + '/edit/confirm')
+      div
+        h2 Details
+        if changes.length === 0
+          p No changes
+        else
+          each change in changes
+            div.change
+              span.title= change.field
+              span.previous= change.previousValue
+              span.new= change.newValue
+
+      div
+        h2 Permissions
+        if addedPermissions.length === 0 && removedPermissions.length === 0
+          p No permission changes
+
+        if addedPermissions.length
+          h3 Added permissions
+          ul.permissions.added
+            each permission in addedPermissions
+              if Array.isArray(permission)
+                each claim in permission
+                  li= claim
+              else
+                li= permission
+
+        if removedPermissions.length
+          h3 Removed permissions
+          ul.permissions.removed
+            each permission in removedPermissions
+              if Array.isArray(permission)
+                each claim in permission
+                  li= claim
+              else
+                li= permission
+      
+      // Hidden field to pass along changes
+      input(type='hidden', name='newService', value=JSON.stringify(newService))
+      
+      button(type='submit') Confirm changes

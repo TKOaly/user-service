@@ -87,5 +87,11 @@
   "resetPasswordSent_title": "Password recovery",
   "resetPasswordForm_title": "Password recovery",
   "resetPasswordSuccess_title": "Password changed",
-  "resetPassword_title": "Password recovery"
+  "resetPassword_title": "Password recovery",
+  "admin_services_title": "Services",
+  "admin_service_title": "Service",
+  "admin_serviceDiff_title": "Confirm service changes",
+  "admin_serviceEdit_title": "Edit service",
+  "admin_serviceNew_title": "Create a service",
+  "admin_serviceDelete_title": "Delete service"
 }

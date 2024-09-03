@@ -1,0 +1,36 @@
+extends ../layouts/service.pug
+
+block content
+  #serviceNew
+    form.split(method='post' action='/admin/services/new')
+      div
+        .form-group
+          label(for='serviceName') Service name
+          input#displayName.input(required, placeholder="my-service", type='text', name='serviceName')
+        
+        .form-group
+          label(for='displayName') Display name
+          input#displayName.input(required, placeholder="Service", type='text', name='displayName')
+        
+        .form-group
+          label(for='redirectUrl') Redirect URL
+          input#redirectUrl.input(required, placeholder="https://service.tko-aly.fi/callback", type='text', name='redirectUrl')
+        
+        .form-group
+          label(for='serviceIdentifier') Service identifier
+          input#serviceIdentifier.input(required, placeholder="00000000-0000-0000-0000-000000000000", type='text', name='serviceIdentifier')
+        
+        .form-group
+          label(for='secret') Secret
+          input#secret.input(required, placeholder="unsecure", type='text', name='secret')
+
+      .form-group
+        label(for='permissions') Permissions
+        #permissions
+          each permission in permissions
+            label.checkbox
+              input(type='checkbox', name='permissions', value=permission.index)
+              | #{permission.claims}
+
+      button(type='submit') Add service
+      

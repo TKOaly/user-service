@@ -1,0 +1,50 @@
+extends ../layouts/service.pug
+
+block content
+  #service
+    .split
+      .left
+        h3 Details
+        table
+          tr
+            th Service name
+            td= service.serviceName
+          tr
+            th Display name
+            td= service.displayName
+          tr
+            th Redirect URL
+            td= service.redirectUrl
+          tr
+            th Service identifier
+            td= service.serviceIdentifier
+          tr
+            th Secret
+            td ******
+          tr
+            th Modified
+            td= service.modifiedAt
+          tr 
+            th Created
+            td= service.createdAt
+
+        .actions
+          a(href='/admin/service/' + service.serviceIdentifier + '/edit') 
+            button Edit
+          a(href='/admin/service/' + service.serviceIdentifier + '/delete') 
+            button.danger Delete
+      .right
+        h3 Permissions
+        table.fit-content
+          if service.permissions.length > 0
+            each claim in service.permissions
+                tr
+                  td
+                    ul
+                      each c in claim
+                        li= c
+            th= service.dataPermissions
+          else
+            tr
+              td No permissions
+            th= service.dataPermissions

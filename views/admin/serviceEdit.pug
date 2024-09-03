@@ -1,0 +1,69 @@
+extends ../layouts/service.pug
+
+block content
+  #serviceEdit
+    form.split(method='post' action='/admin/service/' + service.serviceIdentifier + '/edit')
+      div
+        .form-group
+          label(for='serviceName') Service name
+          input#displayName.input(
+            required, 
+            placeholder="my-service", 
+            value=service.serviceName, 
+            type='text', 
+            name='serviceName'
+          )
+        
+        .form-group
+          label(for='displayName') Display name
+          input#displayName.input(
+            required, 
+            placeholder="Service", 
+            value=service.displayName, 
+            type='text', 
+            name='displayName'
+          )
+        
+        .form-group
+          label(for='redirectUrl') Redirect URL
+          input#redirectUrl.input(
+            required, 
+            placeholder="https://service.tko-aly.fi/callback", 
+            value=service.redirectUrl, 
+            type='text', 
+            name='redirectUrl'
+          )
+        
+        .form-group
+          label(for='serviceIdentifier') Service identifier
+          input#serviceIdentifier.input(
+            required, 
+            placeholder="00000000-0000-0000-0000-000000000000",
+            value=service.serviceIdentifier,
+            type='text', 
+            name='serviceIdentifier'
+          )
+        
+        .form-group
+          label(for='secret') Secret
+          input#secret.input(
+            placeholder="*******", 
+            type='text', 
+            name='secret'
+          )
+
+      .form-group
+        label(for='permissions') Permissions
+        #permissions
+          each permission in permissions
+            label.checkbox
+              input(
+                type='checkbox', 
+                name='permissions', 
+                checked=permission.selected,
+                value=permission.index
+              )
+              | #{permission.claims.join(', ')}
+
+      button(type='submit') Save
+      

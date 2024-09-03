@@ -15,6 +15,7 @@ import PaymentController from "./controllers/PaymentController";
 import UserController from "./controllers/UserController";
 import PrivacyPolicyController from "./controllers/PrivacyPolicyController";
 import PricingsController from "./controllers/PricingsController";
+import AdminController from "./controllers/AdminController";
 
 import initLocalization from "./i18n.config";
 
@@ -122,7 +123,7 @@ app.use((req, res, next) => {
   const render = res.render.bind(res);
 
   res.render = (...[view, ...args]: Parameters<typeof render>) => {
-    res.locals.title = req.t(`${view}_title`);
+    res.locals.title = req.t(`${view.replaceAll("/", "_")}_title`);
     render(view, ...args);
   };
 
@@ -147,6 +148,7 @@ app.use(generateApiRoute("pricings"), PricingsController.createRoutes());
 app.use(generateApiRoute("users"), UserController.createRoutes());
 app.use(generateApiRoute("payments"), PaymentController.createRoutes());
 app.use(generateApiRoute("policy"), PrivacyPolicyController.createRoutes());
+app.use("/admin", AdminController.createRoutes());
 app.use("/.well-known/openid-configuration", OAuthController.createDiscoveryRoute());
 app.use("/oauth", OAuthController.createRoutes());
 app.use("/", LoginController.createRoutes());

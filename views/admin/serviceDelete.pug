@@ -1,0 +1,11 @@
+extends ../layouts/common.pug
+
+block content
+  #serviceDelete
+    form(method='post' action='/admin/service/' + service.serviceIdentifier + '/delete')
+      .form-group
+        h2 Are you sure you want to delete the service #{service.displayName}?
+
+      .actions
+        button.danger(type="submit") Delete
+        a(href='/admin/service/' + service.serviceIdentifier) Cancel

@@ -1,7 +1,7 @@
 extends layouts/common.pug
 
 block content
-  #login
+  #login.split
     if (loggedUser && logoutRedirect)
       #session-info
         h5 #{ t("login_LoggedInAs") } #{ loggedUser }

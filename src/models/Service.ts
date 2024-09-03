@@ -10,6 +10,18 @@ export interface ServiceDatabaseObject {
   secret: string | null;
 }
 
+export interface IService {
+  id: number;
+  serviceName: string;
+  serviceIdentifier: string;
+  displayName: string;
+  redirectUrl: string;
+  dataPermissions: number;
+  secret: string | null;
+  createdAt: Date;
+  modifiedAt: Date;
+}
+
 export default class Service {
   public id: number;
   public serviceName: string;
@@ -47,5 +59,21 @@ export default class Service {
       created: this.createdAt,
       secret: this.secret,
     } as ServiceDatabaseObject;
+  }
+
+  public static createUpdatedService(service: Service, updatedService: Omit<Partial<IService>, "id">): Service {
+    return new Service({
+      id: service.id,
+      service_name: updatedService.serviceName ?? service.serviceName,
+      display_name: updatedService.displayName ?? service.displayName,
+      redirect_url: updatedService.redirectUrl ?? service.redirectUrl,
+      service_identifier: updatedService.serviceIdentifier ?? service.serviceIdentifier,
+      data_permissions: updatedService.dataPermissions ?? service.dataPermissions,
+      modified: new Date(),
+      created: service.createdAt,
+      // Exception: if new secret is nullish, keep the old one.
+      // This is to avoid empty strings as secrets.
+      secret: updatedService.secret || service.secret,
+    });
   }
 }

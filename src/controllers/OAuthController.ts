@@ -122,7 +122,7 @@ const CLAIM_TO_PROPERTY_MAP: Record<string, Array<string>> = {
 const mapClaimsToUserProperties = (claims: string[]) =>
   claims.flatMap((claim: string) => CLAIM_TO_PROPERTY_MAP[claim] ?? []);
 
-const CLAIMS = [
+export const CLAIMS = [
   ["sub"],
   ["preferred_username", "username"],
   ["name"],
@@ -143,7 +143,7 @@ const CLAIMS = [
   ["is_tktdt_student"],
 ];
 
-const getAllowedClaims = (permissions: number) =>
+export const getAllowedClaims = (permissions: number) =>
   CLAIMS.flatMap((claims, i) => (Math.pow(2, i) & permissions ? claims : []));
 
 type FlowStateLogin = {
