@@ -35,8 +35,8 @@ class PrivacyPolicyService implements Service<PrivacyPolicy> {
     throw new Error("Method not implemented.");
   }
 
-  public create(_entity: PrivacyPolicy): Promise<number[]> {
-    throw new Error("Method not implemented.");
+  public async create(privacyPolicy: Pick<PrivacyPolicy, "service_id" | "text">): Promise<number[]> {
+    return PrivacyPolicyDao.save(privacyPolicy);
   }
 }
 

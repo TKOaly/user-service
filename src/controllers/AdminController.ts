@@ -4,11 +4,12 @@ import cachingMiddleware from "../utils/CachingMiddleware";
 import AuthorizeMiddleware from "../utils/AuthorizeMiddleware";
 import ServiceService from "../services/ServiceService";
 import moment from "moment";
-import { CLAIMS, getAllowedClaims } from "./OAuthController";
+import { CLAIMS } from "./OAuthController";
 import { hasKey } from "../utils/TypescriptHelpers";
 import Service from "../models/Service";
 import { generateFromIndexes, getChangedClaims, getClaims, permissionsIncludesIndex } from "../utils/Permission";
 import PrivacyPolicyService from "../services/PrivacyPolicyService";
+import PrivacyPolicy from "../models/PrivacyPolicy";
 
 const mappedPermissions = CLAIMS.map((claims, index) => ({
   index,
@@ -46,8 +47,6 @@ class AdminController implements Controller {
         // Format dates
         createdAt: moment(service.createdAt).format("DD.MM.YYYY HH:mm"),
         modifiedAt: moment(service.modifiedAt).format("DD.MM.YYYY HH:mm"),
-        // Add permissions mapped to human readable format
-        permissions: getAllowedClaims(service.dataPermissions),
       }));
 
     return res.status(200).render("admin/services", {
@@ -64,14 +63,21 @@ class AdminController implements Controller {
       });
     }
 
-    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    let privacyPolicy: PrivacyPolicy | undefined = undefined;
+    try {
+      privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    } catch (e) {
+      console.error(e);
+    }
 
     return res.status(200).render("admin/service", {
-      privacyPolicy: {
-        ...privacyPolicy,
-        createdAt: moment(privacyPolicy.created).format("DD.MM.YYYY HH:mm"),
-        modifiedAt: moment(privacyPolicy.modified).format("DD.MM.YYYY HH:mm"),
-      },
+      privacyPolicy: privacyPolicy
+        ? {
+            ...privacyPolicy,
+            createdAt: moment(privacyPolicy?.created).format("DD.MM.YYYY HH:mm"),
+            modifiedAt: moment(privacyPolicy?.modified).format("DD.MM.YYYY HH:mm"),
+          }
+        : undefined,
       service: {
         ...service,
         createdAt: moment(service.createdAt).format("DD.MM.YYYY HH:mm"),
@@ -94,6 +100,7 @@ class AdminController implements Controller {
     const newService = {
       ...req.body,
       permissions: undefined,
+      privacyPolicy: undefined,
       dataPermissions: generateFromIndexes(permissionsArray),
     };
 
@@ -106,7 +113,31 @@ class AdminController implements Controller {
         });
       }
       return res.status(500).render("serviceError", {
-        error: "Unknown error",
+        error: "Unknown error while saving new service",
+      });
+    }
+
+    const service = await ServiceService.fetchById(newService.serviceIdentifier);
+
+    if (!service) {
+      return res.status(500).render("serviceError", {
+        error: "The newly created service was not found in the database",
+      });
+    }
+
+    try {
+      await PrivacyPolicyService.create({
+        service_id: service.id,
+        text: req.body.privacyPolicy,
+      });
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return res.status(500).render("serviceError", {
+          error: e.message,
+        });
+      }
+      return res.status(500).render("serviceError", {
+        error: "Unknown error while saving privacy policy for new service",
       });
     }
 
@@ -164,7 +195,12 @@ class AdminController implements Controller {
       });
     }
 
-    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    let privacyPolicy: PrivacyPolicy | undefined = undefined;
+    try {
+      privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    } catch (e) {
+      console.error(e);
+    }
 
     return res.status(200).render("admin/serviceEdit", {
       service,
@@ -185,7 +221,12 @@ class AdminController implements Controller {
       });
     }
 
-    const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    let privacyPolicy: PrivacyPolicy | undefined = undefined;
+    try {
+      privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+    } catch (e) {
+      console.error(e);
+    }
 
     const permissionsArray = Array.isArray(req.body.permissions ?? [])
       ? (req.body.permissions ?? [])
@@ -232,7 +273,7 @@ class AdminController implements Controller {
       newService.dataPermissions,
     );
 
-    const privacyPolicyChanged = newService.privacyPolicy !== privacyPolicy.text;
+    const privacyPolicyChanged = newService.privacyPolicy !== privacyPolicy?.text;
 
     if (
       !privacyPolicyChanged &&
@@ -251,7 +292,7 @@ class AdminController implements Controller {
       addedPermissions: emphasizeUnusedClaims(addedPermissions),
       removedPermissions: emphasizeUnusedClaims(removedPermissions),
       privacyPolicyChanged,
-      oldPrivacyPolicy: privacyPolicy.text,
+      oldPrivacyPolicy: privacyPolicy?.text,
       newPrivacyPolicy: newService.privacyPolicy,
       newService,
     });
@@ -290,23 +331,47 @@ class AdminController implements Controller {
     }
 
     if (newService.privacyPolicy) {
-      const privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
-
+      let privacyPolicy: PrivacyPolicy | undefined = undefined;
       try {
-        await PrivacyPolicyService.update(privacyPolicy.id, {
-          service_id: privacyPolicy.service_id,
-          text: newService.privacyPolicy,
-        });
-      } catch (e: unknown) {
-        if (e instanceof Error) {
+        privacyPolicy = await PrivacyPolicyService.findByServiceIdentifier(service.serviceIdentifier);
+      } catch (e) {
+        console.error(e);
+      }
+
+      if (!privacyPolicy) {
+        try {
+          await PrivacyPolicyService.create({
+            service_id: service.id,
+            text: newService.privacyPolicy,
+          });
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            return res.status(500).render("serviceError", {
+              error: e.message,
+            });
+          }
+
           return res.status(500).render("serviceError", {
-            error: e.message,
+            error: "Unknown error while creating a privacy policy",
           });
         }
+      } else {
+        try {
+          await PrivacyPolicyService.update(privacyPolicy.id, {
+            service_id: privacyPolicy.service_id,
+            text: newService.privacyPolicy,
+          });
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            return res.status(500).render("serviceError", {
+              error: e.message,
+            });
+          }
 
-        return res.status(500).render("serviceError", {
-          error: "Unknown error while updating the privacy policy",
-        });
+          return res.status(500).render("serviceError", {
+            error: "Unknown error while updating the privacy policy",
+          });
+        }
       }
     }
 

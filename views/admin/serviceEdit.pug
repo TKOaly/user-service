@@ -57,7 +57,7 @@ block content
           textarea#privacyPolicy.input(
             placeholder="https://service.tko-aly.fi/privacy", 
             name='privacyPolicy'
-          ) #{privacyPolicy.text}
+          ) #{privacyPolicy ? privacyPolicy.text : ''}
 
       .form-group
         label(for='permissions') Permissions

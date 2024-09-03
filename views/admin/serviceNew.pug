@@ -24,13 +24,21 @@ block content
           label(for='secret') Secret
           input#secret.input(required, placeholder="unsecure", type='text', name='secret')
 
+        .form-group
+          label(for='privacyPolicy') Privacy policy
+          textarea#privacyPolicy.input(
+            required,
+            placeholder="https://tko-aly.fi/privacy_policy", 
+            name='privacyPolicy'
+          )
+
       .form-group
         label(for='permissions') Permissions
         #permissions
           each permission in permissions
             label.checkbox
               input(type='checkbox', name='permissions', value=permission.index)
-              | #{permission.claims}
+              | #{permission.claims.join(', ')}
 
       button(type='submit') Add service
       

@@ -29,17 +29,20 @@ block content
             td= service.createdAt
 
         h3(style="margin-top: 0.5em") Privacy Policy
-        table
-          tr
-            th Text
-            td
-              span= privacyPolicy.text
-          tr
-            th Modified
-            td= privacyPolicy.modifiedAt
-          tr
-            th Created
-            td= privacyPolicy.createdAt
+        if privacyPolicy
+          table
+            tr
+              th Text
+              td
+                span= privacyPolicy.text
+            tr
+              th Modified
+              td= privacyPolicy.modifiedAt
+            tr
+              th Created
+              td= privacyPolicy.createdAt
+        else 
+          p.dim No privacy policy
         
         .actions
           a(href='/admin/service/' + service.serviceIdentifier + '/edit') 
