@@ -23,6 +23,7 @@ interface UserData {
   isHyStaff: boolean;
   isHyStudent: boolean;
   isTKTDTStudent: boolean;
+  registrationBanBypassUntil: Date | null;
 }
 
 export function removeSensitiveInformation<D extends Partial<UserData>>(

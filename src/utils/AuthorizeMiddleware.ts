@@ -112,6 +112,7 @@ class AuthorizeMiddleware {
               hy_student: 1,
               tktdt_student: 1,
               last_seq: 0,
+              registration_ban_bypass_until: null,
             }),
           };
 

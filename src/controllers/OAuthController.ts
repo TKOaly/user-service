@@ -456,7 +456,7 @@ class OAuthController implements Controller {
       .filter(key => claimKeys.includes(key))
       .map((key: keyof User) => ({
         name: key,
-        value: user[key].toString(),
+        value: `${user[key]}`,
       }));
 
     return res.status(200).render("gdpr", {
