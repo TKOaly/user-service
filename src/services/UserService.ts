@@ -396,6 +396,10 @@ class UserService {
             event.fields.created = new Date(event.fields.created);
           }
 
+          if (event.fields.registration_ban_bypass_until) {
+            event.fields.registration_ban_bypass_until = new Date(event.fields.registration_ban_bypass_until);
+          }
+
           // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
           await UserDao.update(userId, event.fields);
         } else if (event.type === "create" || event.type === "import") {

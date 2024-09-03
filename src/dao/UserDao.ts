@@ -26,6 +26,7 @@ type UserSaveModel = Required<
     | "hy_staff"
     | "tktdt_student"
     | "last_seq"
+    | "registration_ban_bypass_until"
   >
 > &
   Partial<Pick<UserDatabaseObject, "id">>;
@@ -155,6 +156,7 @@ class UserDao implements Dao<UserDatabaseObject> {
         | "hy_student"
         | "hy_staff"
         | "tktdt_student"
+        | "registration_ban_bypass_until"
         | "last_seq"
       >
     >,

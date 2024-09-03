@@ -32,7 +32,8 @@ export type UserDataKey =
   | "isHyStudent"
   | "isTKTDTStudent"
   | "isTKTL"
-  | "lastSeq";
+  | "lastSeq"
+  | "registrationBanBypassUntil";
 
 export type UserDataKeyWithRole = UserDataKey | "role";
 export type UserDataKeyWithMembership = UserDataKey | "membership";
@@ -63,7 +64,7 @@ export const allowedSelfEdit: SelfEditKey[] = [
 export const allowedJVEdit: JVDataKey[] = [...allowedSelfEdit, "name", "username", "membership"];
 
 // Colums allowed to be edited by admin
-export const allowedAdminEdit: AdminDataKey[] = [...allowedJVEdit, "role", "createdAt"];
+export const allowedAdminEdit: AdminDataKey[] = [...allowedJVEdit, "role", "createdAt", "registrationBanBypassUntil"];
 
 export type UserCreateModel = User & AdditionalUserData;
 export type UserUpdateModel = Partial<User & AdditionalUserData> & Pick<User, "role">;
@@ -154,6 +155,13 @@ export const isValidPartialUser = (
       return false;
     }
   }
+  if (
+    u.registrationBanBypassUntil !== undefined &&
+    u.registrationBanBypassUntil !== null &&
+    !(u.registrationBanBypassUntil instanceof Date)
+  ) {
+    return false;
+  }
   return true;
 };
 
@@ -221,6 +229,13 @@ export const isValidUser = (entity: unknown): entity is UserData => {
   if (!isBoolean(u.isTKTDTStudent)) {
     return false;
   }
+  if (
+    u.registrationBanBypassUntil !== undefined &&
+    u.registrationBanBypassUntil !== null &&
+    !(u.registrationBanBypassUntil instanceof Date)
+  ) {
+    return false;
+  }
   return true;
 };
 
@@ -275,6 +290,7 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
         salt: "",
         tktdt_student: booleanToInt(u.isTKTDTStudent),
         last_seq: u.lastSeq,
+        registration_ban_bypass_until: u.registrationBanBypassUntil,
       }),
       password: u.password1,
     };
@@ -303,6 +319,9 @@ export default class UserValidator implements Validator<UserCreateModel, UserUpd
       hyy_member: newData.isHYYMember !== undefined ? booleanToInt(newData.isHYYMember) : undefined,
       tktl: newData.isTKTL !== undefined ? booleanToInt(newData.isTKTL) : undefined,
       tktdt_student: newData.isTKTDTStudent !== undefined ? booleanToInt(newData.isTKTDTStudent) : undefined,
+      registration_ban_bypass_until: newData.registrationBanBypassUntil
+        ? new Date(newData.registrationBanBypassUntil)
+        : null,
     };
 
     if ("role" in newData) {

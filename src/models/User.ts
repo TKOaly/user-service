@@ -75,6 +75,8 @@ export default class User implements UserData {
   public isHyStaff: boolean;
   public isHyStudent: boolean;
   public isTKTDTStudent: boolean;
+  public registrationBanBypassUntil: Date | null;
+
   public lastSeq: number;
 
   constructor(userDatabaseObject: UserDatabaseObject) {
@@ -98,6 +100,7 @@ export default class User implements UserData {
     this.isHyStaff = userDatabaseObject.hy_staff === 1;
     this.isHyStudent = userDatabaseObject.hy_student === 1;
     this.isTKTDTStudent = userDatabaseObject.tktdt_student === 1;
+    this.registrationBanBypassUntil = userDatabaseObject.registration_ban_bypass_until;
     this.lastSeq = userDatabaseObject.last_seq;
   }
 
@@ -124,6 +127,7 @@ export default class User implements UserData {
       hy_student: this.isHyStudent ? 1 : 0,
       tktdt_student: this.isTKTDTStudent ? 1 : 0,
       last_seq: this.lastSeq,
+      registration_ban_bypass_until: this.registrationBanBypassUntil,
     };
   }
 }
