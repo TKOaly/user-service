@@ -227,7 +227,7 @@ class PaymentController implements Controller {
 
     try {
       const payment = await PaymentService.fetchPaymentByReferenceNumber(referenceNumber);
-      res.status(200).json(payment);
+      res.status(200).json(new ServiceResponse(payment));
     } catch (err) {
       if (err instanceof ServiceError) {
         res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
