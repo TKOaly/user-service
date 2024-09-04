@@ -130,6 +130,16 @@ class PaymentService {
   ): Promise<Payment> {
     throw new Error("Not implemented.");
   }
+
+  public async fetchPaymentByReferenceNumber(reference: string) {
+    const payment = await PaymentDao.findByReferenceNumber(reference);
+
+    if (!payment) {
+      throw new ServiceError(404, "Payment not found");
+    }
+
+    return new Payment(payment);
+  }
 }
 
 export default new PaymentService();

@@ -97,6 +97,10 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
       .del()
       .then(count => count > 0);
   }
+
+  public findByReferenceNumber(reference_number: string) {
+    return knexInstance<PaymentDatabaseObject>(tableName).where({ reference_number }).first();
+  }
 }
 
 export default new PaymentDao();

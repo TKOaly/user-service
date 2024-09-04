@@ -218,6 +218,26 @@ class PaymentController implements Controller {
     }
   };
 
+  getPaymentByReferenceNumber: AuthorizedRequestHandler = async (req, res) => {
+    if (compareRoles(req.authorization.user.role, UserRoleString.Jasenvirkailija) < 0) {
+      return res.status(403).json(new ServiceResponse(null, "Forbidden"));
+    }
+
+    const referenceNumber = req.params.rf;
+
+    try {
+      const payment = await PaymentService.fetchPaymentByReferenceNumber(referenceNumber);
+      res.status(200).json(new ServiceResponse(payment));
+    } catch (err) {
+      if (err instanceof ServiceError) {
+        res.status(err.httpErrorCode || 500).json(new ServiceResponse(null, err.message));
+        return;
+      }
+
+      throw err;
+    }
+  };
+
   public createRoutes(): express.Router {
     this.route.use(AuthorizeMiddleware.authorize(true));
 
@@ -227,6 +247,7 @@ class PaymentController implements Controller {
     this.route.put("/:id(\\d+)/pay/:method", this.markPaymentAsPaid as RequestHandler);
     this.route.delete("/:id(\\d+)", this.deletePayment as RequestHandler);
     this.route.post("/", this.createPayment as RequestHandler);
+    this.route.get("/by-reference-number/:rf(\\d+)", this.getPaymentByReferenceNumber as RequestHandler);
 
     return this.route;
   }
