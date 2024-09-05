@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import sha1 from "sha1";
-import UserDao from "../dao/UserDao";
+import { UserDao } from "../dao/UserDao";
 import User from "../models/User";
 import { UserPayment } from "../models/UserPayment";
 import ServiceError from "../utils/ServiceError";
@@ -46,6 +46,12 @@ type UserEvent = z.infer<typeof UserEvent>;
 class UserService {
   abortSignal?: ConsumerAbortSignal;
 
+  dao: UserDao;
+
+  constructor(dao?: UserDao) {
+    this.dao = dao ?? new UserDao();
+  }
+
   private async publish(
     subject: string,
     payload: UserEvent,
@@ -57,7 +63,7 @@ class UserService {
   }
 
   public async fetchUser(userId: number): Promise<User> {
-    const result = await UserDao.findOne(userId);
+    const result = await this.dao.findOne(userId);
     if (!result) {
       throw new ServiceError(404, "User not found");
     }
@@ -66,12 +72,12 @@ class UserService {
   }
 
   public async fetchAllUsers(): Promise<User[]> {
-    const results = await UserDao.findAll();
+    const results = await this.dao.findAll();
     return results.map(dbObj => new User(dbObj));
   }
 
   public async fetchAllUnpaidUsers(): Promise<User[]> {
-    const results = await UserDao.findAllByUnpaidPayment();
+    const results = await this.dao.findAllByUnpaidPayment();
     return results.map(dbObj => new User(dbObj));
   }
 
@@ -79,7 +85,7 @@ class UserService {
    * Searches all users with the given SQL WHERE condition.
    */
   public async searchUsers(searchTerm: string): Promise<User[]> {
-    const results = await UserDao.findWhere(searchTerm);
+    const results = await this.dao.findWhere(searchTerm);
     if (!results.length) {
       return this.fetchAllUsers();
     }
@@ -117,13 +123,13 @@ class UserService {
       });
     }
 
-    const results = await UserDao.findAll(fields, conditionQuery);
+    const results = await this.dao.findAll(fields, conditionQuery);
 
     return results.map(u => new UserPayment(u));
   }
 
   public async getUserWithUsernameAndPassword(username: string, password: string): Promise<User> {
-    const dbUser = await UserDao.findByUsername(username);
+    const dbUser = await this.dao.findByUsername(username);
     if (!dbUser) {
       throw new ServiceError(404, "User not found");
     }
@@ -149,7 +155,7 @@ class UserService {
 
   public async tryReserveUsername(username: string): Promise<boolean> {
     try {
-      await UserDao.reserveUsername(username);
+      await this.dao.reserveUsername(username);
       return true;
     } catch (err) {
       if (typeof err === "object" && err && "code" in err && err.code === "ER_DUP_ENTRY") {
@@ -162,7 +168,7 @@ class UserService {
 
   public async tryReserveEmail(email: string): Promise<boolean> {
     try {
-      await UserDao.reserveEmail(email);
+      await this.dao.reserveEmail(email);
       return true;
     } catch (err) {
       if (typeof err === "object" && err && "code" in err && err.code === "ER_DUP_ENTRY") {
@@ -192,7 +198,7 @@ class UserService {
 
       const presetId = typeof userData.id === "number" && userData.id > 0 ? userData.id : undefined;
 
-      userData.id = await UserDao.reserveId(presetId);
+      userData.id = await this.dao.reserveId(presetId);
 
       const { password, salt } = await mkHashedPassword(rawPassword);
       userData.hashedPassword = password;
@@ -213,11 +219,11 @@ class UserService {
       return userData.id;
     } catch (err) {
       if (emailCaptured) {
-        await UserDao.releaseEmail(userData.email);
+        await this.dao.releaseEmail(userData.email);
       }
 
       if (usernameCaptured) {
-        await UserDao.releaseUsername(userData.username);
+        await this.dao.releaseUsername(userData.username);
       }
 
       throw err;
@@ -302,21 +308,21 @@ class UserService {
       );
 
       if (usernameReserved) {
-        await UserDao.releaseUsername(oldUser.username);
+        await this.dao.releaseUsername(oldUser.username);
       }
 
       if (emailReserved) {
-        await UserDao.releaseEmail(oldUser.email);
+        await this.dao.releaseEmail(oldUser.email);
       }
 
       return 1;
     } catch (err) {
       if (usernameReserved) {
-        await UserDao.releaseUsername(updatedUser.username!);
+        await this.dao.releaseUsername(updatedUser.username!);
       }
 
       if (emailReserved) {
-        await UserDao.releaseEmail(updatedUser.email!);
+        await this.dao.releaseEmail(updatedUser.email!);
       }
 
       throw err;
@@ -324,7 +330,7 @@ class UserService {
   }
 
   public async deleteUser(userId: number): Promise<number> {
-    const user = await UserDao.findOne(userId);
+    const user = await this.dao.findOne(userId);
 
     if (!user) {
       throw new ServiceError(404, "User not found");
@@ -347,14 +353,14 @@ class UserService {
   }
 
   public async getUserWithUsername(username: string): Promise<User | null> {
-    const dbUser = await UserDao.findByUsername(username);
+    const dbUser = await this.dao.findByUsername(username);
     if (!dbUser) return null;
     const user = new User(dbUser);
     return user;
   }
 
   public async getUserWithEmail(email: string): Promise<User | null> {
-    const dbUser = await UserDao.findByEmail(email);
+    const dbUser = await this.dao.findByEmail(email);
     if (!dbUser) return null;
     const user = new User(dbUser);
     return user;
@@ -371,6 +377,10 @@ class UserService {
 
   public async start() {
     await this.listen();
+  }
+
+  private transaction(callback: (txs: UserService) => Promise<void>) {
+    return this.dao.withTransaction(dao => callback(new UserService(dao)));
   }
 
   /**
@@ -401,9 +411,9 @@ class UserService {
           }
 
           // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
-          await UserDao.update(userId, event.fields);
+          await this.dao.update(userId, event.fields);
         } else if (event.type === "create" || event.type === "import") {
-          await UserDao.save({
+          await this.dao.save({
             ...event.fields,
             id: userId,
             last_seq: msg.seq,
@@ -411,13 +421,13 @@ class UserService {
 
           return;
         } else if (event.type === "delete") {
-          await UserDao.remove(userId);
+          await this.dao.remove(userId);
           return;
         }
 
         // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
         // vaikka viesti ei olisikaan meille relevantti.
-        await UserDao.update(userId, { last_seq: msg.seq });
+        await this.dao.update(userId, { last_seq: msg.seq });
       };
 
       nats.subscribe(handler, {
