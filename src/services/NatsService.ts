@@ -103,6 +103,12 @@ export default class NatsService {
     await this.setup();
   }
 
+  async resetConsumer() {
+    const jsm = await this.conn.jetstreamManager();
+    await jsm.consumers.delete(STREAM, CONSUMER);
+    await this.setup();
+  }
+
   private async setup() {
     // Luodaan tarvittavat JetStream streamit ja consumerit.
 
@@ -298,14 +304,14 @@ export default class NatsService {
    * Tämän toteutus on jotenkin vaikeampi kuin NATS muuten antaisi olettaa,
    * joten luulen että tähän on joku fiksumpikin tapa.
    */
-  public async fetch(subject: string): Promise<JsMsg[]> {
+  public async fetch(subject: string, callback?: (msg: JsMsg) => Promise<void>): Promise<JsMsg[]> {
     const js = this.conn.jetstream();
 
     // Haetaan palvelimelta subjektin viimeisin viesti,
     // jotta saamme sen järjestysnumeron.
     const c1 = await js.consumers.get(STREAM, {
       // Haluamme vain subjektin viimeisimmän viestin.
-      deliver_policy: DeliverPolicy.LastPerSubject,
+      deliver_policy: DeliverPolicy.Last,
 
       // Haluamme vain yhden subjektin viestin.
       filterSubjects: [subject],
@@ -328,22 +334,18 @@ export default class NatsService {
 
     const results = [];
 
-    while (true) {
-      // Haetaan viesti kerrallaan.
-      const msg = await consumer.next();
-
-      // Ilmeisesti sieltä voi tulla myös null, en tiedä miksi.
-      if (!msg) break;
-
+    for await (const msg of await consumer.consume()) {
       // Jos se ei ollut null, niin sitten otetaan se talteen.
       results.push(msg);
+
+      await callback?.(msg);
 
       // Jos viestin järjestysnumero vastaa aiemmin hakemaamme viimeistintä viestiä,
       // lopetetaan viestien hakeminen.
       //
       // Tämän ei pitäisi olla tarpeellista, vaan NATS-ille pitäisi pystyä sanomaan myös,
       // että emme halua odottaa uusia viestejä. Enpäs saanut toimimaan, niin tehdään sitten näin.
-      if (msg.seq === last.seq) {
+      if (msg.seq === last.seq || msg.info.pending === 0) {
         break;
       }
     }

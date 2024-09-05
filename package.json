@@ -33,7 +33,8 @@
     "run-docker": "docker run -p 8080:8080 --env-file=.env -d --name user-service-container user-service",
     "prepare": "[[ -z \"$NODE_END\" || \"$NODE_ENV\" = \"development\" ]] && husky || true",
     "knex": "tsx ./node_modules/knex/bin/cli.js",
-    "create-user": "tsx ./scripts/create_user.ts"
+    "create-user": "tsx ./scripts/create_user.ts",
+    "rebuild-users": "tsx ./scripts/rebuild_users.ts"
   },
   "dependencies": {
     "@sentry/node": "^8.25.0",

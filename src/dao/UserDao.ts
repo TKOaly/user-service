@@ -241,6 +241,10 @@ export class UserDao implements Dao<UserDatabaseObject> {
     };
     return Promise.resolve(this.knex<UserDatabaseObject>(tableName).insert(savedObj));
   }
+
+  public async clear() {
+    await this.knex(tableName).del();
+  }
 }
 
 export default new UserDao();
