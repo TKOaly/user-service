@@ -29,7 +29,7 @@ type UserSaveModel = Required<
     | "registration_ban_bypass_until"
   >
 > &
-  Partial<Pick<UserDatabaseObject, "id">>;
+  Partial<Pick<UserDatabaseObject, "id" | "created" | "modified">>;
 
 const isTransaction = (knex: Knex): knex is Knex.Transaction => !!knex.isTransaction;
 
@@ -236,8 +236,8 @@ export class UserDao implements Dao<UserDatabaseObject> {
   public save(entity: UserSaveModel): PromiseLike<number[]> {
     const savedObj = {
       ...entity,
-      created: new Date(),
-      modified: new Date(),
+      created: entity.created ?? new Date(),
+      modified: entity.modified ?? new Date(),
     };
     return Promise.resolve(this.knex<UserDatabaseObject>(tableName).insert(savedObj));
   }

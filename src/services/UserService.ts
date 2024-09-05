@@ -413,6 +413,14 @@ class UserService {
           // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
           await this.dao.update(userId, event.fields);
         } else if (event.type === "create" || event.type === "import") {
+          if (event.fields.created) {
+            event.fields.created = new Date(event.fields.created);
+          }
+
+          if (event.fields.modified) {
+            event.fields.modified = new Date(event.fields.modified);
+          }
+
           await this.dao.save({
             ...event.fields,
             id: userId,
