@@ -10,6 +10,7 @@ import { hashPasswordAsync, validatePasswordHashAsync } from "../utils/UserHelpe
 import NatsService, { ConsumerAbortSignal } from "../services/NatsService";
 import { JetStreamPublishOptions, JsMsg, headers, JsHeaders, PubAck } from "nats";
 import z from "zod";
+import { isEqual } from "lodash";
 
 const UserFields = z.record(z.string(), z.any()).transform(v => v as UserDatabaseObject);
 
@@ -387,11 +388,75 @@ class UserService {
     const nats = await NatsService.get();
 
     await this.transaction(async tsx => {
+      const usersBefore = new Map(
+        (await tsx.dao.findAll()).map(user => [user.id, user] as [number, UserDatabaseObject]),
+      );
+
       await tsx.dao.clear();
       await nats.fetch("members.*", async msg => {
         const data = msg.json();
         await tsx.handleMessage(data, msg);
       });
+
+      let error = false;
+
+      const usersAfter = new Map(
+        (await tsx.dao.findAll()).map(user => [user.id, user] as [number, UserDatabaseObject]),
+      );
+
+      const ids = new Set([...usersBefore.keys(), ...usersAfter.keys()]);
+
+      ids.forEach(id => {
+        const before = usersBefore.get(id);
+        const after = usersAfter.get(id);
+
+        if (!after && before) {
+          console.log(`User ${before.id} (${before.username}) disappeared during rebuild!`);
+          error = true;
+          return;
+        }
+
+        if (!before && after) {
+          console.log(`New user ${after.id} (${after.username}) appeared during rebuild!`);
+          error = true;
+          return;
+        }
+
+        if (!before || !after) {
+          throw new Error("Unreachable.");
+        }
+
+        if (!isEqual(before, after)) {
+          const diff = Object.entries(before).flatMap(([key, beforeValue]) => {
+            const afterValue = after[key as keyof UserDatabaseObject];
+
+            if (isEqual(beforeValue, afterValue)) {
+              return [];
+            }
+
+            return [[key, beforeValue, afterValue]];
+          });
+
+          if (diff.length === 0) {
+            console.log(`User ${id} changed during rebuild!`);
+          } else {
+            diff.forEach(([key, before, after]) => {
+              console.log(`Field ${key} of user ${id} changed: ${before} -> ${after}`);
+            });
+          }
+        }
+      });
+
+      if (usersAfter.size !== usersBefore.size) {
+        console.log(
+          `User count does not match before (${usersBefore.size}) and after (${usersAfter.size}) the rebuild.`,
+        );
+        error = true;
+      }
+
+      if (error) {
+        throw new Error("Abnormalities were detected after the rebuild. Rolling back...");
+      }
     });
   }
 
