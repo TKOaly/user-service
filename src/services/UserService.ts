@@ -44,6 +44,12 @@ const UserEvent = z.discriminatedUnion("type", [UserCreateEvent, UserImportEvent
 
 type UserEvent = z.infer<typeof UserEvent>;
 
+type RebuildOptions = {
+  allowChanges?: Array<keyof UserDatabaseObject>;
+  allowRemove?: boolean;
+  allowCreate?: boolean;
+};
+
 class UserService {
   abortSignal?: ConsumerAbortSignal;
 
@@ -384,7 +390,7 @@ class UserService {
     return this.dao.withTransaction(dao => callback(new UserService(dao)));
   }
 
-  public async rebuild() {
+  public async rebuild(options?: RebuildOptions) {
     const nats = await NatsService.get();
 
     await this.transaction(async tsx => {
@@ -412,13 +418,17 @@ class UserService {
 
         if (!after && before) {
           console.log(`User ${before.id} (${before.username}) disappeared during rebuild!`);
-          error = true;
+
+          if (!options?.allowRemove) error = true;
+
           return;
         }
 
         if (!before && after) {
           console.log(`New user ${after.id} (${after.username}) appeared during rebuild!`);
-          error = true;
+
+          if (!options?.allowCreate) error = true;
+
           return;
         }
 
@@ -444,6 +454,15 @@ class UserService {
               console.log(`Field ${key} of user ${id} changed: ${before} -> ${after}`);
             });
           }
+
+          if (options?.allowChanges) {
+            for (const [key] of diff) {
+              if (!options.allowChanges.includes(key)) {
+                console.log(`Unallowed field ${key} changed for user ${key}!`);
+                error = true;
+              }
+            }
+          }
         }
       });
 
@@ -451,7 +470,6 @@ class UserService {
         console.log(
           `User count does not match before (${usersBefore.size}) and after (${usersAfter.size}) the rebuild.`,
         );
-        error = true;
       }
 
       if (error) {

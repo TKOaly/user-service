@@ -23,6 +23,35 @@ export default interface UserDatabaseObject {
   last_seq: number;
 }
 
+const KEYS: Array<keyof UserDatabaseObject> = [
+  "id",
+  "username",
+  "name",
+  "screen_name",
+  "email",
+  "residence",
+  "phone",
+  "hyy_member",
+  "membership",
+  "role",
+  "salt",
+  "hashed_password",
+  "password_hash",
+  "created",
+  "modified",
+  "tktl",
+  "deleted",
+  "hy_staff",
+  "hy_student",
+  "tktdt_student",
+  "registration_ban_bypass_until",
+  "last_seq",
+];
+
+export function isUserDatabaseObjectKey(key: string): key is keyof UserDatabaseObject {
+  return KEYS.includes(key as keyof UserDatabaseObject);
+}
+
 /**
  * User database object with additional payment information
  */
