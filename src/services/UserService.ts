@@ -477,7 +477,11 @@ class UserService {
       }
 
       // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
-      await this.dao.update(userId, event.fields);
+      await this.dao.update(userId, {
+        ...event.fields,
+        modified: event.fields.modified ?? new Date(msg.info.timestampNanos / 1000000),
+        last_seq: msg.seq,
+      });
     } else if (event.type === "create" || event.type === "import") {
       if (event.fields.created) {
         event.fields.created = new Date(event.fields.created);
@@ -489,6 +493,7 @@ class UserService {
 
       await this.dao.save({
         ...event.fields,
+        modified: event.fields.modified ?? new Date(msg.info.timestampNanos / 1000000),
         id: userId,
         last_seq: msg.seq,
       });
@@ -497,11 +502,11 @@ class UserService {
     } else if (event.type === "delete") {
       await this.dao.remove(userId);
       return;
+    } else {
+      // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
+      // vaikka viesti ei olisikaan meille relevantti.
+      await this.dao.update(userId, { last_seq: msg.seq });
     }
-
-    // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
-    // vaikka viesti ei olisikaan meille relevantti.
-    await this.dao.update(userId, { last_seq: msg.seq });
   }
 
   /**

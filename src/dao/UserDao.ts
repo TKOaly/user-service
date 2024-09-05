@@ -188,13 +188,14 @@ export class UserDao implements Dao<UserDatabaseObject> {
         | "hy_staff"
         | "tktdt_student"
         | "registration_ban_bypass_until"
+        | "modified"
         | "last_seq"
       >
     >,
   ): PromiseLike<number> {
     const savedObj = {
       ...entity,
-      modified: new Date(),
+      modified: entity.modified ?? new Date(),
     };
     return Promise.resolve(this.knex<UserDatabaseObject>(tableName).update(savedObj).where({ id: entityId }));
   }
