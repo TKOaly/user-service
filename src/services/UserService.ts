@@ -383,6 +383,62 @@ class UserService {
     return this.dao.withTransaction(dao => callback(new UserService(dao)));
   }
 
+  public async rebuild() {
+    const nats = await NatsService.get();
+
+    await this.transaction(async tsx => {
+      await tsx.dao.clear();
+      await nats.fetch("members.*", async msg => {
+        const data = msg.json();
+        await tsx.handleMessage(data, msg);
+      });
+    });
+  }
+
+  public async handleMessage(pEvent: unknown, msg: JsMsg) {
+    const event = UserEvent.parse(pEvent);
+
+    const userId = parseInt(msg.subject.split(".")[1], 10);
+
+    if (event.type === "set") {
+      // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
+
+      if (event.fields.created) {
+        event.fields.created = new Date(event.fields.created);
+      }
+
+      if (event.fields.registration_ban_bypass_until) {
+        event.fields.registration_ban_bypass_until = new Date(event.fields.registration_ban_bypass_until);
+      }
+
+      // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
+      await this.dao.update(userId, event.fields);
+    } else if (event.type === "create" || event.type === "import") {
+      if (event.fields.created) {
+        event.fields.created = new Date(event.fields.created);
+      }
+
+      if (event.fields.modified) {
+        event.fields.modified = new Date(event.fields.modified);
+      }
+
+      await this.dao.save({
+        ...event.fields,
+        id: userId,
+        last_seq: msg.seq,
+      });
+
+      return;
+    } else if (event.type === "delete") {
+      await this.dao.remove(userId);
+      return;
+    }
+
+    // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
+    // vaikka viesti ei olisikaan meille relevantti.
+    await this.dao.update(userId, { last_seq: msg.seq });
+  }
+
   /**
    * Taustaprosessi, joka kuuntelee jäsentieto-streamiin julkaistuja viestejä
    * ja käsittelee ne.
@@ -393,52 +449,7 @@ class UserService {
     this.abortSignal = new ConsumerAbortSignal();
 
     return new Promise<void>(resolve => {
-      const handler = async (pEvent: unknown, msg: JsMsg) => {
-        const event = UserEvent.parse(pEvent);
-
-        const userId = parseInt(msg.subject.split(".")[1], 10);
-
-        if (event.type === "set") {
-          // Parsitaan käyttäjän ID viestin subjektista, joka on muotoa `members.{id}`.
-
-          if (event.fields.created) {
-            // Tämä piti tehdä jostain syystä. Syyttäkää user-serviceä älkääkä NATSia.
-            event.fields.created = new Date(event.fields.created);
-          }
-
-          if (event.fields.registration_ban_bypass_until) {
-            event.fields.registration_ban_bypass_until = new Date(event.fields.registration_ban_bypass_until);
-          }
-
-          // Päivitetään muokkausviestin mukaiset arvot tietokantaan.
-          await this.dao.update(userId, event.fields);
-        } else if (event.type === "create" || event.type === "import") {
-          if (event.fields.created) {
-            event.fields.created = new Date(event.fields.created);
-          }
-
-          if (event.fields.modified) {
-            event.fields.modified = new Date(event.fields.modified);
-          }
-
-          await this.dao.save({
-            ...event.fields,
-            id: userId,
-            last_seq: msg.seq,
-          });
-
-          return;
-        } else if (event.type === "delete") {
-          await this.dao.remove(userId);
-          return;
-        }
-
-        // Tallennetaan tietokantaan tieto siitä, että olemme käsitelleet tämän viestin,
-        // vaikka viesti ei olisikaan meille relevantti.
-        await this.dao.update(userId, { last_seq: msg.seq });
-      };
-
-      nats.subscribe(handler, {
+      nats.subscribe(this.handleMessage.bind(this), {
         onReady: () => resolve(),
         signal: this.abortSignal,
       });
