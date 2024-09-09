@@ -11,7 +11,7 @@ class PaymentDao implements Dao<PaymentDatabaseObject> {
   }
 
   public findByPayer(payer_id: number, validPayment?: boolean): PromiseLike<PaymentDatabaseObject | undefined> {
-    let query = knexInstance<PaymentDatabaseObject>(tableName).select().where({ payer_id });
+    let query = knexInstance<PaymentDatabaseObject>(tableName).select().where({ payer_id }).orderBy("created", "desc");
 
     if (validPayment === true) {
       query = query.andWhere("valid_until", ">=", knexInstance.fn.now());
