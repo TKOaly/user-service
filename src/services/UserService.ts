@@ -113,7 +113,7 @@ class UserService {
             conditionQuery.push("(membership <> 'ei-jasen' and membership <> 'erotettu')");
             break;
           case "nonmember":
-            conditionQuery.push("membership = 'ei-jasen'");
+            conditionQuery.push("(membership = 'ei-jasen' or membership = 'erotettu')");
             break;
           case "paid":
             conditionQuery.push("paid is not null");
