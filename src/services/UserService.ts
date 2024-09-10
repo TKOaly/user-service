@@ -537,7 +537,7 @@ class UserService {
     this.abortSignal = new ConsumerAbortSignal();
 
     return new Promise<void>(resolve => {
-      nats.subscribe(this.handleMessage.bind(this), {
+      nats.subscribe((data, msg) => this.transaction(service => service.handleMessage(data, msg)), {
         onReady: () => resolve(),
         signal: this.abortSignal,
       });
