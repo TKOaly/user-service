@@ -285,12 +285,13 @@ export default class NatsService {
 
           if (result === false) break;
         } catch (err) {
-          // Kerrotaan palvelimelle, että jokin meni pieleen ja viestin lähettämistä tulisi yrittää uudelleen myöhemmin.
-          message.nak();
-
-          console.error("Error while processing a NATS message:", err);
-
-          throw err;
+          console.error("Error while processing a NATS message!");
+          console.error(
+            `Message (seq=${message.seq}, subject=${message.subject}): ${new TextDecoder().decode(message.data)}`,
+          );
+          console.error("Error:", err);
+        } finally {
+          message.ack();
         }
       }
     } finally {
