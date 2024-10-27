@@ -75,5 +75,16 @@ module.exports = [
     created: new Date(),
     modified: new Date(),
     secret: "secret"
+  },
+  {
+    id: 8,
+    service_identifier: "4e02267a-d6e1-4e3a-899e-a9082b07da32",
+    service_name: "bbat",
+    display_name: "Baseball Bat",
+    redirect_url: "http://bbat.tko-aly.localhost/api/session/callback",
+    data_permissions: 55295,
+    created: new Date(),
+    modified: new Date(),
+    secret: "unsecure"
   }
 ];

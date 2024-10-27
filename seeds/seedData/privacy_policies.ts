@@ -49,7 +49,14 @@ const privacyPolicy: PrivacyPolicyDatabaseObject[] = [
     text: "Members privacy policy",
     created: new Date(),
     modified: new Date(),
-  }
+  },
+  {
+    id: 8,
+    service_id: 8,
+    text: "Baseball bat privacy policy",
+    created: new Date(),
+    modified: new Date(),
+  },
 ];
 
 export default privacyPolicy;
