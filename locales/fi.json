@@ -87,5 +87,8 @@
   "resetPasswordSent_title": "Salasanan palautus",
   "resetPasswordForm_title": "Salasanan palautus",
   "resetPasswordSuccess_title": "Salasana palautettu",
-  "resetPassword_title": "Salasanan palautus"
+  "resetPassword_title": "Salasanan palautus",
+  "timeout_title": "Vanhentunut istunto",
+  "timeout_SessionTimeout": "Istuntosi on vanhentunut, kirjaudu sisään uudelleen",
+  "timeout_ReturnTo": "Palaa osoitteeseen "
 }

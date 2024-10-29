@@ -1,6 +1,8 @@
 extends layouts/common.pug
 
-block append head
+append head
+  //- Redirect to /timeout in 5 minutes
+  meta(http-equiv="refresh", content="300;url=/timeout")
   link(rel="stylesheet", href="/styles/gdpr.css")
 
 block content
