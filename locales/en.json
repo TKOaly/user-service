@@ -87,5 +87,8 @@
   "resetPasswordSent_title": "Password recovery",
   "resetPasswordForm_title": "Password recovery",
   "resetPasswordSuccess_title": "Password changed",
-  "resetPassword_title": "Password recovery"
+  "resetPassword_title": "Password recovery",
+  "timeout_title": "Session timeout",
+  "timeout_SessionTimeout": "Your session has timed out, please log in again",
+  "timeout_ReturnTo": "Return to "
 }

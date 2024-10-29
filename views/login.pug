@@ -1,5 +1,9 @@
 extends layouts/common.pug
 
+append head
+  //- Redirect to /timeout in 5 minutes
+  meta(http-equiv="refresh", content="300;url=/timeout")
+
 block content
   #login
     if (loggedUser && logoutRedirect)

@@ -583,6 +583,10 @@ class LoginController implements Controller {
     }
   }
 
+  public timeout: RequestHandler = async (_req, res) => {
+    return res.render("timeout")
+  }
+
   public createRoutes(): express.Router {
     this.route.get("/", cachingMiddleware, AuthorizeMiddleware.loadToken, this.getLoginView);
     this.route.post(
@@ -607,6 +611,7 @@ class LoginController implements Controller {
       this.loginConfirm,
     );
     this.route.get("/logout", AuthorizeMiddleware.authorize(false), this.logOut);
+    this.route.get("/timeout", this.timeout);
     this.route.get("/reset-password", this.resetPassword.bind(this));
     this.route.post("/reset-password", checkCsrf, this.resetPassword.bind(this));
 
