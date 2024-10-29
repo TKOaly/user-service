@@ -99,7 +99,7 @@ app.use(
 // Session
 app.use(
   session({
-    cookie: { secure: "auto", maxAge: 60000 },
+    cookie: { secure: "auto", maxAge: 5 * 60 * 1000 },
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || "unsafe",
