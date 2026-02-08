@@ -9,7 +9,7 @@ RUN apk --no-cache add --virtual native-deps \
 COPY package.json pnpm-lock.yaml /app/
 
 ENV PNPM_HOME="/pnpm"
-RUN corepack enable && corepack install
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 COPY knexfile.ts knex-esm-compat.ts .prettierrc vitest.config.ts eslint.config.mjs ./
