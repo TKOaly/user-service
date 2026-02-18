@@ -86,5 +86,27 @@ module.exports = [
     created: new Date(),
     modified: new Date(),
     secret: "unsecure"
+  },
+  {
+    id: 9,
+    service_identifier: "47496d92-ce34-46db-92d1-00c107101894",
+    service_name: "job_board",
+    display_name: "Job Board",
+    redirect_url: "http://jobs.tko-aly.localhost/api/auth/callback/tkoaly",
+    data_permissions: 262143,
+    created: new Date(),
+    modified: new Date(),
+    secret: "unsecure"
+  },
+  {
+    id: 10,
+    service_identifier: "47496d92-ce34-46db-92d1-b0ab5c71ab17",
+    service_name: "website2026",
+    display_name: "TKO-äly Website 2026",
+    redirect_url: "http://beta.tko-aly.localhost/api/auth/callback/tkoaly",
+    data_permissions: 262143,
+    created: new Date(),
+    modified: new Date(),
+    secret: "unsecure"
   }
 ];

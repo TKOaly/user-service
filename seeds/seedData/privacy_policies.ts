@@ -57,6 +57,20 @@ const privacyPolicy: PrivacyPolicyDatabaseObject[] = [
     created: new Date(),
     modified: new Date(),
   },
+  {
+    id: 9,
+    service_id: 9,
+    text: "Job Board privacy policy",
+    created: new Date(),
+    modified: new Date(),
+  },
+  {
+    id: 10,
+    service_id: 10,
+    text: "TKO-äly Website 2026 privacy policy",
+    created: new Date(),
+    modified: new Date(),
+  },
 ];
 
 export default privacyPolicy;
