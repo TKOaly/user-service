@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { Request, Response, RequestHandler, ErrorRequestHandler, Router } from "express";
 import JWT from "jsonwebtoken";
 import { JWK } from "node-jose";
@@ -16,6 +17,19 @@ import AuthorizeMiddleware, { AuthorizedRequestHandler } from "../utils/Authoriz
 import ConsentService from "../services/ConsentService";
 import PrivacyPolicyConsent from "../enum/PrivacyPolicyConsent";
 import { OAuthError } from "../utils/OAuthError";
+
+/**
+ * OAuthErrors are expected protocol errors caused by the client (logged as warnings),
+ * anything else is an unexpected failure and is also reported to Sentry.
+ */
+const logOAuthError = (req: Request, err: unknown) => {
+  if (err instanceof OAuthError) {
+    req.log.warn({ oauthError: err.options.code, description: err.options.description }, "OAuth request failed");
+  } else {
+    req.log.error({ err }, "Unexpected error in OAuth flow");
+    Sentry.captureException(err);
+  }
+};
 
 const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key) => {
   const claimNames = getClaimNames(scope);
@@ -593,8 +607,8 @@ class OAuthController implements Controller {
     });
   };
 
-  private jsonErrorHandler: ErrorRequestHandler = async (err, _req, res, _next) => {
-    console.log(err);
+  private jsonErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {
+    logOAuthError(req, err);
 
     const error: OAuthError =
       err instanceof OAuthError ? err : new OAuthError("server_error").withDescription("Internal server error");
@@ -608,7 +622,7 @@ class OAuthController implements Controller {
   };
 
   private redirectErrorHandler: ErrorRequestHandler = async (err, req, res, _next) => {
-    console.log(err);
+    logOAuthError(req, err);
 
     let state;
     let redirectUrl;

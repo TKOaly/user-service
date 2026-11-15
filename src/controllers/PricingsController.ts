@@ -133,8 +133,6 @@ class UserController implements Controller {
 
     const season = parseSeason(req.params.season);
 
-    console.log(req.body);
-
     if (!validateUpdateSeasonPricesBody(req.body)) {
       res.status(400).json(new ServiceResponse(null, "Invalid request body"));
       return;

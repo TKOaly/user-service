@@ -4,6 +4,7 @@ import Backend from "i18next-fs-backend";
 import { Express } from "express";
 import { readdirSync, lstatSync } from "fs";
 import { join } from "path";
+import { logger } from "./logger";
 
 const LOCALES_PATH = join(process.cwd(), "locales");
 
@@ -26,7 +27,7 @@ i18next
       loadPath: join(LOCALES_PATH, "{{lng}}.json"),
     },
     missingKeyHandler: (lngs, ns, key) => {
-      console.warn(`Missing translation key "${key}" for languages [${lngs.join(", ")}] in namespace "${ns}";`);
+      logger.warn({ key, languages: lngs, namespace: ns }, "Missing translation key");
     },
     detection: {
       lookupCookie: "tkoaly_locale",

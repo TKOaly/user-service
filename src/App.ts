@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import express, { ErrorRequestHandler } from "express";
 import session from "express-session";
 import helmet from "helmet";
+import { STATUS_CODES } from "http";
 import { join } from "path";
 
 import AuthController from "./controllers/AuthController";
@@ -18,7 +19,7 @@ import PricingsController from "./controllers/PricingsController";
 
 import initLocalization from "./i18n.config";
 
-import morgan from "morgan";
+import { httpLogger, logger } from "./logger";
 import { generateApiRoute } from "./utils/ApiRoute";
 import { ConnectSessionKnexStore } from "connect-session-knex";
 import { knexInstance } from "./Db";
@@ -61,7 +62,7 @@ if (process.env.NODE_ENV === "production") {
     environment: "production",
   });
 } else {
-  console.log("Skipping sentry init as the environment is not production");
+  logger.info("Skipping Sentry init as the environment is not production");
 }
 
 // Express application instance
@@ -78,7 +79,8 @@ app.use(
   }),
 );
 
-app.use(morgan("tiny"));
+// Request logging (JSON to stdout, see src/logger.ts)
+app.use(httpLogger);
 
 // Trust proxy
 app.set("trust proxy", 1);
@@ -166,6 +168,28 @@ app.use(((err, _req, res, next) => {
   return res.status(403).render("serviceError", {
     error: "Invalid CSRF token",
   });
+}) satisfies ErrorRequestHandler);
+
+// Final error handler: replaces Express' default handler, which writes
+// unstructured stack traces to stderr.
+app.use(((err, req, res, next) => {
+  const status = Number(err?.status ?? err?.statusCode) || 500;
+
+  // pino-http logs the request completion line at "error" level including `res.err`.
+  if (status >= 500) {
+    res.err = err;
+  } else {
+    req.log.debug({ err }, "Request failed with a client error");
+  }
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res
+    .status(status)
+    .type("text")
+    .send(STATUS_CODES[status] ?? "Error");
 }) satisfies ErrorRequestHandler);
 
 export default app;

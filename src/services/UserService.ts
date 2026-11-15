@@ -11,6 +11,9 @@ import NatsService, { ConsumerAbortSignal } from "../services/NatsService";
 import { JetStreamPublishOptions, JsMsg, headers, JsHeaders, PubAck } from "nats";
 import z from "zod";
 import { isEqual } from "lodash";
+import { logger as rootLogger } from "../logger";
+
+const logger = rootLogger.child({ component: "user-rebuild" });
 
 const UserFields = z.record(z.string(), z.any()).transform(v => v as UserDatabaseObject);
 
@@ -417,7 +420,7 @@ class UserService {
         const after = usersAfter.get(id);
 
         if (!after && before) {
-          console.log(`User ${before.id} (${before.username}) disappeared during rebuild!`);
+          logger.warn({ userId: before.id, username: before.username }, "User disappeared during rebuild");
 
           if (!options?.allowRemove) error = true;
 
@@ -425,7 +428,7 @@ class UserService {
         }
 
         if (!before && after) {
-          console.log(`New user ${after.id} (${after.username}) appeared during rebuild!`);
+          logger.warn({ userId: after.id, username: after.username }, "New user appeared during rebuild");
 
           if (!options?.allowCreate) error = true;
 
@@ -448,17 +451,23 @@ class UserService {
           });
 
           if (diff.length === 0) {
-            console.log(`User ${id} changed during rebuild!`);
+            logger.warn({ userId: id }, "User changed during rebuild");
           } else {
             diff.forEach(([key, before, after]) => {
-              console.log(`Field ${key} of user ${id} changed: ${before} -> ${after}`);
+              const secret = ["salt", "hashed_password", "password_hash"].includes(key as string);
+              logger.warn(
+                secret
+                  ? { userId: id, field: key }
+                  : { userId: id, field: key, before: String(before), after: String(after) },
+                "User field changed during rebuild",
+              );
             });
           }
 
           if (options?.allowChanges) {
             for (const [key] of diff) {
               if (!options.allowChanges.includes(key)) {
-                console.log(`Unallowed field ${key} changed for user ${key}!`);
+                logger.error({ userId: id, field: key }, "Unallowed field changed during rebuild");
                 error = true;
               }
             }
@@ -467,8 +476,9 @@ class UserService {
       });
 
       if (usersAfter.size !== usersBefore.size) {
-        console.log(
-          `User count does not match before (${usersBefore.size}) and after (${usersAfter.size}) the rebuild.`,
+        logger.warn(
+          { before: usersBefore.size, after: usersAfter.size },
+          "User count does not match before and after the rebuild",
         );
       }
 

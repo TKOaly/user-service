@@ -8,6 +8,9 @@ import {
   RetentionPolicy,
 } from "nats";
 import { EventEmitter } from "node:stream";
+import { logger as rootLogger } from "../logger";
+
+const logger = rootLogger.child({ component: "nats" });
 
 const STREAM = "members";
 const ACK_STREAM = "members-ack";
@@ -90,12 +93,11 @@ export default class NatsService {
       });
     } catch (err) {
       if (retries > 0) {
-        console.error(err);
-        console.error(`Failed to connect to NATS. Retyring in 1s... (${retries} retries remaining)`);
+        logger.warn({ err, host, port, retriesRemaining: retries }, "Failed to connect to NATS, retrying in 1s");
         await new Promise(resolve => setTimeout(resolve, 1000));
         await this.init(retries - 1);
       } else {
-        console.error("Failed to connect to NATS. Giving up.");
+        logger.error({ err, host, port }, "Failed to connect to NATS, giving up");
         throw err;
       }
     }
@@ -227,7 +229,7 @@ export default class NatsService {
 
       return msg;
     } catch (err) {
-      console.error("Publishing failed:", err);
+      logger.error({ err }, "Publishing NATS message failed");
       throw err;
     }
   }
@@ -285,11 +287,10 @@ export default class NatsService {
 
           if (result === false) break;
         } catch (err) {
-          console.error("Error while processing a NATS message!");
-          console.error(
-            `Message (seq=${message.seq}, subject=${message.subject}): ${new TextDecoder().decode(message.data)}`,
+          logger.error(
+            { err, seq: message.seq, subject: message.subject, size: message.data.length },
+            "Error while processing a NATS message",
           );
-          console.error("Error:", err);
         } finally {
           message.ack();
         }
