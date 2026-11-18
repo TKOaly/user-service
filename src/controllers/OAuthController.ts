@@ -37,6 +37,7 @@ const getIdToken = (user: User, scope: string[], service: Service, key: JWK.Key)
 
   const token = {
     iss: process.env.ISSUER_ID,
+    sub: String(user.id),
     aud: service.serviceIdentifier,
     ...claims,
   };
