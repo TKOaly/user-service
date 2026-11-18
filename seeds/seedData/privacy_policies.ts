@@ -67,7 +67,7 @@ const privacyPolicy: PrivacyPolicyDatabaseObject[] = [
   {
     id: 10,
     service_id: 10,
-    text: "TKO-äly Website 2026 privacy policy",
+    text: "TKO-äly Beta site privacy policy",
     created: new Date(),
     modified: new Date(),
   },
